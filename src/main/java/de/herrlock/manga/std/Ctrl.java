@@ -11,12 +11,10 @@ import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Constants;
 
-public class Ctrl
-{
+public class Ctrl {
     private static final int urlIndex = 1;
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         L.trace("<main>").addSpace();
         new Ctrl().run();
         L.removeSpace().trace("</main>");
@@ -25,59 +23,45 @@ public class Ctrl
     // private File path;
     private URL url;
 
-    public Ctrl()
-    {
-        try
-        {
+    public Ctrl() {
+        try {
             // this.path = new File("C:\\Users\\Jan\\Desktop\\mangatest\\");
             this.url = new URL(Constants.EXAMPLE_URLS[urlIndex]);
         }
-        catch (MalformedURLException ex)
-        {
+        catch (MalformedURLException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    public void run()
-    {
+    public void run() {
         L.trace("<run>").addSpace();
-        try
-        {
+        try {
             getChapterList();
-            if (goon())
-            {
+            if (goon()) {
                 getPictureLinks();
-                if (goon())
-                {
+                if (goon()) {
                     getPictures();
                 }
-                else
-                {
+                else {
                     System.out.println("bye");
                 }
             }
-            else
-            {
+            else {
                 System.out.println("bye");
             }
         }
-        catch (IOException ex)
-        {
+        catch (IOException ex) {
             ex.printStackTrace();
         }
-        finally
-        {
+        finally {
             L.removeSpace().trace("</run>");
         }
     }
 
-    private static boolean goon()
-    {
+    private static boolean goon() {
         System.out.println("go on? y|n");
-        try (Scanner sc = new Scanner(System.in))
-        {
-            switch (sc.next(".+").charAt(0))
-            {
+        try (Scanner sc = new Scanner(System.in)) {
+            switch (sc.next(".+").charAt(0)) {
                 case 'y':
                 case 'Y':
                     return true;
@@ -87,22 +71,18 @@ public class Ctrl
         }
     }
 
-    private void getChapterList() throws IOException
-    {
+    private void getChapterList() throws IOException {
         ChapterList cl = ChapterList.getInstance(this.url, null);
-        for (Chapter chapter : cl)
-        {
+        for (Chapter chapter : cl) {
             L.error(chapter);
         }
     }
 
-    private void getPictureLinks()
-    {
+    private void getPictureLinks() {
         // TODO
     }
 
-    private void getPictures()
-    {
+    private void getPictures() {
         // TODO
     }
 

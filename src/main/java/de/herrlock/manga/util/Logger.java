@@ -5,8 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public enum Logger
-{
+public enum Logger {
     L;
 
     static final int ERROR = 10;
@@ -15,25 +14,20 @@ public enum Logger
     static final int DEBUG = 10_000;
     static final int TRACE = 100_000;
     static final int CURRENT_LEVEL;
-    static
-    {
+    static {
         char current;
-        try (InputStream in = new FileInputStream("src/main/resources/log.properties"))
-        {
+        try (InputStream in = new FileInputStream("src/main/resources/log.properties")) {
             Properties p = new Properties();
             p.load(in);
             current = p.getProperty("level", "T").charAt(0);
         }
-        catch (NullPointerException ex)
-        {
+        catch (NullPointerException ex) {
             current = 'T';
         }
-        catch (IOException ex)
-        {
+        catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-        switch (current)
-        {
+        switch (current) {
             case 'e':
             case 'E':
                 CURRENT_LEVEL = ERROR;
@@ -62,58 +56,48 @@ public enum Logger
 
     private static String spaces = "";
 
-    public Logger addSpace()
-    {
+    public Logger addSpace() {
         spaces = spaces + ' ';
         return this;
     }
 
-    public Logger removeSpace()
-    {
+    public Logger removeSpace() {
         spaces = spaces.substring(0, spaces.length() - 1);
         return this;
     }
 
-    public Logger error(Object message)
-    {
+    public Logger error(Object message) {
         log(">>>>> " + message, ERROR);
         return this;
     }
 
-    public Logger warn(Object message)
-    {
+    public Logger warn(Object message) {
         log(">>>> " + message, WARNING);
         return this;
     }
 
-    public Logger info(Object message)
-    {
+    public Logger info(Object message) {
         log(">>> " + message, INFO);
         return this;
     }
 
-    public Logger debug(Object message)
-    {
+    public Logger debug(Object message) {
         log(">> " + message, DEBUG);
         return this;
     }
 
-    public Logger trace(Object message)
-    {
+    public Logger trace(Object message) {
         log("> " + message, TRACE);
         return this;
     }
 
-    private static void log(Object message, int level)
-    {
-        if (CURRENT_LEVEL >= level)
-        {
+    private static void log(Object message, int level) {
+        if (CURRENT_LEVEL >= level) {
             System.out.println(spaces + message);
         }
     }
 
-    private Logger()
-    {
+    private Logger() {
         // not called
     }
 

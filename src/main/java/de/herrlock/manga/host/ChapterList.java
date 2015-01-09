@@ -13,8 +13,7 @@ import java.util.Map;
 
 import de.herrlock.manga.host.ChapterList.Chapter;
 
-public abstract class ChapterList extends ArrayList<Chapter>
-{
+public abstract class ChapterList extends ArrayList<Chapter> {
     /**
      * @param url
      *            the URL of the main-page with the list of chapters
@@ -24,8 +23,7 @@ public abstract class ChapterList extends ArrayList<Chapter>
      * @throws IOException
      *             thrown by {@link Hoster#getHoster(URL, String)}
      */
-    public static ChapterList getInstance(URL url, String pattern) throws IOException
-    {
+    public static ChapterList getInstance(URL url, String pattern) throws IOException {
         Hoster h = Hoster.getHostByURL(url);
         if (h != null)
             return h.getHoster(url, pattern);
@@ -34,15 +32,13 @@ public abstract class ChapterList extends ArrayList<Chapter>
 
     private final ChapterPattern cp;
 
-    public ChapterList(String pattern)
-    {
+    public ChapterList(String pattern) {
         L.trace("new ChapterList( " + pattern + " )");
         this.cp = (pattern == null || pattern.equals("") ? null : new ChapterPattern(pattern));
         L.trace("</ChapterList>");
     }
 
-    public void addChapter(String number, URL chapterUrl)
-    {
+    public void addChapter(String number, URL chapterUrl) {
         if (this.cp == null || this.cp.contains(number))
             super.add(new Chapter(number, chapterUrl));
     }
@@ -51,39 +47,31 @@ public abstract class ChapterList extends ArrayList<Chapter>
 
     public abstract Map<Integer, URL> getAllPageURLs(URL url) throws IOException;
 
-    public static class Chapter
-    {
+    public static class Chapter {
         public final String number;
         public final URL chapterUrl;
 
-        public Chapter(String number, URL url)
-        {
+        public Chapter(String number, URL url) {
             this.number = number;
             this.chapterUrl = url;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return MessageFormat.format("{0}: {1}", this.number, this.chapterUrl);
         }
     }
 
-    private static class ChapterPattern extends ArrayList<String>
-    {
+    private static class ChapterPattern extends ArrayList<String> {
         private static final long serialVersionUID = 1L;
 
-        public ChapterPattern(String pattern)
-        {
-            if (pattern.matches("([^;]+;?)+"))
-            {
-                for (String s : pattern.split(";"))
-                {
+        public ChapterPattern(String pattern) {
+            if (pattern.matches("([^;]+;?)+")) {
+                for (String s : pattern.split(";")) {
                     String[] chapter = s.split("-");
                     if (chapter.length == 1)
                         super.add(s);
-                    else if (chapter.length == 2)
-                    {
+                    else if (chapter.length == 2) {
                         int first = Integer.parseInt(chapter[0]);
                         int last = Integer.parseInt(chapter[1]);
                         for (int i = first; i <= last; i++)
@@ -94,8 +82,7 @@ public abstract class ChapterList extends ArrayList<Chapter>
         }
     }
 
-    public static enum Hoster implements Comparator<Hoster>
-    {
+    public static enum Hoster implements Comparator<Hoster> {
         Panda("Mangapanda", "http://www.mangapanda.com/"), //
         PureManga("PureManga", "http://www.pure-manga.org/"), //
         Fox("Mangafox", "http://www.mangafox.me/"), //
@@ -105,26 +92,21 @@ public abstract class ChapterList extends ArrayList<Chapter>
         private final String name;
         private final URL url;
 
-        Hoster(String name, String url)
-        {
+        Hoster(String name, String url) {
             this.name = name;
-            try
-            {
+            try {
                 this.url = new URL(url);
             }
-            catch (MalformedURLException ex)
-            {
+            catch (MalformedURLException ex) {
                 throw new RuntimeException(ex);
             }
         }
 
-        public String getName()
-        {
+        public String getName() {
             return this.name;
         }
 
-        public URL getUrl()
-        {
+        public URL getUrl() {
             return this.url;
         }
 
@@ -139,10 +121,8 @@ public abstract class ChapterList extends ArrayList<Chapter>
          * @throws IOException
          *             thrown by the constructors of the special ChapterList-implementations
          */
-        public ChapterList getHoster(URL mangaUrl, String chapterPattern) throws IOException
-        {
-            switch (this)
-            {
+        public ChapterList getHoster(URL mangaUrl, String chapterPattern) throws IOException {
+            switch (this) {
                 case Panda:
                     return new Panda(mangaUrl, chapterPattern);
                 case PureManga:
@@ -155,17 +135,14 @@ public abstract class ChapterList extends ArrayList<Chapter>
         }
 
         @Override
-        public int compare(Hoster o1, Hoster o2)
-        {
+        public int compare(Hoster o1, Hoster o2) {
             String o1Lower = o1.getName().toLowerCase(Locale.GERMAN);
             String o2Lower = o2.getName().toLowerCase(Locale.GERMAN);
             return o1Lower.compareTo(o2Lower);
         }
 
-        public static Hoster getHostByURL(URL url)
-        {
-            for (Hoster h : Hoster.values())
-            {
+        public static Hoster getHostByURL(URL url) {
+            for (Hoster h : Hoster.values()) {
                 String hostUrlHost = h.getUrl().getHost(), givenUrlHost = url.getHost();
                 if (hostUrlHost.matches("www\\..+"))
                     hostUrlHost = hostUrlHost.substring(4);

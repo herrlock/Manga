@@ -11,16 +11,13 @@ import org.jsoup.select.Elements;
 
 import de.herrlock.manga.util.Utils;
 
-class PureManga extends ChapterList
-{
+class PureManga extends ChapterList {
     private static final long serialVersionUID = 1L;
 
-    public PureManga(URL url, String chapterPattern) throws IOException
-    {
+    public PureManga(URL url, String chapterPattern) throws IOException {
         super(chapterPattern);
         Elements tr = Utils.getDocument(url).getElementsByClass("element");
-        for (Element e : tr)
-        {
+        for (Element e : tr) {
             Element link = e.select("div>a").get(0);
 
             String[] chapterNrAndName = link.text().split(":");
@@ -34,18 +31,15 @@ class PureManga extends ChapterList
     }
 
     @Override
-    public String imgLink(URL url) throws IOException
-    {
+    public String imgLink(URL url) throws IOException {
         return Utils.getDocument(url).select("#page>.inner>a>img").get(0).attr("src");
     }
 
     @Override
-    public Map<Integer, URL> getAllPageURLs(URL url) throws IOException
-    {
+    public Map<Integer, URL> getAllPageURLs(URL url) throws IOException {
         Map<Integer, URL> result = new HashMap<>();
         Elements li = Utils.getDocument(url).select(".dropdown_right>ul>li");
-        for (Element e : li)
-        {
+        for (Element e : li) {
             Element link = e.getElementsByTag("a").get(0);
             int number = Integer.parseInt(link.text().substring(6));
             URL absUrl = new URL(url, link.attr("href"));
