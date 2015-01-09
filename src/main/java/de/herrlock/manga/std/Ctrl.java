@@ -47,6 +47,14 @@ public class Ctrl
             if (goon())
             {
                 getPictureLinks();
+                if (goon())
+                {
+                    getPictures();
+                }
+                else
+                {
+                    System.out.println("bye");
+                }
             }
             else
             {
