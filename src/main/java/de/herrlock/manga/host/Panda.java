@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -14,9 +15,15 @@ import de.herrlock.manga.util.Utils;
 class Panda extends ChapterList {
     public static final long serialVersionUID = 1L;
 
+    private final String name;
+
     public Panda(URL url, String chapterPattern) throws IOException {
         super(chapterPattern);
-        Elements tr = Utils.getDocument(url).select("#chapterlist tr");
+        Document document = Utils.getDocument(url);
+
+        this.name = document.select("#mangaproperties h2.aname").first().text();
+
+        Elements tr = document.select("#chapterlist tr");
         tr.remove(0);
         for (Element e : tr) {
             Element firstTd = e.getElementsByTag("td").get(0);
@@ -29,6 +36,11 @@ class Panda extends ChapterList {
 
             super.addChapter(number, chapterUrl);
         }
+    }
+
+    @Override
+    public String getMangaName() {
+        return this.name;
     }
 
     @Override

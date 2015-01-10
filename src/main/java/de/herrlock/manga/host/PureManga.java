@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -14,9 +15,15 @@ import de.herrlock.manga.util.Utils;
 class PureManga extends ChapterList {
     private static final long serialVersionUID = 1L;
 
+    private final String name;
+
     public PureManga(URL url, String chapterPattern) throws IOException {
         super(chapterPattern);
-        Elements tr = Utils.getDocument(url).getElementsByClass("element");
+        Document document = Utils.getDocument(url);
+
+        this.name = document.select("#content h2.titlebg").first().text();
+
+        Elements tr = document.getElementsByClass("element");
         for (Element e : tr) {
             Element link = e.select("div>a").get(0);
 
@@ -28,6 +35,11 @@ class PureManga extends ChapterList {
             super.addChapter(number, chapterUrl);
         }
         Collections.reverse(this);
+    }
+
+    @Override
+    public String getMangaName() {
+        return this.name;
     }
 
     @Override

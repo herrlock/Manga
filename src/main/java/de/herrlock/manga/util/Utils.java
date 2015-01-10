@@ -1,6 +1,6 @@
 package de.herrlock.manga.util;
 
-import static de.herrlock.manga.util.Logger.L;
+import static de.herrlock.manga.util.log.LogInitializer.L;
 
 import java.io.IOException;
 import java.net.URL;

@@ -1,6 +1,6 @@
 package de.herrlock.manga.host;
 
-import static de.herrlock.manga.util.Logger.L;
+import static de.herrlock.manga.util.log.LogInitializer.L;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -28,6 +28,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      *             thrown by {@link Hoster#getHoster(URL, String)}
      */
     public static ChapterList getInstance(URL url, String pattern) throws IOException {
+        L.trace("getInstance " + url);
         Hoster h = Hoster.getHostByURL(url);
         if (h != null)
             return h.getHoster(url, pattern);
@@ -45,6 +46,8 @@ public abstract class ChapterList extends ArrayList<Chapter> {
         if (this.cp == null || this.cp.contains(number))
             super.add(new Chapter(number, chapterUrl));
     }
+
+    public abstract String getMangaName();
 
     /**
      * returns the {@link URL} of one page
@@ -144,6 +147,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
          *             thrown by the constructors of the special ChapterList-implementations
          */
         public ChapterList getHoster(URL mangaUrl, String chapterPattern) throws IOException {
+            L.trace("getHoster " + mangaUrl);
             switch (this) {
                 case Panda:
                     return new Panda(mangaUrl, chapterPattern);

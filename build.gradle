@@ -1,7 +1,8 @@
 apply plugin: 'application'
 
-version = '0.0.1-ALPHA'
 group 'de.herrlock.manga'
+version '1.0.0-BETA'
+mainClassName = "de.herrlock.manga.Ctrl"
 
 jar {
     baseName = project.name

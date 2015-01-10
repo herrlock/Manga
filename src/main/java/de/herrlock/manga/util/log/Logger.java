@@ -1,70 +1,69 @@
-package de.herrlock.manga.util;
+package de.herrlock.manga.util.log;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.MessageFormat;
-import java.util.Properties;
 
-public enum Logger {
-    L;
-
+public class Logger {
     static final int NONE = 1;
     static final int ERROR = 10;
     static final int WARNING = 100;
     static final int INFO = 1_000;
     static final int DEBUG = 10_000;
     static final int TRACE = 100_000;
-    static final int CURRENT_LEVEL;
-    static {
-        char current;
-        try (InputStream in = Logger.class.getResourceAsStream("log.properties")) {
-            Properties p = new Properties();
-            p.load(in);
-            current = p.getProperty("level", "T").charAt(0);
-        }
-        catch (NullPointerException ex) {
-            current = 'T';
-        }
-        catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-        switch (current) {
+
+    private final int level;
+
+    Logger(String _level) {
+        switch ((_level != null ? _level : "error").charAt(0)) {
             case 'n':
             case 'N':
-                CURRENT_LEVEL = NONE;
+                this.level = NONE;
                 break;
             case 'e':
             case 'E':
-                CURRENT_LEVEL = ERROR;
+                this.level = ERROR;
                 break;
             case 'w':
             case 'W':
-                CURRENT_LEVEL = WARNING;
+                this.level = WARNING;
                 break;
             case 'i':
             case 'I':
-                CURRENT_LEVEL = INFO;
+                this.level = INFO;
                 break;
             case 'd':
             case 'D':
-                CURRENT_LEVEL = DEBUG;
+                this.level = DEBUG;
                 break;
             case 't':
             case 'T':
-                CURRENT_LEVEL = TRACE;
+                this.level = TRACE;
                 break;
             default:
-                CURRENT_LEVEL = TRACE;
+                this.level = TRACE;
                 break;
         }
     }
 
     /**
-     * logs with level {@link Logger#ERROR}
+     * logs with level {@link Logger#NONE}<br>
+     * these are essential messages
      * 
      * @param message
      *            the message to log
-     * @return {@link Logger#L}, to allow methodChaining
+     * @return {@link LogInitializer#L}, to allow methodChaining
+     */
+    public Logger none(Object message) {
+        log(message, NONE);
+        return this;
+    }
+
+    /**
+     * logs with level {@link Logger#ERROR}<br>
+     * there are messages that indicate a thrown error
+     * 
+     * @param message
+     *            the message to log
+     * @return {@link LogInitializer#L}, to allow methodChaining
      */
     public Logger error(Object message) {
         log(">>>>> " + message, ERROR);
@@ -72,11 +71,12 @@ public enum Logger {
     }
 
     /**
-     * logs with level {@link Logger#WARNING}
+     * logs with level {@link Logger#WARNING}<br>
+     * these are messages that indicate a caught error
      * 
      * @param message
      *            the message to log
-     * @return {@link Logger#L}, to allow methodChaining
+     * @return {@link LogInitializer#L}, to allow methodChaining
      */
     public Logger warn(Object message) {
         log(">>>> " + message, WARNING);
@@ -84,11 +84,12 @@ public enum Logger {
     }
 
     /**
-     * logs with level {@link Logger#INFO}
+     * logs with level {@link Logger#INFO}<br>
+     * these are not important messages that are 'nice to read'
      * 
      * @param message
      *            the message to log
-     * @return {@link Logger#L}, to allow methodChaining
+     * @return {@link LogInitializer#L}, to allow methodChaining
      */
     public Logger info(Object message) {
         log(">>> " + message, INFO);
@@ -96,11 +97,12 @@ public enum Logger {
     }
 
     /**
-     * logs with level {@link Logger#DEBUG}
+     * logs with level {@link Logger#DEBUG}<br>
+     * these are messages for debugging that do not have the purpose of tracing
      * 
      * @param message
      *            the message to log
-     * @return {@link Logger#L}, to allow methodChaining
+     * @return {@link LogInitializer#L}, to allow methodChaining
      */
     public Logger debug(Object message) {
         log(">> " + message, DEBUG);
@@ -108,11 +110,12 @@ public enum Logger {
     }
 
     /**
-     * logs with level {@link Logger#TRACE}
+     * logs with level {@link Logger#TRACE}<br>
+     * these are for tracing the flow of methods
      * 
      * @param message
      *            the message to log
-     * @return {@link Logger#L}, to allow methodChaining
+     * @return {@link LogInitializer#L}, to allow methodChaining
      */
     public Logger trace(Object message) {
         log("> " + message, TRACE);
@@ -135,14 +138,10 @@ public enum Logger {
         return this;
     }
 
-    private static void log(Object message, int level) {
-        if (CURRENT_LEVEL >= level) {
+    private void log(Object message, int l) {
+        if (this.level >= l) {
             System.out.println(message);
         }
-    }
-
-    private Logger() {
-        // not called
     }
 
 }
