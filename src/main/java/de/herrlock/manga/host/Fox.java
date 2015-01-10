@@ -34,8 +34,9 @@ class Fox extends ChapterList {
     }
 
     @Override
-    public String imgLink(URL url) throws IOException {
-        return Utils.getDocument(url).getElementById("image").attr("src");
+    public URL imgLink(URL url) throws IOException {
+        String src = Utils.getDocument(url).getElementById("image").attr("src");
+        return new URL(url, src);
     }
 
     @Override

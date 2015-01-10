@@ -14,7 +14,11 @@ import java.util.Map;
 import de.herrlock.manga.host.ChapterList.Chapter;
 
 public abstract class ChapterList extends ArrayList<Chapter> {
+
     /**
+     * creates an instance of {@linkplain ChapterList}, gets the right {@linkplain Hoster} from the {@linkplain URL}
+     * given as first argument
+     * 
      * @param url
      *            the URL of the main-page with the list of chapters
      * @param pattern
@@ -32,10 +36,9 @@ public abstract class ChapterList extends ArrayList<Chapter> {
 
     private final ChapterPattern cp;
 
-    public ChapterList(String pattern) {
-        L.trace("new ChapterList( " + pattern + " )");
+    protected ChapterList(String pattern) {
+        L.trace("new {0} ({1})", this.getClass(), pattern);
         this.cp = (pattern == null || pattern.equals("") ? null : new ChapterPattern(pattern));
-        L.trace("</ChapterList>");
     }
 
     public void addChapter(String number, URL chapterUrl) {
@@ -43,15 +46,34 @@ public abstract class ChapterList extends ArrayList<Chapter> {
             super.add(new Chapter(number, chapterUrl));
     }
 
-    public abstract String imgLink(URL url) throws IOException;
+    /**
+     * returns the {@link URL} of one page
+     * 
+     * @param url
+     * @return
+     * @throws IOException
+     */
+    public abstract URL imgLink(URL url) throws IOException;
 
+    /**
+     * returns all page-{@link URL}s of one chapter
+     * 
+     * @param url
+     *            the url of a chapter (mostly the first page)
+     * @return
+     * @throws IOException
+     */
     public abstract Map<Integer, URL> getAllPageURLs(URL url) throws IOException;
+
+    public Map<Integer, URL> getAllPageURLs(Chapter c) throws IOException {
+        return getAllPageURLs(c.chapterUrl);
+    }
 
     public static class Chapter {
         public final String number;
         public final URL chapterUrl;
 
-        public Chapter(String number, URL url) {
+        Chapter(String number, URL url) {
             this.number = number;
             this.chapterUrl = url;
         }
@@ -65,7 +87,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
     private static class ChapterPattern extends ArrayList<String> {
         private static final long serialVersionUID = 1L;
 
-        public ChapterPattern(String pattern) {
+        ChapterPattern(String pattern) {
             if (pattern.matches("([^;]+;?)+")) {
                 for (String s : pattern.split(";")) {
                     String[] chapter = s.split("-");

@@ -32,8 +32,9 @@ class Panda extends ChapterList {
     }
 
     @Override
-    public String imgLink(URL url) throws IOException {
-        return Utils.getDocument(url).getElementById("img").attr("src");
+    public URL imgLink(URL url) throws IOException {
+        String src = Utils.getDocument(url).getElementById("img").attr("src");
+        return new URL(url, src);
     }
 
     @Override

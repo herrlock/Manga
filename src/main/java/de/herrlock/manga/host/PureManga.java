@@ -31,8 +31,9 @@ class PureManga extends ChapterList {
     }
 
     @Override
-    public String imgLink(URL url) throws IOException {
-        return Utils.getDocument(url).select("#page>.inner>a>img").get(0).attr("src");
+    public URL imgLink(URL url) throws IOException {
+        String src = Utils.getDocument(url).select("#page>.inner>a>img").get(0).attr("src");
+        return new URL(url, src);
     }
 
     @Override
