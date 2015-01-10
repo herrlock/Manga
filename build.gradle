@@ -1,0 +1,21 @@
+apply plugin: 'java'
+
+version = '0.0.1-ALPHA'
+
+jar {
+	manifest {
+        attributes 'Main-Class': 'de.herrlock.manga.std.Ctrl',
+        	'Implementation-Title': 'Manga-Downloader',  
+        	'Implementation-Version': version
+    }
+    baseName = project.name
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'org.jsoup:jsoup:+'
+}
