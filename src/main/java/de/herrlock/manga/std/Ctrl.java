@@ -12,7 +12,6 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +53,7 @@ public class Ctrl {
     /**
      * a {@link Map} containing the {@link URL}s of all the pages
      */
-    private Map<String, List<URL>> pm;
+    private Map<String, Map<Integer, URL>> pm;
 
     /**
      * the chapters that failed the download
@@ -106,8 +105,8 @@ public class Ctrl {
 
     private boolean goon2() {
         int noOfPictures = 0;
-        for (Collection<URL> c : this.pm.values()) {
-            noOfPictures += c.size();
+        for (Map<Integer, URL> m : this.pm.values()) {
+            noOfPictures += m.size();
         }
         if (noOfPictures > 0) {
             System.out.println(noOfPictures + " page" + (noOfPictures > 1 ? "s" : "") + " availabile.");
@@ -133,8 +132,8 @@ public class Ctrl {
         if (this.cl != null) {
             this.pm = new HashMap<>(this.cl.size());
             for (Chapter chapter : this.cl) {
-                List<URL> pictureList = new ArrayList<>(this.cl.getAllPageURLs(chapter).values());
-                this.pm.put(chapter.number, pictureList);
+                Map<Integer, URL> pictureMap = this.cl.getAllPageURLs(chapter);
+                this.pm.put(chapter.number, pictureMap);
             }
         }
         else {
@@ -160,9 +159,8 @@ public class Ctrl {
         L.trace("dl chapter " + key);
         File chapterFolder = new File(this.path, key);
         if (chapterFolder.exists() || chapterFolder.mkdirs()) {
-            List<URL> list = this.pm.get(key);
-            for (int i = 0, l = list.size(); i < l; i++) {
-                dlPic(list.get(i), chapterFolder, i);
+            for (Map.Entry<Integer, URL> e : this.pm.get(key).entrySet()) {
+                dlPic(e.getValue(), chapterFolder, e.getKey());
             }
             downloadFailed();
         }
