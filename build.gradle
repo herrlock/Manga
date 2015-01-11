@@ -4,6 +4,8 @@ group 'de.herrlock.manga'
 version '1.0.0-BETA'
 mainClassName = "de.herrlock.manga.Ctrl"
 
+sourceCompatibility = "1.7"
+
 jar {
     baseName = project.name
 	manifest {
