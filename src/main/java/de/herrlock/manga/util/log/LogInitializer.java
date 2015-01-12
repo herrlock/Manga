@@ -10,6 +10,9 @@ public class LogInitializer {
             L = new Logger(level);
             init = true;
         }
+        else {
+            System.out.println("Logger already initialized");
+        }
     }
 
 }

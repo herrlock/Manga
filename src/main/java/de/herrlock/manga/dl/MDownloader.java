@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -25,6 +24,7 @@ import javax.imageio.ImageIO;
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.log.LogInitializer;
 
 public class MDownloader {
@@ -33,15 +33,20 @@ public class MDownloader {
      * a Scanner to {@link System.in}
      */
     private static Scanner sc;
+    /**
+     * the properties read from downloader.properties
+     */
+    private static Map<String, String> arguments;
 
-    public static void execute(Map<String, String> arguments) {
-        LogInitializer.init(arguments.get(Constants.PARAM_LOGLEVEL));
+    public static void execute(Map<String, String> arg) {
+        MDownloader.arguments = arg;
+        LogInitializer.init(arg.get(Constants.PARAM_LOGLEVEL));
 
         try {
             L.trace();
             try (Scanner _sc = new Scanner(System.in, "UTF-8")) {
                 sc = _sc;
-                new MDownloader(arguments).run();
+                new MDownloader().run();
             }
         }
         catch (RuntimeException ex) {
@@ -67,6 +72,10 @@ public class MDownloader {
      */
     private String pattern;
     /**
+     * the timeout when connecting (in ms)
+     */
+    private int timeout;
+    /**
      * a {@link ChapterList}-Instance containing the {@link URL}s of the {@link Chapter}s
      */
     private ChapterList cl;
@@ -79,19 +88,11 @@ public class MDownloader {
      */
     private List<DoLaterChapter> doAfterwards = new ArrayList<>(0);
 
-    MDownloader(Map<String, String> map) {
-        try {
-            String _url = map.get(Constants.PARAM_URL);
-            if (!_url.startsWith("http"))
-                _url = "http://" + _url;
-            this.url = new URL(_url);
-            L.none("Read URL " + this.url.toExternalForm());
-
-            this.pattern = map.get(Constants.PARAM_PATTERN);
-        }
-        catch (MalformedURLException ex) {
-            throw new RuntimeException(ex);
-        }
+    MDownloader() {
+        this.url = Utils.getURL(arguments);
+        this.timeout = Utils.getTimeout(arguments);
+        this.pattern = arguments.get(Constants.PARAM_PATTERN);
+        L.none("Read URL " + this.url.toExternalForm());
     }
 
     private void run() {
@@ -219,8 +220,8 @@ public class MDownloader {
     private void dlPic(URL pageUrl, File chapterFolder, int pageNumber) throws IOException {
         URL imageUrl = this.cl.imgLink(pageUrl);
         URLConnection con = imageUrl.openConnection();
-        con.setConnectTimeout(5_000);
-        con.setReadTimeout(5_000);
+        con.setConnectTimeout(this.timeout);
+        con.setReadTimeout(this.timeout);
         try (InputStream in = con.getInputStream()) {
             L.debug("read image " + imageUrl);
             BufferedImage image = ImageIO.read(in);
