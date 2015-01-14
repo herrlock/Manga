@@ -12,7 +12,7 @@ public final class Constants {
     public static final String PARAM_PROXY_HOST = "proxyHost";
     public static final String PARAM_PROXY_PORT = "proxyPort";
     public static final String PARAM_PROXY_USER = "proxyUser";
-    public static final String PARAM_PROXY_PASS = "proxyPassword";
+    public static final String PARAM_PROXY_PASS = "proxyPass";
 
     public static final String TARGET_FOLDER = "./download";
 
