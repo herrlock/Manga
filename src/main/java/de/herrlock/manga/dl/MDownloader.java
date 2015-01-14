@@ -6,8 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -42,6 +40,7 @@ public class MDownloader {
 
     public static void execute(Map<String, String> arg) {
         MDownloader.arguments = arg;
+        Utils.init(arg);
         LogInitializer.init(arg.get(Constants.PARAM_LOGLEVEL));
 
         try {
@@ -89,16 +88,9 @@ public class MDownloader {
 
     MDownloader() {
         this.url = Utils.getURL(arguments);
+
         L.none("Read URL " + this.url.toExternalForm());
-
         this.pattern = arguments.get(Constants.PARAM_PATTERN);
-
-        String host = arguments.get(Constants.PARAM_PROXY_HOST);
-        if (host != null) {
-            int port = Integer.parseInt(arguments.get(Constants.PARAM_PROXY_PORT));
-            Utils.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
-        }
-        Utils.setTimeout(arguments);
     }
 
     private void run() {

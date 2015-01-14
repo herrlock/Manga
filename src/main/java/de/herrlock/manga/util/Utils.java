@@ -5,6 +5,7 @@ import static de.herrlock.manga.util.log.LogInitializer.L;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
@@ -16,8 +17,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 public final class Utils {
-    public static Proxy proxy = Proxy.NO_PROXY;
-    public static int timeout = Constants.PARAM_TIMEOUT_DEFAULT;
+    private static Proxy proxy = Proxy.NO_PROXY;
+    private static int timeout = Constants.PARAM_TIMEOUT_DEFAULT;
 
     public static Document getDocument(URL url) throws IOException {
         L.debug("Fetching " + url);
@@ -51,7 +52,17 @@ public final class Utils {
         }
     }
 
-    public static void setTimeout(Map<String, String> map) {
+    public static void init(Map<String, String> map) {
+        try {
+            String host = map.get(Constants.PARAM_PROXY_HOST);
+            if (host != null && !"".equals(host)) {
+                int port = Integer.parseInt(map.get(Constants.PARAM_PROXY_PORT));
+                proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
+            }
+        }
+        catch (NumberFormatException ex) {
+            // do nothing, default value is set previously
+        }
         try {
             String _timeout = map.get(Constants.PARAM_TIMEOUT);
             if (_timeout != null)
