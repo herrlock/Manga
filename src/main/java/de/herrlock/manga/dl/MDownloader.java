@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -62,19 +64,16 @@ public class MDownloader {
     /**
      * the URL containing the
      */
-    private URL url;
+    private final URL url;
+    /**
+     * the pattern of chapters to download
+     */
+    private final String pattern;
+
     /**
      * the parent-folder to write the pages into
      */
     private File path;
-    /**
-     * the pattern of chapters to download
-     */
-    private String pattern;
-    /**
-     * the timeout when connecting (in ms)
-     */
-    private int timeout;
     /**
      * a {@link ChapterList}-Instance containing the {@link URL}s of the {@link Chapter}s
      */
@@ -90,9 +89,16 @@ public class MDownloader {
 
     MDownloader() {
         this.url = Utils.getURL(arguments);
-        this.timeout = Utils.getTimeout(arguments);
-        this.pattern = arguments.get(Constants.PARAM_PATTERN);
         L.none("Read URL " + this.url.toExternalForm());
+
+        this.pattern = arguments.get(Constants.PARAM_PATTERN);
+
+        String host = arguments.get(Constants.PARAM_PROXY_HOST);
+        if (host != null) {
+            int port = Integer.parseInt(arguments.get(Constants.PARAM_PROXY_PORT));
+            Utils.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
+        }
+        Utils.setTimeout(arguments);
     }
 
     private void run() {
@@ -219,9 +225,7 @@ public class MDownloader {
 
     private void dlPic(URL pageUrl, File chapterFolder, int pageNumber) throws IOException {
         URL imageUrl = this.cl.imgLink(pageUrl);
-        URLConnection con = imageUrl.openConnection();
-        con.setConnectTimeout(this.timeout);
-        con.setReadTimeout(this.timeout);
+        URLConnection con = Utils.getConnection(imageUrl);
         try (InputStream in = con.getInputStream()) {
             L.debug("read image " + imageUrl);
             BufferedImage image = ImageIO.read(in);
@@ -235,7 +239,6 @@ public class MDownloader {
             this.doAfterwards.add(new DoLaterChapter(pageUrl, chapterFolder, pageNumber));
         }
     }
-
 }
 
 class DoLaterChapter {
