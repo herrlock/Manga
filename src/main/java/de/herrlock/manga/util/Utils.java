@@ -65,7 +65,7 @@ public final class Utils {
         }
         try {
             String _timeout = map.get(Constants.PARAM_TIMEOUT);
-            if (_timeout != null)
+            if (_timeout != null && !"".equals(_timeout))
                 timeout = Integer.parseInt(_timeout);
         }
         catch (NumberFormatException ex) {
