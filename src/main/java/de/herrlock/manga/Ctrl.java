@@ -38,6 +38,6 @@ public class Ctrl {
         }
 
         // execute downloader
-        MDownloader.execute(arguments);
+        MDownloader.execute(arguments, System.in);
     }
 }

@@ -17,8 +17,8 @@ class PureManga extends ChapterList {
 
     private final String name;
 
-    public PureManga(URL url, String chapterPattern) throws IOException {
-        super(chapterPattern);
+    public PureManga(URL url) throws IOException {
+        super();
         Document document = Utils.getDocument(url);
 
         this.name = document.select("#content h2.titlebg").first().text();

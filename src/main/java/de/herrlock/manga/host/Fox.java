@@ -17,8 +17,8 @@ class Fox extends ChapterList {
 
     private final String name;
 
-    public Fox(URL url, String chapterPattern) throws IOException {
-        super(chapterPattern);
+    public Fox(URL url) throws IOException {
+        super();
         Document document = Utils.getDocument(url);
 
         this.name = document.select("#title>h1").first().text();

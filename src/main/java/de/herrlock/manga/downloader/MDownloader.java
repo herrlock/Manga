@@ -36,16 +36,15 @@ public class MDownloader {
     /**
      * the properties read from downloader.properties
      */
-    private static Map<String, String> arguments;
+    public static Map<String, String> arguments;
 
-    public static void execute(Map<String, String> arg) {
-        MDownloader.arguments = arg;
-        Utils.init(arg);
-        LogInitializer.init(arg.get(Constants.PARAM_LOGLEVEL));
+    public static void execute(Map<String, String> args, InputStream in) {
+        MDownloader.arguments = Collections.unmodifiableMap(args);
+        LogInitializer.init(args.get(Constants.PARAM_LOGLEVEL));
 
         try {
             L.trace();
-            try (Scanner _sc = new Scanner(System.in, "UTF-8")) {
+            try (Scanner _sc = new Scanner(in, "UTF-8")) {
                 sc = _sc;
                 new MDownloader().run();
             }
@@ -59,15 +58,6 @@ public class MDownloader {
             throw new RuntimeException(ex);
         }
     }
-
-    /**
-     * the URL containing the
-     */
-    private final URL url;
-    /**
-     * the pattern of chapters to download
-     */
-    private final String pattern;
 
     /**
      * the parent-folder to write the pages into
@@ -87,10 +77,7 @@ public class MDownloader {
     private List<DoLaterChapter> doAfterwards = new ArrayList<>(0);
 
     MDownloader() {
-        this.url = Utils.getURL(arguments);
-
-        L.none("Read URL " + this.url.toExternalForm());
-        this.pattern = arguments.get(Constants.PARAM_PATTERN);
+        // nothing to init
     }
 
     private void run() {
@@ -151,7 +138,7 @@ public class MDownloader {
 
     private void createChapterList() throws IOException {
         L.trace();
-        this.cl = ChapterList.getInstance(this.url, this.pattern);
+        this.chapterlist = ChapterList.getInstance();
 
         String mangaName = this.cl.getMangaName().toLowerCase(Locale.ENGLISH).replace(' ', '_');
         this.path = new File(Constants.TARGET_FOLDER, mangaName);

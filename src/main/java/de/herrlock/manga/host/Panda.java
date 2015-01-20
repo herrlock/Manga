@@ -17,8 +17,8 @@ class Panda extends ChapterList {
 
     private final String name;
 
-    public Panda(URL url, String chapterPattern) throws IOException {
-        super(chapterPattern);
+    public Panda(URL url) throws IOException {
+        super();
         Document document = Utils.getDocument(url);
 
         this.name = document.select("#mangaproperties h2.aname").first().text();

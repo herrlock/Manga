@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import de.herrlock.manga.host.ChapterList.Chapter;
+import de.herrlock.manga.util.Utils;
 
 public abstract class ChapterList extends ArrayList<Chapter> {
 
@@ -25,46 +26,41 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      *            the selection of chapters
      * @return an instance of {@link ChapterList}; when no suitable Hoster can be detected {@code null}
      * @throws IOException
-     *             thrown by {@link Hoster#getHoster(URL, String)}
+     *             thrown by {@link Hoster#getChapterList(URL, String)}
      */
-    public static ChapterList getInstance(URL url, String pattern) throws IOException {
+    public static ChapterList getInstance() throws IOException {
+        URL url = Utils.getURL();
         L.trace("getInstance " + url);
         Hoster h = Hoster.getHostByURL(url);
-        if (h != null)
-            return h.getHoster(url, pattern);
-        return null;
+        return h != null ? h.getChapterList(url) : null;
     }
 
     private final ChapterPattern cp;
 
-    protected ChapterList(String pattern) {
+    protected ChapterList() {
+        String pattern = Utils.getPattern();
         L.trace("new {0} ({1})", this.getClass(), pattern);
         this.cp = (pattern == null || pattern.equals("") ? null : new ChapterPattern(pattern));
     }
 
     public void addChapter(String number, URL chapterUrl) {
+        L.trace();
         if (this.cp == null || this.cp.contains(number))
             super.add(new Chapter(number, chapterUrl));
     }
 
+    /**
+     * returns the name of the manga. used for the target-folder
+     */
     public abstract String getMangaName();
 
     /**
-     * returns the {@link URL} of one page
-     * 
-     * @param url
-     * @return
-     * @throws IOException
+     * returns the {@link URL} of one page's image
      */
     public abstract URL imgLink(URL url) throws IOException;
 
     /**
      * returns all page-{@link URL}s of one chapter
-     * 
-     * @param url
-     *            the url of a chapter (mostly the first page)
-     * @return
-     * @throws IOException
      */
     public abstract Map<Integer, URL> getAllPageURLs(URL url) throws IOException;
 
@@ -73,12 +69,16 @@ public abstract class ChapterList extends ArrayList<Chapter> {
     }
 
     public static class Chapter {
-        public final String number;
-        public final URL chapterUrl;
+        final String number;
+        final URL chapterUrl;
 
         Chapter(String number, URL url) {
             this.number = number;
             this.chapterUrl = url;
+        }
+
+        public final String getNumber() {
+            return this.number;
         }
 
         @Override
@@ -146,15 +146,15 @@ public abstract class ChapterList extends ArrayList<Chapter> {
          * @throws IOException
          *             thrown by the constructors of the special ChapterList-implementations
          */
-        public ChapterList getHoster(URL mangaUrl, String chapterPattern) throws IOException {
+        public ChapterList getChapterList(URL mangaUrl) throws IOException {
             L.trace("getHoster " + mangaUrl);
             switch (this) {
                 case Panda:
-                    return new Panda(mangaUrl, chapterPattern);
+                    return new Panda(mangaUrl);
                 case PureManga:
-                    return new PureManga(mangaUrl, chapterPattern);
+                    return new PureManga(mangaUrl);
                 case Fox:
-                    return new Fox(mangaUrl, chapterPattern);
+                    return new Fox(mangaUrl);
                 default:
                     throw new RuntimeException("Hoster \"" + this + "\" not found");
             }

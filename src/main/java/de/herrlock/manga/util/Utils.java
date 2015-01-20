@@ -4,45 +4,66 @@ import static de.herrlock.manga.util.log.LogInitializer.L;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import de.herrlock.manga.connection.ConnectionFactory;
+import de.herrlock.manga.connection.DirectConnectionFactory;
+import de.herrlock.manga.connection.ProxyConnectionFactory;
+import de.herrlock.manga.downloader.MDownloader;
+
 public final class Utils {
-    private static Proxy proxy = Proxy.NO_PROXY;
-    private static int timeout = Constants.PARAM_TIMEOUT_DEFAULT;
+    private static ConnectionFactory conFactory;
+    static {
+        String timeout = MDownloader.arguments.get(Constants.PARAM_TIMEOUT);
+        String host = MDownloader.arguments.get(Constants.PARAM_PROXY_HOST);
+        String port = MDownloader.arguments.get(Constants.PARAM_PROXY_PORT);
+        if (host != null && !"".equals(host) && port != null && !"".equals(port)) {
+            conFactory = new ProxyConnectionFactory(timeout, host, port);
+        }
+        else {
+            conFactory = new DirectConnectionFactory(port);
+        }
+    }
+
+    public static URLConnection getConnection(URL url) throws IOException {
+        return conFactory.getConnection(url);
+    }
 
     public static Document getDocument(URL url) throws IOException {
         L.debug("Fetching " + url);
         URLConnection con = getConnection(url);
+        List<String> list = readStream(con.getInputStream());
         StringBuilder sb = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
-            String nextline = null;
-            while ((nextline = reader.readLine()) != null) {
-                sb.append(nextline);
-            }
+        for (String s : list) {
+            sb.append(s);
         }
         return Jsoup.parse(sb.toString());
     }
 
-    public static URLConnection getConnection(URL url) throws IOException {
-        URLConnection con = proxy == null ? url.openConnection() : url.openConnection(proxy);
-        con.setConnectTimeout(timeout);
-        con.setReadTimeout(timeout);
-        return con;
+    public static List<String> readStream(InputStream in) throws IOException {
+        List<String> list = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+            String nextline = null;
+            while ((nextline = reader.readLine()) != null) {
+                list.add(nextline);
+            }
+        }
+        return list;
     }
 
-    public static URL getURL(Map<String, String> map) {
+    public static URL getURL() {
         try {
-            String _url = map.get(Constants.PARAM_URL);
+            String _url = MDownloader.arguments.get(Constants.PARAM_URL);
             if (!_url.startsWith("http"))
                 _url = "http://" + _url;
             return new URL(_url);
@@ -52,28 +73,12 @@ public final class Utils {
         }
     }
 
-    public static void init(Map<String, String> map) {
-        try {
-            String host = map.get(Constants.PARAM_PROXY_HOST);
-            if (host != null && !"".equals(host)) {
-                int port = Integer.parseInt(map.get(Constants.PARAM_PROXY_PORT));
-                proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
-            }
-        }
-        catch (NumberFormatException ex) {
-            // do nothing, default value is set previously
-        }
-        try {
-            String _timeout = map.get(Constants.PARAM_TIMEOUT);
-            if (_timeout != null && !"".equals(_timeout))
-                timeout = Integer.parseInt(_timeout);
-        }
-        catch (NumberFormatException ex) {
-            // do nothing, default value is set previously
-        }
+    public static String getPattern() {
+        return MDownloader.arguments.get(Constants.PARAM_PATTERN);
     }
 
     private Utils() {
         // not called
     }
+
 }
