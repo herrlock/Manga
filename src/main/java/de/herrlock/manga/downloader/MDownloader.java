@@ -66,11 +66,11 @@ public class MDownloader {
     /**
      * a {@link ChapterList}-Instance containing the {@link URL}s of the {@link Chapter}s
      */
-    private ChapterList cl;
+    private ChapterList chapterlist;
     /**
      * a {@link Map} containing the {@link URL}s of all the pages
      */
-    private Map<String, Map<Integer, URL>> pm;
+    private Map<String, Map<Integer, URL>> picturemap;
     /**
      * the chapters that failed the download
      */
@@ -103,7 +103,7 @@ public class MDownloader {
     }
 
     private boolean goon1() {
-        int noOfChapters = this.cl.size();
+        int noOfChapters = this.chapterlist.size();
         if (noOfChapters > 0) {
             L.none(noOfChapters + " chapter" + (noOfChapters > 1 ? "s" : "") + " availabile.");
             return goon();
@@ -114,7 +114,7 @@ public class MDownloader {
 
     private boolean goon2() {
         int noOfPictures = 0;
-        for (Map<Integer, URL> m : this.pm.values()) {
+        for (Map<Integer, URL> m : this.picturemap.values()) {
             noOfPictures += m.size();
         }
         if (noOfPictures > 0) {
@@ -140,19 +140,18 @@ public class MDownloader {
         L.trace();
         this.chapterlist = ChapterList.getInstance();
 
-        String mangaName = this.cl.getMangaName().toLowerCase(Locale.ENGLISH).replace(' ', '_');
+        String mangaName = this.chapterlist.getMangaName().toLowerCase(Locale.ENGLISH).replace(' ', '_');
         this.path = new File(Constants.TARGET_FOLDER, mangaName);
         L.none("Save to: " + this.path.getAbsolutePath());
-
     }
 
     private void createPictureLinks() throws IOException {
         L.trace();
-        if (this.cl != null) {
-            this.pm = new HashMap<>(this.cl.size());
-            for (Chapter chapter : this.cl) {
-                Map<Integer, URL> pictureMap = this.cl.getAllPageURLs(chapter);
-                this.pm.put(chapter.number, pictureMap);
+        if (this.chapterlist != null) {
+            this.picturemap = new HashMap<>(this.chapterlist.size());
+            for (Chapter chapter : this.chapterlist) {
+                Map<Integer, URL> pictureMap = this.chapterlist.getAllPageURLs(chapter);
+                this.picturemap.put(chapter.getNumber(), pictureMap);
             }
         }
         else {
@@ -164,8 +163,8 @@ public class MDownloader {
 
     private void downloadAll() throws IOException {
         L.trace();
-        if (this.pm != null) {
-            List<String> keys = new ArrayList<>(this.pm.keySet());
+        if (this.picturemap != null) {
+            List<String> keys = new ArrayList<>(this.picturemap.keySet());
             Collections.sort(keys);
             for (String key : keys) {
                 downloadChapter(key);
@@ -179,7 +178,7 @@ public class MDownloader {
     }
 
     private void downloadChapter(String key) throws IOException {
-        Map<Integer, URL> urlMap = this.pm.get(key);
+        Map<Integer, URL> urlMap = this.picturemap.get(key);
         L.none("Download chapter " + key + " - " + urlMap.size() + " pages");
         File chapterFolder = new File(this.path, key);
         if (chapterFolder.exists() || chapterFolder.mkdirs()) {
@@ -203,7 +202,7 @@ public class MDownloader {
     }
 
     private void dlPic(URL pageUrl, File chapterFolder, int pageNumber) throws IOException {
-        URL imageUrl = this.cl.imgLink(pageUrl);
+        URL imageUrl = this.chapterlist.imgLink(pageUrl);
         URLConnection con = Utils.getConnection(imageUrl);
         try (InputStream in = con.getInputStream()) {
             L.debug("read image " + imageUrl);
