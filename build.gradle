@@ -2,13 +2,16 @@ apply plugin: 'eclipse'
 apply plugin: 'application'
 
 group 'de.herrlock.manga'
-version '1.0.1-BETA'
+version '1.0.2-BETA'
 mainClassName = "de.herrlock.manga.Ctrl"
+
+def snapshot = false
 
 sourceCompatibility = "1.7"
 
 jar {
     baseName = project.name
+    classifier = snapshot ? 'SNAPSHOT' : ''
 	manifest {
         attributes 'Implementation-Title': 'Manga-Downloader',  
         	'Implementation-Version': version
