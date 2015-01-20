@@ -1,4 +1,4 @@
-package de.herrlock.manga.dl;
+package de.herrlock.manga.downloader;
 
 import static de.herrlock.manga.util.log.LogInitializer.L;
 

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import de.herrlock.manga.dl.MDownloader;
+import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.util.Constants;
 
 public class Ctrl {
