@@ -1,7 +1,5 @@
 package de.herrlock.manga.util;
 
-import static de.herrlock.manga.util.log.LogInitializer.L;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,23 +9,38 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import de.herrlock.log.Logger;
 import de.herrlock.manga.connection.ConnectionFactory;
 import de.herrlock.manga.connection.DirectConnectionFactory;
 import de.herrlock.manga.connection.ProxyConnectionFactory;
-import de.herrlock.manga.downloader.MDownloader;
 
 public final class Utils {
+
+    private static Map<String, String> arguments;
     private static ConnectionFactory conFactory;
-    static {
-        String timeout = MDownloader.arguments.get(Constants.PARAM_TIMEOUT);
-        String host = MDownloader.arguments.get(Constants.PARAM_PROXY_HOST);
-        String port = MDownloader.arguments.get(Constants.PARAM_PROXY_PORT);
+    private static Logger log;
+
+    public static Map<String, String> getArguments() {
+        if (arguments == null)
+            throw new RuntimeException("arguments not yet initialized");
+        return arguments;
+    }
+
+    public static void setArguments(Map<String, String> m) {
+        arguments = Collections.unmodifiableMap(m);
+        log = Logger.getLogger(arguments.get(Constants.PARAM_LOGLEVEL));
+
+        String host = m.get(Constants.PARAM_PROXY_HOST);
+        String port = m.get(Constants.PARAM_PROXY_PORT);
         if (host != null && !"".equals(host) && port != null && !"".equals(port)) {
+            String timeout = m.get(Constants.PARAM_TIMEOUT);
             conFactory = new ProxyConnectionFactory(timeout, host, port);
         }
         else {
@@ -35,12 +48,16 @@ public final class Utils {
         }
     }
 
+    public static Logger getLogger() {
+        return log;
+    }
+
     public static URLConnection getConnection(URL url) throws IOException {
         return conFactory.getConnection(url);
     }
 
     public static Document getDocument(URL url) throws IOException {
-        L.debug("Fetching " + url);
+        Utils.getLogger().debug("Fetching " + url);
         URLConnection con = getConnection(url);
         List<String> list = readStream(con.getInputStream());
         StringBuilder sb = new StringBuilder();
@@ -61,9 +78,9 @@ public final class Utils {
         return list;
     }
 
-    public static URL getURL() {
+    public static URL getMangaURL() {
         try {
-            String _url = MDownloader.arguments.get(Constants.PARAM_URL);
+            String _url = arguments.get(Constants.PARAM_URL);
             if (!_url.startsWith("http"))
                 _url = "http://" + _url;
             return new URL(_url);
@@ -74,7 +91,7 @@ public final class Utils {
     }
 
     public static String getPattern() {
-        return MDownloader.arguments.get(Constants.PARAM_PATTERN);
+        return arguments.get(Constants.PARAM_PATTERN);
     }
 
     private Utils() {

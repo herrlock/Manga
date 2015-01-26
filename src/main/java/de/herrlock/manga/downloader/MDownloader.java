@@ -1,7 +1,5 @@
 package de.herrlock.manga.downloader;
 
-import static de.herrlock.manga.util.log.LogInitializer.L;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -21,11 +19,11 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
+import de.herrlock.log.Logger;
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
-import de.herrlock.manga.util.log.LogInitializer;
 
 public class MDownloader {
 
@@ -33,14 +31,11 @@ public class MDownloader {
      * a Scanner to {@link System.in}
      */
     private static Scanner sc;
-    /**
-     * the properties read from downloader.properties
-     */
-    public static Map<String, String> arguments;
 
-    public static void execute(Map<String, String> args, InputStream in) {
-        MDownloader.arguments = Collections.unmodifiableMap(args);
-        LogInitializer.init(args.get(Constants.PARAM_LOGLEVEL));
+    private static Logger L;
+
+    public static void execute(InputStream in) {
+        L = Utils.getLogger();
 
         try {
             L.trace();
@@ -139,7 +134,6 @@ public class MDownloader {
     private void createChapterList() throws IOException {
         L.trace();
         this.chapterlist = ChapterList.getInstance();
-
         String mangaName = this.chapterlist.getMangaName().toLowerCase(Locale.ENGLISH).replace(' ', '_');
         this.path = new File(Constants.TARGET_FOLDER, mangaName);
         L.none("Save to: " + this.path.getAbsolutePath());

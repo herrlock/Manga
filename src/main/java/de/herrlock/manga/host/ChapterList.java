@@ -1,7 +1,5 @@
 package de.herrlock.manga.host;
 
-import static de.herrlock.manga.util.log.LogInitializer.L;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,8 +27,8 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      *             thrown by {@link Hoster#getChapterList(URL, String)}
      */
     public static ChapterList getInstance() throws IOException {
-        URL url = Utils.getURL();
-        L.trace("getInstance " + url);
+        URL url = Utils.getMangaURL();
+        Utils.getLogger().trace("getInstance " + url);
         Hoster h = Hoster.getHostByURL(url);
         return h != null ? h.getChapterList(url) : null;
     }
@@ -39,12 +37,12 @@ public abstract class ChapterList extends ArrayList<Chapter> {
 
     protected ChapterList() {
         String pattern = Utils.getPattern();
-        L.trace("new {0} ({1})", this.getClass(), pattern);
+        Utils.getLogger().trace("new ChapterList ( " + pattern + " )");
         this.cp = (pattern == null || pattern.equals("") ? null : new ChapterPattern(pattern));
     }
 
     public void addChapter(String number, URL chapterUrl) {
-        L.trace();
+        Utils.getLogger().trace();
         if (this.cp == null || this.cp.contains(number))
             super.add(new Chapter(number, chapterUrl));
     }
@@ -147,7 +145,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
          *             thrown by the constructors of the special ChapterList-implementations
          */
         public ChapterList getChapterList(URL mangaUrl) throws IOException {
-            L.trace("getHoster " + mangaUrl);
+            Utils.getLogger().trace("getHoster " + mangaUrl);
             switch (this) {
                 case Panda:
                     return new Panda(mangaUrl);

@@ -1,47 +1,68 @@
-package de.herrlock.manga.util.log;
+package de.herrlock.log;
 
-import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Logger {
     static final int NONE = 1;
-    static final int ERROR = 10;
-    static final int WARNING = 100;
-    static final int INFO = 1_000;
-    static final int DEBUG = 10_000;
-    static final int TRACE = 100_000;
+    static final int ERROR = NONE * 10;
+    static final int WARNING = ERROR * 10;
+    static final int INFO = WARNING * 10;
+    static final int DEBUG = INFO * 10;
+    static final int TRACE = DEBUG * 10;
 
-    private final int level;
+    private static final Map<Integer, Logger> cache = new HashMap<>();
+    static {
+        cache.put(NONE, new Logger(NONE));
+        cache.put(ERROR, new Logger(ERROR));
+        cache.put(WARNING, new Logger(WARNING));
+        cache.put(INFO, new Logger(INFO));
+        cache.put(ERROR, new Logger(ERROR));
+        cache.put(DEBUG, new Logger(DEBUG));
+    }
 
-    Logger(String _level) {
-        switch ((_level != null ? _level : "error").charAt(0)) {
+    public static Logger getLogger() {
+        return cache.get(NONE);
+    }
+
+    public static Logger getLogger(String _level) {
+        int level;
+        switch ((_level != null && !_level.isEmpty() ? _level : "E").charAt(0)) {
             case 'n':
             case 'N':
-                this.level = NONE;
+                level = NONE;
                 break;
             case 'e':
             case 'E':
-                this.level = ERROR;
+                level = ERROR;
                 break;
             case 'w':
             case 'W':
-                this.level = WARNING;
+                level = WARNING;
                 break;
             case 'i':
             case 'I':
-                this.level = INFO;
+                level = INFO;
                 break;
             case 'd':
             case 'D':
-                this.level = DEBUG;
+                level = DEBUG;
                 break;
             case 't':
             case 'T':
-                this.level = TRACE;
+                level = TRACE;
                 break;
             default:
-                this.level = TRACE;
+                level = ERROR;
                 break;
         }
+        return cache.get(level);
+    }
+
+    private int level;
+
+    private Logger(int _level) {
+        this.level = _level;
     }
 
     /**
@@ -50,7 +71,7 @@ public class Logger {
      * 
      * @param message
      *            the message to log
-     * @return {@link LogInitializer#L}, to allow methodChaining
+     * @return {@code this}, to allow methodChaining
      */
     public Logger none(Object message) {
         log(message, NONE);
@@ -63,7 +84,7 @@ public class Logger {
      * 
      * @param message
      *            the message to log
-     * @return {@link LogInitializer#L}, to allow methodChaining
+     * @return {@code this}, to allow methodChaining
      */
     public Logger error(Object message) {
         log(">>>>> " + message, ERROR);
@@ -76,7 +97,7 @@ public class Logger {
      * 
      * @param message
      *            the message to log
-     * @return {@link LogInitializer#L}, to allow methodChaining
+     * @return {@code this}, to allow methodChaining
      */
     public Logger warn(Object message) {
         log(">>>> " + message, WARNING);
@@ -89,7 +110,7 @@ public class Logger {
      * 
      * @param message
      *            the message to log
-     * @return {@link LogInitializer#L}, to allow methodChaining
+     * @return {@code this}, to allow methodChaining
      */
     public Logger info(Object message) {
         log(">>> " + message, INFO);
@@ -102,7 +123,7 @@ public class Logger {
      * 
      * @param message
      *            the message to log
-     * @return {@link LogInitializer#L}, to allow methodChaining
+     * @return {@code this}, to allow methodChaining
      */
     public Logger debug(Object message) {
         log(">> " + message, DEBUG);
@@ -115,21 +136,18 @@ public class Logger {
      * 
      * @param message
      *            the message to log
-     * @return {@link LogInitializer#L}, to allow methodChaining
+     * @return {@code this}, to allow methodChaining
      */
     public Logger trace(Object message) {
         log("> " + message, TRACE);
         return this;
     }
 
-    public Logger trace(String format, Class<?> c, String... parts) {
-        Object[] arguments = new String[parts.length + 1];
-        arguments[0] = c.getName();
-        System.arraycopy(parts, 0, arguments, 1, parts.length);
-        log(MessageFormat.format(format, arguments), TRACE);
-        return this;
-    }
-
+    /**
+     * traces the method-name that invoked this method
+     * 
+     * @return {@code this}, to allow methodChaining
+     */
     public Logger trace() {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         if (stackTrace.length >= 3) {

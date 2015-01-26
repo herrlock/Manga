@@ -10,34 +10,39 @@ import java.util.Properties;
 
 import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.Utils;
 
 public class Ctrl {
-    private static final File FILE = new File(Constants.SETTINGS_FILE);
 
     public static void main(String[] args) throws IOException {
-        // read properties
+        new Ctrl().run();
+    }
+
+    private final InputStream in;
+
+    public Ctrl() throws IOException {
         Properties p = new Properties();
-        try (InputStream in = new FileInputStream(FILE)) {
-            p.load(in);
+        try (InputStream fIn = new FileInputStream(Constants.SETTINGS_FILE)) {
+            p.load(fIn);
         }
-
-        // copy properties to map
-        Map<String, String> arguments = new HashMap<>();
-        for (String name : p.stringPropertyNames())
-            arguments.put(name, p.getProperty(name));
-
-        // validate arguments
+        Map<String, String> args = new HashMap<>();
+        for (String name : p.stringPropertyNames()) {
+            args.put(name, p.getProperty(name));
+        }
         String[] requiredParameters = new String[] {
             Constants.PARAM_URL
         };
         for (String s : requiredParameters) {
-            String value = arguments.get(s);
+            String value = args.get(s);
             if (value == null || "".equals(value)) {
-                throw new RuntimeException("Please fill the field \"" + s + "\" in the file " + FILE.getAbsolutePath());
+                throw new RuntimeException("Please fill the field \"" + s + "\" in the file " + new File(Constants.SETTINGS_FILE).getAbsolutePath());
             }
         }
+        Utils.setArguments(args);
+        this.in = System.in;
+    }
 
-        // execute downloader
-        MDownloader.execute(arguments, System.in);
+    public void run() {
+        MDownloader.execute(this.in);
     }
 }
