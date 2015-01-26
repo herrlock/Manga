@@ -34,24 +34,24 @@ public class MDownloader {
     /**
      * the Logger
      */
-    private static Logger L;
+    private static Logger log;
 
     public static void execute(InputStream in) {
-        L = Utils.getLogger();
+        log = Utils.getLogger();
 
         try {
-            L.trace();
+            log.trace();
             try (Scanner _sc = new Scanner(in, "UTF-8")) {
                 sc = _sc;
                 new MDownloader().run();
             }
         }
         catch (RuntimeException ex) {
-            L.error(ex);
+            log.error(ex);
             throw ex;
         }
         catch (Exception ex) {
-            L.error(ex);
+            log.error(ex);
             throw new RuntimeException(ex);
         }
     }
@@ -78,7 +78,7 @@ public class MDownloader {
     }
 
     private void run() {
-        L.trace();
+        log.trace();
         try {
             createChapterList();
             if (goon1()) {
@@ -87,11 +87,11 @@ public class MDownloader {
                     downloadAll();
                 }
                 else {
-                    L.none("bye");
+                    log.none("bye");
                 }
             }
             else {
-                L.none("bye");
+                log.none("bye");
             }
         }
         catch (IOException ex) {
@@ -102,10 +102,10 @@ public class MDownloader {
     private boolean goon1() {
         int noOfChapters = this.chapterlist.size();
         if (noOfChapters > 0) {
-            L.none(noOfChapters + " chapter" + (noOfChapters > 1 ? "s" : "") + " availabile.");
+            log.none(noOfChapters + " chapter" + (noOfChapters > 1 ? "s" : "") + " availabile.");
             return goon();
         }
-        L.warn("no chapters availabile, exiting");
+        log.warn("no chapters availabile, exiting");
         return false;
     }
 
@@ -115,15 +115,15 @@ public class MDownloader {
             noOfPictures += m.size();
         }
         if (noOfPictures > 0) {
-            L.none(noOfPictures + " page" + (noOfPictures > 1 ? "s" : "") + " availabile.");
+            log.none(noOfPictures + " page" + (noOfPictures > 1 ? "s" : "") + " availabile.");
             return goon();
         }
-        L.warn("no pictures availabile, exiting");
+        log.warn("no pictures availabile, exiting");
         return false;
     }
 
     private static boolean goon() {
-        L.none("go on? y|n");
+        log.none("go on? y|n");
         try {
             char c = sc.next(".+").charAt(0);
             return c == 'y' || c == 'Y';
@@ -134,31 +134,31 @@ public class MDownloader {
     }
 
     private void createChapterList() throws IOException {
-        L.trace();
+        log.trace();
         this.chapterlist = ChapterList.getInstance();
         String mangaName = this.chapterlist.getMangaName().toLowerCase(Locale.ENGLISH).replace(' ', '_');
         this.path = new File(Constants.TARGET_FOLDER, mangaName);
-        L.none("Save to: " + this.path.getAbsolutePath());
+        log.none("Save to: " + this.path.getAbsolutePath());
     }
 
     private void createPictureLinks() throws IOException {
-        L.trace();
+        log.trace();
         if (this.chapterlist != null) {
             this.picturemap = new HashMap<>(this.chapterlist.size());
             for (Chapter chapter : this.chapterlist) {
-                Map<Integer, URL> pictureMap = this.chapterlist.getAllPageURLs(chapter);
-                this.picturemap.put(chapter.getNumber(), pictureMap);
+                Map<Integer, URL> pageMap = this.chapterlist.getAllPageURLs(chapter);
+                this.picturemap.put(chapter.getNumber(), pageMap);
             }
         }
         else {
             String message = "ChapterList not initialized";
-            L.error(message);
+            log.error(message);
             throw new RuntimeException(message);
         }
     }
 
     private void downloadAll() throws IOException {
-        L.trace();
+        log.trace();
         if (this.picturemap != null) {
             List<String> keys = new ArrayList<>(this.picturemap.keySet());
             Collections.sort(keys);
@@ -168,14 +168,14 @@ public class MDownloader {
         }
         else {
             String message = "PageMap not initialized";
-            L.error(message);
+            log.error(message);
             throw new RuntimeException(message);
         }
     }
 
     private void downloadChapter(String key) throws IOException {
         Map<Integer, URL> urlMap = this.picturemap.get(key);
-        L.none("Download chapter " + key + " - " + urlMap.size() + " pages");
+        log.none("Download chapter " + key + " - " + urlMap.size() + " pages");
         File chapterFolder = new File(this.path, key);
         if (chapterFolder.exists() || chapterFolder.mkdirs()) {
             for (Map.Entry<Integer, URL> e : urlMap.entrySet()) {
@@ -183,7 +183,7 @@ public class MDownloader {
             }
             downloadFailedPages();
         }
-        L.none("finished chapter " + key);
+        log.none("finished chapter " + key);
     }
 
     private void downloadFailedPages() throws IOException {
@@ -201,15 +201,15 @@ public class MDownloader {
         URL imageUrl = this.chapterlist.imgLink(pageUrl);
         URLConnection con = Utils.getConnection(imageUrl);
         try (InputStream in = con.getInputStream()) {
-            L.debug("read image " + imageUrl);
+            log.debug("read image " + imageUrl);
             BufferedImage image = ImageIO.read(in);
             File output = new File(chapterFolder, pageNumber + ".jpg");
-            L.debug("write to " + output);
+            log.debug("write to " + output);
             ImageIO.write(image, "jpg", output);
-            L.info("Chapter " + chapterFolder.getName() + ", Page " + pageNumber + " - finished");
+            log.info("Chapter " + chapterFolder.getName() + ", Page " + pageNumber + " - finished");
         }
         catch (SocketException | SocketTimeoutException ex) {
-            L.warn("Chapter " + chapterFolder.getName() + ", Page " + pageNumber + " - " + ex.getMessage());
+            log.warn("Chapter " + chapterFolder.getName() + ", Page " + pageNumber + " - " + ex.getMessage());
             this.doAfterwards.add(new DoLaterChapter(pageUrl, chapterFolder, pageNumber));
         }
     }
