@@ -5,7 +5,7 @@ apply plugin: 'findbugs'
 apply plugin: 'pmd'
 
 group 'de.herrlock.manga'
-version '1.0.2-BETA-SNAPSHOT'
+version '1.0.3-BETA'
 mainClassName = "de.herrlock.manga.Ctrl"
 
 sourceCompatibility = "1.7"
