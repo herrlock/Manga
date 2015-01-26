@@ -15,30 +15,30 @@ import de.herrlock.manga.util.Utils;
 public class Ctrl {
 
     public static void main(String[] args) throws IOException {
-        new Ctrl().run();
-    }
-
-    private final InputStream in;
-
-    public Ctrl() throws IOException {
         Properties p = new Properties();
         try (InputStream fIn = new FileInputStream(Constants.SETTINGS_FILE)) {
             p.load(fIn);
         }
-        Map<String, String> args = new HashMap<>();
+        Map<String, String> arguments = new HashMap<>();
         for (String name : p.stringPropertyNames()) {
-            args.put(name, p.getProperty(name));
+            arguments.put(name, p.getProperty(name));
         }
         String[] requiredParameters = new String[] {
             Constants.PARAM_URL
         };
         for (String s : requiredParameters) {
-            String value = args.get(s);
+            String value = arguments.get(s);
             if (value == null || "".equals(value)) {
                 throw new RuntimeException("Please fill the field \"" + s + "\" in the file " + new File(Constants.SETTINGS_FILE).getAbsolutePath());
             }
         }
-        Utils.setArguments(args);
+        new Ctrl(arguments).run();
+    }
+
+    private final InputStream in;
+
+    public Ctrl(Map<String, String> arguments) {
+        Utils.setArguments(arguments);
         this.in = System.in;
     }
 
