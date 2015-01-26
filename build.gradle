@@ -1,5 +1,7 @@
 apply plugin: 'eclipse'
 apply plugin: 'application'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
 
 group 'de.herrlock.manga'
 version '1.0.2-BETA-SNAPSHOT'

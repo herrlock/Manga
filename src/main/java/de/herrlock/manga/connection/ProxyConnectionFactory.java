@@ -12,7 +12,7 @@ public class ProxyConnectionFactory extends ConnectionFactory {
 
     public ProxyConnectionFactory(String timeout, String host, String port) {
         super(timeout);
-        this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, Integer.valueOf(port)));
+        this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, Integer.parseInt(port)));
     }
 
     @Override

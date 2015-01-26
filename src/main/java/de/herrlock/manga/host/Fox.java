@@ -56,13 +56,8 @@ class Fox extends ChapterList {
         Map<Integer, URL> result = new HashMap<>();
         Elements pages = Utils.getDocument(url).select("select.m").first().getElementsByTag("option");
         for (Element e : pages) {
-            try {
-                int number = Integer.parseInt(e.text());
-                result.put(number, new URL(url, e.attr("value") + ".html"));
-            }
-            catch (NumberFormatException ex) {
-                // do nothing
-            }
+            int number = Integer.parseInt(e.text());
+            result.put(number, new URL(url, e.attr("value") + ".html"));
         }
         return Collections.unmodifiableMap(result);
     }

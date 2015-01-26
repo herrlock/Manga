@@ -20,17 +20,12 @@ public abstract class ConnectionFactory {
     protected abstract URLConnection getRawConnection(URL url) throws IOException;
 
     public ConnectionFactory(String timeout) {
-        int _timeout = Constants.PARAM_TIMEOUT_DEFAULT;
-        try {
-            if (timeout != null && !"".equals(timeout)) {
-                _timeout = Integer.parseInt(timeout);
-            }
+        if (timeout != null && !"".equals(timeout)) {
+            this.timeout = Integer.parseInt(timeout);
         }
-        catch (NumberFormatException ex) {
-            // do nothing, default will be set
+        else {
+            this.timeout = Constants.PARAM_TIMEOUT_DEFAULT;
         }
-
-        this.timeout = _timeout;
     }
 
 }
