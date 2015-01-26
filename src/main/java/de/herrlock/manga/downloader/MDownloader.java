@@ -31,7 +31,9 @@ public class MDownloader {
      * a Scanner to {@link System.in}
      */
     private static Scanner sc;
-
+    /**
+     * the Logger
+     */
     private static Logger L;
 
     public static void execute(InputStream in) {

@@ -15,16 +15,12 @@ import de.herrlock.manga.util.Utils;
 public abstract class ChapterList extends ArrayList<Chapter> {
 
     /**
-     * creates an instance of {@linkplain ChapterList}, gets the right {@linkplain Hoster} from the {@linkplain URL}
-     * given as first argument
+     * creates an instance of {@linkplain ChapterList}, gets the right {@linkplain Hoster} from the {@linkplain URL} in
+     * {@code Utils.arguments}
      * 
-     * @param url
-     *            the URL of the main-page with the list of chapters
-     * @param pattern
-     *            the selection of chapters
      * @return an instance of {@link ChapterList}; when no suitable Hoster can be detected {@code null}
      * @throws IOException
-     *             thrown by {@link Hoster#getChapterList(URL, String)}
+     *             thrown by {@link Hoster#getChapterList(URL)}
      */
     public static ChapterList getInstance() throws IOException {
         URL url = Utils.getMangaURL();
@@ -134,12 +130,10 @@ public abstract class ChapterList extends ArrayList<Chapter> {
         }
 
         /**
-         * creates an instance of
+         * creates an instance of a Host, specified by the URL's host-part
          * 
          * @param mangaUrl
          *            the URL to the mainpage
-         * @param chapterPattern
-         *            the chapters to choose from
          * @return an instance of the ChapterList specified by the current {@link Hoster}-Object
          * @throws IOException
          *             thrown by the constructors of the special ChapterList-implementations
