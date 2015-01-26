@@ -19,6 +19,7 @@ public class Logger {
         cache.put(INFO, new Logger(INFO));
         cache.put(ERROR, new Logger(ERROR));
         cache.put(DEBUG, new Logger(DEBUG));
+        cache.put(TRACE, new Logger(TRACE));
     }
 
     public static Logger getLogger() {
