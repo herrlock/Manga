@@ -55,6 +55,10 @@ class Fox extends ChapterList {
     public Map<Integer, URL> getAllPageURLs(URL url) throws IOException {
         Map<Integer, URL> result = new HashMap<>();
         Elements pages = Utils.getDocument(url).select("select.m").first().getElementsByTag("option");
+        Element last = pages.last();
+        if ("Comments".equals(last.text())) {
+            pages.remove(last);
+        }
         for (Element e : pages) {
             int number = Integer.parseInt(e.text());
             result.put(number, new URL(url, e.attr("value") + ".html"));
