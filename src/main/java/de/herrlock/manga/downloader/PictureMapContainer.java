@@ -10,7 +10,7 @@ import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Utils;
 
-class PictureMapContainer {
+public class PictureMapContainer {
 
     /**
      * Logger
