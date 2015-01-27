@@ -11,7 +11,7 @@ import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
 
-public class ChapterListContainer {
+class ChapterListContainer {
 
     /**
      * Logger
