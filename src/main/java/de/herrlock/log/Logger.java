@@ -1,5 +1,6 @@
 package de.herrlock.log;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,15 +12,16 @@ public class Logger {
     static final int DEBUG = INFO * 10;
     static final int TRACE = DEBUG * 10;
 
-    private static final Map<Integer, Logger> cache = new HashMap<>();
+    private static final Map<Integer, Logger> cache;
     static {
-        cache.put(NONE, new Logger(NONE));
-        cache.put(ERROR, new Logger(ERROR));
-        cache.put(WARNING, new Logger(WARNING));
-        cache.put(INFO, new Logger(INFO));
-        cache.put(ERROR, new Logger(ERROR));
-        cache.put(DEBUG, new Logger(DEBUG));
-        cache.put(TRACE, new Logger(TRACE));
+        Map<Integer, Logger> tmpMap = new HashMap<>();
+        tmpMap.put(NONE, new Logger(NONE));
+        tmpMap.put(ERROR, new Logger(ERROR));
+        tmpMap.put(WARNING, new Logger(WARNING));
+        tmpMap.put(INFO, new Logger(INFO));
+        tmpMap.put(DEBUG, new Logger(DEBUG));
+        tmpMap.put(TRACE, new Logger(TRACE));
+        cache = Collections.unmodifiableMap(tmpMap);
     }
 
     public static Logger getLogger() {

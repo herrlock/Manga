@@ -10,9 +10,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -20,9 +18,6 @@ import java.util.Scanner;
 import javax.imageio.ImageIO;
 
 import de.herrlock.log.Logger;
-import de.herrlock.manga.host.ChapterList;
-import de.herrlock.manga.host.ChapterList.Chapter;
-import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
 
 public class MDownloader {
@@ -38,13 +33,11 @@ public class MDownloader {
 
     public static void execute(InputStream in) {
         log = Utils.getLogger();
-
-        try {
-            log.trace();
-            try (Scanner _sc = new Scanner(in, "UTF-8")) {
-                sc = _sc;
-                new MDownloader().run();
-            }
+        log.trace();
+        MDownloader md = new MDownloader();
+        try (Scanner _sc = new Scanner(in, "UTF-8")) {
+            sc = _sc;
+            md.run();
         }
         catch (RuntimeException ex) {
             log.error(ex);
@@ -56,18 +49,9 @@ public class MDownloader {
         }
     }
 
-    /**
-     * the parent-folder to write the pages into
-     */
-    private File path;
-    /**
-     * a {@link ChapterList}-Instance containing the {@link URL}s of the {@link Chapter}s
-     */
-    private ChapterList chapterlist;
-    /**
-     * a {@link Map} containing the {@link URL}s of all the pages
-     */
-    private Map<String, Map<Integer, URL>> picturemap;
+    ChapterListContainer clc;
+    PictureMapContainer pmc;
+
     /**
      * the chapters that failed the download
      */
@@ -80,9 +64,9 @@ public class MDownloader {
     private void run() {
         log.trace();
         try {
-            createChapterList();
+            this.clc = new ChapterListContainer();
             if (goon1()) {
-                createPictureLinks();
+                this.pmc = new PictureMapContainer(this.clc);
                 if (goon2()) {
                     downloadAll();
                 }
@@ -100,7 +84,7 @@ public class MDownloader {
     }
 
     private boolean goon1() {
-        int noOfChapters = this.chapterlist.size();
+        int noOfChapters = this.clc.getSize();
         if (noOfChapters > 0) {
             log.none(noOfChapters + " chapter" + (noOfChapters > 1 ? "s" : "") + " availabile.");
             return goon();
@@ -110,10 +94,7 @@ public class MDownloader {
     }
 
     private boolean goon2() {
-        int noOfPictures = 0;
-        for (Map<Integer, URL> m : this.picturemap.values()) {
-            noOfPictures += m.size();
-        }
+        int noOfPictures = this.pmc.getSize();
         if (noOfPictures > 0) {
             log.none(noOfPictures + " page" + (noOfPictures > 1 ? "s" : "") + " availabile.");
             return goon();
@@ -133,34 +114,11 @@ public class MDownloader {
         }
     }
 
-    private void createChapterList() throws IOException {
-        log.trace();
-        this.chapterlist = ChapterList.getInstance();
-        String mangaName = this.chapterlist.getMangaName().toLowerCase(Locale.ENGLISH).replace(' ', '_');
-        this.path = new File(Constants.TARGET_FOLDER, mangaName);
-        log.none("Save to: " + this.path.getAbsolutePath());
-    }
-
-    private void createPictureLinks() throws IOException {
-        log.trace();
-        if (this.chapterlist != null) {
-            this.picturemap = new HashMap<>(this.chapterlist.size());
-            for (Chapter chapter : this.chapterlist) {
-                Map<Integer, URL> pageMap = this.chapterlist.getAllPageURLs(chapter);
-                this.picturemap.put(chapter.getNumber(), pageMap);
-            }
-        }
-        else {
-            String message = "ChapterList not initialized";
-            log.error(message);
-            throw new RuntimeException(message);
-        }
-    }
-
     private void downloadAll() throws IOException {
         log.trace();
-        if (this.picturemap != null) {
-            List<String> keys = new ArrayList<>(this.picturemap.keySet());
+        Map<String, Map<Integer, URL>> picturemap = this.pmc.getPictureMap();
+        if (picturemap != null) {
+            List<String> keys = new ArrayList<>(picturemap.keySet());
             Collections.sort(keys);
             for (String key : keys) {
                 downloadChapter(key);
@@ -174,9 +132,9 @@ public class MDownloader {
     }
 
     private void downloadChapter(String key) throws IOException {
-        Map<Integer, URL> urlMap = this.picturemap.get(key);
+        Map<Integer, URL> urlMap = this.pmc.getUrlMap(key);
         log.none("Download chapter " + key + " - " + urlMap.size() + " pages");
-        File chapterFolder = new File(this.path, key);
+        File chapterFolder = new File(this.clc.getPath(), key);
         if (chapterFolder.exists() || chapterFolder.mkdirs()) {
             for (Map.Entry<Integer, URL> e : urlMap.entrySet()) {
                 dlPic(e.getValue(), chapterFolder, e.getKey());
@@ -198,7 +156,7 @@ public class MDownloader {
     }
 
     private void dlPic(URL pageUrl, File chapterFolder, int pageNumber) throws IOException {
-        URL imageUrl = this.chapterlist.imgLink(pageUrl);
+        URL imageUrl = this.clc.getImageLink(pageUrl);
         URLConnection con = Utils.getConnection(imageUrl);
         try (InputStream in = con.getInputStream()) {
             log.debug("read image " + imageUrl);
