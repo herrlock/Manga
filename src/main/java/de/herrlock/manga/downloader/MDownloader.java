@@ -29,10 +29,9 @@ public class MDownloader {
     /**
      * the Logger
      */
-    private static Logger log;
+    private static Logger log = Utils.getLogger();
 
     public static void execute(InputStream in) {
-        log = Utils.getLogger();
         log.trace();
         MDownloader md = new MDownloader();
         try (Scanner _sc = new Scanner(in, "UTF-8")) {
@@ -53,7 +52,7 @@ public class MDownloader {
     private PictureMapContainer pmc;
     private List<Page> dlQueue = new ArrayList<>(0);
 
-    MDownloader() {
+    private MDownloader() {
         // nothing to init
     }
 
