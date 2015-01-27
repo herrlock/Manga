@@ -49,13 +49,9 @@ public class MDownloader {
         }
     }
 
-    ChapterListContainer clc;
-    PictureMapContainer pmc;
-
-    /**
-     * the chapters that failed the download
-     */
-    private List<DoLaterChapter> doAfterwards = new ArrayList<>(0);
+    private ChapterListContainer clc;
+    private PictureMapContainer pmc;
+    private List<Page> dlQueue = new ArrayList<>(0);
 
     MDownloader() {
         // nothing to init
@@ -136,49 +132,53 @@ public class MDownloader {
         log.none("Download chapter " + key + " - " + urlMap.size() + " pages");
         File chapterFolder = new File(this.clc.getPath(), key);
         if (chapterFolder.exists() || chapterFolder.mkdirs()) {
+            // add pictures to queue
             for (Map.Entry<Integer, URL> e : urlMap.entrySet()) {
-                dlPic(e.getValue(), chapterFolder, e.getKey());
+                this.dlQueue.add(new Page(e.getValue(), chapterFolder, e.getKey()));
             }
-            downloadFailedPages();
+            // start download
+            downloadPages();
         }
         log.none("finished chapter " + key);
     }
 
-    private void downloadFailedPages() throws IOException {
-        List<DoLaterChapter> list = new ArrayList<>(this.doAfterwards);
-        this.doAfterwards.clear();
-        for (DoLaterChapter c : list) {
-            dlPic(c.pageUrl, c.chapterFolder, c.pageNumber);
+    private void downloadPages() throws IOException {
+        List<Page> list = new ArrayList<>(this.dlQueue);
+        this.dlQueue.clear();
+        // download pictures from the current chapter
+        for (Page c : list) {
+            dlPic(c);
         }
-        if (!this.doAfterwards.isEmpty()) {
-            downloadFailedPages();
+        // download failed pictures from the current chapter
+        if (!this.dlQueue.isEmpty()) {
+            downloadPages();
         }
     }
 
-    private void dlPic(URL pageUrl, File chapterFolder, int pageNumber) throws IOException {
-        URL imageUrl = this.clc.getImageLink(pageUrl);
+    private void dlPic(Page c) throws IOException {
+        URL imageUrl = this.clc.getImageLink(c.pageUrl);
         URLConnection con = Utils.getConnection(imageUrl);
         try (InputStream in = con.getInputStream()) {
             log.debug("read image " + imageUrl);
             BufferedImage image = ImageIO.read(in);
-            File output = new File(chapterFolder, pageNumber + ".jpg");
+            File output = new File(c.chapterFolder, c.pageNumber + ".jpg");
             log.debug("write to " + output);
             ImageIO.write(image, "jpg", output);
-            log.info("Chapter " + chapterFolder.getName() + ", Page " + pageNumber + " - finished");
+            log.info("Chapter " + c.chapterFolder.getName() + ", Page " + c.pageNumber + " - finished");
         }
         catch (SocketException | SocketTimeoutException ex) {
-            log.warn("Chapter " + chapterFolder.getName() + ", Page " + pageNumber + " - " + ex.getMessage());
-            this.doAfterwards.add(new DoLaterChapter(pageUrl, chapterFolder, pageNumber));
+            log.warn("Chapter " + c.chapterFolder.getName() + ", Page " + c.pageNumber + " - " + ex.getMessage());
+            this.dlQueue.add(c);
         }
     }
 }
 
-class DoLaterChapter {
+class Page {
     final URL pageUrl;
     final File chapterFolder;
     final int pageNumber;
 
-    public DoLaterChapter(URL pageUrl, File chapterFolder, int pageNumber) {
+    public Page(URL pageUrl, File chapterFolder, int pageNumber) {
         this.pageUrl = pageUrl;
         this.chapterFolder = chapterFolder;
         this.pageNumber = pageNumber;
