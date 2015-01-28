@@ -17,24 +17,24 @@ class Panda extends ChapterList {
 
     private final String name;
 
-    public Panda(URL url) throws IOException {
+    public Panda( URL url ) throws IOException {
         super();
-        Document document = Utils.getDocument(url);
+        Document document = Utils.getDocument( url );
 
-        this.name = document.select("#mangaproperties h2.aname").first().text();
+        this.name = document.select( "#mangaproperties h2.aname" ).first().text();
 
-        Elements tr = document.select("#chapterlist tr");
-        tr.remove(0);
-        for (Element e : tr) {
-            Element firstTd = e.getElementsByTag("td").get(0);
-            Element link = firstTd.getElementsByTag("a").get(0);
+        Elements tr = document.select( "#chapterlist tr" );
+        tr.remove( 0 );
+        for ( Element e : tr ) {
+            Element firstTd = e.getElementsByTag( "td" ).get( 0 );
+            Element link = firstTd.getElementsByTag( "a" ).get( 0 );
 
-            String[] nameAndNumber = link.text().split(" ");
+            String[] nameAndNumber = link.text().split( " " );
             String number = nameAndNumber[nameAndNumber.length - 1];
 
-            URL chapterUrl = new URL(url, link.attr("href"));
+            URL chapterUrl = new URL( url, link.attr( "href" ) );
 
-            super.addChapter(number, chapterUrl);
+            super.addChapter( number, chapterUrl );
         }
     }
 
@@ -44,19 +44,19 @@ class Panda extends ChapterList {
     }
 
     @Override
-    public URL imgLink(URL url) throws IOException {
-        String src = Utils.getDocument(url).getElementById("img").attr("src");
-        return new URL(url, src);
+    public URL imgLink( URL url ) throws IOException {
+        String src = Utils.getDocument( url ).getElementById( "img" ).attr( "src" );
+        return new URL( url, src );
     }
 
     @Override
-    public Map<Integer, URL> getAllPageURLs(URL url) throws IOException {
+    public Map<Integer, URL> getAllPageURLs( URL url ) throws IOException {
         Map<Integer, URL> result = new HashMap<>();
-        Elements pages = Utils.getDocument(url).select("#pageMenu>option");
-        for (Element e : pages) {
-            result.put(Integer.parseInt(e.text()), new URL(url, e.attr("value")));
+        Elements pages = Utils.getDocument( url ).select( "#pageMenu>option" );
+        for ( Element e : pages ) {
+            result.put( Integer.parseInt( e.text() ), new URL( url, e.attr( "value" ) ) );
         }
-        return Collections.unmodifiableMap(result);
+        return Collections.unmodifiableMap( result );
     }
 
 }

@@ -28,23 +28,22 @@ public final class Utils {
     private static Logger log;
 
     public static Map<String, String> getArguments() {
-        if (arguments == null)
-            throw new RuntimeException("arguments not yet initialized");
+        if ( arguments == null )
+            throw new RuntimeException( "arguments not yet initialized" );
         return arguments;
     }
 
-    public static void setArguments(Map<String, String> m) {
-        arguments = Collections.unmodifiableMap(m);
-        log = Logger.getLogger(arguments.get(Constants.PARAM_LOGLEVEL));
+    public static void setArguments( Map<String, String> m ) {
+        arguments = Collections.unmodifiableMap( m );
+        log = Logger.getLogger( arguments.get( Constants.PARAM_LOGLEVEL ) );
 
-        String host = m.get(Constants.PARAM_PROXY_HOST);
-        String port = m.get(Constants.PARAM_PROXY_PORT);
-        if (host != null && !"".equals(host) && port != null && !"".equals(port)) {
-            String timeout = m.get(Constants.PARAM_TIMEOUT);
-            conFactory = new ProxyConnectionFactory(timeout, host, port);
-        }
-        else {
-            conFactory = new DirectConnectionFactory(port);
+        String host = m.get( Constants.PARAM_PROXY_HOST );
+        String port = m.get( Constants.PARAM_PROXY_PORT );
+        if ( host != null && !"".equals( host ) && port != null && !"".equals( port ) ) {
+            String timeout = m.get( Constants.PARAM_TIMEOUT );
+            conFactory = new ProxyConnectionFactory( timeout, host, port );
+        } else {
+            conFactory = new DirectConnectionFactory( port );
         }
     }
 
@@ -52,27 +51,27 @@ public final class Utils {
         return log;
     }
 
-    public static URLConnection getConnection(URL url) throws IOException {
-        return conFactory.getConnection(url);
+    public static URLConnection getConnection( URL url ) throws IOException {
+        return conFactory.getConnection( url );
     }
 
-    public static Document getDocument(URL url) throws IOException {
-        Utils.getLogger().debug("Fetching " + url);
-        URLConnection con = getConnection(url);
-        List<String> list = readStream(con.getInputStream());
+    public static Document getDocument( URL url ) throws IOException {
+        Utils.getLogger().debug( "Fetching " + url );
+        URLConnection con = getConnection( url );
+        List<String> list = readStream( con.getInputStream() );
         StringBuilder sb = new StringBuilder();
-        for (String s : list) {
-            sb.append(s);
+        for ( String s : list ) {
+            sb.append( s );
         }
-        return Jsoup.parse(sb.toString());
+        return Jsoup.parse( sb.toString() );
     }
 
-    public static List<String> readStream(InputStream in) throws IOException {
+    public static List<String> readStream( InputStream in ) throws IOException {
         List<String> list = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+        try ( BufferedReader reader = new BufferedReader( new InputStreamReader( in, StandardCharsets.UTF_8 ) ) ) {
             String nextline = null;
-            while ((nextline = reader.readLine()) != null) {
-                list.add(nextline);
+            while ( ( nextline = reader.readLine() ) != null ) {
+                list.add( nextline );
             }
         }
         return list;
@@ -80,18 +79,17 @@ public final class Utils {
 
     public static URL getMangaURL() {
         try {
-            String _url = arguments.get(Constants.PARAM_URL);
-            if (!_url.startsWith("http"))
+            String _url = arguments.get( Constants.PARAM_URL );
+            if ( !_url.startsWith( "http" ) )
                 _url = "http://" + _url;
-            return new URL(_url);
-        }
-        catch (MalformedURLException ex) {
-            throw new RuntimeException(ex);
+            return new URL( _url );
+        } catch ( MalformedURLException ex ) {
+            throw new RuntimeException( ex );
         }
     }
 
     public static String getPattern() {
-        return arguments.get(Constants.PARAM_PATTERN);
+        return arguments.get( Constants.PARAM_PATTERN );
     }
 
     private Utils() {

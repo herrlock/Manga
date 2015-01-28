@@ -10,14 +10,14 @@ public class ProxyConnectionFactory extends ConnectionFactory {
 
     private Proxy proxy;
 
-    public ProxyConnectionFactory(String timeout, String host, String port) {
-        super(timeout);
-        this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, Integer.parseInt(port)));
+    public ProxyConnectionFactory( String timeout, String host, String port ) {
+        super( timeout );
+        this.proxy = new Proxy( Proxy.Type.HTTP, new InetSocketAddress( host, Integer.parseInt( port ) ) );
     }
 
     @Override
-    protected URLConnection getRawConnection(URL url) throws IOException {
-        return url.openConnection(this.proxy);
+    protected URLConnection getRawConnection( URL url ) throws IOException {
+        return url.openConnection( this.proxy );
     }
 
 }

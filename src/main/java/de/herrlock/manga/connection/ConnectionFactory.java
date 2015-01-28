@@ -10,20 +10,19 @@ public abstract class ConnectionFactory {
 
     private final int timeout;
 
-    public URLConnection getConnection(URL url) throws IOException {
-        URLConnection con = getRawConnection(url);
-        con.setConnectTimeout(this.timeout);
-        con.setReadTimeout(this.timeout);
+    public URLConnection getConnection( URL url ) throws IOException {
+        URLConnection con = getRawConnection( url );
+        con.setConnectTimeout( this.timeout );
+        con.setReadTimeout( this.timeout );
         return con;
     }
 
-    protected abstract URLConnection getRawConnection(URL url) throws IOException;
+    protected abstract URLConnection getRawConnection( URL url ) throws IOException;
 
-    public ConnectionFactory(String timeout) {
-        if (timeout != null && !"".equals(timeout)) {
-            this.timeout = Integer.parseInt(timeout);
-        }
-        else {
+    public ConnectionFactory( String timeout ) {
+        if ( timeout != null && !"".equals( timeout ) ) {
+            this.timeout = Integer.parseInt( timeout );
+        } else {
             this.timeout = Constants.PARAM_TIMEOUT_DEFAULT;
         }
     }

@@ -21,20 +21,19 @@ public class PictureMapContainer {
      */
     private Map<String, Map<Integer, URL>> picturemap;
 
-    public PictureMapContainer(ChapterListContainer clc) throws IOException {
+    public PictureMapContainer( ChapterListContainer clc ) throws IOException {
         log.trace();
         ChapterList chapterlist = clc.getChapterlist();
-        if (chapterlist != null) {
-            this.picturemap = new HashMap<>(chapterlist.size());
-            for (Chapter chapter : chapterlist) {
-                Map<Integer, URL> pageMap = chapterlist.getAllPageURLs(chapter);
-                this.picturemap.put(chapter.getNumber(), pageMap);
+        if ( chapterlist != null ) {
+            this.picturemap = new HashMap<>( chapterlist.size() );
+            for ( Chapter chapter : chapterlist ) {
+                Map<Integer, URL> pageMap = chapterlist.getAllPageURLs( chapter );
+                this.picturemap.put( chapter.getNumber(), pageMap );
             }
-        }
-        else {
+        } else {
             String message = "ChapterList not initialized";
-            log.error(message);
-            throw new RuntimeException(message);
+            log.error( message );
+            throw new RuntimeException( message );
         }
     }
 
@@ -44,14 +43,14 @@ public class PictureMapContainer {
 
     public final int getSize() {
         int noOfPictures = 0;
-        for (Map<Integer, URL> m : this.picturemap.values()) {
+        for ( Map<Integer, URL> m : this.picturemap.values() ) {
             noOfPictures += m.size();
         }
         return noOfPictures;
     }
 
-    public final Map<Integer, URL> getUrlMap(String key) {
-        return this.picturemap.get(key);
+    public final Map<Integer, URL> getUrlMap( String key ) {
+        return this.picturemap.get( key );
     }
 
 }

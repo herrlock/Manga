@@ -6,12 +6,12 @@ import java.net.URLConnection;
 
 public class DirectConnectionFactory extends ConnectionFactory {
 
-    public DirectConnectionFactory(String timeout) {
-        super(timeout);
+    public DirectConnectionFactory( String timeout ) {
+        super( timeout );
     }
 
     @Override
-    protected URLConnection getRawConnection(URL url) throws IOException {
+    protected URLConnection getRawConnection( URL url ) throws IOException {
         return url.openConnection();
     }
 

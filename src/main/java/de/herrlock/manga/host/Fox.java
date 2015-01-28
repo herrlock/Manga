@@ -17,27 +17,27 @@ class Fox extends ChapterList {
 
     private final String name;
 
-    public Fox(URL url) throws IOException {
+    public Fox( URL url ) throws IOException {
         super();
-        Document document = Utils.getDocument(url);
+        Document document = Utils.getDocument( url );
 
-        this.name = document.select("#title>h1").first().text();
+        this.name = document.select( "#title>h1" ).first().text();
 
-        Elements elements = document.select("#chapters>ul.chlist>li");
-        for (Element e : elements) {
-            Element h3 = e.select("h3").first();
-            if (h3 == null)
-                h3 = e.select("h4").first();
-            Element a = h3.select("a.tips").first();
+        Elements elements = document.select( "#chapters>ul.chlist>li" );
+        for ( Element e : elements ) {
+            Element h3 = e.select( "h3" ).first();
+            if ( h3 == null )
+                h3 = e.select( "h4" ).first();
+            Element a = h3.select( "a.tips" ).first();
 
-            String[] nnumber = a.text().split(" ");
+            String[] nnumber = a.text().split( " " );
             String number = nnumber[nnumber.length - 1];
 
-            URL chapterUrl = new URL(url, a.attr("href"));
+            URL chapterUrl = new URL( url, a.attr( "href" ) );
 
-            super.addChapter(number, chapterUrl);
+            super.addChapter( number, chapterUrl );
         }
-        Collections.reverse(this);
+        Collections.reverse( this );
     }
 
     @Override
@@ -46,24 +46,24 @@ class Fox extends ChapterList {
     }
 
     @Override
-    public URL imgLink(URL url) throws IOException {
-        String src = Utils.getDocument(url).getElementById("image").attr("src");
-        return new URL(url, src);
+    public URL imgLink( URL url ) throws IOException {
+        String src = Utils.getDocument( url ).getElementById( "image" ).attr( "src" );
+        return new URL( url, src );
     }
 
     @Override
-    public Map<Integer, URL> getAllPageURLs(URL url) throws IOException {
+    public Map<Integer, URL> getAllPageURLs( URL url ) throws IOException {
         Map<Integer, URL> result = new HashMap<>();
-        Elements pages = Utils.getDocument(url).select("select.m").first().getElementsByTag("option");
+        Elements pages = Utils.getDocument( url ).select( "select.m" ).first().getElementsByTag( "option" );
         Element last = pages.last();
-        if ("Comments".equals(last.text())) {
-            pages.remove(last);
+        if ( "Comments".equals( last.text() ) ) {
+            pages.remove( last );
         }
-        for (Element e : pages) {
-            int number = Integer.parseInt(e.text());
-            result.put(number, new URL(url, e.attr("value") + ".html"));
+        for ( Element e : pages ) {
+            int number = Integer.parseInt( e.text() );
+            result.put( number, new URL( url, e.attr( "value" ) + ".html" ) );
         }
-        return Collections.unmodifiableMap(result);
+        return Collections.unmodifiableMap( result );
     }
 
 }

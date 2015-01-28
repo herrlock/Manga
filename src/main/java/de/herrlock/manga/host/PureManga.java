@@ -17,24 +17,24 @@ class PureManga extends ChapterList {
 
     private final String name;
 
-    public PureManga(URL url) throws IOException {
+    public PureManga( URL url ) throws IOException {
         super();
-        Document document = Utils.getDocument(url);
+        Document document = Utils.getDocument( url );
 
-        this.name = document.select("#content h2.titlebg").first().text();
+        this.name = document.select( "#content h2.titlebg" ).first().text();
 
-        Elements tr = document.getElementsByClass("element");
-        for (Element e : tr) {
-            Element link = e.select("div>a").get(0);
+        Elements tr = document.getElementsByClass( "element" );
+        for ( Element e : tr ) {
+            Element link = e.select( "div>a" ).get( 0 );
 
-            String[] chapterNrAndName = link.text().split(":");
-            String number = chapterNrAndName[0].split(" ")[1];
+            String[] chapterNrAndName = link.text().split( ":" );
+            String number = chapterNrAndName[0].split( " " )[1];
 
-            URL chapterUrl = new URL(url, link.attr("href"));
+            URL chapterUrl = new URL( url, link.attr( "href" ) );
 
-            super.addChapter(number, chapterUrl);
+            super.addChapter( number, chapterUrl );
         }
-        Collections.reverse(this);
+        Collections.reverse( this );
     }
 
     @Override
@@ -43,22 +43,22 @@ class PureManga extends ChapterList {
     }
 
     @Override
-    public URL imgLink(URL url) throws IOException {
-        String src = Utils.getDocument(url).select("#page>.inner>a>img").get(0).attr("src");
-        return new URL(url, src);
+    public URL imgLink( URL url ) throws IOException {
+        String src = Utils.getDocument( url ).select( "#page>.inner>a>img" ).get( 0 ).attr( "src" );
+        return new URL( url, src );
     }
 
     @Override
-    public Map<Integer, URL> getAllPageURLs(URL url) throws IOException {
+    public Map<Integer, URL> getAllPageURLs( URL url ) throws IOException {
         Map<Integer, URL> result = new HashMap<>();
-        Elements li = Utils.getDocument(url).select(".dropdown_right>ul>li");
-        for (Element e : li) {
-            Element link = e.getElementsByTag("a").get(0);
-            int number = Integer.parseInt(link.text().substring(6));
-            URL absUrl = new URL(url, link.attr("href"));
-            result.put(number, absUrl);
+        Elements li = Utils.getDocument( url ).select( ".dropdown_right>ul>li" );
+        for ( Element e : li ) {
+            Element link = e.getElementsByTag( "a" ).get( 0 );
+            int number = Integer.parseInt( link.text().substring( 6 ) );
+            URL absUrl = new URL( url, link.attr( "href" ) );
+            result.put( number, absUrl );
         }
-        return Collections.unmodifiableMap(result);
+        return Collections.unmodifiableMap( result );
     }
 
 }

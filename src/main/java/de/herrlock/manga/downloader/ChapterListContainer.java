@@ -29,9 +29,9 @@ public class ChapterListContainer {
     public ChapterListContainer() throws IOException {
         log.trace();
         this.chapterlist = ChapterList.getInstance();
-        String mangaName = this.chapterlist.getMangaName().toLowerCase(Locale.ENGLISH).replace(' ', '_');
-        this.path = new File(Constants.TARGET_FOLDER, mangaName);
-        log.none("Save to: " + this.path.getAbsolutePath());
+        String mangaName = this.chapterlist.getMangaName().toLowerCase( Locale.ENGLISH ).replace( ' ', '_' );
+        this.path = new File( Constants.TARGET_FOLDER, mangaName );
+        log.none( "Save to: " + this.path.getAbsolutePath() );
     }
 
     public final File getPath() {
@@ -46,7 +46,7 @@ public class ChapterListContainer {
         return this.chapterlist.size();
     }
 
-    public final URL getImageLink(URL pageUrl) throws IOException {
-        return this.chapterlist.imgLink(pageUrl);
+    public final URL getImageLink( URL pageUrl ) throws IOException {
+        return this.chapterlist.imgLink( pageUrl );
     }
 }

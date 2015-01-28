@@ -15,22 +15,22 @@ public class Logger {
     private static final Map<Integer, Logger> cache;
     static {
         Map<Integer, Logger> tmpMap = new HashMap<>();
-        tmpMap.put(NONE, new Logger(NONE));
-        tmpMap.put(ERROR, new Logger(ERROR));
-        tmpMap.put(WARNING, new Logger(WARNING));
-        tmpMap.put(INFO, new Logger(INFO));
-        tmpMap.put(DEBUG, new Logger(DEBUG));
-        tmpMap.put(TRACE, new Logger(TRACE));
-        cache = Collections.unmodifiableMap(tmpMap);
+        tmpMap.put( NONE, new Logger( NONE ) );
+        tmpMap.put( ERROR, new Logger( ERROR ) );
+        tmpMap.put( WARNING, new Logger( WARNING ) );
+        tmpMap.put( INFO, new Logger( INFO ) );
+        tmpMap.put( DEBUG, new Logger( DEBUG ) );
+        tmpMap.put( TRACE, new Logger( TRACE ) );
+        cache = Collections.unmodifiableMap( tmpMap );
     }
 
     public static Logger getLogger() {
-        return cache.get(NONE);
+        return cache.get( NONE );
     }
 
-    public static Logger getLogger(String _level) {
+    public static Logger getLogger( String _level ) {
         int level;
-        switch ((_level != null && !_level.isEmpty() ? _level : "E").charAt(0)) {
+        switch ( ( _level != null && !_level.isEmpty() ? _level : "E" ).charAt( 0 ) ) {
             case 'n':
             case 'N':
                 level = NONE;
@@ -59,12 +59,12 @@ public class Logger {
                 level = ERROR;
                 break;
         }
-        return cache.get(level);
+        return cache.get( level );
     }
 
     private int level;
 
-    private Logger(int _level) {
+    private Logger( int _level ) {
         this.level = _level;
     }
 
@@ -76,8 +76,8 @@ public class Logger {
      *            the message to log
      * @return {@code this}, to allow methodChaining
      */
-    public Logger none(Object message) {
-        log(message, NONE);
+    public Logger none( Object message ) {
+        log( message, NONE );
         return this;
     }
 
@@ -89,8 +89,8 @@ public class Logger {
      *            the message to log
      * @return {@code this}, to allow methodChaining
      */
-    public Logger error(Object message) {
-        log(">>>>> " + message, ERROR);
+    public Logger error( Object message ) {
+        log( ">>>>> " + message, ERROR );
         return this;
     }
 
@@ -102,8 +102,8 @@ public class Logger {
      *            the message to log
      * @return {@code this}, to allow methodChaining
      */
-    public Logger warn(Object message) {
-        log(">>>> " + message, WARNING);
+    public Logger warn( Object message ) {
+        log( ">>>> " + message, WARNING );
         return this;
     }
 
@@ -115,8 +115,8 @@ public class Logger {
      *            the message to log
      * @return {@code this}, to allow methodChaining
      */
-    public Logger info(Object message) {
-        log(">>> " + message, INFO);
+    public Logger info( Object message ) {
+        log( ">>> " + message, INFO );
         return this;
     }
 
@@ -128,8 +128,8 @@ public class Logger {
      *            the message to log
      * @return {@code this}, to allow methodChaining
      */
-    public Logger debug(Object message) {
-        log(">> " + message, DEBUG);
+    public Logger debug( Object message ) {
+        log( ">> " + message, DEBUG );
         return this;
     }
 
@@ -141,8 +141,8 @@ public class Logger {
      *            the message to log
      * @return {@code this}, to allow methodChaining
      */
-    public Logger trace(Object message) {
-        log("> " + message, TRACE);
+    public Logger trace( Object message ) {
+        log( "> " + message, TRACE );
         return this;
     }
 
@@ -153,15 +153,15 @@ public class Logger {
      */
     public Logger trace() {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        if (stackTrace.length >= 3) {
-            log(stackTrace[2].getClassName() + '.' + stackTrace[2].getMethodName(), TRACE);
+        if ( stackTrace.length >= 3 ) {
+            log( stackTrace[2].getClassName() + '.' + stackTrace[2].getMethodName(), TRACE );
         }
         return this;
     }
 
-    private void log(Object message, int l) {
-        if (this.level >= l) {
-            System.out.println(message);
+    private void log( Object message, int l ) {
+        if ( this.level >= l ) {
+            System.out.println( message );
         }
     }
 
