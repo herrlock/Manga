@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
 
@@ -19,10 +18,18 @@ public class Ctrl {
         try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
             p.load( fIn );
         }
+        exec( p );
+    }
+
+    public static void exec( Properties p ) {
         Map<String, String> arguments = new HashMap<>();
         for ( String name : p.stringPropertyNames() ) {
             arguments.put( name, p.getProperty( name ) );
         }
+        setArguments( arguments );
+    }
+
+    public static void setArguments( Map<String, String> arguments ) {
         String[] requiredParameters = new String[] {
             Constants.PARAM_URL
         };
@@ -33,17 +40,6 @@ public class Ctrl {
                     + new File( Constants.SETTINGS_FILE ).getAbsolutePath() );
             }
         }
-        new Ctrl( arguments ).run();
-    }
-
-    private final InputStream in;
-
-    public Ctrl( Map<String, String> arguments ) {
         Utils.setArguments( arguments );
-        this.in = System.in;
-    }
-
-    public void run() {
-        MDownloader.execute( this.in );
     }
 }

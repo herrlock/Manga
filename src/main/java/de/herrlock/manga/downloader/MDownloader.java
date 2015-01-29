@@ -23,20 +23,15 @@ import de.herrlock.manga.util.Utils;
 public class MDownloader {
 
     /**
-     * a Scanner to {@link System.in}
-     */
-    private static Scanner sc;
-    /**
      * the Logger
      */
     private static Logger log = Utils.getLogger();
 
-    public static void execute( InputStream in ) {
+    public static void execute() {
         log.trace();
         MDownloader md = new MDownloader();
-        try ( Scanner _sc = new Scanner( in, "UTF-8" ) ) {
-            sc = _sc;
-            md.run();
+        try {
+            md.run( System.in );
         } catch ( RuntimeException ex ) {
             log.error( ex );
             throw ex;
@@ -50,17 +45,13 @@ public class MDownloader {
     private PictureMapContainer pmc;
     private List<Page> dlQueue = new ArrayList<>( 0 );
 
-    private MDownloader() {
-        // nothing to init
-    }
-
-    private void run() {
+    private void run( InputStream in ) {
         log.trace();
-        try {
-            this.clc = new ChapterListContainer();
-            if ( goon1() ) {
-                this.pmc = new PictureMapContainer( this.clc );
-                if ( goon2() ) {
+        try ( Scanner sc = new Scanner( in, "UTF-8" ) ) {
+            initCLC();
+            if ( goonCLC( sc ) ) {
+                initPMC();
+                if ( goonPMC( sc ) ) {
                     downloadAll();
                 } else {
                     log.none( "bye" );
@@ -73,28 +64,16 @@ public class MDownloader {
         }
     }
 
-    private boolean goon1() {
-        int noOfChapters = this.clc.getSize();
-        if ( noOfChapters > 0 ) {
-            log.none( noOfChapters + " chapter" + ( noOfChapters > 1 ? "s" : "" ) + " availabile." );
-            return goon();
-        }
-        log.warn( "no chapters availabile, exiting" );
-        return false;
+    public void initCLC() throws IOException {
+        this.clc = new ChapterListContainer();
     }
 
-    private boolean goon2() {
-        int noOfPictures = this.pmc.getSize();
-        if ( noOfPictures > 0 ) {
-            log.none( noOfPictures + " page" + ( noOfPictures > 1 ? "s" : "" ) + " availabile." );
-            return goon();
-        }
-        log.warn( "no pictures availabile, exiting" );
-        return false;
+    public void initPMC() throws IOException {
+        this.pmc = new PictureMapContainer( this.clc );
     }
 
-    private static boolean goon() {
-        log.none( "go on? y|n" );
+    protected boolean goon( Scanner sc ) {
+        System.out.println( "go on? y|n" );
         try {
             char c = sc.next( ".+" ).charAt( 0 );
             return c == 'y' || c == 'Y';
@@ -103,7 +82,35 @@ public class MDownloader {
         }
     }
 
-    private void downloadAll() throws IOException {
+    private boolean goonCLC( Scanner sc ) {
+        int noOfChapters = getCLCSize();
+        if ( noOfChapters > 0 ) {
+            System.out.println( noOfChapters + " chapter" + ( noOfChapters > 1 ? "s" : "" ) + " availabile." );
+            return goon( sc );
+        }
+        log.warn( "no chapters availabile, exiting" );
+        return false;
+    }
+
+    public boolean goonPMC( Scanner sc ) {
+        int noOfPictures = getPMCSize();
+        if ( noOfPictures > 0 ) {
+            log.none( noOfPictures + " page" + ( noOfPictures > 1 ? "s" : "" ) + " availabile." );
+            return goon( sc );
+        }
+        log.warn( "no pictures availabile, exiting" );
+        return false;
+    }
+
+    public int getCLCSize() {
+        return this.clc != null ? this.clc.getSize() : 0;
+    }
+
+    public int getPMCSize() {
+        return this.pmc != null ? this.pmc.getSize() : 0;
+    }
+
+    public void downloadAll() throws IOException {
         log.trace();
         Map<String, Map<Integer, URL>> picturemap = this.pmc.getPictureMap();
         if ( picturemap != null ) {
