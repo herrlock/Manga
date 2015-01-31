@@ -18,6 +18,22 @@ jar {
     }
 }
 
+findbugs {
+	effort = 'max'
+	ignoreFailures = true
+	reportLevel = 'low'
+}
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+pmd {
+	ignoreFailures = true
+}
+
+
 eclipse.project {
 	natures += 'org.springsource.ide.eclipse.gradle.core.nature'
 }
