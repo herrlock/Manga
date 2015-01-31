@@ -32,31 +32,7 @@ subprojects {
 	}
 	
 	repositories {
-		mavenLocal()
 		mavenCentral()
-	}
-	
-	task sourceJar(type: Jar, dependsOn: classes) {
-	    classifier 'sources'
-	    from sourceSets.main.allSource
-	}
-	
-	task javadocJar(type: Jar, dependsOn: javadoc) {
-	    classifier 'javadoc'
-	    from javadoc.destinationDir
-	}
-	
-	publishing {
-	    publications {
-	        mavenJava(MavenPublication) {
-	            from components.java
-	            artifact sourceJar
-	            artifact javadocJar
-	        }
-	    }
-	    repositories {
-	        mavenLocal()
-	    }
 	}
 }
 
@@ -76,9 +52,12 @@ task dist (type: Zip) {
     dependsOn assemble
     destinationDir = file('build')
     baseName = project.name
+    version = project.version
     
-    from 'src/dist'
-    into('libs') {
-        from 'build/libs/'
-    }
+    into (dist.archiveName) {
+	    from 'src/dist'
+	    into ('libs') {
+	        from 'build/libs/'
+	    }
+	}
 }
