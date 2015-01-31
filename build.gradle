@@ -12,9 +12,7 @@ subprojects {
 	
 	sourceCompatibility = "1.7"
 	
-	jar {
-	    baseName = project.name
-	}
+	jar.dependsOn check
 	
 	findbugs {
 		effort = 'max'
@@ -28,7 +26,8 @@ subprojects {
 	}
 	
 	eclipse.project {
-		natures += 'org.springsource.ide.eclipse.gradle.core.nature'
+		natures 'org.springsource.ide.eclipse.gradle.core.nature'
+		buildCommand 'edu.umd.cs.findbugs.plugin.eclipse.findbugsBuilder'
 	}
 	
 	repositories {
@@ -40,24 +39,18 @@ task clean (type: Delete) {
 	delete 'build/'
 }
 
-task assemble (type: Sync) {
-	subprojects.each { s -> 
-		dependsOn s.jar
-		from s.jar
-	}
-	into 'build/libs/'
-}
-
 task dist (type: Zip) {
-    dependsOn assemble
     destinationDir = file('build')
     baseName = project.name
     version = project.version
     
     into (dist.archiveName) {
 	    from 'src/dist'
-	    into ('libs') {
-	        from 'build/libs/'
+	    into ('lib') {
+	        subprojects.each { s -> 
+				dependsOn s.jar
+				from s.jar
+			}
 	    }
 	}
 }
