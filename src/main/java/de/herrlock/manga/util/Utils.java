@@ -10,8 +10,10 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,7 +33,11 @@ public final class Utils {
         return arguments;
     }
 
-    public static void setArguments( Map<String, String> m ) {
+    public static void setArguments( Properties p ) {
+        Map<String, String> m = new HashMap<>();
+        for ( String s : p.stringPropertyNames() ) {
+            m.put( s, p.getProperty( s ) );
+        }
         arguments = Collections.unmodifiableMap( m );
 
         String host = m.get( Constants.PARAM_PROXY_HOST );

@@ -17,6 +17,7 @@ public final class Constants {
     public static final String PARAM_PROXY_PASS = "proxyPass";
 
     public static final String TARGET_FOLDER = "./download";
+    public static final String TRACE_FILE = "./log/trace.log";
 
     private Constants() {
         // not called
