@@ -1,0 +1,7 @@
+apply plugin: 'application'
+
+version '1.1.0-BETA-SNAPSHOT'
+
+dependencies {
+    compile project(':MangaUI')
+}

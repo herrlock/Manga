@@ -1,5 +1,0 @@
-#!/bin/sh
-echo > log/err.log
-echo ------------------------ >> log/err.log
-echo $(date) >> log/err.log
-bin/MangaUI 2>>log/err.log

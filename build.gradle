@@ -1,0 +1,84 @@
+group 'de.herrlock.manga'
+version '1.1.0-BETA-SNAPSHOT'
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'findbugs'
+	apply plugin: 'pmd'
+	apply plugin: 'maven-publish'
+	apply plugin: 'eclipse'
+	
+	group 'de.herrlock.manga'
+	
+	sourceCompatibility = "1.7"
+	
+	jar {
+	    baseName = project.name
+	}
+	
+	findbugs {
+		effort = 'max'
+		reportLevel = 'low'
+	}
+	tasks.withType(FindBugs) {
+	    reports {
+	        xml.enabled = false
+	        html.enabled = true
+	    }
+	}
+	
+	eclipse.project {
+		natures += 'org.springsource.ide.eclipse.gradle.core.nature'
+	}
+	
+	repositories {
+		mavenLocal()
+		mavenCentral()
+	}
+	
+	task sourceJar(type: Jar, dependsOn: classes) {
+	    classifier 'sources'
+	    from sourceSets.main.allSource
+	}
+	
+	task javadocJar(type: Jar, dependsOn: javadoc) {
+	    classifier 'javadoc'
+	    from javadoc.destinationDir
+	}
+	
+	publishing {
+	    publications {
+	        mavenJava(MavenPublication) {
+	            from components.java
+	            artifact sourceJar
+	            artifact javadocJar
+	        }
+	    }
+	    repositories {
+	        mavenLocal()
+	    }
+	}
+}
+
+task clean (type: Delete) {
+	delete 'build/'
+}
+
+task assemble (type: Sync) {
+	subprojects.each { s -> 
+		dependsOn s.jar
+		from s.jar
+	}
+	into 'build/libs/'
+}
+
+task dist (type: Zip) {
+    dependsOn assemble
+    destinationDir = file('build')
+    baseName = project.name
+    
+    from 'src/dist'
+    into('libs') {
+        from 'build/libs/'
+    }
+}
