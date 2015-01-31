@@ -71,7 +71,7 @@ public abstract class MDownloader {
     private void downloadChapter( String key ) throws IOException {
         if ( this.clc != null && this.pmc != null ) {
             Map<Integer, URL> urlMap = this.pmc.getUrlMap( key );
-            System.out.println( "Download chapter " + key + " - " + urlMap.size() + " pages" );
+            System.out.println( "Download chapter " + key + " (" + urlMap.size() + " pages)" );
             File chapterFolder = new File( this.clc.getPath(), key );
             if ( chapterFolder.exists() || chapterFolder.mkdirs() ) {
                 // add pictures to queue
