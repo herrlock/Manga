@@ -54,6 +54,7 @@ public abstract class MDownloader {
     }
 
     public void downloadAll() throws IOException {
+        this.trace.println( "downloadAll()" );
         if ( this.pmc != null ) {
             Map<String, Map<Integer, URL>> picturemap = this.pmc.getPictureMap();
             if ( picturemap != null ) {
@@ -69,6 +70,7 @@ public abstract class MDownloader {
     }
 
     private void downloadChapter( String key ) throws IOException {
+        this.trace.println( "downloadChapter( " + key + " )" );
         if ( this.clc != null && this.pmc != null ) {
             Map<Integer, URL> urlMap = this.pmc.getUrlMap( key );
             System.out.println( "Download chapter " + key + " (" + urlMap.size() + " pages)" );
@@ -86,6 +88,7 @@ public abstract class MDownloader {
     }
 
     private void downloadPages() throws IOException {
+        this.trace.println( "downloadPages()" );
         List<Page> list = new ArrayList<>( this.dlQueue );
         this.dlQueue.clear();
         // download pictures from the current chapter
@@ -99,6 +102,7 @@ public abstract class MDownloader {
     }
 
     private void dlPic( Page c ) throws IOException {
+        this.trace.println( "dlPic( " + c + " )" );
         if ( this.clc != null ) {
             URL imageUrl = this.clc.getImageLink( c.pageUrl );
             URLConnection con = Utils.getConnection( imageUrl );
