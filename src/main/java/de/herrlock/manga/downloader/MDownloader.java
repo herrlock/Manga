@@ -17,26 +17,17 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
-import de.herrlock.log.Logger;
 import de.herrlock.manga.util.Utils;
 
 public class MDownloader {
 
-    /**
-     * the Logger
-     */
-    private static Logger log = Utils.getLogger();
-
     public static void execute() {
-        log.trace();
         MDownloader md = new MDownloader();
         try {
             md.run( System.in );
         } catch ( RuntimeException ex ) {
-            log.error( ex );
             throw ex;
         } catch ( Exception ex ) {
-            log.error( ex );
             throw new RuntimeException( ex );
         }
     }
@@ -46,18 +37,13 @@ public class MDownloader {
     private List<Page> dlQueue = new ArrayList<>( 0 );
 
     private void run( InputStream in ) {
-        log.trace();
         try ( Scanner sc = new Scanner( in, "UTF-8" ) ) {
             initCLC();
             if ( goonCLC( sc ) ) {
                 initPMC();
                 if ( goonPMC( sc ) ) {
                     downloadAll();
-                } else {
-                    log.none( "bye" );
                 }
-            } else {
-                log.none( "bye" );
             }
         } catch ( IOException ex ) {
             ex.printStackTrace();
@@ -88,17 +74,14 @@ public class MDownloader {
             System.out.println( noOfChapters + " chapter" + ( noOfChapters > 1 ? "s" : "" ) + " availabile." );
             return goon( sc );
         }
-        log.warn( "no chapters availabile, exiting" );
         return false;
     }
 
     public boolean goonPMC( Scanner sc ) {
         int noOfPictures = getPMCSize();
         if ( noOfPictures > 0 ) {
-            log.none( noOfPictures + " page" + ( noOfPictures > 1 ? "s" : "" ) + " availabile." );
             return goon( sc );
         }
-        log.warn( "no pictures availabile, exiting" );
         return false;
     }
 
@@ -111,7 +94,6 @@ public class MDownloader {
     }
 
     public void downloadAll() throws IOException {
-        log.trace();
         Map<String, Map<Integer, URL>> picturemap = this.pmc.getPictureMap();
         if ( picturemap != null ) {
             List<String> keys = new ArrayList<>( picturemap.keySet() );
@@ -120,15 +102,13 @@ public class MDownloader {
                 downloadChapter( key );
             }
         } else {
-            String message = "PageMap not initialized";
-            log.error( message );
-            throw new RuntimeException( message );
+            throw new RuntimeException( "PageMap not initialized" );
         }
     }
 
     private void downloadChapter( String key ) throws IOException {
         Map<Integer, URL> urlMap = this.pmc.getUrlMap( key );
-        log.none( "Download chapter " + key + " - " + urlMap.size() + " pages" );
+        System.out.println( "Download chapter " + key + " - " + urlMap.size() + " pages" );
         File chapterFolder = new File( this.clc.getPath(), key );
         if ( chapterFolder.exists() || chapterFolder.mkdirs() ) {
             // add pictures to queue
@@ -138,7 +118,7 @@ public class MDownloader {
             // start download
             downloadPages();
         }
-        log.none( "finished chapter " + key );
+        System.out.println( "finished chapter " + key );
     }
 
     private void downloadPages() throws IOException {
@@ -158,14 +138,10 @@ public class MDownloader {
         URL imageUrl = this.clc.getImageLink( c.pageUrl );
         URLConnection con = Utils.getConnection( imageUrl );
         try ( InputStream in = con.getInputStream() ) {
-            log.debug( "read image " + imageUrl );
             BufferedImage image = ImageIO.read( in );
             File output = new File( c.chapterFolder, c.pageNumber + ".jpg" );
-            log.debug( "write to " + output );
             ImageIO.write( image, "jpg", output );
-            log.info( "Chapter " + c.chapterFolder.getName() + ", Page " + c.pageNumber + " - finished" );
         } catch ( SocketException | SocketTimeoutException ex ) {
-            log.warn( "Chapter " + c.chapterFolder.getName() + ", Page " + c.pageNumber + " - " + ex.getMessage() );
             this.dlQueue.add( c );
         }
     }

@@ -16,7 +16,6 @@ import java.util.Map;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import de.herrlock.log.Logger;
 import de.herrlock.manga.connection.ConnectionFactory;
 import de.herrlock.manga.connection.DirectConnectionFactory;
 import de.herrlock.manga.connection.ProxyConnectionFactory;
@@ -25,7 +24,6 @@ public final class Utils {
 
     private static Map<String, String> arguments;
     private static ConnectionFactory conFactory;
-    private static Logger log;
 
     public static Map<String, String> getArguments() {
         if ( arguments == null )
@@ -35,7 +33,6 @@ public final class Utils {
 
     public static void setArguments( Map<String, String> m ) {
         arguments = Collections.unmodifiableMap( m );
-        log = Logger.getLogger( arguments.get( Constants.PARAM_LOGLEVEL ) );
 
         String host = m.get( Constants.PARAM_PROXY_HOST );
         String port = m.get( Constants.PARAM_PROXY_PORT );
@@ -47,16 +44,11 @@ public final class Utils {
         }
     }
 
-    public static Logger getLogger() {
-        return log;
-    }
-
     public static URLConnection getConnection( URL url ) throws IOException {
         return conFactory.getConnection( url );
     }
 
     public static Document getDocument( URL url ) throws IOException {
-        Utils.getLogger().debug( "Fetching " + url );
         URLConnection con = getConnection( url );
         List<String> list = readStream( con.getInputStream() );
         StringBuilder sb = new StringBuilder();

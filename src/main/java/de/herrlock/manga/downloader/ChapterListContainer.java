@@ -5,18 +5,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
 
-import de.herrlock.log.Logger;
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Constants;
-import de.herrlock.manga.util.Utils;
 
 public class ChapterListContainer {
 
-    /**
-     * Logger
-     */
-    private static final Logger log = Utils.getLogger();
     /**
      * the parent-folder to write the pages into
      */
@@ -27,11 +21,9 @@ public class ChapterListContainer {
     private ChapterList chapterlist;
 
     public ChapterListContainer() throws IOException {
-        log.trace();
         this.chapterlist = ChapterList.getInstance();
         String mangaName = this.chapterlist.getMangaName().toLowerCase( Locale.ENGLISH ).replace( ' ', '_' );
         this.path = new File( Constants.TARGET_FOLDER, mangaName );
-        log.none( "Save to: " + this.path.getAbsolutePath() );
     }
 
     public final File getPath() {

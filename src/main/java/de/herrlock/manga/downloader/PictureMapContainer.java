@@ -5,24 +5,17 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.herrlock.log.Logger;
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
-import de.herrlock.manga.util.Utils;
 
 public class PictureMapContainer {
 
-    /**
-     * Logger
-     */
-    private static final Logger log = Utils.getLogger();
     /**
      * a {@link Map} containing the {@link URL}s of all the pages
      */
     private Map<String, Map<Integer, URL>> picturemap;
 
     public PictureMapContainer( ChapterListContainer clc ) throws IOException {
-        log.trace();
         ChapterList chapterlist = clc.getChapterlist();
         if ( chapterlist != null ) {
             this.picturemap = new HashMap<>( chapterlist.size() );
@@ -31,9 +24,7 @@ public class PictureMapContainer {
                 this.picturemap.put( chapter.getNumber(), pageMap );
             }
         } else {
-            String message = "ChapterList not initialized";
-            log.error( message );
-            throw new RuntimeException( message );
+            throw new RuntimeException( "ChapterList not initialized" );
         }
     }
 

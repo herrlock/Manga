@@ -1,6 +1,8 @@
 package de.herrlock.manga.util;
 
 public final class Constants {
+    public static final boolean DEBUG = Math.random() < 2;
+
     public static final String SETTINGS_FILE = "./downloader.properties";
     public static final String PARAM_URL = "url";
     public static final String PARAM_PATTERN = "pattern";
