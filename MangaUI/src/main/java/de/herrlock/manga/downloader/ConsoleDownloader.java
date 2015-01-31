@@ -1,23 +1,25 @@
 package de.herrlock.manga.downloader;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.NoSuchElementException;
+import java.util.Properties;
 import java.util.Scanner;
 
 import de.herrlock.manga.util.Constants;
 
 public class ConsoleDownloader extends MDownloader {
 
-    /**
-     * execute with {@code System.in} as InputStream
-     */
     public static void execute() {
         try ( OutputStream fOut = new FileOutputStream( Constants.TRACE_FILE ) ) {
-            MDownloader md = new ConsoleDownloader( System.in, fOut );
-            md.run();
+            Properties p = new Properties();
+            try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
+                p.load( fIn );
+            }
+            new ConsoleDownloader( p, System.in, fOut ).start();
         } catch ( RuntimeException ex ) {
             throw ex;
         } catch ( Exception ex ) {
@@ -27,8 +29,8 @@ public class ConsoleDownloader extends MDownloader {
 
     private Scanner sc;
 
-    public ConsoleDownloader( InputStream in, OutputStream out ) {
-        super( out );
+    public ConsoleDownloader( Properties p, InputStream in, OutputStream out ) {
+        super( p, out );
         this.sc = new Scanner( in, "UTF-8" );
     }
 
@@ -44,7 +46,8 @@ public class ConsoleDownloader extends MDownloader {
                 }
             }
         } catch ( IOException ex ) {
-            ex.printStackTrace();
+            ex.printStackTrace( System.out );
+            throw new RuntimeException( ex );
         }
     }
 

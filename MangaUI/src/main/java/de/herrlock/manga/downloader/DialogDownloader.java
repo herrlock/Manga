@@ -3,6 +3,7 @@ package de.herrlock.manga.downloader;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
@@ -11,18 +12,22 @@ import de.herrlock.manga.util.Constants;
 public class DialogDownloader extends MDownloader {
 
     public static void execute() {
-        try ( OutputStream fOut = new FileOutputStream( Constants.TRACE_FILE ) ) {
-            MDownloader md = new DialogDownloader( fOut );
-            md.run();
-        } catch ( RuntimeException ex ) {
-            throw ex;
-        } catch ( Exception ex ) {
-            throw new RuntimeException( ex );
+        Properties p = new Properties();
+        String url = JOptionPane.showInputDialog( "URL" );
+        if ( url != null && !"".equals( url ) ) {
+            p.put( Constants.PARAM_URL, url );
+            try ( OutputStream fOut = new FileOutputStream( Constants.TRACE_FILE ) ) {
+                new DialogDownloader( p, fOut ).start();
+            } catch ( RuntimeException ex ) {
+                throw ex;
+            } catch ( Exception ex ) {
+                throw new RuntimeException( ex );
+            }
         }
     }
 
-    public DialogDownloader( OutputStream out ) {
-        super( out );
+    public DialogDownloader( Properties p, OutputStream out ) {
+        super( p, out );
     }
 
     @Override
@@ -36,7 +41,8 @@ public class DialogDownloader extends MDownloader {
                 }
             }
         } catch ( IOException ex ) {
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog( null, ex.getStackTrace(), ex.getMessage(), JOptionPane.ERROR_MESSAGE );
+            throw new RuntimeException( ex );
         }
     }
 

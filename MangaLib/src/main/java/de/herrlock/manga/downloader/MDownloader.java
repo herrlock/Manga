@@ -16,12 +16,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.imageio.ImageIO;
 
 import de.herrlock.manga.util.Utils;
 
-public abstract class MDownloader {
+public abstract class MDownloader extends Thread {
 
     protected ChapterListContainer clc;
     protected PictureMapContainer pmc;
@@ -29,11 +30,10 @@ public abstract class MDownloader {
 
     final PrintWriter trace;
 
-    public MDownloader( OutputStream out ) {
+    public MDownloader( Properties p, OutputStream out ) {
+        Utils.setArguments( p );
         this.trace = new PrintWriter( new OutputStreamWriter( out, StandardCharsets.UTF_8 ) );
     }
-
-    public abstract void run();
 
     public void initCLC() throws IOException {
         this.trace.println( "initCLC()" );

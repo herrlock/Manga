@@ -1,6 +1,7 @@
 package de.herrlock.manga.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,6 +35,17 @@ public final class Utils {
     }
 
     public static void setArguments( Properties p ) {
+        String[] requiredParameters = new String[] {
+            Constants.PARAM_URL
+        };
+        for ( String s : requiredParameters ) {
+            String value = p.getProperty( s );
+            if ( value == null || "".equals( value ) ) {
+                throw new RuntimeException( "Please fill the field \"" + s + "\" in the file "
+                    + new File( Constants.SETTINGS_FILE ).getAbsolutePath() );
+            }
+        }
+
         Map<String, String> m = new HashMap<>();
         for ( String s : p.stringPropertyNames() ) {
             m.put( s, p.getProperty( s ) );
