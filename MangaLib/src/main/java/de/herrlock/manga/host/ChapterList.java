@@ -121,7 +121,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
             return this.name;
         }
 
-        public URL getUrl() {
+        public URL getURL() {
             return this.url;
         }
 
@@ -156,7 +156,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
 
         public static Hoster getHostByURL( URL url ) {
             for ( Hoster h : Hoster.values() ) {
-                String hostUrlHost = h.getUrl().getHost(), givenUrlHost = url.getHost();
+                String hostUrlHost = h.getURL().getHost(), givenUrlHost = url.getHost();
                 if ( hostUrlHost.matches( "www\\..+" ) )
                     hostUrlHost = hostUrlHost.substring( 4 );
                 if ( givenUrlHost.matches( "www\\..+" ) )
