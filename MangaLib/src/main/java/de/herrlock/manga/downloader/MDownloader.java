@@ -36,7 +36,7 @@ public abstract class MDownloader extends Thread {
         Utils.setArguments( p );
         try {
             this.trace = new PrintWriter( new OutputStreamWriter( new FileOutputStream( Constants.TRACE_FILE ),
-                StandardCharsets.UTF_8 ) );
+                StandardCharsets.UTF_8 ), true );
         } catch ( FileNotFoundException ex ) {
             throw new RuntimeException( ex );
         }
@@ -128,18 +128,21 @@ public abstract class MDownloader extends Thread {
         }
     }
 
-    private void dlPic( Page c ) throws IOException {
-        this.trace.println( "dlPic( " + c + " )" );
+    private void dlPic( Page p ) throws IOException {
+        this.trace.println( "dlPic( " + p.getURL() + " )" );
         if ( this.clc != null ) {
-            URL imageUrl = this.clc.getImageLink( c.getURL() );
+            URL imageUrl = this.clc.getImageLink( p.getURL() );
+            this.trace.println( ' ' + imageUrl.toExternalForm() );
             URLConnection con = Utils.getConnection( imageUrl );
             try ( InputStream in = con.getInputStream() ) {
                 BufferedImage image = ImageIO.read( in );
-                File output = new File( c.getFolder(), c.getNumber() + ".jpg" );
+                File output = new File( p.getFolder(), p.getNumber() + ".jpg" );
                 ImageIO.write( image, "jpg", output );
+                this.trace.println( "  success" );
                 System.out.println( "saved image to " + output );
             } catch ( SocketException | SocketTimeoutException ex ) {
-                this.dqc.add( c );
+                this.trace.println( "  failed" );
+                this.dqc.add( p );
             }
         } else {
             System.out.println( "clc == null" );
