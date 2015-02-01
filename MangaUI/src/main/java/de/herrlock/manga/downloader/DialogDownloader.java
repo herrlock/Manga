@@ -1,8 +1,6 @@
 package de.herrlock.manga.downloader;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
@@ -16,8 +14,8 @@ public class DialogDownloader extends MDownloader {
         String url = JOptionPane.showInputDialog( "URL" );
         if ( url != null && !"".equals( url ) ) {
             p.put( Constants.PARAM_URL, url );
-            try ( OutputStream fOut = new FileOutputStream( Constants.TRACE_FILE ) ) {
-                new DialogDownloader( p, fOut ).start();
+            try {
+                new DialogDownloader( p ).start();
             } catch ( RuntimeException ex ) {
                 throw ex;
             } catch ( Exception ex ) {
@@ -26,12 +24,12 @@ public class DialogDownloader extends MDownloader {
         }
     }
 
-    public DialogDownloader( Properties p, OutputStream out ) {
-        super( p, out );
+    protected DialogDownloader( Properties p ) {
+        super( p );
     }
 
     @Override
-    public void run() {
+    protected void runX() {
         try {
             initCLC();
             if ( goonCLC() ) {

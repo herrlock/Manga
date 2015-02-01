@@ -2,9 +2,10 @@ package de.herrlock.manga.downloader;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.SocketException;
@@ -20,20 +21,40 @@ import java.util.Properties;
 
 import javax.imageio.ImageIO;
 
+import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
 
 public abstract class MDownloader extends Thread {
 
+    protected final DownloadQueueContainer dqc = new DownloadQueueContainer();
     protected ChapterListContainer clc;
     protected PictureMapContainer pmc;
-    protected List<Page> dlQueue = new ArrayList<>( 0 );
 
     final PrintWriter trace;
 
-    public MDownloader( Properties p, OutputStream out ) {
+    public MDownloader( Properties p ) {
         Utils.setArguments( p );
-        this.trace = new PrintWriter( new OutputStreamWriter( out, StandardCharsets.UTF_8 ) );
+        try {
+            this.trace = new PrintWriter( new OutputStreamWriter( new FileOutputStream( Constants.TRACE_FILE ),
+                StandardCharsets.UTF_8 ) );
+        } catch ( FileNotFoundException ex ) {
+            throw new RuntimeException( ex );
+        }
     }
+
+    @Override
+    public void run() {
+        try {
+            runX();
+        } catch ( RuntimeException ex ) {
+            System.out.println( ex.getMessage() );
+            throw ex;
+        } catch ( Exception ex ) {
+            System.out.println( ex.getMessage() );
+            throw new RuntimeException( ex );
+        }
+    }
+    protected abstract void runX();
 
     public void initCLC() throws IOException {
         this.trace.println( "initCLC()" );
@@ -61,42 +82,48 @@ public abstract class MDownloader extends Thread {
                 List<String> keys = new ArrayList<>( picturemap.keySet() );
                 Collections.sort( keys );
                 for ( String key : keys ) {
-                    downloadChapter( key );
+                    Map<Integer, URL> urlMap = this.pmc.getUrlMap( key );
+                    downloadChapter( key, urlMap );
                 }
             } else {
                 throw new RuntimeException( "PageMap not initialized" );
             }
+        } else {
+            this.trace.println( "pmc == null" );
         }
     }
 
-    private void downloadChapter( String key ) throws IOException {
+    private void downloadChapter( String key, Map<Integer, URL> urlMap ) throws IOException {
         this.trace.println( "downloadChapter( " + key + " )" );
-        if ( this.clc != null && this.pmc != null ) {
-            Map<Integer, URL> urlMap = this.pmc.getUrlMap( key );
+        if ( this.clc != null ) {
             System.out.println( "Download chapter " + key + " (" + urlMap.size() + " pages)" );
             File chapterFolder = new File( this.clc.getPath(), key );
             if ( chapterFolder.exists() || chapterFolder.mkdirs() ) {
                 // add pictures to queue
                 for ( Map.Entry<Integer, URL> e : urlMap.entrySet() ) {
-                    this.dlQueue.add( new Page( e.getValue(), chapterFolder, e.getKey() ) );
+                    this.dqc.add( new Page( e.getValue(), chapterFolder, e.getKey() ) );
                 }
                 // start download
                 downloadPages();
+            } else {
+                throw new RuntimeException( chapterFolder + "does not exists and could not be created" );
             }
             System.out.println( "finished chapter " + key );
+        } else {
+            System.out.println( "clc == null" );
         }
     }
 
     private void downloadPages() throws IOException {
         this.trace.println( "downloadPages()" );
-        List<Page> list = new ArrayList<>( this.dlQueue );
-        this.dlQueue.clear();
+        List<Page> list = this.dqc.getList();
+        this.dqc.clear();
         // download pictures from the current chapter
         for ( Page c : list ) {
             dlPic( c );
         }
         // download failed pictures from the current chapter
-        if ( !this.dlQueue.isEmpty() ) {
+        if ( !this.dqc.isEmpty() ) {
             downloadPages();
         }
     }
@@ -104,27 +131,19 @@ public abstract class MDownloader extends Thread {
     private void dlPic( Page c ) throws IOException {
         this.trace.println( "dlPic( " + c + " )" );
         if ( this.clc != null ) {
-            URL imageUrl = this.clc.getImageLink( c.pageUrl );
+            URL imageUrl = this.clc.getImageLink( c.getURL() );
             URLConnection con = Utils.getConnection( imageUrl );
             try ( InputStream in = con.getInputStream() ) {
                 BufferedImage image = ImageIO.read( in );
-                File output = new File( c.chapterFolder, c.pageNumber + ".jpg" );
+                File output = new File( c.getFolder(), c.getNumber() + ".jpg" );
                 ImageIO.write( image, "jpg", output );
+                System.out.println( "saved image to " + output );
             } catch ( SocketException | SocketTimeoutException ex ) {
-                this.dlQueue.add( c );
+                this.dqc.add( c );
             }
+        } else {
+            System.out.println( "clc == null" );
         }
     }
-}
 
-class Page {
-    final URL pageUrl;
-    final File chapterFolder;
-    final int pageNumber;
-
-    public Page( URL pageUrl, File chapterFolder, int pageNumber ) {
-        this.pageUrl = pageUrl;
-        this.chapterFolder = chapterFolder;
-        this.pageNumber = pageNumber;
-    }
 }

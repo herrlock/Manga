@@ -1,6 +1,5 @@
 package de.herrlock.manga.downloader;
 
-import java.io.OutputStream;
 import java.util.Properties;
 
 public class UIDownloader extends MDownloader {
@@ -9,13 +8,13 @@ public class UIDownloader extends MDownloader {
         throw new UnsupportedOperationException( "UIDownloader.execute()" );
     }
 
-    public UIDownloader( Properties p, OutputStream out ) {
-        super( p, out );
+    protected UIDownloader( Properties p ) {
+        super( p );
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void run() {
+    protected void runX() {
         // TODO Auto-generated method stub
 
     }

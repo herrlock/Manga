@@ -1,10 +1,8 @@
 package de.herrlock.manga.downloader;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Scanner;
@@ -14,12 +12,12 @@ import de.herrlock.manga.util.Constants;
 public class ConsoleDownloader extends MDownloader {
 
     public static void execute() {
-        try ( OutputStream fOut = new FileOutputStream( Constants.TRACE_FILE ) ) {
+        try {
             Properties p = new Properties();
             try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
                 p.load( fIn );
             }
-            new ConsoleDownloader( p, System.in, fOut ).start();
+            new ConsoleDownloader( p, System.in ).start();
         } catch ( RuntimeException ex ) {
             throw ex;
         } catch ( Exception ex ) {
@@ -29,13 +27,13 @@ public class ConsoleDownloader extends MDownloader {
 
     private Scanner sc;
 
-    public ConsoleDownloader( Properties p, InputStream in, OutputStream out ) {
-        super( p, out );
+    protected ConsoleDownloader( Properties p, InputStream in ) {
+        super( p );
         this.sc = new Scanner( in, "UTF-8" );
     }
 
     @Override
-    public void run() {
+    protected void runX() {
         this.trace.println( "run()" );
         try {
             initCLC();
@@ -70,7 +68,7 @@ public class ConsoleDownloader extends MDownloader {
         return false;
     }
 
-    public boolean goonPMC() {
+    private boolean goonPMC() {
         int noOfPictures = getPMCSize();
         if ( noOfPictures > 0 ) {
             System.out.println( noOfPictures + " pages" + ( noOfPictures > 1 ? "s" : "" ) + " availabile." );
