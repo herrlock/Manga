@@ -9,8 +9,8 @@ import de.herrlock.manga.downloader.UIDownloader;
 public class Ctrl {
 
     public static void main( String[] args ) {
-        String message = "select";
-        String title = "title";
+        String message = "Select variant to execute.";
+        String title = "Please select";
         int optionType = JOptionPane.DEFAULT_OPTION;
         int messageType = JOptionPane.QUESTION_MESSAGE;
         Object[] options = {
