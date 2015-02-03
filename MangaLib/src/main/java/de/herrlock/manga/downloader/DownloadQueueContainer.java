@@ -12,15 +12,20 @@ public class DownloadQueueContainer {
         this.dlQueue.add( p );
     }
 
-    public void clear() {
-        this.dlQueue.clear();
-    }
-
     public boolean isEmpty() {
         return this.dlQueue.isEmpty();
     }
 
-    public List<Page> getList() {
-        return Collections.unmodifiableList( new ArrayList<>( this.dlQueue ) );
+    /**
+     * creates a new {@linkplain Collections#unmodifiableList(List) unmodifiable List} containing the current elements of this
+     * list.<br>
+     * {@linkplain List#clear() clear}s this list afterwards
+     * 
+     * @return a new list with the elements of this list
+     */
+    public List<Page> getNewList() {
+        List<Page> list = Collections.unmodifiableList( new ArrayList<>( this.dlQueue ) );
+        this.dlQueue.clear();
+        return list;
     }
 }

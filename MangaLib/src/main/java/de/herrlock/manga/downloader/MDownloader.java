@@ -116,8 +116,7 @@ public abstract class MDownloader extends Thread {
 
     private void downloadPages() throws IOException {
         this.trace.println( "downloadPages()" );
-        List<Page> list = this.dqc.getList();
-        this.dqc.clear();
+        List<Page> list = this.dqc.getNewList();
         // download pictures from the current chapter
         for ( Page c : list ) {
             dlPic( c );
