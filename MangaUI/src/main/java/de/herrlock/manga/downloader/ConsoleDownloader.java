@@ -8,6 +8,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.Utils;
 
 public class ConsoleDownloader extends MDownloader {
 
@@ -35,6 +36,7 @@ public class ConsoleDownloader extends MDownloader {
     @Override
     protected void runX() {
         this.trace.println( "run()" );
+        System.out.println( Utils.getMangaURL() );
         try {
             initCLC();
             if ( goonCLC() ) {
@@ -48,7 +50,6 @@ public class ConsoleDownloader extends MDownloader {
             throw new RuntimeException( ex );
         }
     }
-
     protected boolean goon() {
         System.out.println( "go on? y|n" );
         try {
