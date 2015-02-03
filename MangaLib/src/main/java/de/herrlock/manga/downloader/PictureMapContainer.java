@@ -20,6 +20,7 @@ public class PictureMapContainer {
         if ( chapterlist != null ) {
             this.picturemap = new HashMap<>( chapterlist.size() );
             for ( Chapter chapter : chapterlist ) {
+                System.out.println( chapter );
                 Map<Integer, URL> pageMap = chapterlist.getAllPageURLs( chapter );
                 this.picturemap.put( chapter.getNumber(), pageMap );
             }

@@ -56,14 +56,24 @@ public abstract class MDownloader extends Thread {
     }
     protected abstract void runX();
 
-    public void initCLC() throws IOException {
+    public void initCLC() {
         this.trace.println( "initCLC()" );
-        this.clc = new ChapterListContainer();
+        System.out.println( "getting number of chapters" );
+        try {
+            this.clc = new ChapterListContainer();
+        } catch ( IOException ex ) {
+            throw new RuntimeException( ex );
+        }
     }
 
-    public void initPMC() throws IOException {
+    public void initPMC() {
         this.trace.println( "initPMC()" );
-        this.pmc = new PictureMapContainer( this.clc );
+        System.out.println( "checking chapters for number of pages" );
+        try {
+            this.pmc = new PictureMapContainer( this.clc );
+        } catch ( IOException ex ) {
+            throw new RuntimeException( ex );
+        }
     }
 
     public int getCLCSize() {
@@ -131,7 +141,7 @@ public abstract class MDownloader extends Thread {
         this.trace.println( "dlPic( " + p.getURL() + " )" );
         if ( this.clc != null ) {
             URL imageUrl = this.clc.getImageLink( p.getURL() );
-            this.trace.println( ' ' + imageUrl.toExternalForm() );
+            this.trace.println( imageUrl.toExternalForm() );
             URLConnection con = Utils.getConnection( imageUrl );
             try ( InputStream in = con.getInputStream() ) {
                 BufferedImage image = ImageIO.read( in );
@@ -140,7 +150,7 @@ public abstract class MDownloader extends Thread {
                 this.trace.println( "  success" );
                 System.out.println( "saved image to " + output );
             } catch ( SocketException | SocketTimeoutException ex ) {
-                this.trace.println( "  failed" );
+                this.trace.println( "  failed: " + ex.getMessage() );
                 this.dqc.add( p );
             }
         } else {
