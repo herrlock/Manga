@@ -21,7 +21,7 @@ class Fox extends ChapterList {
         super();
         Document document = Utils.getDocument( url );
 
-        this.name = document.select( "#title>h1" ).first().text();
+        this.name = document.select( "#series_info>.cover>img" ).first().attr( "alt" );
 
         Elements elements = document.select( "#chapters>ul.chlist>li" );
         for ( Element e : elements ) {
