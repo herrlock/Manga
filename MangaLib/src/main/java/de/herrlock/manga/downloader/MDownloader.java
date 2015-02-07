@@ -67,11 +67,7 @@ public abstract class MDownloader extends Thread {
     public void initPMC() {
         this.trace.println( "initPMC()" );
         System.out.println( "checking chapters for number of pages" );
-        try {
-            this.pmc = new PictureMapContainer( this.clc );
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
-        }
+        this.pmc = new PictureMapContainer( this.clc );
     }
 
     public int getCLCSize() {
