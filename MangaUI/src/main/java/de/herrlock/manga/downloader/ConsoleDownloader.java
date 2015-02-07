@@ -72,7 +72,7 @@ public class ConsoleDownloader extends MDownloader {
     private boolean goonPMC() {
         int noOfPictures = getPMCSize();
         if ( noOfPictures > 0 ) {
-            System.out.println( noOfPictures + " pages" + ( noOfPictures > 1 ? "s" : "" ) + " availabile." );
+            System.out.println( noOfPictures + " page" + ( noOfPictures > 1 ? "s" : "" ) + " availabile." );
             return goon();
         }
         return false;
