@@ -3,6 +3,8 @@ package de.herrlock.manga.downloader.clc;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import de.herrlock.manga.host.ChapterList;
@@ -10,7 +12,6 @@ import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Constants;
 
 public class ChapterListContainer {
-
     /**
      * the parent-folder to write the pages into
      */
@@ -23,7 +24,8 @@ public class ChapterListContainer {
     public ChapterListContainer() throws IOException {
         this.chapterlist = ChapterList.getInstance();
         String mangaName = this.chapterlist.getMangaName().toLowerCase( Locale.ENGLISH ).replace( ' ', '_' );
-        this.path = new File( Constants.TARGET_FOLDER, mangaName );
+        String currentTime = new SimpleDateFormat( "YYMMddHHmmss" ).format( new Date() );
+        this.path = new File( Constants.TARGET_FOLDER, mangaName + "_" + currentTime );
     }
 
     public final File getPath() {
