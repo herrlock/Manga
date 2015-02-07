@@ -10,6 +10,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -100,6 +101,19 @@ public final class Utils {
 
     public static String getPattern() {
         return arguments.get( Constants.PARAM_PATTERN );
+    }
+
+    public static void startAndWaitForThreads( Collection<? extends Thread> threads ) {
+        for ( Thread t : threads ) {
+            t.start();
+        }
+        try {
+            for ( Thread t : threads ) {
+                t.join();
+            }
+        } catch ( InterruptedException ex ) {
+            throw new RuntimeException( ex );
+        }
     }
 
     private Utils() {

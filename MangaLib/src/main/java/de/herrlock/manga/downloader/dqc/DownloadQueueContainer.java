@@ -60,16 +60,7 @@ public class DownloadQueueContainer {
         for ( Page p : list ) {
             threads.add( new DownloadThread( p, clc.getImageLink( p.getURL() ) ) );
         }
-        for ( Thread t : threads ) {
-            t.start();
-        }
-        try {
-            for ( Thread t : threads ) {
-                t.join();
-            }
-        } catch ( InterruptedException ex ) {
-            throw new RuntimeException( ex );
-        }
+        Utils.startAndWaitForThreads( threads );
         // download failed pictures from the current chapter
         if ( !this.isEmpty() ) {
             downloadPages( clc );
