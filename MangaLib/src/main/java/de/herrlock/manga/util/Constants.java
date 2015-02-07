@@ -9,7 +9,7 @@ public final class Constants {
     public static final String PARAM_LOGLEVEL = "loglevel";
     public static final String PARAM_FILEPATH = "filepath";
     public static final String PARAM_TIMEOUT = "timeout";
-    public static final int PARAM_TIMEOUT_DEFAULT = 2_000;
+    public static final int PARAM_TIMEOUT_DEFAULT = 5_000;
 
     public static final String PARAM_PROXY_HOST = "proxyHost";
     public static final String PARAM_PROXY_PORT = "proxyPort";
