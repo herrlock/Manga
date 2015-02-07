@@ -5,24 +5,18 @@ import java.net.URL;
 
 class Page {
     private final URL pageUrl;
-    private final File chapterFolder;
-    private final int pageNumber;
+    private final File targetFile;
 
     public Page( URL pageUrl, File chapterFolder, int pageNumber ) {
         this.pageUrl = pageUrl;
-        this.chapterFolder = chapterFolder;
-        this.pageNumber = pageNumber;
+        this.targetFile = new File( chapterFolder, pageNumber + ".jpg" );
     }
 
     public URL getURL() {
         return this.pageUrl;
     }
 
-    public File getFolder() {
-        return this.chapterFolder;
-    }
-
-    public int getNumber() {
-        return this.pageNumber;
+    public File getTargetFile() {
+        return this.targetFile;
     }
 }
