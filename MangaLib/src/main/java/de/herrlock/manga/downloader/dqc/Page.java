@@ -1,9 +1,9 @@
-package de.herrlock.manga.downloader;
+package de.herrlock.manga.downloader.dqc;
 
 import java.io.File;
 import java.net.URL;
 
-class Page {
+public class Page {
     private final URL pageUrl;
     private final File targetFile;
 

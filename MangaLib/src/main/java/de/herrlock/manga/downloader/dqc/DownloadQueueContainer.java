@@ -1,4 +1,4 @@
-package de.herrlock.manga.downloader;
+package de.herrlock.manga.downloader.dqc;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,9 +15,10 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.util.Utils;
 
-class DownloadQueueContainer {
+public class DownloadQueueContainer {
 
     private final List<Page> dlQueue = new ArrayList<>();
     PrintWriter trace;

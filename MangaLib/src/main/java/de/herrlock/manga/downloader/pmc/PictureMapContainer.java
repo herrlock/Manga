@@ -1,14 +1,15 @@
-package de.herrlock.manga.downloader;
+package de.herrlock.manga.downloader.pmc;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
 
-class PictureMapContainer {
+public class PictureMapContainer {
 
     /**
      * a {@link Map} containing the {@link URL}s of all the pages

@@ -1,4 +1,4 @@
-package de.herrlock.manga.downloader;
+package de.herrlock.manga.downloader.clc;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Constants;
 
-class ChapterListContainer {
+public class ChapterListContainer {
 
     /**
      * the parent-folder to write the pages into

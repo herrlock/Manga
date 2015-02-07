@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import de.herrlock.manga.downloader.clc.ChapterListContainer;
+import de.herrlock.manga.downloader.dqc.DownloadQueueContainer;
+import de.herrlock.manga.downloader.pmc.PictureMapContainer;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
 
