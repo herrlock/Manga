@@ -65,19 +65,27 @@ public final class PictureMapContainer {
         }
 
         private Map<Integer, URL> getMap() {
+            Map<Integer, URL> allPages;
             try {
-                Map<Integer, URL> pageMap = this.chapterlist.getAllPageURLs( this.chapter );
-                return pageMap;
+                allPages = this.chapterlist.getAllPageURLs( this.chapter );
             } catch ( SocketTimeoutException stex ) {
                 try {
+                    System.out.println( "read timed out (chapter " + this.chapter.getNumber() + "), trying again" );
                     sleep( Constants.PARAM_TIMEOUT_DEFAULT );
-                    return getMap();
+                    allPages = getMap();
                 } catch ( InterruptedException iex ) {
                     throw new RuntimeException( iex );
                 }
             } catch ( IOException ioex ) {
-                throw new RuntimeException( ioex );
+                if ( ioex.getMessage().contains( "503" ) ) {
+                    // http-statuscode 503
+                    System.out.println( "HTTP-Status 503 (chapter " + this.chapter.getNumber() + "), trying again" );
+                    allPages = getMap();
+                } else {
+                    throw new RuntimeException( ioex );
+                }
             }
+            return allPages;
         }
 
     }

@@ -9,7 +9,8 @@ public class Page {
 
     public Page( URL pageUrl, File chapterFolder, int pageNumber ) {
         this.pageUrl = pageUrl;
-        this.targetFile = new File( chapterFolder, pageNumber + ".jpg" );
+        String _nr = ( pageNumber > 9 ? "" : "0" ) + pageNumber;
+        this.targetFile = new File( chapterFolder, _nr + ".jpg" );
     }
 
     public URL getURL() {

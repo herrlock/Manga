@@ -1,13 +1,8 @@
 package de.herrlock.manga.downloader;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,17 +21,9 @@ public abstract class MDownloader extends Thread {
     protected ChapterListContainer clc;
     protected PictureMapContainer pmc;
 
-    final PrintWriter trace;
-
     public MDownloader( Properties p ) {
         Utils.setArguments( p );
-        try {
-            this.trace = new PrintWriter( new OutputStreamWriter( new FileOutputStream( Constants.TRACE_FILE ),
-                StandardCharsets.UTF_8 ), true );
-            this.dqc = new DownloadQueueContainer( this.trace );
-        } catch ( FileNotFoundException ex ) {
-            throw new RuntimeException( ex );
-        }
+        this.dqc = new DownloadQueueContainer();
     }
 
     @Override
@@ -55,7 +42,7 @@ public abstract class MDownloader extends Thread {
     protected abstract void runX();
 
     public void initCLC() {
-        this.trace.println( "initCLC()" );
+        Utils.trace( "initCLC()" );
         System.out.println( "getting number of chapters" );
         try {
             this.clc = new ChapterListContainer();
@@ -65,7 +52,7 @@ public abstract class MDownloader extends Thread {
     }
 
     public void initPMC() {
-        this.trace.println( "initPMC()" );
+        Utils.trace( "initPMC()" );
         System.out.println( "checking chapters for number of pages" );
         this.pmc = new PictureMapContainer( this.clc );
     }
@@ -79,12 +66,12 @@ public abstract class MDownloader extends Thread {
     }
 
     public void downloadAll() throws IOException {
-        this.trace.println( "downloadAll()" );
+        Utils.trace( "downloadAll()" );
         if ( this.pmc != null ) {
             Map<String, Map<Integer, URL>> picturemap = this.pmc.getPictureMap();
             if ( picturemap != null ) {
                 List<String> keys = new ArrayList<>( picturemap.keySet() );
-                Collections.sort( keys );
+                Collections.sort( keys, Constants.STRING_NUMBER_COMPARATOR );
                 for ( String key : keys ) {
                     downloadChapter( key, picturemap.get( key ) );
                 }
@@ -92,13 +79,13 @@ public abstract class MDownloader extends Thread {
                 throw new RuntimeException( "PageMap not initialized" );
             }
         } else {
-            this.trace.println( "pmc == null" );
+            Utils.trace( "pmc == null" );
             System.out.println( "pmc == null" );
         }
     }
 
     private void downloadChapter( String key, Map<Integer, URL> urlMap ) throws IOException {
-        this.trace.println( "downloadChapter( " + key + " )" );
+        Utils.trace( "downloadChapter( " + key + " )" );
         if ( this.clc != null ) {
             System.out.println( "Download chapter " + key + " (" + urlMap.size() + " pages)" );
             File chapterFolder = new File( this.clc.getPath(), key );
@@ -114,7 +101,7 @@ public abstract class MDownloader extends Thread {
             }
             System.out.println( "finished chapter " + key );
         } else {
-            this.trace.println( "clc == null" );
+            Utils.trace( "clc == null" );
             System.out.println( "clc == null" );
         }
     }

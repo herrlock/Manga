@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -21,11 +20,6 @@ import de.herrlock.manga.util.Utils;
 public class DownloadQueueContainer {
 
     private final List<Page> dlQueue = new ArrayList<>();
-    PrintWriter trace;
-
-    public DownloadQueueContainer( PrintWriter trace ) {
-        this.trace = trace;
-    }
 
     public void add( URL pageUrl, File chapterFolder, int pageNumber ) {
         this.add( new Page( pageUrl, chapterFolder, pageNumber ) );
@@ -53,7 +47,7 @@ public class DownloadQueueContainer {
     }
 
     public void downloadPages( ChapterListContainer clc ) throws IOException {
-        this.trace.println( "downloadPages()" );
+        Utils.trace( "downloadPages()" );
         List<Page> list = this.getNewList();
         // download pictures from the ChapterListContainer
         List<DownloadThread> threads = new ArrayList<>( list.size() );
@@ -73,7 +67,7 @@ public class DownloadQueueContainer {
 
         public DownloadThread( Page p, URL imageUrl ) {
             String msg = "new DownloadThread( " + p.getURL() + ", " + imageUrl.toExternalForm() + " )";
-            DownloadQueueContainer.this.trace.println( msg );
+            Utils.trace( msg );
             this.p = p;
             this.imageUrl = imageUrl;
         }
@@ -84,12 +78,11 @@ public class DownloadQueueContainer {
                 URLConnection con = Utils.getConnection( this.imageUrl );
                 try ( InputStream in = con.getInputStream() ) {
                     BufferedImage image = ImageIO.read( in );
+                    System.out.println( "read image " + this.imageUrl );
                     File outputFile = this.p.getTargetFile();
                     ImageIO.write( image, "jpg", outputFile );
-                    DownloadQueueContainer.this.trace.println( "  success" );
                     System.out.println( "saved image to " + outputFile );
                 } catch ( SocketException | SocketTimeoutException ex ) {
-                    DownloadQueueContainer.this.trace.println( "  failed: " + ex.getMessage() );
                     DownloadQueueContainer.this.add( this.p );
                 }
             } catch ( IOException ex ) {

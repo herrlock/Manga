@@ -26,6 +26,10 @@ import de.herrlock.manga.connection.ProxyConnectionFactory;
 
 public final class Utils {
 
+    public static void trace( Object message ) {
+        Constants.TRACE.println( message );
+    }
+
     private static Map<String, String> arguments;
     private static ConnectionFactory conFactory;
 

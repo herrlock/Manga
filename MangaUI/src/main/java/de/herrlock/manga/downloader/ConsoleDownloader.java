@@ -35,7 +35,6 @@ public class ConsoleDownloader extends MDownloader {
 
     @Override
     protected void runX() {
-        this.trace.println( "run()" );
         System.out.println( Utils.getMangaURL() );
         try {
             initCLC();
