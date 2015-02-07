@@ -35,11 +35,11 @@ public final class PictureMapContainer {
         }
     }
 
-    public final Map<String, Map<Integer, URL>> getPictureMap() {
+    public Map<String, Map<Integer, URL>> getPictureMap() {
         return this.picturemap;
     }
 
-    public final int getSize() {
+    public int getSize() {
         int noOfPictures = 0;
         for ( Map<Integer, URL> m : this.picturemap.values() ) {
             noOfPictures += m.size();
