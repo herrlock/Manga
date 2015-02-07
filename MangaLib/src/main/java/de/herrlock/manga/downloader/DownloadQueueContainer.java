@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DownloadQueueContainer {
+class DownloadQueueContainer {
 
     private final List<Page> dlQueue = new ArrayList<>();
 

@@ -8,7 +8,7 @@ import java.util.Map;
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
 
-public class PictureMapContainer {
+class PictureMapContainer {
 
     /**
      * a {@link Map} containing the {@link URL}s of all the pages

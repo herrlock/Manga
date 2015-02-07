@@ -3,7 +3,7 @@ package de.herrlock.manga.downloader;
 import java.io.File;
 import java.net.URL;
 
-public class Page {
+class Page {
     private final URL pageUrl;
     private final File chapterFolder;
     private final int pageNumber;

@@ -9,7 +9,7 @@ import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Constants;
 
-public class ChapterListContainer {
+class ChapterListContainer {
 
     /**
      * the parent-folder to write the pages into
