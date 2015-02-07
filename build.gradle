@@ -39,18 +39,27 @@ task clean (type: Delete) {
 	delete 'build/'
 }
 
-task dist (type: Zip) {
+def temp = 'build/temp/'
+
+task copyDist (type: Copy) {
+	from 'src/dist'
+	into temp
+}
+
+task createLibs (type: Copy) {
+	into temp + 'lib'
+    subprojects.each { s -> 
+		dependsOn s.jar
+		from s.jar
+		from s.configurations.runtime
+	}
+}
+
+task dist (type: Zip, dependsOn: ['copyDist', 'createLibs']) {
     destinationDir = file('build')
     baseName = project.name
     version = project.version
     
-    into (dist.archiveName) {
-	    from 'src/dist'
-	    into ('lib') {
-	        subprojects.each { s -> 
-				dependsOn s.jar
-				from s.jar
-			}
-	    }
-	}
+    into baseName + '-' + version
+    from temp
 }
