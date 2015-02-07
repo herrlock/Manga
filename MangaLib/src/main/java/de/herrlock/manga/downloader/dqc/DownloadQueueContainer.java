@@ -77,6 +77,7 @@ public class DownloadQueueContainer {
             try {
                 URLConnection con = Utils.getConnection( this.imageUrl );
                 try ( InputStream in = con.getInputStream() ) {
+                    System.out.println( "start reading image " + this.imageUrl );
                     BufferedImage image = ImageIO.read( in );
                     System.out.println( "read image " + this.imageUrl );
                     File outputFile = this.p.getTargetFile();
