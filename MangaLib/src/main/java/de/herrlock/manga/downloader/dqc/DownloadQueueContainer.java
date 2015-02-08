@@ -29,57 +29,42 @@ public class DownloadQueueContainer {
         this.dlQueue.add( p );
     }
 
-    public boolean isEmpty() {
-        return this.dlQueue.isEmpty();
-    }
-
-    /**
-     * creates a new {@linkplain Collections#unmodifiableList(List) unmodifiable List} containing the current elements of this
-     * list.<br>
-     * {@linkplain List#clear() clear}s this list afterwards
-     * 
-     * @return a new list with the elements of this list
-     */
-    public List<Page> getNewList() {
-        List<Page> list = Collections.unmodifiableList( new ArrayList<>( this.dlQueue ) );
-        this.dlQueue.clear();
-        return list;
-    }
-
     public void downloadPages( ChapterListContainer clc ) throws IOException {
         Utils.trace( "downloadPages()" );
-        List<Page> list = this.getNewList();
+        List<Page> list = Collections.unmodifiableList( new ArrayList<>( this.dlQueue ) );
+        this.dlQueue.clear();
         // download pictures from the ChapterListContainer
         List<DownloadThread> threads = new ArrayList<>( list.size() );
         for ( Page p : list ) {
-            threads.add( new DownloadThread( p, clc.getImageLink( p.getURL() ) ) );
+            threads.add( new DownloadThread( clc, p ) );
         }
         Utils.startAndWaitForThreads( threads );
         // download failed pictures from the current chapter
-        if ( !this.isEmpty() ) {
+        if ( !this.dlQueue.isEmpty() ) {
             downloadPages( clc );
         }
     }
 
     private class DownloadThread extends Thread {
-        private Page p;
-        private URL imageUrl;
+        private final ChapterListContainer clc;
+        private final Page p;
 
-        public DownloadThread( Page p, URL imageUrl ) {
-            String msg = "new DownloadThread( " + p.getURL() + ", " + imageUrl.toExternalForm() + " )";
+        public DownloadThread( ChapterListContainer clc, Page p ) {
+            String msg = "new DownloadThread( " + p.getURL() + " )";
             Utils.trace( msg );
+            this.clc = clc;
             this.p = p;
-            this.imageUrl = imageUrl;
         }
 
         @Override
         public void run() {
             try {
-                URLConnection con = Utils.getConnection( this.imageUrl );
+                URL imageURL = this.clc.getImageLink( this.p.getURL() );
+                URLConnection con = Utils.getConnection( imageURL );
                 try ( InputStream in = con.getInputStream() ) {
-                    System.out.println( "start reading image " + this.imageUrl );
+                    System.out.println( "start reading image " + imageURL );
                     BufferedImage image = ImageIO.read( in );
-                    System.out.println( "read image " + this.imageUrl );
+                    System.out.println( "read image " + imageURL );
                     File outputFile = this.p.getTargetFile();
                     ImageIO.write( image, "jpg", outputFile );
                     System.out.println( "saved image to " + outputFile );
