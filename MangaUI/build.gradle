@@ -6,3 +6,7 @@ version '1.2.0-BETA-SNAPSHOT'
 dependencies {
     compile project(':MangaLib')
 }
+
+clean << {
+	file('download').listFiles().each { it.deleteDir() }
+}
