@@ -8,7 +8,6 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import de.herrlock.manga.util.Constants;
-import de.herrlock.manga.util.Utils;
 
 public class ConsoleDownloader extends MDownloader {
 
@@ -35,9 +34,7 @@ public class ConsoleDownloader extends MDownloader {
 
     @Override
     protected void runX() {
-        System.out.println( Utils.getMangaURL() );
         try {
-            initCLC();
             if ( goonCLC() ) {
                 initPMC();
                 if ( goonPMC() ) {

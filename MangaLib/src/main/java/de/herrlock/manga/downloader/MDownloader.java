@@ -18,12 +18,18 @@ import de.herrlock.manga.util.Utils;
 public abstract class MDownloader extends Thread {
 
     protected final DownloadQueueContainer dqc;
-    protected ChapterListContainer clc;
+    protected final ChapterListContainer clc;
     protected PictureMapContainer pmc;
 
     public MDownloader( Properties p ) {
         Utils.setArguments( p );
         this.dqc = new DownloadQueueContainer();
+        System.out.println( Utils.getMangaURL() );
+        try {
+            this.clc = new ChapterListContainer();
+        } catch ( IOException ex ) {
+            throw new RuntimeException( ex );
+        }
     }
 
     @Override
@@ -40,16 +46,6 @@ public abstract class MDownloader extends Thread {
     }
 
     protected abstract void runX();
-
-    public void initCLC() {
-        Utils.trace( "initCLC()" );
-        System.out.println( "getting number of chapters" );
-        try {
-            this.clc = new ChapterListContainer();
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
-        }
-    }
 
     public void initPMC() {
         Utils.trace( "initPMC()" );

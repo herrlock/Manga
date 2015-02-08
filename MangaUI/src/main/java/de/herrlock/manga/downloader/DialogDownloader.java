@@ -31,7 +31,6 @@ public class DialogDownloader extends MDownloader {
     @Override
     protected void runX() {
         try {
-            initCLC();
             if ( goonCLC() ) {
                 initPMC();
                 if ( goonPMC() ) {
