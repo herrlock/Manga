@@ -5,7 +5,7 @@ import java.util.Properties;
 public class UIDownloader extends MDownloader {
 
     public static void execute() {
-        throw new UnsupportedOperationException( "UIDownloader.execute()" );
+        throw new UnsupportedOperationException( "not yet supported" );
     }
 
     protected UIDownloader( Properties p ) {
