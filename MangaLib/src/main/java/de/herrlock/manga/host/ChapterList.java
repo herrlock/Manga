@@ -25,7 +25,9 @@ public abstract class ChapterList extends ArrayList<Chapter> {
     public static ChapterList getInstance() throws IOException {
         URL url = Utils.getMangaURL();
         Hoster h = Hoster.getHostByURL( url );
-        return h != null ? h.getChapterList( url ) : null;
+        if ( h != null )
+            return h.getChapterList( url );
+        throw new IllegalArgumentException( url + " could not be resolved to a registered host." );
     }
 
     private final ChapterPattern cp;
