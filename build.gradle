@@ -1,5 +1,6 @@
+
 group 'de.herrlock.manga'
-version '1.1.0-BETA'
+version '1.2.0-BETA-SNAPSHOT'
 
 subprojects {
 	apply plugin: 'java'
@@ -7,8 +8,6 @@ subprojects {
 	apply plugin: 'pmd'
 	apply plugin: 'maven-publish'
 	apply plugin: 'eclipse'
-	
-	group 'de.herrlock.manga'
 	
 	sourceCompatibility = "1.7"
 	
