@@ -13,7 +13,7 @@ public abstract class ConnectionFactory {
     public URLConnection getConnection( URL url ) throws IOException {
         URLConnection con = getRawConnection( url );
         con.setConnectTimeout( this.timeout );
-        // con.setReadTimeout( this.timeout );
+        con.setReadTimeout( 2 * this.timeout );
         return con;
     }
 
