@@ -59,11 +59,11 @@ public final class Utils {
 
         String host = m.get( Constants.PARAM_PROXY_HOST );
         String port = m.get( Constants.PARAM_PROXY_PORT );
+        String timeout = m.get( Constants.PARAM_TIMEOUT );
         if ( host != null && !"".equals( host ) && port != null && !"".equals( port ) ) {
-            String timeout = m.get( Constants.PARAM_TIMEOUT );
             conFactory = new ProxyConnectionFactory( timeout, host, port );
         } else {
-            conFactory = new DirectConnectionFactory( port );
+            conFactory = new DirectConnectionFactory( timeout );
         }
     }
 
