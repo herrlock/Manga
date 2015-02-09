@@ -20,6 +20,11 @@ import de.herrlock.manga.util.Utils;
 public class DownloadQueueContainer {
 
     private final List<Page> dlQueue = new ArrayList<>();
+    final ChapterListContainer clc;
+
+    public DownloadQueueContainer( ChapterListContainer clc ) {
+        this.clc = clc;
+    }
 
     public void add( URL pageUrl, File chapterFolder, int pageNumber ) {
         this.add( new Page( pageUrl, chapterFolder, pageNumber ) );
@@ -29,37 +34,35 @@ public class DownloadQueueContainer {
         this.dlQueue.add( p );
     }
 
-    public void downloadPages( ChapterListContainer clc ) throws IOException {
+    public void downloadPages() throws IOException {
         Utils.trace( "downloadPages()" );
         List<Page> list = Collections.unmodifiableList( new ArrayList<>( this.dlQueue ) );
         this.dlQueue.clear();
         // download pictures from the ChapterListContainer
         List<DownloadThread> threads = new ArrayList<>( list.size() );
         for ( Page p : list ) {
-            threads.add( new DownloadThread( clc, p ) );
+            threads.add( new DownloadThread( p ) );
         }
         Utils.startAndWaitForThreads( threads );
         // download failed pictures from the current chapter
         if ( !this.dlQueue.isEmpty() ) {
-            downloadPages( clc );
+            downloadPages();
         }
     }
 
     private class DownloadThread extends Thread {
-        private final ChapterListContainer clc;
         private final Page p;
 
-        public DownloadThread( ChapterListContainer clc, Page p ) {
+        public DownloadThread( Page p ) {
             String msg = "new DownloadThread( " + p.getURL() + " )";
             Utils.trace( msg );
-            this.clc = clc;
             this.p = p;
         }
 
         @Override
         public void run() {
             try {
-                URL imageURL = this.clc.getImageLink( this.p.getURL() );
+                URL imageURL = DownloadQueueContainer.this.clc.getImageLink( this.p.getURL() );
                 URLConnection con = Utils.getConnection( imageURL );
                 try ( InputStream in = con.getInputStream() ) {
                     System.out.println( "start reading image " + imageURL );

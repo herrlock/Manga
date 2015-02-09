@@ -17,19 +17,19 @@ import de.herrlock.manga.util.Utils;
 
 public abstract class MDownloader extends Thread {
 
-    protected final DownloadQueueContainer dqc;
     protected final ChapterListContainer clc;
     protected PictureMapContainer pmc;
+    protected final DownloadQueueContainer dqc;
 
     public MDownloader( Properties p ) {
         Utils.setArguments( p );
-        this.dqc = new DownloadQueueContainer();
         System.out.println( Utils.getMangaURL() );
         try {
             this.clc = new ChapterListContainer();
         } catch ( IOException ex ) {
             throw new RuntimeException( ex );
         }
+        this.dqc = new DownloadQueueContainer( this.clc );
     }
 
     @Override
@@ -91,7 +91,7 @@ public abstract class MDownloader extends Thread {
                     this.dqc.add( e.getValue(), chapterFolder, e.getKey().intValue() );
                 }
                 // start download
-                this.dqc.downloadPages( this.clc );
+                this.dqc.downloadPages();
             } else {
                 throw new RuntimeException( chapterFolder + "does not exists and could not be created" );
             }
