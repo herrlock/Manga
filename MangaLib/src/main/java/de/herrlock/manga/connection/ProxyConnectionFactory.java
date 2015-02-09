@@ -10,6 +10,18 @@ public class ProxyConnectionFactory extends ConnectionFactory {
 
     private Proxy proxy;
 
+    /**
+     * a {@linkplain ConnectionFactory} that creates {@linkplain URLConnection Connections} with a proxy
+     * 
+     * @param timeout
+     *            the timeout used for connecting and reading from a URL
+     * @param host
+     *            the proxy's hostname
+     * @param port
+     *            the proxy's port
+     * @see InetSocketAddress#InetSocketAddress(String, int)
+     * @see Proxy#Proxy(java.net.Proxy.Type, java.net.SocketAddress)
+     */
     public ProxyConnectionFactory( String timeout, String host, String port ) {
         super( timeout );
         this.proxy = new Proxy( Proxy.Type.HTTP, new InetSocketAddress( host, Integer.parseInt( port ) ) );

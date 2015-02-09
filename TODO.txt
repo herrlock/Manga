@@ -1,6 +1,7 @@
 
 1.2:
 - add documentation (readme)
+ - doc for pattern
 - add javadoc
 
 1.3:

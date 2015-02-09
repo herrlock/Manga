@@ -6,6 +6,12 @@ import java.net.URLConnection;
 
 public class DirectConnectionFactory extends ConnectionFactory {
 
+    /**
+     * a {@linkplain ConnectionFactory} that creates {@linkplain URLConnection Connections} without a proxy
+     * 
+     * @param timeout
+     *            the timeout used for connecting and reading from a URL
+     */
     public DirectConnectionFactory( String timeout ) {
         super( timeout );
     }

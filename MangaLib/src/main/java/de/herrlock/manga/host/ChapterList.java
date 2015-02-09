@@ -25,9 +25,10 @@ public abstract class ChapterList extends ArrayList<Chapter> {
     public static ChapterList getInstance() throws IOException {
         URL url = Utils.getMangaURL();
         Hoster h = Hoster.getHostByURL( url );
-        if ( h != null )
-            return h.getChapterList( url );
-        throw new IllegalArgumentException( url + " could not be resolved to a registered host." );
+        if ( h == null ) {
+            throw new IllegalArgumentException( url + " could not be resolved to a registered host." );
+        }
+        return h.getChapterList( url );
     }
 
     private final ChapterPattern cp;
@@ -87,9 +88,9 @@ public abstract class ChapterList extends ArrayList<Chapter> {
             if ( pattern.matches( "([^;]+;?)+" ) ) {
                 for ( String s : pattern.split( ";" ) ) {
                     String[] chapter = s.split( "-" );
-                    if ( chapter.length == 1 )
+                    if ( chapter.length == 1 ) {
                         super.add( s );
-                    else if ( chapter.length == 2 ) {
+                    } else if ( chapter.length == 2 ) {
                         int first = Integer.parseInt( chapter[0] );
                         int last = Integer.parseInt( chapter[1] );
                         for ( int i = first; i <= last; i++ )
