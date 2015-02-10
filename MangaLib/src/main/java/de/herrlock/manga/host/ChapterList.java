@@ -12,6 +12,11 @@ import java.util.Map;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Utils;
 
+/**
+ * A class the consists of multiple Chapters
+ * 
+ * @author HerrLock
+ */
 public abstract class ChapterList extends ArrayList<Chapter> {
 
     /**
@@ -58,10 +63,18 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      */
     public abstract Map<Integer, URL> getAllPageURLs( URL url ) throws IOException;
 
+    /**
+     * gets all URLs for one Chapter
+     */
     public Map<Integer, URL> getAllPageURLs( Chapter c ) throws IOException {
         return getAllPageURLs( c.chapterUrl );
     }
 
+    /**
+     * a class to
+     * 
+     * @author HerrLock
+     */
     public static class Chapter {
         final String number;
         final URL chapterUrl;
@@ -101,16 +114,27 @@ public abstract class ChapterList extends ArrayList<Chapter> {
         }
     }
 
+    /**
+     * all defined Hoster
+     * 
+     * @author HerrLock
+     */
     public static enum Hoster implements Comparator<Hoster> {
-        Panda( "Mangapanda", "http://www.mangapanda.com/" ), //
-        PureManga( "PureManga", "http://www.pure-manga.org/" ), //
-        Fox( "Mangafox", "http://www.mangafox.me/" ), //
-
+        MANGAPANDA( "Mangapanda", "http://www.mangapanda.com/" ), //
+        PUREMANGA( "PureManga", "http://www.pure-manga.org/" ), //
+        MANGAFOX( "Mangafox", "http://www.mangafox.me/" ), //
         ;
 
         private final String name;
         private final URL url;
 
+        /**
+         * 
+         * @param name
+         *            the Hoster's name
+         * @param url
+         *            the Hoster's "main"-URL
+         */
         Hoster( String name, String url ) {
             this.name = name;
             try {
@@ -139,11 +163,11 @@ public abstract class ChapterList extends ArrayList<Chapter> {
          */
         public ChapterList getChapterList( URL mangaUrl ) throws IOException {
             switch ( this ) {
-                case Panda:
+                case MANGAPANDA:
                     return new Panda( mangaUrl );
-                case PureManga:
+                case PUREMANGA:
                     return new PureManga( mangaUrl );
-                case Fox:
+                case MANGAFOX:
                     return new Fox( mangaUrl );
                 default:
                     throw new RuntimeException( "Hoster \"" + this + "\" not found" );
@@ -158,14 +182,18 @@ public abstract class ChapterList extends ArrayList<Chapter> {
         }
 
         public static Hoster getHostByURL( URL url ) {
+            String givenUrlHost = url.getHost();
+            if ( givenUrlHost.matches( "www\\..+" ) ) {
+                givenUrlHost = givenUrlHost.substring( 4 );
+            }
             for ( Hoster h : Hoster.values() ) {
-                String hostUrlHost = h.getURL().getHost(), givenUrlHost = url.getHost();
-                if ( hostUrlHost.matches( "www\\..+" ) )
+                String hostUrlHost = h.getURL().getHost();
+                if ( hostUrlHost.matches( "www\\..+" ) ) {
                     hostUrlHost = hostUrlHost.substring( 4 );
-                if ( givenUrlHost.matches( "www\\..+" ) )
-                    givenUrlHost = givenUrlHost.substring( 4 );
-                if ( hostUrlHost.equalsIgnoreCase( givenUrlHost ) )
+                }
+                if ( hostUrlHost.equalsIgnoreCase( givenUrlHost ) ) {
                     return h;
+                }
             }
             return null;
         }
