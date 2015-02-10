@@ -28,17 +28,6 @@ import de.herrlock.manga.connection.ProxyConnectionFactory;
 public final class Utils {
 
     /**
-     * trace an object<br>
-     * calls {@link Constants#TRACE}{@code .}{@link java.io.PrintWriter#println(Object) println(Object)}
-     * 
-     * @param message
-     *            the message to trace
-     */
-    public static void trace( Object message ) {
-        Constants.TRACE.println( message );
-    }
-
-    /**
      * the current arguments
      */
     private static Map<String, String> arguments;
@@ -200,6 +189,17 @@ public final class Utils {
         } catch ( InterruptedException ex ) {
             throw new RuntimeException( ex );
         }
+    }
+
+    /**
+     * trace an object<br>
+     * calls {@link Constants#TRACE}{@code .}{@link java.io.PrintWriter#println(Object) println(Object)}
+     * 
+     * @param message
+     *            the message to trace
+     */
+    public static void trace( Object message ) {
+        Constants.TRACE.println( message );
     }
 
     private Utils() {
