@@ -9,3 +9,5 @@
 - fill manga.html after download
  - update manga.html with better js
  
+> 1.3:
+- proxy-authentification
