@@ -21,6 +21,12 @@ public abstract class MDownloader extends Thread {
     protected PictureMapContainer pmc;
     protected final DownloadQueueContainer dqc;
 
+    /**
+     * creates a new Downloader. this constructor initializes the ChapterListContainer and the DownloadQueueContainer
+     * 
+     * @param p
+     *            the Properties to work with
+     */
     public MDownloader( Properties p ) {
         Utils.setArguments( p );
         System.out.println( Utils.getMangaURL() );
@@ -47,20 +53,43 @@ public abstract class MDownloader extends Thread {
 
     protected abstract void runX();
 
+    /**
+     * initializese the PictureMapContainer with the ChapterListContainer
+     */
     public void initPMC() {
         Utils.trace( "initPMC()" );
         System.out.println( "checking chapters for number of pages" );
         this.pmc = new PictureMapContainer( this.clc );
     }
 
+    /**
+     * returns the number of Chapters in the ChapterListContainer
+     * 
+     * @return the number of Chapters
+     * @see ChapterListContainer#getSize()
+     */
     public int getCLCSize() {
-        return this.clc != null ? this.clc.getSize() : 0;
+        return this.clc.getSize();
     }
 
+    /**
+     * returns the number of Pictures in the PicturesMapContainer
+     * 
+     * @return the number of Pictures or 0, if the PMC has not been initialized
+     * @see #initPMC()
+     * @see PictureMapContainer#getSize()
+     */
     public int getPMCSize() {
         return this.pmc != null ? this.pmc.getSize() : 0;
     }
 
+    /**
+     * downloads everything in the PictureMapContainer<br>
+     * basically calls {@link #downloadChapter(String, Map)} for every chapter
+     * 
+     * @throws IOException
+     *             if an I/O-exception occurs (from {@linkplain #downloadChapter(String, Map)})
+     */
     public void downloadAll() throws IOException {
         Utils.trace( "downloadAll()" );
         if ( this.pmc != null ) {
@@ -80,6 +109,18 @@ public abstract class MDownloader extends Thread {
         }
     }
 
+    /**
+     * downloads the Chapter with the "name"of {@code key} and the pictures from {@code urlMap}<br>
+     * adds every Chapter th the DownloadQueueContainer and starts the download
+     * 
+     * @param key
+     *            the name of the chapter (in general it is a number as String)
+     * @param urlMap
+     *            a map containing the URLs for the pictures
+     * @throws IOException
+     *             if an I/O-exception occurs (from {@linkplain DownloadQueueContainer#downloadPages()})
+     * @see DownloadQueueContainer#downloadPages()
+     */
     private void downloadChapter( String key, Map<Integer, URL> urlMap ) throws IOException {
         Utils.trace( "downloadChapter( " + key + " )" );
         if ( this.clc != null ) {
