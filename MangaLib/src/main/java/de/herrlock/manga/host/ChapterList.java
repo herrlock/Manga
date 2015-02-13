@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Utils;
@@ -38,14 +39,27 @@ public abstract class ChapterList extends ArrayList<Chapter> {
 
     private final ChapterPattern cp;
 
+    /**
+     * creates a new ChapterList. reads the ChapterPattern from the central arguments in Utils
+     */
     protected ChapterList() {
         String pattern = Utils.getPattern();
         this.cp = ( pattern == null || pattern.equals( "" ) ? null : new ChapterPattern( pattern ) );
     }
 
-    public void addChapter( String number, URL chapterUrl ) {
-        if ( this.cp == null || this.cp.contains( number ) )
+    /**
+     * adds a chapter to this list if the ChapterPattern is null (none defined) or the given number is contained in the
+     * ChapterPattern
+     * 
+     * @param number
+     *            the chapter's number
+     * @param chapterUrl
+     *            the chapter's URL
+     */
+    protected void addChapter( String number, URL chapterUrl ) {
+        if ( this.cp == null || this.cp.contains( number ) ) {
             super.add( new Chapter( number, chapterUrl ) );
+        }
     }
 
     /**
@@ -94,20 +108,66 @@ public abstract class ChapterList extends ArrayList<Chapter> {
         }
     }
 
+    /**
+     * A List of Strings that is used to
+     * 
+     * @author HerrLock
+     */
     private static class ChapterPattern extends ArrayList<String> {
         private static final long serialVersionUID = 1L;
+        /**
+         * the regex for the patterns<br>
+         * accepts "a list of strings seperated by semicolons"
+         */
+        private static final Pattern REGEX = Pattern.compile( "([^;]+;)+[^;]+" );
 
+        /**
+         * a valid pattern consists of the chapter-numbers seperated by semicolon, or an interval of chapters, defined by the
+         * first chapter, a hyphen and the last chapter<br>
+         * eg:
+         * <table>
+         * <tr>
+         * <th>pattern</th>
+         * <th>matched chapters</th>
+         * </tr>
+         * <tr>
+         * <td>42</td>
+         * <td>chapter 42</td>
+         * </tr>
+         * <tr>
+         * <td>42;45</td>
+         * <td>chapters 42 and 45</td>
+         * </tr>
+         * <tr>
+         * <td>42-46</td>
+         * <td>chapters 42 to 46 (42, 43, 44, 45, 46)</td>
+         * </tr>
+         * <tr>
+         * <td>42-46;50-52</td>
+         * <td>chapters 42 to 46 and 50 to 52 (42, 43, 44, 45, 46, 50, 51, 52)</td>
+         * </tr>
+         * </table>
+         * 
+         * @param pattern
+         *            the pattern to analyze
+         */
         ChapterPattern( String pattern ) {
-            if ( pattern.matches( "([^;]+;?)+" ) ) {
+            // accept only if valid
+            if ( REGEX.matcher( pattern ).matches() ) {
+                // split string at ';'
                 for ( String s : pattern.split( ";" ) ) {
                     String[] chapter = s.split( "-" );
                     if ( chapter.length == 1 ) {
+                        // a single chapter
                         super.add( s );
                     } else if ( chapter.length == 2 ) {
+                        // an interval of chapters
                         int first = Integer.parseInt( chapter[0] );
                         int last = Integer.parseInt( chapter[1] );
                         for ( int i = first; i <= last; i++ )
                             super.add( i + "" );
+                    } else {
+                        throw new RuntimeException( "chapterPattern is invalid" );
                     }
                 }
             }
@@ -129,7 +189,6 @@ public abstract class ChapterList extends ArrayList<Chapter> {
         private final URL url;
 
         /**
-         * 
          * @param name
          *            the Hoster's name
          * @param url
@@ -142,10 +201,6 @@ public abstract class ChapterList extends ArrayList<Chapter> {
             } catch ( MalformedURLException ex ) {
                 throw new RuntimeException( ex );
             }
-        }
-
-        public String getName() {
-            return this.name;
         }
 
         public URL getURL() {
@@ -174,20 +229,35 @@ public abstract class ChapterList extends ArrayList<Chapter> {
             }
         }
 
+        /**
+         * compares the hoster by their name
+         * 
+         * @param h1
+         *            the first Hoster
+         * @param h2
+         *            the second Hoster
+         */
         @Override
-        public int compare( Hoster o1, Hoster o2 ) {
-            String o1Lower = o1.getName().toLowerCase( Locale.GERMAN );
-            String o2Lower = o2.getName().toLowerCase( Locale.GERMAN );
+        public int compare( Hoster h1, Hoster h2 ) {
+            String o1Lower = h1.name.toLowerCase( Locale.GERMAN );
+            String o2Lower = h2.name.toLowerCase( Locale.GERMAN );
             return o1Lower.compareTo( o2Lower );
         }
 
+        /**
+         * checks all Hoster for the one that matches the given URL
+         * 
+         * @param url
+         *            the URL to check the Hoster against
+         * @return the Hoster that has the given URL; when none is found {@code null}
+         */
         public static Hoster getHostByURL( URL url ) {
             String givenUrlHost = url.getHost();
             if ( givenUrlHost.matches( "www\\..+" ) ) {
                 givenUrlHost = givenUrlHost.substring( 4 );
             }
             for ( Hoster h : Hoster.values() ) {
-                String hostUrlHost = h.getURL().getHost();
+                String hostUrlHost = h.url.getHost();
                 if ( hostUrlHost.matches( "www\\..+" ) ) {
                     hostUrlHost = hostUrlHost.substring( 4 );
                 }
