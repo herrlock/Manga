@@ -17,7 +17,7 @@ public final class Constants {
     /**
      * the position of the configuration-file to runtime
      */
-    public static final String SETTINGS_FILE = "./downloader.properties";
+    public static final String SETTINGS_FILE = "./downloader.txt";
     /**
      * the name of the property for the url
      */
