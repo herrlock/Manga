@@ -34,6 +34,10 @@ subprojects {
 	}
 }
 
+task eclipse << {
+    file('.project').text = '<?xml version="1.0" encoding="UTF-8"?><projectDescription><name>Manga</name></projectDescription>'
+}
+
 task clean (type: Delete) {
 	delete 'build/'
 }
