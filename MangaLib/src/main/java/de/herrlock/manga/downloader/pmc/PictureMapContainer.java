@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
-import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
@@ -19,20 +18,18 @@ public final class PictureMapContainer {
     /**
      * a {@link Map} containing the {@link URL}s of all the pages
      */
-    Map<String, Map<Integer, URL>> picturemap;
+    final Map<String, Map<Integer, URL>> picturemap;
+    final ChapterListContainer clc;
 
     public PictureMapContainer( ChapterListContainer clc ) {
-        ChapterList chapterlist = clc.getChapterlist();
-        if ( chapterlist != null ) {
-            this.picturemap = new HashMap<>( chapterlist.size() );
-            List<Thread> threads = new ArrayList<>( chapterlist.size() );
-            for ( Chapter chapter : chapterlist ) {
-                threads.add( new PictureMapThread( chapterlist, chapter ) );
-            }
-            Utils.startAndWaitForThreads( threads );
-        } else {
-            throw new RuntimeException( "ChapterList not initialized" );
+        this.clc = clc;
+        int clcSize = clc.getSize();
+        this.picturemap = new HashMap<>( clcSize );
+        List<Thread> threads = new ArrayList<>( clcSize );
+        for ( Chapter chapter : clc.getChapters() ) {
+            threads.add( new PictureMapThread( chapter ) );
         }
+        Utils.startAndWaitForThreads( threads );
     }
 
     /**
@@ -62,11 +59,9 @@ public final class PictureMapContainer {
      */
     private class PictureMapThread extends Thread {
 
-        private ChapterList chapterlist;
-        private Chapter chapter;
+        private final Chapter chapter;
 
-        public PictureMapThread( ChapterList chapterlist, Chapter chapter ) {
-            this.chapterlist = chapterlist;
+        public PictureMapThread( Chapter chapter ) {
             this.chapter = chapter;
         }
 
@@ -85,7 +80,7 @@ public final class PictureMapContainer {
         private Map<Integer, URL> getMap() {
             Map<Integer, URL> allPages;
             try {
-                allPages = this.chapterlist.getAllPageURLs( this.chapter );
+                allPages = PictureMapContainer.this.clc.getAllPageURLs( this.chapter );
             } catch ( SocketTimeoutException stex ) {
                 try {
                     System.out.println( "read timed out (chapter " + this.chapter.getNumber() + "), trying again" );

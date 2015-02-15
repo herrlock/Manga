@@ -6,6 +6,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
@@ -18,13 +19,13 @@ import de.herrlock.manga.util.Constants;
  */
 public class ChapterListContainer {
     /**
-     * the parent-folder to write the pages into
+     * the parent-folder to write the pages into. set in the constructor to {@code download/<mangaName>_<timestamp>}
      */
-    private File path;
+    private final File path;
     /**
      * a {@link ChapterList}-Instance containing the {@link URL}s of the {@link Chapter}s
      */
-    private ChapterList chapterlist;
+    private final ChapterList chapterlist;
 
     /**
      * creates a container for the ChapterList
@@ -49,8 +50,13 @@ public class ChapterListContainer {
         return this.path;
     }
 
-    public final ChapterList getChapterlist() {
-        return this.chapterlist;
+    /**
+     * returns a copy of this ChapterList's elements
+     * 
+     * @return an array containing all chapters
+     */
+    public final Chapter[] getChapters() {
+        return this.chapterlist.toArray( new Chapter[this.chapterlist.size()] );
     }
 
     /**
@@ -73,5 +79,9 @@ public class ChapterListContainer {
      */
     public final URL getImageLink( URL pageUrl ) throws IOException {
         return this.chapterlist.imgLink( pageUrl );
+    }
+
+    public Map<Integer, URL> getAllPageURLs( Chapter chapter ) throws IOException {
+        return this.chapterlist.getAllPageURLs( chapter );
     }
 }
