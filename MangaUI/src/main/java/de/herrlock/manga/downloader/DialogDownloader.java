@@ -1,6 +1,5 @@
 package de.herrlock.manga.downloader;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
@@ -37,9 +36,9 @@ public class DialogDownloader extends MDownloader {
                     downloadAll();
                 }
             }
-        } catch ( IOException ex ) {
+        } catch ( RuntimeException ex ) {
             JOptionPane.showMessageDialog( null, ex.getStackTrace(), ex.getMessage(), JOptionPane.ERROR_MESSAGE );
-            throw new RuntimeException( ex );
+            throw ex;
         }
     }
 

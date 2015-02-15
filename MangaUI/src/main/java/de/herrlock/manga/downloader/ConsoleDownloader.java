@@ -1,7 +1,6 @@
 package de.herrlock.manga.downloader;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.NoSuchElementException;
 import java.util.Properties;
@@ -41,9 +40,9 @@ public class ConsoleDownloader extends MDownloader {
                     downloadAll();
                 }
             }
-        } catch ( IOException ex ) {
+        } catch ( RuntimeException ex ) {
             ex.printStackTrace( System.out );
-            throw new RuntimeException( ex );
+            throw ex;
         }
     }
     protected boolean goon() {

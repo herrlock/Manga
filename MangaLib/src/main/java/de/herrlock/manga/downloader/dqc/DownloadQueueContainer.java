@@ -26,21 +26,36 @@ public class DownloadQueueContainer {
         this.clc = clc;
     }
 
+    /**
+     * adds a new {@link Page} with the given parameters to the queue
+     * 
+     * @see Page#Page(URL, File, int)
+     */
     public void add( URL pageUrl, File chapterFolder, int pageNumber ) {
         this.add( new Page( pageUrl, chapterFolder, pageNumber ) );
     }
 
+    /**
+     * adds a page to thie queue
+     * 
+     * @param p
+     *            the {@link Page} to add
+     */
     public void add( Page p ) {
         this.dlQueue.add( p );
     }
 
-    public void downloadPages() throws IOException {
+    /**
+     * downloads all pages in the queue.<br>
+     * clears the queue, calls itself in case a download timed out
+     */
+    public void downloadPages() {
         Utils.trace( "downloadPages()" );
-        List<Page> list = Collections.unmodifiableList( new ArrayList<>( this.dlQueue ) );
+        List<Page> pages = Collections.unmodifiableList( new ArrayList<>( this.dlQueue ) );
         this.dlQueue.clear();
         // download pictures from the ChapterListContainer
-        List<DownloadThread> threads = new ArrayList<>( list.size() );
-        for ( Page p : list ) {
+        List<DownloadThread> threads = new ArrayList<>( pages.size() );
+        for ( Page p : pages ) {
             threads.add( new DownloadThread( p ) );
         }
         Utils.startAndWaitForThreads( threads );
@@ -50,15 +65,22 @@ public class DownloadQueueContainer {
         }
     }
 
+    /**
+     * A Thread to download one image
+     * 
+     * @author HerrLock
+     */
     private class DownloadThread extends Thread {
         private final Page p;
 
         public DownloadThread( Page p ) {
-            String msg = "new DownloadThread( " + p.getURL() + " )";
-            Utils.trace( msg );
+            Utils.trace( "new DownloadThread( " + p.getURL() + " )" );
             this.p = p;
         }
 
+        /**
+         * downloads the page
+         */
         @Override
         public void run() {
             try {

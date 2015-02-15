@@ -86,11 +86,8 @@ public abstract class MDownloader extends Thread {
     /**
      * downloads everything in the PictureMapContainer<br>
      * basically calls {@link #downloadChapter(String, Map)} for every chapter
-     * 
-     * @throws IOException
-     *             if an I/O-exception occurs (from {@linkplain #downloadChapter(String, Map)})
      */
-    public void downloadAll() throws IOException {
+    public void downloadAll() {
         Utils.trace( "downloadAll()" );
         if ( this.pmc != null ) {
             Map<String, Map<Integer, URL>> picturemap = this.pmc.getPictureMap();
@@ -117,11 +114,9 @@ public abstract class MDownloader extends Thread {
      *            the name of the chapter (in general it is a number as String)
      * @param urlMap
      *            a map containing the URLs for the pictures
-     * @throws IOException
-     *             if an I/O-exception occurs (from {@linkplain DownloadQueueContainer#downloadPages()})
      * @see DownloadQueueContainer#downloadPages()
      */
-    private void downloadChapter( String key, Map<Integer, URL> urlMap ) throws IOException {
+    private void downloadChapter( String key, Map<Integer, URL> urlMap ) {
         Utils.trace( "downloadChapter( " + key + " )" );
         if ( this.clc != null ) {
             System.out.println( "Download chapter " + key + " (" + urlMap.size() + " pages)" );
