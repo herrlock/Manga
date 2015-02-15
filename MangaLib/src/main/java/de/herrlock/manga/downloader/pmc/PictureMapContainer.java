@@ -35,10 +35,18 @@ public final class PictureMapContainer {
         }
     }
 
+    /**
+     * @return the {@link Map} containing the chapters
+     */
     public Map<String, Map<Integer, URL>> getPictureMap() {
         return this.picturemap;
     }
 
+    /**
+     * returns the summed number of URLs in this container's Map
+     * 
+     * @return the full number of pages
+     */
     public int getSize() {
         int noOfPictures = 0;
         for ( Map<Integer, URL> m : this.picturemap.values() ) {
@@ -47,6 +55,11 @@ public final class PictureMapContainer {
         return noOfPictures;
     }
 
+    /**
+     * A Thread to add all pages of a chapter to the surrounding PictureMapContainer
+     * 
+     * @author HerrLock
+     */
     private class PictureMapThread extends Thread {
 
         private ChapterList chapterlist;
@@ -64,6 +77,11 @@ public final class PictureMapContainer {
             System.out.println( this.chapter );
         }
 
+        /**
+         * reads the URLs of the pictures from a chapter
+         * 
+         * @return a {@link Map} containing the URLs of the pages
+         */
         private Map<Integer, URL> getMap() {
             Map<Integer, URL> allPages;
             try {
