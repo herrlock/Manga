@@ -172,7 +172,7 @@ public final class Utils {
      * @param threads
      *            the {@link Thread}s to start and wait for
      * @throws RuntimeException
-     *             in ase of an {@link InterruptedException}
+     *             in case of an {@link InterruptedException}
      * @see Thread#start()
      * @see Thread#join()
      */

@@ -1,0 +1,17 @@
+﻿a chapter-pattern has the purpose of enabling a partial download. 
+it can serve with all possible combinations of chapters.
+a pattern is a list of chapternumbers or intervals of chapters, joined by semiolon
+
+bsp:
+
+42
+chapter 42
+
+42;45
+chapters 42 and 45
+
+42-46
+chapters 42 to 46 (42, 43, 44, 45, 46)
+
+42-46;50-52
+chapters 42 to 46 and 50 to 52 (42, 43, 44, 45, 46, 50, 51, 52)

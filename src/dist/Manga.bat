@@ -1,4 +1,4 @@
-@echo off
+﻿@echo off
 echo. > log/err.log
 echo ------------------------ >> log/err.log
 echo %date%, %time% >> log/err.log

@@ -1,25 +1,13 @@
-
+﻿
 # required
 # the url from where to download
 # is in most times the url of that page, where all chapter are listed
 url=
 
-# optional - currently not used, the folder download/manganame is used instead
-# the folder, where to save the chapters
-# important: use forward slashes (/) or double backslashes (\\)
-# location should be writable
-#filepath=
-
 # optional
 # pattern of the chapters to download
 # description follows
 pattern=
-
-# optional - temporary taken out of use
-# timeout, when connecting (milliseconds, 1000 means one second)
-# set this, when you have a really slow connection
-# default is 2000 (2 seconds)
-#timeout=
 
 # optional
 # set this to use a proxy
@@ -28,7 +16,3 @@ pattern=
 # both do not have default values, when nothing is defined nothing is used
 proxyHost=
 proxyPort=
-# optional - not used currently
-# authentication is not yet supported
-#proxyUser=
-#proxyPass=

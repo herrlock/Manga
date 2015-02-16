@@ -1,0 +1,17 @@
+﻿ein chapter-pattern dient zum partiellen download eines mangas. 
+damit können alle möglichen kombinationen der kapitel ausgewählt werden.
+ein pattern setzt sich aus einzelnen kapitelzahlen oder intervallen von kapiteln, mit semicolon getrennt, zusammen.
+
+bsp:
+
+42
+kapitel 42
+
+42;45
+kapitel 42 and 45
+
+42-46
+kapitel 42 bis 46 (42, 43, 44, 45, 46)
+
+42-46;50-52
+kapitel 42 bis 46 und 50 bis 52 (42, 43, 44, 45, 46, 50, 51, 52)
