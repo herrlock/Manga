@@ -44,11 +44,6 @@ task clean (type: Delete) {
 
 def temp = 'build/temp/'
 
-task copyDist (type: Copy) {
-	from 'src/dist'
-	into temp
-}
-
 task createLibs (type: Copy) {
 	into temp + 'lib'
     subprojects.each { s -> 
@@ -58,7 +53,18 @@ task createLibs (type: Copy) {
 	}
 }
 
-task dist (type: Zip, dependsOn: ['copyDist', 'createLibs']) {
+task copyOther (type: Copy) {
+	from 'LICENSE'
+	
+	into temp
+}
+
+task copyDist (type: Copy) {
+	from 'src/dist'
+	into temp
+}
+
+task dist (type: Zip, dependsOn: ['createLibs', 'copyOther', 'copyDist']) {
     destinationDir = file('build')
     baseName = project.name
     version = project.version
