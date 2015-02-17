@@ -1,5 +1,7 @@
 package de.herrlock.manga.downloader;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
@@ -9,17 +11,16 @@ import de.herrlock.manga.util.Constants;
 public class DialogDownloader extends MDownloader {
 
     public static void execute() {
-        Properties p = new Properties();
-        String url = JOptionPane.showInputDialog( "URL" );
-        if ( url != null && !"".equals( url ) ) {
-            p.put( Constants.PARAM_URL, url );
-            try {
-                new DialogDownloader( p ).start();
-            } catch ( RuntimeException ex ) {
-                throw ex;
-            } catch ( Exception ex ) {
-                throw new RuntimeException( ex );
+        try {
+            Properties p = new Properties();
+            try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
+                p.load( fIn );
             }
+            new DialogDownloader( p ).start();
+        } catch ( RuntimeException ex ) {
+            throw ex;
+        } catch ( Exception ex ) {
+            throw new RuntimeException( ex );
         }
     }
 
