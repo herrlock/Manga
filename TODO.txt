@@ -2,6 +2,7 @@
 1.3:
 - fill manga.html after download
  - update manga.html with better js
+ - optional: create html-file from downloaded pages
 
 1.4:
 - build a user interface
