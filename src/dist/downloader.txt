@@ -1,4 +1,4 @@
-﻿
+
 # required
 # the url from where to download
 # is in most times the url of that page, where all chapter are listed
@@ -6,11 +6,12 @@ url=
 
 # optional
 # pattern of the chapters to download
-# description follows
+# if left empty all chapters are downloaded
+# see readme for description
 pattern=
 
 # optional
-# set this to use a proxy
+# set this to use a proxy (without authentification)
 # proxyHost is the proxy's url
 # proxyPort is the proxy's port
 # both do not have default values, when nothing is defined nothing is used
