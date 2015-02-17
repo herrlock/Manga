@@ -14,15 +14,26 @@ public class Ctrl {
         int optionType = JOptionPane.DEFAULT_OPTION;
         int messageType = JOptionPane.QUESTION_MESSAGE;
         Object[] options = {
-            "Console", "Dialog", "UI"
+            "Console", "Dialog"
+        // , "UI"
         };
         int selection = JOptionPane.showOptionDialog( null, message, title, optionType, messageType, null, options, options[0] );
-        if ( selection == 0 ) {
-            ConsoleDownloader.execute();
-        } else if ( selection == 1 ) {
-            DialogDownloader.execute();
-        } else if ( selection == 2 ) {
-            UIDownloader.execute();
+        switch ( selection ) {
+            case 0:
+                ConsoleDownloader.execute();
+                break;
+            case 1:
+                DialogDownloader.execute();
+                break;
+            case 2:
+                UIDownloader.execute();
+                break;
+            case -1:
+                // X is pressed
+                break;
+            default:
+                System.out.println( "invalid option chosen" );
+                break;
         }
     }
 }
