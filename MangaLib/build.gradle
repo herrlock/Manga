@@ -1,6 +1,6 @@
 
 group 'de.herrlock.manga'
-version '1.2.0-BETA-SNAPSHOT'
+version '1.2.0-BETA'
 
 
 dependencies {
