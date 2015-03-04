@@ -2,9 +2,8 @@ package de.herrlock.manga;
 
 import javax.swing.JOptionPane;
 
-import de.herrlock.manga.downloader.ConsoleDownloader;
 import de.herrlock.manga.downloader.DialogDownloader;
-import de.herrlock.manga.downloader.UIDownloader;
+import de.herrlock.manga.host.PrintAllHoster;
 
 public class Ctrl {
 
@@ -14,19 +13,15 @@ public class Ctrl {
         int optionType = JOptionPane.DEFAULT_OPTION;
         int messageType = JOptionPane.QUESTION_MESSAGE;
         Object[] options = {
-            "Console", "Dialog"
-        // , "UI"
+            "Download", "Show Hoster"
         };
         int selection = JOptionPane.showOptionDialog( null, message, title, optionType, messageType, null, options, options[0] );
         switch ( selection ) {
             case 0:
-                ConsoleDownloader.execute();
-                break;
-            case 1:
                 DialogDownloader.execute();
                 break;
-            case 2:
-                UIDownloader.execute();
+            case 1:
+                PrintAllHoster.execute();
                 break;
             case -1:
                 // X is pressed
