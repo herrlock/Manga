@@ -131,7 +131,7 @@ public abstract class MDownloader extends Thread {
             } else {
                 throw new RuntimeException( chapterFolder + "does not exists and could not be created" );
             }
-            System.out.println( "finished chapter " + key );
+            System.out.println( "finished chapter " + key + "\n" );
         } else {
             Utils.trace( "clc == null" );
             System.out.println( "clc == null" );
