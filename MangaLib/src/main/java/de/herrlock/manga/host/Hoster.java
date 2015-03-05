@@ -100,4 +100,8 @@ public enum Hoster implements Comparator<Hoster> {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return this.name() + "\t" + this.url;
+    }
 }
