@@ -1,7 +1,5 @@
 package de.herrlock.manga.host;
 
-import de.herrlock.manga.host.ChapterList.Hoster;
-
 /**
  * @author Jan Rau
  *
