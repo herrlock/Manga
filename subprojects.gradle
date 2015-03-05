@@ -1,0 +1,36 @@
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'findbugs'
+	apply plugin: 'pmd'
+	apply plugin: 'maven-publish'
+	apply plugin: 'eclipse'
+	
+	sourceCompatibility = "1.7"
+	
+	jar.dependsOn check
+	
+	dependencies {
+		testCompile 'junit:junit:4+'
+	}
+	
+	findbugs {
+		effort = 'max'
+		reportLevel = 'low'
+	}
+	tasks.withType(FindBugs) {
+	    reports {
+	        xml.enabled = false
+	        html.enabled = true
+	    }
+	}
+	
+	eclipse.project {
+		natures 'org.springsource.ide.eclipse.gradle.core.nature'
+		buildCommand 'edu.umd.cs.findbugs.plugin.eclipse.findbugsBuilder'
+	}
+	
+	repositories {
+		mavenCentral()
+	}
+}
