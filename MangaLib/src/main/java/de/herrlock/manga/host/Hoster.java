@@ -51,11 +51,11 @@ public enum Hoster implements Comparator<Hoster> {
     public ChapterList getChapterList( URL mangaUrl ) throws IOException {
         switch ( this ) {
             case MANGAPANDA:
-                return new Panda( mangaUrl );
+                return new MangaPanda( mangaUrl );
             case PUREMANGA:
                 return new PureManga( mangaUrl );
             case MANGAFOX:
-                return new Fox( mangaUrl );
+                return new MangaFox( mangaUrl );
             default:
                 throw new RuntimeException( "Hoster \"" + this + "\" not found" );
         }

@@ -12,12 +12,12 @@ import org.jsoup.select.Elements;
 
 import de.herrlock.manga.util.Utils;
 
-class Panda extends ChapterList {
+class MangaPanda extends ChapterList {
     private static final long serialVersionUID = 1L;
 
     private final String name;
 
-    public Panda( URL url ) throws IOException {
+    public MangaPanda( URL url ) throws IOException {
         super();
         Document document = Utils.getDocument( url );
 

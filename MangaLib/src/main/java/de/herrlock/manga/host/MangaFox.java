@@ -12,12 +12,12 @@ import org.jsoup.select.Elements;
 
 import de.herrlock.manga.util.Utils;
 
-class Fox extends ChapterList {
+class MangaFox extends ChapterList {
     private static final long serialVersionUID = 1L;
 
     private final String name;
 
-    public Fox( URL url ) throws IOException {
+    public MangaFox( URL url ) throws IOException {
         super();
         Document document = Utils.getDocument( url );
 
