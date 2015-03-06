@@ -41,7 +41,7 @@ subprojects {
 			//'java-strings',
 			'java-sunsecure',
 			'java-typeresolution',
-			//'java-unnecessary',
+			'java-unnecessary',
 			//'java-unusedcode',
 		]
 	}
