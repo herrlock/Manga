@@ -34,7 +34,7 @@ subprojects {
 			//'java-comments',
 			//'java-controversial',
 			'java-design',
-			//'java-empty',
+			'java-empty',
 			//'java-naming',
 			//'java-optimizations',
 			//'java-strictexception',
