@@ -39,7 +39,7 @@ subprojects {
 			//'java-optimizations',
 			//'java-strictexception',
 			//'java-strings',
-			//'java-sunsecure',
+			'java-sunsecure',
 			//'java-typeresolution',
 			//'java-unnecessary',
 			//'java-unusedcode',
