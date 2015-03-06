@@ -29,7 +29,7 @@ subprojects {
 		ignoreFailures = true
 		ruleSets = [ 
 			'java-basic',
-			//'java-braces',
+			'java-braces',
 			//'java-codesize',
 			//'java-comments',
 			//'java-controversial',

@@ -26,8 +26,9 @@ class MangaFox extends ChapterList {
         Elements elements = document.select( "#chapters>ul.chlist>li" );
         for ( Element e : elements ) {
             Element h3 = e.select( "h3" ).first();
-            if ( h3 == null )
+            if ( h3 == null ) {
                 h3 = e.select( "h4" ).first();
+            }
             Element a = h3.select( "a.tips" ).first();
 
             String[] nnumber = a.text().split( " " );

@@ -40,8 +40,9 @@ public final class Utils {
      * @return the current arguments
      */
     public static Map<String, String> getArguments() {
-        if ( arguments == null )
+        if ( arguments == null ) {
             throw new RuntimeException( "arguments not yet initialized" );
+        }
         return arguments;
     }
 
@@ -160,7 +161,8 @@ public final class Utils {
     /**
      * gets the pattern from the current arguments
      * 
-     * @return the entry with the key from {@link Constants#PARAM_PATTERN} ({@value de.herrlock.manga.util.Constants#PARAM_PATTERN})
+     * @return the entry with the key from {@link Constants#PARAM_PATTERN} (
+     *         {@value de.herrlock.manga.util.Constants#PARAM_PATTERN})
      */
     public static String getPattern() {
         return arguments.get( Constants.PARAM_PATTERN );

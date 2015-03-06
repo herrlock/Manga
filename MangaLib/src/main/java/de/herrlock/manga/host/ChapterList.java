@@ -161,8 +161,9 @@ public abstract class ChapterList extends ArrayList<Chapter> {
                         // an interval of chapters
                         int first = Integer.parseInt( chapter[0] );
                         int last = Integer.parseInt( chapter[1] );
-                        for ( int i = first; i <= last; i++ )
+                        for ( int i = first; i <= last; i++ ) {
                             super.add( i + "" );
+                        }
                     } else {
                         throw new RuntimeException( "chapterPattern is invalid" );
                     }
