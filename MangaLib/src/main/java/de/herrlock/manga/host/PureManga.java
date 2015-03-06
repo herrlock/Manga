@@ -3,8 +3,8 @@ package de.herrlock.manga.host;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -49,8 +49,8 @@ class PureManga extends ChapterList {
     }
 
     @Override
-    public Map<Integer, URL> getAllPageURLs( URL url ) throws IOException {
-        Map<Integer, URL> result = new HashMap<>();
+    protected Map<Integer, URL> _getAllPageURLs( URL url ) throws IOException {
+        Map<Integer, URL> result = new ConcurrentHashMap<>();
         Elements li = Utils.getDocument( url ).select( ".dropdown_right>ul>li" );
         for ( Element e : li ) {
             Element link = e.getElementsByTag( "a" ).get( 0 );
@@ -58,7 +58,7 @@ class PureManga extends ChapterList {
             URL absUrl = new URL( url, link.attr( "href" ) );
             result.put( number, absUrl );
         }
-        return Collections.unmodifiableMap( result );
+        return result;
     }
 
 }

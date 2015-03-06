@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -70,10 +71,14 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      */
     public abstract URL imgLink( URL url ) throws IOException;
 
+    public Map<Integer, URL> getAllPageURLs( URL url ) throws IOException {
+        return Collections.unmodifiableMap( _getAllPageURLs( url ) );
+    }
+
     /**
      * returns all page-{@link URL}s of one chapter
      */
-    public abstract Map<Integer, URL> getAllPageURLs( URL url ) throws IOException;
+    protected abstract Map<Integer, URL> _getAllPageURLs( URL url ) throws IOException;
 
     /**
      * gets all URLs for one Chapter

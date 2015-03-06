@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -69,7 +69,7 @@ public final class Utils {
         }
 
         // copy Properties to Map
-        Map<String, String> m = new HashMap<>();
+        Map<String, String> m = new ConcurrentHashMap<>();
         for ( String s : p.stringPropertyNames() ) {
             m.put( s, p.getProperty( s ) );
         }

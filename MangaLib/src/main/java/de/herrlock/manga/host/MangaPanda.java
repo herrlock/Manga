@@ -2,9 +2,8 @@ package de.herrlock.manga.host;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -50,13 +49,13 @@ class MangaPanda extends ChapterList {
     }
 
     @Override
-    public Map<Integer, URL> getAllPageURLs( URL url ) throws IOException {
-        Map<Integer, URL> result = new HashMap<>();
+    protected Map<Integer, URL> _getAllPageURLs( URL url ) throws IOException {
+        Map<Integer, URL> result = new ConcurrentHashMap<>();
         Elements pages = Utils.getDocument( url ).select( "#pageMenu>option" );
         for ( Element e : pages ) {
             result.put( Integer.parseInt( e.text() ), new URL( url, e.attr( "value" ) ) );
         }
-        return Collections.unmodifiableMap( result );
+        return result;
     }
 
 }
