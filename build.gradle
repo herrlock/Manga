@@ -4,17 +4,17 @@ version '1.3.0-BETA-SNAPSHOT'
 
 apply from: 'subprojects.gradle'
 
-task eclipse << {
+task eclipse (group: 'IDE', description: 'Creates the .project-file for the root-project') << {
     file('.project').text = '<?xml version="1.0" encoding="UTF-8"?><projectDescription><name>Manga</name></projectDescription>'
 }
 
-task clean (type: Delete) {
+task clean (type: Delete, group: 'build', description: 'Deletes the build directory. (R)') {
 	delete 'build/'
 }
 
 def temp = 'build/temp/'
 
-task createLibs (type: Copy) {
+task createLibs (type: Copy, description: 'Create jar from subprojects and copies them into the lib-folder') {
 	into temp + 'lib'
     subprojects.each { s -> 
 		dependsOn s.jar
@@ -23,18 +23,17 @@ task createLibs (type: Copy) {
 	}
 }
 
-task copyOther (type: Copy) {
+task copyOther (type: Copy, description: 'Copy other resources to the temp-folder') {
 	from 'LICENSE'
-	
 	into temp
 }
 
-task copyDist (type: Copy) {
+task copyDist (type: Copy, description: 'Copy content of \"src/dist\" to the temp-folder') {
 	from 'src/dist'
 	into temp
 }
 
-task dist (type: Zip, dependsOn: ['createLibs', 'copyOther', 'copyDist']) {
+task dist (type: Zip, group: 'build', description: 'Creates a distribution', dependsOn: ['createLibs', 'copyOther', 'copyDist']) {
     destinationDir = file('build')
     baseName = project.name
     version = project.version
