@@ -10,6 +10,8 @@ import de.herrlock.manga.util.Constants;
 
 public class ConsoleDownloader extends MDownloader {
 
+    private final Scanner sc;
+
     public static void execute() {
         try {
             Properties p = new Properties();
@@ -23,8 +25,6 @@ public class ConsoleDownloader extends MDownloader {
             throw new RuntimeException( ex );
         }
     }
-
-    private Scanner sc;
 
     protected ConsoleDownloader( Properties p, InputStream in ) {
         super( p );

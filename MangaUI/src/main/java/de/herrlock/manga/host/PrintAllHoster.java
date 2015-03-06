@@ -5,7 +5,7 @@ import java.io.PrintStream;
 /**
  * @author Jan Rau
  */
-public class PrintAllHoster {
+public final class PrintAllHoster {
     public static void execute() {
         printHoster( System.out );
     }
@@ -16,5 +16,7 @@ public class PrintAllHoster {
             out.println( h );
         }
     }
-
+    private PrintAllHoster() {
+        // nothing to do
+    }
 }

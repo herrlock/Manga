@@ -28,6 +28,11 @@ import de.herrlock.manga.connection.ProxyConnectionFactory;
 public final class Utils {
 
     /**
+     * the required properties
+     */
+    private static final List<String> requiredParameters = Collections.unmodifiableList( Arrays.asList( Constants.PARAM_URL ) );
+
+    /**
      * the current arguments
      */
     private static Map<String, String> arguments;
@@ -45,11 +50,6 @@ public final class Utils {
         }
         return arguments;
     }
-
-    /**
-     * the required properties
-     */
-    private static final List<String> requiredParameters = Collections.unmodifiableList( Arrays.asList( Constants.PARAM_URL ) );
 
     /**
      * sets {@link Utils#arguments} to the values from the given {@link Properties}<br>
@@ -79,7 +79,9 @@ public final class Utils {
         String host = m.get( Constants.PARAM_PROXY_HOST );
         String port = m.get( Constants.PARAM_PROXY_PORT );
         String timeout = m.get( Constants.PARAM_TIMEOUT );
-        if ( host != null && !"".equals( host ) && port != null && !"".equals( port ) ) {
+        boolean proxyHostAvailabile = host != null && !"".equals( host );
+        boolean proxyPortAvailabile = port != null && !"".equals( port );
+        if ( proxyHostAvailabile && proxyPortAvailabile ) {
             conFactory = new ProxyConnectionFactory( timeout, host, port );
         } else {
             conFactory = new DirectConnectionFactory( timeout );

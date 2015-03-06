@@ -36,7 +36,7 @@ public class ChapterListContainer {
     public ChapterListContainer() throws IOException {
         this.chapterlist = ChapterList.getInstance();
         String mangaName = this.chapterlist.getMangaName().toLowerCase( Locale.ENGLISH ).replace( ' ', '_' );
-        String currentTime = new SimpleDateFormat( "YYMMddHHmmss" ).format( new Date() );
+        String currentTime = new SimpleDateFormat( "YYMMddHHmmss", Locale.GERMAN ).format( new Date() );
         this.path = new File( Constants.TARGET_FOLDER, mangaName + "_" + currentTime );
     }
 

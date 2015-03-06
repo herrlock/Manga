@@ -8,7 +8,7 @@ import java.net.URLConnection;
 
 public class ProxyConnectionFactory extends ConnectionFactory {
 
-    private Proxy proxy;
+    private final Proxy proxy;
 
     /**
      * a {@linkplain ConnectionFactory} that creates {@linkplain URLConnection Connections} with a proxy

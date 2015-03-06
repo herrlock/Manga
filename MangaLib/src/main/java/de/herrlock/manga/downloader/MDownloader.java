@@ -80,7 +80,7 @@ public abstract class MDownloader extends Thread {
      * @see PictureMapContainer#getSize()
      */
     public int getPMCSize() {
-        return this.pmc != null ? this.pmc.getSize() : 0;
+        return this.pmc == null ? 0 : this.pmc.getSize();
     }
 
     /**
@@ -89,20 +89,19 @@ public abstract class MDownloader extends Thread {
      */
     public void downloadAll() {
         Utils.trace( "downloadAll()" );
-        if ( this.pmc != null ) {
-            Map<String, Map<Integer, URL>> picturemap = this.pmc.getPictureMap();
-            if ( picturemap != null ) {
-                List<String> keys = new ArrayList<>( picturemap.keySet() );
-                Collections.sort( keys, Constants.STRING_NUMBER_COMPARATOR );
-                for ( String key : keys ) {
-                    downloadChapter( key, picturemap.get( key ) );
-                }
-            } else {
-                throw new RuntimeException( "PageMap not initialized" );
-            }
-        } else {
+        if ( this.pmc == null ) {
             Utils.trace( "pmc == null" );
             System.out.println( "pmc == null" );
+        } else {
+            Map<String, Map<Integer, URL>> picturemap = this.pmc.getPictureMap();
+            if ( picturemap == null ) {
+                throw new RuntimeException( "PageMap not initialized" );
+            }
+            List<String> keys = new ArrayList<>( picturemap.keySet() );
+            Collections.sort( keys, Constants.STRING_NUMBER_COMPARATOR );
+            for ( String key : keys ) {
+                downloadChapter( key, picturemap.get( key ) );
+            }
         }
     }
 
@@ -118,7 +117,10 @@ public abstract class MDownloader extends Thread {
      */
     private void downloadChapter( String key, Map<Integer, URL> urlMap ) {
         Utils.trace( "downloadChapter( " + key + " )" );
-        if ( this.clc != null ) {
+        if ( this.clc == null ) {
+            Utils.trace( "clc == null" );
+            System.out.println( "clc == null" );
+        } else {
             System.out.println( "Download chapter " + key + " (" + urlMap.size() + " pages)" );
             File chapterFolder = new File( this.clc.getPath(), key );
             if ( chapterFolder.exists() || chapterFolder.mkdirs() ) {
@@ -132,9 +134,6 @@ public abstract class MDownloader extends Thread {
                 throw new RuntimeException( chapterFolder + "does not exists and could not be created" );
             }
             System.out.println( "finished chapter " + key + "\n" );
-        } else {
-            Utils.trace( "clc == null" );
-            System.out.println( "clc == null" );
         }
     }
 

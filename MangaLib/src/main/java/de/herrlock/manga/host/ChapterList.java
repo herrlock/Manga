@@ -17,6 +17,8 @@ import de.herrlock.manga.util.Utils;
  */
 public abstract class ChapterList extends ArrayList<Chapter> {
 
+    private final ChapterPattern cp;
+
     /**
      * creates an instance of {@linkplain ChapterList}, gets the right {@linkplain Hoster} from the {@linkplain URL} in
      * {@code Utils.arguments}
@@ -34,14 +36,13 @@ public abstract class ChapterList extends ArrayList<Chapter> {
         return h.getChapterList( url );
     }
 
-    private final ChapterPattern cp;
-
     /**
      * creates a new ChapterList. reads the ChapterPattern from the central arguments in Utils
      */
     protected ChapterList() {
         String pattern = Utils.getPattern();
-        this.cp = ( pattern == null || pattern.equals( "" ) ? null : new ChapterPattern( pattern ) );
+        boolean patternIsEmpty = pattern == null || "".equals( pattern );
+        this.cp = patternIsEmpty ? null : new ChapterPattern( pattern );
     }
 
     /**

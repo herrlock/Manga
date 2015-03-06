@@ -33,7 +33,7 @@ subprojects {
 			//'java-codesize',
 			//'java-comments',
 			//'java-controversial',
-			//'java-design',
+			'java-design',
 			//'java-empty',
 			//'java-naming',
 			//'java-optimizations',

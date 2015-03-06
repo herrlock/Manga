@@ -17,10 +17,10 @@ public abstract class ConnectionFactory {
      *            the timeout for the new connections
      */
     public ConnectionFactory( String timeout ) {
-        if ( timeout != null && !"".equals( timeout ) ) {
-            this.timeout = Integer.parseInt( timeout );
-        } else {
+        if ( timeout == null || "".equals( timeout ) ) {
             this.timeout = Constants.PARAM_TIMEOUT_DEFAULT;
+        } else {
+            this.timeout = Integer.parseInt( timeout );
         }
     }
 

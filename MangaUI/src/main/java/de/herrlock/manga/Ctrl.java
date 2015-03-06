@@ -5,7 +5,7 @@ import javax.swing.JOptionPane;
 import de.herrlock.manga.downloader.DialogDownloader;
 import de.herrlock.manga.host.PrintAllHoster;
 
-public class Ctrl {
+public final class Ctrl {
 
     public static void main( String[] args ) {
         String message = "Select variant to execute.";
@@ -30,5 +30,9 @@ public class Ctrl {
                 System.out.println( "invalid option chosen" );
                 break;
         }
+    }
+
+    private Ctrl() {
+        // nothing to do
     }
 }

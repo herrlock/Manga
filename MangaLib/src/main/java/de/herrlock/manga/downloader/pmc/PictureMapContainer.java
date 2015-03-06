@@ -10,7 +10,6 @@ import java.util.Map;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.host.ChapterList.Chapter;
-import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
 
 public final class PictureMapContainer {
@@ -82,13 +81,8 @@ public final class PictureMapContainer {
             try {
                 allPages = PictureMapContainer.this.clc.getAllPageURLs( this.chapter );
             } catch ( SocketTimeoutException stex ) {
-                try {
-                    System.out.println( "read timed out (chapter " + this.chapter.getNumber() + "), trying again" );
-                    sleep( Constants.PARAM_TIMEOUT_DEFAULT );
-                    allPages = getMap();
-                } catch ( InterruptedException iex ) {
-                    throw new RuntimeException( iex );
-                }
+                System.out.println( "read timed out (chapter " + this.chapter.getNumber() + "), trying again" );
+                allPages = getMap();
             } catch ( IOException ioex ) {
                 if ( ioex.getMessage().contains( "503" ) ) {
                     // http-statuscode 503

@@ -29,6 +29,9 @@ import org.jsoup.parser.Tag;
 public class ViewPage {
     private static final Charset UTF8 = StandardCharsets.UTF_8;
 
+    private final File folder;
+    private final Document document;
+
     public static void execute( File folder ) {
         Document doc = new ViewPage( folder ).getDocument();
         Path p = new File( folder, "index.html" ).toPath();
@@ -39,9 +42,6 @@ public class ViewPage {
             throw new RuntimeException( ex );
         }
     }
-
-    private final File folder;
-    private final Document document;
 
     public ViewPage( File folder ) {
         this.folder = folder;
@@ -89,7 +89,7 @@ public class ViewPage {
         Map<Integer, List<String>> blocks = new HashMap<>();
         {
             List<File> files = Arrays.asList( getChapters() );
-            Collections.sort( files, Collections.reverseOrder( numericFilenameComparator ) );
+            Collections.sort( files, Collections.reverseOrder( Const.numericFilenameComparator ) );
             for ( File f : files ) {
                 String filename = f.getName();
                 int blockNr = ( ( int ) Double.parseDouble( filename ) - 1 ) / 10;
@@ -100,7 +100,7 @@ public class ViewPage {
             }
         }
         List<Entry<Integer, List<String>>> list = new ArrayList<>( blocks.entrySet() );
-        Collections.sort( list, Collections.reverseOrder( integerEntryComparator ) );
+        Collections.sort( list, Collections.reverseOrder( Const.integerEntryComparator ) );
 
         Element lDiv = new Element( Tag.valueOf( "div" ), "" ).attr( "id", "leftdiv" );
 
@@ -197,17 +197,19 @@ public class ViewPage {
     }
 
     private File[] getChapters() {
-        return this.folder.listFiles( isDirectoryFilter );
+        return this.folder.listFiles( Const.isDirectoryFilter );
     }
+}
 
-    private static final FileFilter isDirectoryFilter = new FileFilter() {
+class Const {
+    static final FileFilter isDirectoryFilter = new FileFilter() {
         @Override
         public boolean accept( File pathname ) {
             return pathname.isDirectory();
         }
     };
 
-    private static final Comparator<File> numericFilenameComparator = new Comparator<File>() {
+    static final Comparator<File> numericFilenameComparator = new Comparator<File>() {
         @Override
         public int compare( File o1, File o2 ) {
             String name1 = o1.getName();
@@ -224,7 +226,7 @@ public class ViewPage {
         }
     };
 
-    private static final Comparator<Entry<Integer, ?>> integerEntryComparator = new Comparator<Map.Entry<Integer, ?>>() {
+    static final Comparator<Entry<Integer, ?>> integerEntryComparator = new Comparator<Map.Entry<Integer, ?>>() {
         @Override
         public int compare( Entry<Integer, ?> o1, Entry<Integer, ?> o2 ) {
             return o1.getKey().compareTo( o2.getKey() );
