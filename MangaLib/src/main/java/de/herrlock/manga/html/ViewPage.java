@@ -86,62 +86,40 @@ public class ViewPage {
     }
 
     private Element leftDiv() {
-        List<File> files = Arrays.asList( getChapters() );
-        Collections.sort( files, Collections.reverseOrder( numericFilenameComparator ) );
-        Map<Integer, List<File>> blocks = new HashMap<>();
-        for ( File f : files ) {
-            String filename = f.getName();
-            int b = Integer.parseInt( filename ) / 10;
-            if ( blocks.get( b ) != null ) {
-                blocks.get( b ).add( f );
-            } else {
-                List<File> newlist = new ArrayList<>();
-                newlist.add( f );
-                blocks.put( b, newlist );
+        Map<Integer, List<String>> blocks = new HashMap<>();
+        {
+            List<File> files = Arrays.asList( getChapters() );
+            Collections.sort( files, Collections.reverseOrder( numericFilenameComparator ) );
+            for ( File f : files ) {
+                String filename = f.getName();
+                int blockNr = ( ( int ) Double.parseDouble( filename ) - 1 ) / 10;
+                if ( !blocks.containsKey( blockNr ) ) {
+                    blocks.put( blockNr, new ArrayList<String>() );
+                }
+                blocks.get( blockNr ).add( filename );
             }
-            System.out.println( filename );
         }
+        List<Entry<Integer, List<String>>> list = new ArrayList<>( blocks.entrySet() );
+        Collections.sort( list, Collections.reverseOrder( integerEntryComparator ) );
 
         Element lDiv = new Element( Tag.valueOf( "div" ), "" ).attr( "id", "leftdiv" );
-        Element div = lDiv.appendElement( "div" );
-        div.attr( "id", "block" + 42 );
 
-        for ( Entry<Integer, List<File>> e : blocks.entrySet() ) {
-            Integer blockId = e.getKey();
-            Element divX = lDiv.appendElement( "div" ).attr( "id", "block" + blockId );
-            divX.appendChild( hidelink( blockId ) );
-            Element blockDiv = divX.appendElement( "div" ).attr( "id", "block" + blockId );
-            for ( File f : e.getValue() ) {
-                int tmpChp = ( 10 * blockId ) + Integer.parseInt( f.getName() );
-                blockDiv.appendChild( whitelink( "", "" + tmpChp, "" ) );
+        for ( Entry<Integer, List<String>> e : list ) {
+            Element wrapperDiv = lDiv.appendElement( "div" );
+            int blockId = e.getKey();
+            List<String> chapternames = e.getValue();
+            wrapperDiv.appendChild( hidelink( blockId ) );
+            Element blockDiv = wrapperDiv.appendElement( "div" ).attr( "id", "block" + blockId );
+            for ( String c : chapternames ) {
+                blockDiv.appendChild( whitelink( c ) );
             }
         }
         return lDiv;
-
-        // document.write('<pre>');
-        // document.write('<span style="display: none;" id="arrow' + chapterblock + '"> hereComesAnArrow! <\/span>');
-        // document.write('<div id="block' + chapterblock + '">');
-        // var tmpChp;
-        // for (var i = chapter % step; i > 0; i--) {
-        // ____ tmpChp = chapter - (chapter % step) + i;
-        // ____ document.writeln(whitelinkString('', tmpChp, ''));
-        // }
-        // document.write('<\/div>');
-        // for (var i = chapterblock - 1; i >= 0; i--) {
-        // ____ document.writeln(hidelinkString(i));
-        // ____ document.write('<div id="block' + i + '">');
-        // ____ for (var j = step; j > 0; j--) {
-        // ____ ____ tmpChp = (step * i) + j;
-        // ____ ____ document.writeln(whitelinkString('', tmpChp, ''));
-        // ____ }
-        // ____ document.write('<\/div>');
-        // }
-        // document.write('<\/pre>');
     }
 
     private static Element hidelink( int blockId ) {
         int step = 10;
-        int blockName = ( step * ( blockId + 1 ) );
+        int blockName = step * ( blockId + 1 );
 
         Element a = new Element( Tag.valueOf( "a" ), "" );
         a.attr( "class", "hidelink" );
@@ -155,14 +133,19 @@ public class ViewPage {
         return a;
     }
 
-    private static Element whitelink( String pretext, String chp, String posttext ) {
+    private static Element whitelink( Object chp ) {
+        return whitelink( "", chp, "" );
+    }
+
+    private static Element whitelink( String pretext, Object chp, String posttext ) {
+        String chpText = String.valueOf( chp );
         Element a = new Element( Tag.valueOf( "a" ), "" );
         a.attr( "class", "whitelink" );
-        a.attr( "id", "choose" + chp );
+        a.attr( "id", "choose" + chpText );
         a.attr( "href", "javascript:void(0)" );
-        a.attr( "onclick", "choose(" + chp + ")" );
-        a.attr( "title", "Lade Kapitel " + chp );
-        a.text( pretext + chp + posttext );
+        a.attr( "onclick", "choose(" + chpText + ")" );
+        a.attr( "title", "Lade Kapitel " + chpText );
+        a.text( pretext + chpText + posttext );
         return a;
     }
 
@@ -227,9 +210,24 @@ public class ViewPage {
     private static final Comparator<File> numericFilenameComparator = new Comparator<File>() {
         @Override
         public int compare( File o1, File o2 ) {
-            int i1 = Integer.parseInt( o1.getName() );
-            int i2 = Integer.parseInt( o2.getName() );
-            return Integer.compare( i1, i2 );
+            String name1 = o1.getName();
+            String name2 = o2.getName();
+            try {
+                int i1 = Integer.parseInt( name1 );
+                int i2 = Integer.parseInt( name2 );
+                return Integer.compare( i1, i2 );
+            } catch ( NumberFormatException ex ) {
+                double d1 = Double.parseDouble( name1 );
+                double d2 = Double.parseDouble( name2 );
+                return Double.compare( d1, d2 );
+            }
+        }
+    };
+
+    private static final Comparator<Entry<Integer, ?>> integerEntryComparator = new Comparator<Map.Entry<Integer, ?>>() {
+        @Override
+        public int compare( Entry<Integer, ?> o1, Entry<Integer, ?> o2 ) {
+            return o1.getKey().compareTo( o2.getKey() );
         }
     };
 }
