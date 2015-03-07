@@ -1,48 +1,34 @@
-/** the number of the newest chapter */
-var chapter = 744;
-/** the maximal amount of pages that a chapter may have */
-var max_pages = 60;
-/** the amount of chapters per block on the left sidebar */
-var step = 10;
-/** the amount of blocks on the left sidebar */
-var chapterblock = (chapter - (chapter % step)) / step;
-/** the current active chapter */
-var active;
-
 /**
  * loads the page with the latest chapter
  */
 function init() {
     // das aktuelle kapitel anzeigen
-    var post = parseInt(location.hash.substring(1));
-    if (post === NaN) {
-        choose(chapter);
-    } else {
-        choose(post);
-    }
-    // den passenden sidebarblock öffnen
+    choose(parseFloat(location.hash.substring(1) || "1") || 1);
+    // den obersten sidebarblock (die freien kapitel) öffnen
     show(chapterblock);
 }
+
 /**
  * shows pages from chapter x
  */
 function choose(x) {
-    active = x = parseInt(x);
+    var toLoad = parseFloat(x);
     // nach oben scollen
     $('html,body').animate({
         scrollTop : $('body').offset().top
     }, 2000);
     // bilder ausblenden
-    $('#rightdiv').fadeOut(100);
+    var $rightdiv = $('#rightdiv');
+    $rightdiv.fadeOut(100);
     // hashangabe verändern
-    location.hash = x;
+    location.hash = toLoad;
     // title ändern
-    $('title').html('Kapitel ' + x);
+    $('title').html('Kapitel ' + toLoad);
     // seitenüberschrift ändern (z.B. "Kapitel 623:"
-    $('#pagetitle').html('Kapitel ' + x + ':');
+    $('#pagetitle').html('Kapitel ' + toLoad + ':');
     for (var i = 1; i <= max_pages; i++) {
-        // pfad zur standardisierten bilddatei
-        var url = x + '\/' + (i < 10 ? "0" + i : i) + '.jpg';
+        // pfad zur bilddatei
+        var url = toLoad + '\/' + (i < 10 ? "0" + i : i) + '.jpg';
         // bild auf existenz prüfen
         testImage(url, i);
         // bildpfad und alternative bildbeschreibung setzen
@@ -52,27 +38,38 @@ function choose(x) {
         });
     }
     // bilder wieder einblenden
-    $('#rightdiv').fadeIn(1900);
+    $rightdiv.fadeIn(1900);
     // der link, der zum nächsten kapitel führt
-    var el = $('#endlink');
-    if (x >= chapter) {
-        // es wird auf ein kapitel gewechselt, das noch keinen nachfolger hat
-        el.css({
-            'textDecoration' : 'none',
-            'color' : 'black'
-        });
-        el.html(whitelinkString('Kapitel ', (x + 1), ''));
-    } else {
+    var $endlink = $('#endlink');
+    var css = {
+        textDecoration : "",
+        color : ""
+    };
+    if (toLoad < chapter) {
         // der link auf das nächste kapitel wird geändert
-        el.css({
-            'textDecoration' : 'underline',
-            'color' : 'red'
-        });
-        el.html(whitelinkString('Kapitel ', (x + 1), ''));
+        css.textDecoration = 'underline';
+        css.color = 'red';
+    } else {
+        // es wird auf ein kapitel gewechselt, das noch keinen nachfolger hat
+        css.textDecoration = 'none';
+        css.color = 'black';
     }
+    $endlink.css(css);
+
+    var chp = toLoad + 1;
+    $endlink.replaceWith($('<a/>', {
+        'class' : 'whitelink',
+        id : 'choose' + chp,
+        href : 'javascript:void(0)',
+        onclick : 'choose(' + chp + ')',
+        title : 'Lade Kapitel ' + chp,
+        text : 'Kapitel ' + chp
+    }));
+
     // nach einer sekunde (1000 ms) werden die bildgrößen überprüft und ggf. angepasst
-    window.setTimeout('adjustIMGWidth()', 1000);
+    setTimeout(adjustIMGWidth, 1000);
 }
+
 /**
  * show block number x in the left menu, hide all the others
  */
@@ -84,41 +81,15 @@ function show(x) {
     $('#block' + x).slideDown();
     $('#arrow' + x).html('&#x25bc;');
 }
+
 /**
  * sets the width of all wide imgs to 100%
  */
 function adjustIMGWidth() {
-    for (var i = 0; i < $('img').length; i++) {
-        var newClass = $('#page' + i).prop('width') >= $('#page' + i).prop('height') ? 'fullwidth' : 'normalwidth';
-        $('#page' + i).attr('class', newClass);
-    }
-}
-
-/**
- * returns the string for the "whitelink"-classed link to avoid redundancy
- */
-function whitelinkString(pretext, chp, posttext) {
-    var clazz = 'class="whitelink" ';
-    var id = 'id="choose' + chp + '" ';
-    var href = 'href="javascript:void(0)"';
-    var onclick = 'onclick="choose(' + chp + ')" ';
-    var title = 'title="Lade Kapitel ' + chp + '"';
-
-    return '<a ' + clazz + id + href + onclick + title + '>' + pretext + chp + posttext + '<\/a>';
-}
-
-/**
- * returns the string for the "hidelink"-classed link to avoid redundancy
- */
-function hidelinkString(blockId) {
-    var blockName = (step * (blockId + 1));
-    var clazz = 'class="hidelink" ';
-    var id = 'id="hidelink' + blockId + '" ';
-    var href = 'href="javascript:void(0)"';
-    var onclick = 'onclick="show(' + blockId + ')" ';
-    var title = 'title="Zeige Kapitel ' + (blockName - step + 1) + ' bis ' + blockName + '"';
-    var innerhtml = '<span id="arrow' + blockId + '"> hereComesAnArrow! <\/span> ' + blockName;
-    return '<a ' + clazz + id + href + onclick + title + '>' + innerhtml + '<\/a>';
+    $('img').each(function() {
+        var newClass = this.width >= this.height ? 'fullwidth' : 'normalwidth';
+        $(this).attr('class', newClass);
+    });
 }
 
 /**
@@ -130,15 +101,9 @@ function hidelinkString(blockId) {
  *            die id-nummer des bildblocks
  */
 function testImage(url, i) {
-    var img = new Image();
-    img.src = url;
-
-    // bild existiert nicht oder wurde falsch geladen
-    img.onerror = img.onabort = function() {
-        $('#IMGBlock' + i).hide(100);
-    };
-    // bild existiert
-    img.onload = function() {
+    $(new Image()).load(function() {
         $('#IMGBlock' + i).show(500);
-    };
+    }).error(function() {
+        $('#IMGBlock' + i).hide(100);
+    }).attr('src', '' + url);
 }

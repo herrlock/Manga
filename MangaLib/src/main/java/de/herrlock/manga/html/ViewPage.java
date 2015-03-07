@@ -4,11 +4,10 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -31,6 +30,7 @@ public class ViewPage {
 
     private final File folder;
     private final Document document;
+    private final int maxImgs;
 
     public static void execute( File folder ) {
         Document doc = new ViewPage( folder ).getDocument();
@@ -46,6 +46,7 @@ public class ViewPage {
     public ViewPage( File folder ) {
         this.folder = folder;
         this.document = new Document( "" );
+        this.maxImgs = maxImgs();
         this.document.appendChild( createHead() );
         this.document.appendChild( createBody() );
     }
@@ -67,6 +68,14 @@ public class ViewPage {
         head.appendElement( "link" ).attr( "rel", "shortcut icon" ).attr( "href", "favicon.ico" );
         head.appendElement( "link" ).attr( "rel", "stylesheet" ).attr( "href", "style.css" );
         copyFile( "style.css" );
+
+        List<File> files = getChapters();
+        File maxFile = Collections.max( files, Const.numericFilenameComparator );
+        String max = maxFile.getName();
+
+        head.appendElement( "script" ).text(
+            "var chapter = " + max + ",  max_pages = " + this.maxImgs + ", chapterblock = (chapter - (chapter % 10)) / 10;" );
+
         String[] js = {
             "jquery-2.1.3.min.js", "onkeydown.js", "main.js"
         };
@@ -88,8 +97,7 @@ public class ViewPage {
     private Element leftDiv() {
         Map<Integer, List<String>> blocks = new HashMap<>();
         {
-            List<File> files = Arrays.asList( getChapters() );
-            Collections.sort( files, Collections.reverseOrder( Const.numericFilenameComparator ) );
+            List<File> files = getSortedChapters( Collections.reverseOrder( Const.numericFilenameComparator ) );
             for ( File f : files ) {
                 String filename = f.getName();
                 int blockNr = ( ( int ) Double.parseDouble( filename ) - 1 ) / 10;
@@ -103,18 +111,26 @@ public class ViewPage {
         Collections.sort( list, Collections.reverseOrder( Const.integerEntryComparator ) );
 
         Element lDiv = new Element( Tag.valueOf( "div" ), "" ).attr( "id", "leftdiv" );
-
+        lDiv.appendChild( wrapperDiv( list.remove( 0 ), false ) );
         for ( Entry<Integer, List<String>> e : list ) {
-            Element wrapperDiv = lDiv.appendElement( "div" );
-            int blockId = e.getKey();
-            List<String> chapternames = e.getValue();
-            wrapperDiv.appendChild( hidelink( blockId ) );
-            Element blockDiv = wrapperDiv.appendElement( "div" ).attr( "id", "block" + blockId );
-            for ( String c : chapternames ) {
-                blockDiv.appendChild( whitelink( c ) );
-            }
+            lDiv.appendChild( wrapperDiv( e, true ) );
         }
         return lDiv;
+    }
+
+    private static Element wrapperDiv( Entry<Integer, List<String>> e, boolean addHidelink ) {
+        Element wrapperDiv = new Element( Tag.valueOf( "div" ), "" );
+        Integer blockId = e.getKey();
+        if ( addHidelink ) {
+            wrapperDiv.appendChild( hidelink( blockId ) );
+        }
+        Element blockDiv = wrapperDiv.appendElement( "div" ).attr( "id", "block" + blockId );
+        Element ul = blockDiv.appendElement( "ul" ).attr( "class", "leftList" );
+        List<String> chapternames = e.getValue();
+        for ( String c : chapternames ) {
+            ul.appendElement( "li" ).appendChild( whitelink( c ) );
+        }
+        return wrapperDiv;
     }
 
     private static Element hidelink( int blockId ) {
@@ -154,23 +170,28 @@ public class ViewPage {
         // pagetitle - current chapternumber
         rDiv.appendElement( "h1" ).attr( "id", "pagetitle" ).text( "If you can read this something BAD happened..." );
 
-        File[] files = getChapters();
-        int maxPages = 0;
-        for ( File f : files ) {
-            maxPages = Math.max( maxPages, f.listFiles().length );
-        }
+        int maxPages = this.maxImgs;
         // page-section - all images
         for ( int i = 1; i <= maxPages; i++ ) {
             Element imgblock = rDiv.appendElement( "div" ).attr( "id", "IMGBlock" + i ).attr( "class", "IMGBlock" );
             imgblock.appendElement( "h2" ).text( ( i < 10 ? "0" : "" ) + i );
 
-            Element imgdiv = imgblock.appendElement( "div" ).attr( "style", "text-align:center" );
+            Element imgdiv = imgblock.appendElement( "div" ).attr( "style", "text-align:center" ).attr( "class", "center" );
             imgdiv.appendElement( "img" ).attr( "id", "page" + i ).attr( "class", "image" ).attr( "src", "null.jpg" )
                 .attr( "alt", "null" + i + ".jpg" );
         }
         // endlink - load next chapter
         rDiv.appendElement( "h1" ).attr( "id", "endlink" ).text( "Link to the next chapter" );
         return rDiv;
+    }
+
+    private int maxImgs() {
+        List<File> files = getChapters();
+        int maxPages = 0;
+        for ( File f : files ) {
+            maxPages = Math.max( maxPages, f.listFiles().length );
+        }
+        return maxPages;
     }
 
     private void copyFile( String filename ) {
@@ -185,10 +206,9 @@ public class ViewPage {
                 }
             }
 
-            FileOutputStream out = new FileOutputStream( new File( this.folder, filename ) );
-            try ( BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( out, UTF8 ) ) ) {
+            try ( PrintWriter pw = new PrintWriter( new File( this.folder, filename ), "UTF-8" ) ) {
                 for ( String s : readLines ) {
-                    writer.write( s + '\n' );
+                    pw.println( s );
                 }
             }
         } catch ( IOException ex ) {
@@ -196,8 +216,14 @@ public class ViewPage {
         }
     }
 
-    private File[] getChapters() {
-        return this.folder.listFiles( Const.isDirectoryFilter );
+    private List<File> getSortedChapters( Comparator<File> comp ) {
+        List<File> list = getChapters();
+        Collections.sort( list, comp );
+        return list;
+    }
+
+    private List<File> getChapters() {
+        return Arrays.asList( this.folder.listFiles( Const.isDirectoryFilter ) );
     }
 }
 
