@@ -38,6 +38,13 @@ public abstract class MDownloader extends Thread {
         this.dqc = new DownloadQueueContainer( this.clc );
     }
 
+    public File getTargetFolder() {
+        if ( this.clc == null ) {
+            throw new IllegalStateException( "ChapterListContainer not yet initialized" );
+        }
+        return this.clc.getPath();
+    }
+
     @Override
     public void run() {
         try {

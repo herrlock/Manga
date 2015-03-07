@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.util.Constants;
 
 public class DialogDownloader extends MDownloader {
@@ -16,7 +17,11 @@ public class DialogDownloader extends MDownloader {
             try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
                 p.load( fIn );
             }
-            new DialogDownloader( p ).start();
+            DialogDownloader dd = new DialogDownloader( p );
+            dd.start();
+            dd.join();
+            System.out.println( '\n' );
+            ViewPageMain.execute( dd.getTargetFolder() );
         } catch ( RuntimeException ex ) {
             throw ex;
         } catch ( Exception ex ) {
