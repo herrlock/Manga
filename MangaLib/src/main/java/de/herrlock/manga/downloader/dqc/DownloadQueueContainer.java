@@ -96,6 +96,8 @@ public final class DownloadQueueContainer {
                 } catch ( SocketException | SocketTimeoutException ex ) {
                     DownloadQueueContainer.this.add( this.p );
                 }
+            } catch ( SocketException | SocketTimeoutException ex ) {
+                DownloadQueueContainer.this.add( this.p );
             } catch ( IOException ex ) {
                 throw new RuntimeException( ex );
             }
