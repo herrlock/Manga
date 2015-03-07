@@ -20,7 +20,6 @@ public class DialogDownloader extends MDownloader {
             DialogDownloader dd = new DialogDownloader( p );
             dd.start();
             dd.join();
-            System.out.println( '\n' );
             ViewPageMain.execute( dd.getTargetFolder() );
         } catch ( RuntimeException ex ) {
             throw ex;

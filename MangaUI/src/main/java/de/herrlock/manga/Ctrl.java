@@ -31,7 +31,7 @@ public final class Ctrl {
                 break;
         }
 
-        System.out.println( "finished" );
+        System.out.println( "\n---\nfinished" );
     }
 
     private Ctrl() {
