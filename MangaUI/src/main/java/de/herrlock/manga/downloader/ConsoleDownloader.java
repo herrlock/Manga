@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 import de.herrlock.manga.util.Constants;
 
-public class ConsoleDownloader extends MDownloader {
+public final class ConsoleDownloader extends MDownloader {
 
     private final Scanner sc;
 

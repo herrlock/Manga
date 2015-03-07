@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.util.Constants;
 
-public class DialogDownloader extends MDownloader {
+public final class DialogDownloader extends MDownloader {
 
     public static void execute() {
         try {
