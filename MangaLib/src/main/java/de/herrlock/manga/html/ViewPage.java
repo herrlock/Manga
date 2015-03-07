@@ -1,14 +1,10 @@
 package de.herrlock.manga.html;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,9 +21,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
-public class ViewPage {
-    private static final Charset UTF8 = StandardCharsets.UTF_8;
+import de.herrlock.manga.util.Utils;
 
+public class ViewPage {
     private final File folder;
     private final Document document;
     private final int maxImgs;
@@ -35,7 +31,7 @@ public class ViewPage {
     public static void execute( File folder ) {
         Document doc = new ViewPage( folder ).getDocument();
         Path p = new File( folder, "index.html" ).toPath();
-        try ( BufferedWriter writer = Files.newBufferedWriter( p, UTF8 ) ) {
+        try ( BufferedWriter writer = Files.newBufferedWriter( p, StandardCharsets.UTF_8 ) ) {
             writer.write( "<!DOCTYPE HTML>\n" );
             writer.write( doc.toString() );
         } catch ( IOException ex ) {
@@ -44,6 +40,7 @@ public class ViewPage {
     }
 
     public ViewPage( File folder ) {
+        System.out.println( "create files in folder " + folder );
         this.folder = folder;
         this.document = new Document( "" );
         this.maxImgs = maxImgs();
@@ -62,6 +59,7 @@ public class ViewPage {
     }
 
     private Element createHead() {
+        System.out.println( "createHead" );
         Element head = new Element( Tag.valueOf( "head" ), "" );
         head.appendElement( "title" ).text( mangaName() );
         head.appendElement( "meta" ).attr( "charset", "utf-8" );
@@ -87,6 +85,7 @@ public class ViewPage {
     }
 
     private Element createBody() {
+        System.out.println( "createBody" );
         Element body = new Element( Tag.valueOf( "body" ), "" );
         body.attr( "onload", "init()" );
         body.appendChild( leftDiv() );
@@ -196,21 +195,10 @@ public class ViewPage {
 
     private void copyFile( String filename ) {
         try {
-            List<String> readLines = new ArrayList<>();
-
             InputStream resource = ViewPage.class.getResourceAsStream( filename );
-            try ( BufferedReader reader = new BufferedReader( new InputStreamReader( resource, UTF8 ) ) ) {
-                String nextline;
-                while ( ( nextline = reader.readLine() ) != null ) {
-                    readLines.add( nextline );
-                }
-            }
-
-            try ( PrintWriter pw = new PrintWriter( new File( this.folder, filename ), "UTF-8" ) ) {
-                for ( String s : readLines ) {
-                    pw.println( s );
-                }
-            }
+            List<String> readLines = Utils.readStream( resource );
+            File toFile = new File( this.folder, filename );
+            Utils.writeToFile( toFile, readLines );
         } catch ( IOException ex ) {
             throw new RuntimeException( ex );
         }

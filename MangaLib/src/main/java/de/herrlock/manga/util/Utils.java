@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -140,6 +141,14 @@ public final class Utils {
         return list;
     }
 
+    public static void writeToFile( File file, List<String> readLines ) throws IOException {
+        try ( PrintWriter pw = new PrintWriter( file, "UTF-8" ) ) {
+            for ( String s : readLines ) {
+                pw.println( s );
+            }
+        }
+    }
+
     /**
      * returns the URL from the current arguments, optional appended to {@code http://}
      * 
@@ -209,5 +218,4 @@ public final class Utils {
     private Utils() {
         // not called
     }
-
 }
