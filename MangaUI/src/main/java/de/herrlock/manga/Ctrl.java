@@ -30,6 +30,8 @@ public final class Ctrl {
                 System.out.println( "invalid option chosen" );
                 break;
         }
+
+        System.out.println( "finished" );
     }
 
     private Ctrl() {
