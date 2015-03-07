@@ -56,7 +56,7 @@ public final class PictureMapContainer {
      * 
      * @author HerrLock
      */
-    private class PictureMapThread extends Thread {
+    private final class PictureMapThread extends Thread {
 
         private final Chapter chapter;
 

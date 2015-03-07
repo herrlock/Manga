@@ -3,7 +3,7 @@ package de.herrlock.manga.downloader.dqc;
 import java.io.File;
 import java.net.URL;
 
-public class Page {
+public final class Page {
     /**
      * the {@link URL} where to read this page from
      */

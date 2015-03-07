@@ -6,7 +6,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class ProxyConnectionFactory extends ConnectionFactory {
+public final class ProxyConnectionFactory extends ConnectionFactory {
 
     private final Proxy proxy;
 

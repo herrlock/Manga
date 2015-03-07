@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class DirectConnectionFactory extends ConnectionFactory {
+public final class DirectConnectionFactory extends ConnectionFactory {
 
     /**
      * a {@linkplain ConnectionFactory} that creates {@linkplain URLConnection Connections} without a proxy

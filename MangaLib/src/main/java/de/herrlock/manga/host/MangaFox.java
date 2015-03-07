@@ -12,7 +12,7 @@ import org.jsoup.select.Elements;
 
 import de.herrlock.manga.util.Utils;
 
-class MangaFox extends ChapterList {
+final class MangaFox extends ChapterList {
     private static final long serialVersionUID = 1L;
 
     private final String name;

@@ -17,7 +17,7 @@ import de.herrlock.manga.util.Constants;
  * 
  * @author HerrLock
  */
-public class ChapterListContainer {
+public final class ChapterListContainer {
     /**
      * the parent-folder to write the pages into. set in the constructor to {@code download/<mangaName>_<timestamp>}
      */
@@ -46,7 +46,7 @@ public class ChapterListContainer {
      * 
      * @return the manga-folder
      */
-    public final File getPath() {
+    public File getPath() {
         return this.path;
     }
 
@@ -55,7 +55,7 @@ public class ChapterListContainer {
      * 
      * @return an array containing all chapters
      */
-    public final Chapter[] getChapters() {
+    public Chapter[] getChapters() {
         return this.chapterlist.toArray( new Chapter[this.chapterlist.size()] );
     }
 
@@ -64,7 +64,7 @@ public class ChapterListContainer {
      * 
      * @return the size of the chapterlist
      */
-    public final int getSize() {
+    public int getSize() {
         return this.chapterlist.size();
     }
 
@@ -77,7 +77,7 @@ public class ChapterListContainer {
      * @throws IOException
      * @xee ChapterList#imgLink(URL)
      */
-    public final URL getImageLink( URL pageUrl ) throws IOException {
+    public URL getImageLink( URL pageUrl ) throws IOException {
         return this.chapterlist.imgLink( pageUrl );
     }
 

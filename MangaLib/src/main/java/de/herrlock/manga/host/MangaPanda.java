@@ -11,7 +11,7 @@ import org.jsoup.select.Elements;
 
 import de.herrlock.manga.util.Utils;
 
-class MangaPanda extends ChapterList {
+final class MangaPanda extends ChapterList {
     private static final long serialVersionUID = 1L;
 
     private final String name;

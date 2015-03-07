@@ -17,7 +17,7 @@ import javax.imageio.ImageIO;
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.util.Utils;
 
-public class DownloadQueueContainer {
+public final class DownloadQueueContainer {
 
     private final List<Page> dlQueue = new ArrayList<>();
     final ChapterListContainer clc;
@@ -70,7 +70,7 @@ public class DownloadQueueContainer {
      * 
      * @author HerrLock
      */
-    private class DownloadThread extends Thread {
+    private final class DownloadThread extends Thread {
         private final Page p;
 
         public DownloadThread( Page p ) {
