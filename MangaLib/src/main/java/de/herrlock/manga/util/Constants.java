@@ -9,12 +9,6 @@ import java.util.Comparator;
 
 public final class Constants {
     /**
-     * a switch to set debug-mode<br>
-     * calculated at runtime to evade compilerwarnings
-     */
-    public static final boolean DEBUG = Math.random() < 2;
-
-    /**
      * the position of the configuration-file to runtime
      */
     public static final String SETTINGS_FILE = "./downloader.txt";
