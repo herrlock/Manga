@@ -10,8 +10,11 @@
 1.5:
 - option to download directly into a zip-file
 
+X:
+- reduce used system-resources (esp. RAM)
+
 later:
-- (?) proxy-authentification
+- 
 
 ---
 
