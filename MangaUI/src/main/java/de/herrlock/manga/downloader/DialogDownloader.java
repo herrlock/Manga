@@ -22,7 +22,7 @@ public final class DialogDownloader extends MDownloader {
             dd.start();
             dd.join();
             String cp = Utils.getPattern();
-            if ( cp != null && !"".equals( cp ) ) {
+            if ( cp == null || "".equals( cp ) ) {
                 ViewPageMain.execute( dd.getTargetFolder() );
             }
         } catch ( RuntimeException ex ) {
