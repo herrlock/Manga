@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 
 import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.Utils;
 
 public final class DialogDownloader extends MDownloader {
 
@@ -20,7 +21,10 @@ public final class DialogDownloader extends MDownloader {
             DialogDownloader dd = new DialogDownloader( p );
             dd.start();
             dd.join();
-            ViewPageMain.execute( dd.getTargetFolder() );
+            String cp = Utils.getPattern();
+            if ( cp != null && !"".equals( cp ) ) {
+                ViewPageMain.execute( dd.getTargetFolder() );
+            }
         } catch ( RuntimeException ex ) {
             throw ex;
         } catch ( Exception ex ) {
