@@ -14,8 +14,8 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith( Parameterized.class )
 public class TestPage {
 
-    private int pageNumber;
-    private String expString;
+    private final int pageNumber;
+    private final String expString;
 
     @Parameters( name = "{0}" )
     public static Collection<Object[]> getParams() {
