@@ -99,7 +99,13 @@ public final class DownloadQueueContainer {
             } catch ( SocketException | SocketTimeoutException ex ) {
                 DownloadQueueContainer.this.add( this.p );
             } catch ( IOException ex ) {
-                throw new RuntimeException( ex );
+                if ( ex.getMessage().contains( "503" ) ) {
+                    // http-statuscode 503
+                    System.out.println( "HTTP-Status 503 (" + this.p.getURL() + "), trying again" );
+                    DownloadQueueContainer.this.add( this.p );
+                } else {
+                    throw new RuntimeException( ex );
+                }
             }
         }
     }
