@@ -18,7 +18,7 @@ import de.herrlock.manga.util.Utils;
 @RunWith( value = Parameterized.class )
 public class UtilsReadStream {
 
-    private String string;
+    private final String string;
 
     @Parameters
     public static Collection<Object[]> getParams() {
