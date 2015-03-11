@@ -3,5 +3,5 @@ group 'de.herrlock.manga'
 version '1.3.0-BETA-SNAPSHOT'
 
 dependencies {
-	compile 'org.jsoup:jsoup:+'
+	compile 'org.jsoup:jsoup:1.8.1'
 }
