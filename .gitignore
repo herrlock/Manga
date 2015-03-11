@@ -4,6 +4,6 @@
 .settings/
 bin/
 build/
-MangaUI/downloader.txt
-MangaUI/download/
-MangaUI/log/
+MangaCtrl/downloader.txt
+MangaCtrl/download/
+MangaCtrl/log/

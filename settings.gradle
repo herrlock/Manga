@@ -1,1 +1,1 @@
-include 'MangaLib', 'MangaUI'
+include 'MangaLib', 'MangaCtrl'
