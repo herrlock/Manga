@@ -40,14 +40,6 @@ public final class Constants {
      * the name of the property for setting the proxy-port
      */
     public static final String PARAM_PROXY_PORT = "proxyPort";
-    /**
-     * the name of the property for setting the proxy-user
-     */
-    public static final String PARAM_PROXY_USER = "proxyUser";
-    /**
-     * the name of the property for setting the proxy-password
-     */
-    public static final String PARAM_PROXY_PASS = "proxyPass";
 
     /**
      * the default location to save the downloads into
