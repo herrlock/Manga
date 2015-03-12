@@ -26,7 +26,7 @@ public final class Ctrl extends Application {
     }
 
     @Override
-    public void start( Stage stage ) throws Exception {
+    public void start( Stage stage ) {
         AbstractScene scene = new CtrlScene();
         stage.setScene( scene.getScene() );
         stage.setTitle( scene.getTitle() );
@@ -61,19 +61,19 @@ final class CtrlScene extends AbstractScene {
         Button startDL = new Button( this.i18n.getString( buttonTextPrefix + "startDL" ) );
         {
             startDL.setDefaultButton( true );
-            startDL.setOnAction( startDownloadHandler );
+            startDL.setOnAction( Handler.START_DOWNLOAD );
             startDL.setOnMouseEntered( new SetTextEvent( this.i18n.getString( buttonTooltipPrefix + "startDL" ) ) );
             startDL.setOnMouseExited( cte );
         }
         Button showHosts = new Button( this.i18n.getString( buttonTextPrefix + "showHosts" ) );
         {
-            showHosts.setOnAction( showHosterHandler );
+            showHosts.setOnAction( Handler.SHOW_HOSTER );
             showHosts.setOnMouseEntered( new SetTextEvent( this.i18n.getString( buttonTooltipPrefix + "showHosts" ) ) );
             showHosts.setOnMouseExited( cte );
         }
         Button createHTML = new Button( this.i18n.getString( buttonTextPrefix + "createHTML" ) );
         {
-            showHosts.setOnAction( createHtmlHandler );
+            showHosts.setOnAction( Handler.CREATE_HTML );
             createHTML.setOnMouseEntered( new SetTextEvent( this.i18n.getString( buttonTooltipPrefix + "createHTML" ) ) );
             createHTML.setOnMouseExited( cte );
         }
@@ -100,24 +100,29 @@ final class CtrlScene extends AbstractScene {
             CtrlScene.this.bottomText.setText( this.textToSet );
         }
     }
+}
 
-    private static final EventHandler<ActionEvent> startDownloadHandler = new EventHandler<ActionEvent>() {
+final class Handler {
+    public static final EventHandler<ActionEvent> START_DOWNLOAD = new EventHandler<ActionEvent>() {
         @Override
         public void handle( @SuppressWarnings( "unused" ) ActionEvent event ) {
             DialogDownloader.execute();
         }
     };
-    private static final EventHandler<ActionEvent> showHosterHandler = new EventHandler<ActionEvent>() {
+    public static final EventHandler<ActionEvent> SHOW_HOSTER = new EventHandler<ActionEvent>() {
         @Override
         public void handle( @SuppressWarnings( "unused" ) ActionEvent event ) {
             PrintAllHoster.execute();
         }
     };
-    private static final EventHandler<ActionEvent> createHtmlHandler = new EventHandler<ActionEvent>() {
+    public static final EventHandler<ActionEvent> CREATE_HTML = new EventHandler<ActionEvent>() {
         @Override
         public void handle( @SuppressWarnings( "unused" ) ActionEvent event ) {
             ViewPageMain.execute();
         }
     };
 
+    private Handler() {
+        // not used
+    }
 }
