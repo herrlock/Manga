@@ -4,11 +4,8 @@ dependencies {
 	compile files(System.properties.'java.home' + '/lib/jfxrt.jar')
 }
 
-task javafxDoc << {
-	def cpFile = 'MangaLib/.classpath'
-	def cpRoot = new XmlParser().parse(cpFile)
-	def cpEntries = cpRoot.children()
-	cpEntries.each { entry -> 
+eclipse.classpath.file.withXml {
+	it.asNode().children().each { entry -> 
 		if((entry.'@path').contains('jfxrt')) {
 			Node attributes = new Node(entry, 'attributes')
 			Node attribute = new Node(attributes, 'attribute')
@@ -16,7 +13,4 @@ task javafxDoc << {
 			attribute.'@value' = 'http://docs.oracle.com/javafx/2/api/'
 		}
 	}
-	new XmlNodePrinter(new PrintWriter(new FileWriter(cpFile))).print(cpRoot)
 }
-
-tasks.eclipse.dependsOn(javafxDoc)
