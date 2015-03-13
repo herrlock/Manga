@@ -1,7 +1,4 @@
 
-group 'de.herrlock.manga'
-version '1.3.0-BETA-SNAPSHOT'
-
 dependencies {
 	compile 'org.jsoup:jsoup:1.8.1'
 	compile files(System.properties.'java.home' + '/lib/jfxrt.jar')
