@@ -122,7 +122,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
          * the regex for the patterns<br>
          * accepts "a list of strings seperated by semicolons"
          */
-        private static final Pattern REGEX = Pattern.compile( "([^;]+;)+[^;]+" );
+        private static final Pattern REGEX = Pattern.compile( "^([^;]+;)*([^;]+)$" );
 
         /**
          * a valid pattern consists of the chapter-numbers seperated by semicolon, or an interval of chapters, defined by the
