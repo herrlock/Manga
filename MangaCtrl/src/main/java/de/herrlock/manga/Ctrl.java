@@ -51,7 +51,7 @@ final class CtrlScene extends AbstractScene {
     private Node createCenter() {
         EventHandler<MouseEvent> cte = new EventHandler<MouseEvent>() {
             @Override
-            public void handle( @SuppressWarnings( "unused" ) MouseEvent event ) {
+            public void handle( MouseEvent event ) {
                 CtrlScene.this.bottomText.setText( "" );
             }
         };
@@ -96,7 +96,7 @@ final class CtrlScene extends AbstractScene {
         }
 
         @Override
-        public void handle( @SuppressWarnings( "unused" ) MouseEvent event ) {
+        public void handle( MouseEvent event ) {
             CtrlScene.this.bottomText.setText( this.textToSet );
         }
     }
@@ -105,19 +105,19 @@ final class CtrlScene extends AbstractScene {
 final class Handler {
     public static final EventHandler<ActionEvent> START_DOWNLOAD = new EventHandler<ActionEvent>() {
         @Override
-        public void handle( @SuppressWarnings( "unused" ) ActionEvent event ) {
+        public void handle( ActionEvent event ) {
             DialogDownloader.execute();
         }
     };
     public static final EventHandler<ActionEvent> SHOW_HOSTER = new EventHandler<ActionEvent>() {
         @Override
-        public void handle( @SuppressWarnings( "unused" ) ActionEvent event ) {
+        public void handle( ActionEvent event ) {
             PrintAllHoster.execute();
         }
     };
     public static final EventHandler<ActionEvent> CREATE_HTML = new EventHandler<ActionEvent>() {
         @Override
-        public void handle( @SuppressWarnings( "unused" ) ActionEvent event ) {
+        public void handle( ActionEvent event ) {
             ViewPageMain.execute();
         }
     };
