@@ -61,20 +61,20 @@ final class CtrlScene extends AbstractScene {
         Button startDL = new Button( this.i18n.getString( buttonTextPrefix + "startDL" ) );
         {
             startDL.setDefaultButton( true );
-            startDL.setOnAction( Handler.START_DOWNLOAD );
-            startDL.setOnMouseEntered( new SetTextEvent( this.i18n.getString( buttonTooltipPrefix + "startDL" ) ) );
+            startDL.setOnAction( StaticHandler.START_DOWNLOAD );
+            startDL.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "startDL" ) ) );
             startDL.setOnMouseExited( cte );
         }
         Button showHosts = new Button( this.i18n.getString( buttonTextPrefix + "showHosts" ) );
         {
-            showHosts.setOnAction( Handler.SHOW_HOSTER );
-            showHosts.setOnMouseEntered( new SetTextEvent( this.i18n.getString( buttonTooltipPrefix + "showHosts" ) ) );
+            showHosts.setOnAction( StaticHandler.SHOW_HOSTER );
+            showHosts.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "showHosts" ) ) );
             showHosts.setOnMouseExited( cte );
         }
         Button createHTML = new Button( this.i18n.getString( buttonTextPrefix + "createHTML" ) );
         {
-            showHosts.setOnAction( Handler.CREATE_HTML );
-            createHTML.setOnMouseEntered( new SetTextEvent( this.i18n.getString( buttonTooltipPrefix + "createHTML" ) ) );
+            showHosts.setOnAction( StaticHandler.CREATE_HTML );
+            createHTML.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "createHTML" ) ) );
             createHTML.setOnMouseExited( cte );
         }
         HBox hbox = new HBox( 8 );
@@ -88,10 +88,10 @@ final class CtrlScene extends AbstractScene {
         return "Please select";
     }
 
-    private class SetTextEvent implements EventHandler<MouseEvent> {
+    private class SetTextHandler implements EventHandler<MouseEvent> {
         private final String textToSet;
 
-        public SetTextEvent( String textToSet ) {
+        public SetTextHandler( String textToSet ) {
             this.textToSet = textToSet;
         }
 
@@ -102,7 +102,7 @@ final class CtrlScene extends AbstractScene {
     }
 }
 
-final class Handler {
+final class StaticHandler {
     public static final EventHandler<ActionEvent> START_DOWNLOAD = new EventHandler<ActionEvent>() {
         @Override
         public void handle( ActionEvent event ) {
@@ -122,7 +122,7 @@ final class Handler {
         }
     };
 
-    private Handler() {
+    private StaticHandler() {
         // not used
     }
 }
