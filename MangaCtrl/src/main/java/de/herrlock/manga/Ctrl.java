@@ -3,6 +3,8 @@ package de.herrlock.manga;
 import java.util.ResourceBundle;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -61,19 +63,19 @@ final class CtrlScene extends AbstractScene {
         Button startDL = new Button( this.i18n.getString( buttonTextPrefix + "startDL" ) );
         {
             startDL.setDefaultButton( true );
-            startDL.setOnAction( StaticHandler.START_DOWNLOAD );
+            startDL.setOnAction( new TaskHandler( StaticTasks.START_DOWNLOAD ) );
             startDL.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "startDL" ) ) );
             startDL.setOnMouseExited( cte );
         }
         Button showHosts = new Button( this.i18n.getString( buttonTextPrefix + "showHosts" ) );
         {
-            showHosts.setOnAction( StaticHandler.SHOW_HOSTER );
+            showHosts.setOnAction( new TaskHandler( StaticTasks.SHOW_HOSTER ) );
             showHosts.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "showHosts" ) ) );
             showHosts.setOnMouseExited( cte );
         }
         Button createHTML = new Button( this.i18n.getString( buttonTextPrefix + "createHTML" ) );
         {
-            showHosts.setOnAction( StaticHandler.CREATE_HTML );
+            createHTML.setOnAction( new TaskHandler( StaticTasks.CREATE_HTML ) );
             createHTML.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "createHTML" ) ) );
             createHTML.setOnMouseExited( cte );
         }
@@ -100,29 +102,48 @@ final class CtrlScene extends AbstractScene {
             CtrlScene.this.bottomText.setText( this.textToSet );
         }
     }
+
+    private static class TaskHandler implements EventHandler<ActionEvent> {
+        private final Task<?> task;
+
+        public TaskHandler( Task<?> task ) {
+            this.task = task;
+        }
+        @Override
+        public void handle( ActionEvent event ) {
+            new Thread( this.task ).start();
+        }
+    }
 }
 
-final class StaticHandler {
-    public static final EventHandler<ActionEvent> START_DOWNLOAD = new EventHandler<ActionEvent>() {
+final class StaticTasks {
+
+    public static final Task<Void> START_DOWNLOAD = new Task<Void>() {
         @Override
-        public void handle( ActionEvent event ) {
+        protected Void call() {
             DialogDownloader.execute();
+            Platform.exit();
+            return null;
         }
     };
-    public static final EventHandler<ActionEvent> SHOW_HOSTER = new EventHandler<ActionEvent>() {
+    public static final Task<Void> SHOW_HOSTER = new Task<Void>() {
         @Override
-        public void handle( ActionEvent event ) {
+        protected Void call() {
             PrintAllHoster.execute();
+            Platform.exit();
+            return null;
         }
     };
-    public static final EventHandler<ActionEvent> CREATE_HTML = new EventHandler<ActionEvent>() {
+    public static final Task<Void> CREATE_HTML = new Task<Void>() {
         @Override
-        public void handle( ActionEvent event ) {
+        protected Void call() {
             ViewPageMain.execute();
+            Platform.exit();
+            return null;
         }
     };
 
-    private StaticHandler() {
+    private StaticTasks() {
         // not used
     }
 }
