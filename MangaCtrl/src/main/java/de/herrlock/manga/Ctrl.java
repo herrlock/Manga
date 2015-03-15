@@ -16,12 +16,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import de.herrlock.javafx.AbstractApplication;
 import de.herrlock.javafx.scene.AbstractScene;
 import de.herrlock.manga.downloader.DialogDownloader;
 import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
 
-public final class Ctrl extends Application {
+public final class Ctrl extends AbstractApplication {
 
     public static void main( String[] args ) {
         Application.launch( args );
@@ -29,11 +30,8 @@ public final class Ctrl extends Application {
 
     @Override
     public void start( Stage stage ) {
-        AbstractScene scene = new CtrlScene();
-        stage.setScene( scene.getScene() );
-        stage.setTitle( scene.getTitle() );
-        stage.getIcons().addAll( scene.getIcons() );
-        stage.show();
+        this.scene = new CtrlScene();
+        super.start( stage );
     }
 }
 
