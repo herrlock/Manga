@@ -25,8 +25,8 @@ final class MangaPanda extends ChapterList {
         Elements tr = document.select( "#chapterlist tr" );
         tr.remove( 0 );
         for ( Element e : tr ) {
-            Element firstTd = e.getElementsByTag( "td" ).get( 0 );
-            Element link = firstTd.getElementsByTag( "a" ).get( 0 );
+            Element firstTd = e.getElementsByTag( "td" ).first();
+            Element link = firstTd.getElementsByTag( "a" ).first();
 
             String[] nameAndNumber = link.text().split( " " );
             String number = nameAndNumber[nameAndNumber.length - 1];

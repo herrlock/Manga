@@ -25,7 +25,7 @@ final class PureManga extends ChapterList {
 
         Elements tr = document.getElementsByClass( "element" );
         for ( Element e : tr ) {
-            Element link = e.select( "div>a" ).get( 0 );
+            Element link = e.select( "div>a" ).first();
 
             String[] chapterNrAndName = link.text().split( ":" );
             String number = chapterNrAndName[0].split( " " )[1];
@@ -44,7 +44,7 @@ final class PureManga extends ChapterList {
 
     @Override
     public URL imgLink( URL url ) throws IOException {
-        String src = Utils.getDocument( url ).select( "#page>.inner>a>img" ).get( 0 ).attr( "src" );
+        String src = Utils.getDocument( url ).select( "#page>.inner>a>img" ).first().attr( "src" );
         return new URL( url, src );
     }
 
@@ -53,7 +53,7 @@ final class PureManga extends ChapterList {
         Map<Integer, URL> result = new ConcurrentHashMap<>();
         Elements li = Utils.getDocument( url ).select( ".dropdown_right>ul>li" );
         for ( Element e : li ) {
-            Element link = e.getElementsByTag( "a" ).get( 0 );
+            Element link = e.getElementsByTag( "a" ).first();
             int number = Integer.parseInt( link.text().substring( 6 ) );
             URL absUrl = new URL( url, link.attr( "href" ) );
             result.put( number, absUrl );
