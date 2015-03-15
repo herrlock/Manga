@@ -117,14 +117,14 @@ final class CtrlScene extends AbstractScene {
     }
 
     class MDTask extends Task<Void> {
-        private Exec exec;
+        private final Exec exec;
 
         public MDTask( Exec exec ) {
             this.exec = exec;
         }
 
         @Override
-        protected Void call() throws Exception {
+        protected Void call() {
             CtrlScene.this.runningText.setText( "Working, please wait" );
             this.exec.execute();
             CtrlScene.this.runningText.setText( "" );
@@ -140,16 +140,12 @@ abstract class Exec {
         public void execute() {
             DialogDownloader.execute();
         }
-    };
-
-    public static final Exec PRINT_ALL_HOSTER = new Exec() {
+    }, PRINT_ALL_HOSTER = new Exec() {
         @Override
         public void execute() {
             PrintAllHoster.execute();
         }
-    };
-
-    public static final Exec VIEW_PAGE_MAIN = new Exec() {
+    }, VIEW_PAGE_MAIN = new Exec() {
         @Override
         public void execute() {
             ViewPageMain.execute();
