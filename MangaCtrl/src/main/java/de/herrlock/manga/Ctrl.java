@@ -40,18 +40,19 @@ public final class Ctrl extends Application {
 final class CtrlScene extends AbstractScene {
 
     private final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ctrl" );
+    final Text runningText = new Text();
     final Text bottomText = new Text();
 
     CtrlScene() {
         BorderPane parent = new BorderPane();
         parent.setPadding( new Insets( 8, 24, 8, 24 ) );
+        parent.setTop( this.runningText );
         parent.setCenter( createCenter() );
         parent.setBottom( this.bottomText );
         this.setScene( new Scene( parent ) );
     }
-
     private Node createCenter() {
-        EventHandler<MouseEvent> cte = new EventHandler<MouseEvent>() {
+        EventHandler<MouseEvent> clearText = new EventHandler<MouseEvent>() {
             @Override
             public void handle( MouseEvent event ) {
                 CtrlScene.this.bottomText.setText( "" );
@@ -60,31 +61,30 @@ final class CtrlScene extends AbstractScene {
 
         final String buttonTextPrefix = "button.text.";
         final String buttonTooltipPrefix = "button.tooltip.";
-        Button startDL = new Button( this.i18n.getString( buttonTextPrefix + "startDL" ) );
+        Button btnStartDownload = new Button( this.i18n.getString( buttonTextPrefix + "startDL" ) );
         {
-            startDL.setDefaultButton( true );
-            startDL.setOnAction( new TaskHandler( StaticTasks.START_DOWNLOAD ) );
-            startDL.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "startDL" ) ) );
-            startDL.setOnMouseExited( cte );
+            btnStartDownload.setDefaultButton( true );
+            btnStartDownload.setOnAction( new TaskHandler( new MDTask( Exec.DIALOG_DOWNLOADER ) ) );
+            btnStartDownload.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "startDL" ) ) );
+            btnStartDownload.setOnMouseExited( clearText );
         }
-        Button showHosts = new Button( this.i18n.getString( buttonTextPrefix + "showHosts" ) );
+        Button stnShowHosts = new Button( this.i18n.getString( buttonTextPrefix + "showHosts" ) );
         {
-            showHosts.setOnAction( new TaskHandler( StaticTasks.SHOW_HOSTER ) );
-            showHosts.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "showHosts" ) ) );
-            showHosts.setOnMouseExited( cte );
+            stnShowHosts.setOnAction( new TaskHandler( new MDTask( Exec.PRINT_ALL_HOSTER ) ) );
+            stnShowHosts.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "showHosts" ) ) );
+            stnShowHosts.setOnMouseExited( clearText );
         }
-        Button createHTML = new Button( this.i18n.getString( buttonTextPrefix + "createHTML" ) );
+        Button btnCreateHTML = new Button( this.i18n.getString( buttonTextPrefix + "createHTML" ) );
         {
-            createHTML.setOnAction( new TaskHandler( StaticTasks.CREATE_HTML ) );
-            createHTML.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "createHTML" ) ) );
-            createHTML.setOnMouseExited( cte );
+            btnCreateHTML.setOnAction( new TaskHandler( new MDTask( Exec.VIEW_PAGE_MAIN ) ) );
+            btnCreateHTML.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "createHTML" ) ) );
+            btnCreateHTML.setOnMouseExited( clearText );
         }
         HBox hbox = new HBox( 8 );
         hbox.setPadding( new Insets( 8 ) );
-        hbox.getChildren().addAll( startDL, showHosts, createHTML );
+        hbox.getChildren().addAll( btnStartDownload, stnShowHosts, btnCreateHTML );
         return hbox;
     }
-
     @Override
     public String getTitle() {
         return "Please select";
@@ -109,41 +109,52 @@ final class CtrlScene extends AbstractScene {
         public TaskHandler( Task<?> task ) {
             this.task = task;
         }
+
         @Override
         public void handle( ActionEvent event ) {
             new Thread( this.task ).start();
         }
     }
+
+    class MDTask extends Task<Void> {
+        private Exec exec;
+
+        public MDTask( Exec exec ) {
+            this.exec = exec;
+        }
+
+        @Override
+        protected Void call() throws Exception {
+            CtrlScene.this.runningText.setText( "Working, please wait" );
+            this.exec.execute();
+            CtrlScene.this.runningText.setText( "" );
+            Platform.exit();
+            return null;
+        }
+    }
 }
 
-final class StaticTasks {
-
-    public static final Task<Void> START_DOWNLOAD = new Task<Void>() {
+abstract class Exec {
+    public static final Exec DIALOG_DOWNLOADER = new Exec() {
         @Override
-        protected Void call() {
+        public void execute() {
             DialogDownloader.execute();
-            Platform.exit();
-            return null;
-        }
-    };
-    public static final Task<Void> SHOW_HOSTER = new Task<Void>() {
-        @Override
-        protected Void call() {
-            PrintAllHoster.execute();
-            Platform.exit();
-            return null;
-        }
-    };
-    public static final Task<Void> CREATE_HTML = new Task<Void>() {
-        @Override
-        protected Void call() {
-            ViewPageMain.execute();
-            Platform.exit();
-            return null;
         }
     };
 
-    private StaticTasks() {
-        // not used
-    }
+    public static final Exec PRINT_ALL_HOSTER = new Exec() {
+        @Override
+        public void execute() {
+            PrintAllHoster.execute();
+        }
+    };
+
+    public static final Exec VIEW_PAGE_MAIN = new Exec() {
+        @Override
+        public void execute() {
+            ViewPageMain.execute();
+        }
+    };
+
+    public abstract void execute();
 }
