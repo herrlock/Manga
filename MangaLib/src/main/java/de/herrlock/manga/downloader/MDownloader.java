@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.downloader.dqc.DownloadQueueContainer;
@@ -18,7 +19,7 @@ import de.herrlock.manga.util.Utils;
 public abstract class MDownloader extends Thread {
 
     protected final ChapterListContainer clc;
-    protected PictureMapContainer pmc;
+    protected final PictureMapContainer pmc;
     protected final DownloadQueueContainer dqc;
 
     /**
@@ -35,14 +36,8 @@ public abstract class MDownloader extends Thread {
         } catch ( IOException ex ) {
             throw new RuntimeException( ex );
         }
+        this.pmc = new PictureMapContainer( this.clc );
         this.dqc = new DownloadQueueContainer( this.clc );
-    }
-
-    public File getTargetFolder() {
-        if ( this.clc == null ) {
-            throw new IllegalStateException( "ChapterListContainer not yet initialized" );
-        }
-        return this.clc.getPath();
     }
 
     @Override
@@ -58,16 +53,10 @@ public abstract class MDownloader extends Thread {
         }
     }
 
-    protected abstract void runX();
-
     /**
-     * initializese the PictureMapContainer with the ChapterListContainer
+     * called only from MDownloader.run(), used to assert a custom run()-function in subclasses
      */
-    public void initPMC() {
-        Utils.trace( "initPMC()" );
-        System.out.println( "checking chapters for number of pages" );
-        this.pmc = new PictureMapContainer( this.clc );
-    }
+    protected abstract void runX();
 
     /**
      * returns the number of Chapters in the ChapterListContainer
@@ -82,12 +71,11 @@ public abstract class MDownloader extends Thread {
     /**
      * returns the number of Pictures in the PicturesMapContainer
      * 
-     * @return the number of Pictures or 0, if the PMC has not been initialized
-     * @see #initPMC()
+     * @return the number of Pictures
      * @see PictureMapContainer#getSize()
      */
     public int getPMCSize() {
-        return this.pmc == null ? 0 : this.pmc.getSize();
+        return this.pmc.getSize();
     }
 
     /**
@@ -96,19 +84,12 @@ public abstract class MDownloader extends Thread {
      */
     public void downloadAll() {
         Utils.trace( "downloadAll()" );
-        if ( this.pmc == null ) {
-            Utils.trace( "pmc == null" );
-            System.out.println( "pmc == null" );
-        } else {
-            Map<String, Map<Integer, URL>> picturemap = this.pmc.getPictureMap();
-            if ( picturemap == null ) {
-                throw new RuntimeException( "PageMap not initialized" );
-            }
-            List<String> keys = new ArrayList<>( picturemap.keySet() );
-            Collections.sort( keys, Constants.STRING_NUMBER_COMPARATOR );
-            for ( String key : keys ) {
-                downloadChapter( key, picturemap.get( key ) );
-            }
+        Map<String, Map<Integer, URL>> picturemap = this.pmc.getPictureMap();
+        List<String> keys = new ArrayList<>( picturemap.keySet() );
+        Collections.sort( keys, Constants.STRING_NUMBER_COMPARATOR );
+        for ( String key : keys ) {
+            downloadChapter( key, picturemap.get( key ) );
+            picturemap.remove( key );
         }
     }
 
@@ -124,24 +105,27 @@ public abstract class MDownloader extends Thread {
      */
     private void downloadChapter( String key, Map<Integer, URL> urlMap ) {
         Utils.trace( "downloadChapter( " + key + " )" );
-        if ( this.clc == null ) {
-            Utils.trace( "clc == null" );
-            System.out.println( "clc == null" );
+        System.out.println( "Download chapter " + key + " (" + urlMap.size() + " pages)" );
+        File chapterFolder = new File( this.clc.getPath(), key );
+        if ( chapterFolder.exists() || chapterFolder.mkdirs() ) {
+            // add pictures to queue
+            Set<Map.Entry<Integer, URL>> entrySet = urlMap.entrySet();
+            this.dqc.addEntrySet( chapterFolder, entrySet );
+            // start download
+            this.dqc.downloadPages();
         } else {
-            System.out.println( "Download chapter " + key + " (" + urlMap.size() + " pages)" );
-            File chapterFolder = new File( this.clc.getPath(), key );
-            if ( chapterFolder.exists() || chapterFolder.mkdirs() ) {
-                // add pictures to queue
-                for ( Map.Entry<Integer, URL> e : urlMap.entrySet() ) {
-                    this.dqc.add( e.getValue(), chapterFolder, e.getKey().intValue() );
-                }
-                // start download
-                this.dqc.downloadPages();
-            } else {
-                throw new RuntimeException( chapterFolder + "does not exists and could not be created" );
-            }
-            System.out.println( "finished chapter " + key + "\n" );
+            throw new RuntimeException( chapterFolder + "does not exists and could not be created" );
         }
+        System.out.println( "finished chapter " + key + "\n" );
+    }
+
+    /**
+     * returns the folder where the downloaded chapters are stored in
+     * 
+     * @see ChapterListContainer#getPath()
+     */
+    public File getTargetFolder() {
+        return this.clc.getPath();
     }
 
 }

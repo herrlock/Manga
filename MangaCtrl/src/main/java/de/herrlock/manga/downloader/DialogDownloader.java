@@ -39,11 +39,8 @@ public final class DialogDownloader extends MDownloader {
     @Override
     protected void runX() {
         try {
-            if ( goonCLC() ) {
-                initPMC();
-                if ( goonPMC() ) {
-                    downloadAll();
-                }
+            if ( goon() ) {
+                downloadAll();
             }
         } catch ( RuntimeException ex ) {
             JOptionPane.showMessageDialog( null, ex.getStackTrace(), ex.getMessage(), JOptionPane.ERROR_MESSAGE );
@@ -51,16 +48,10 @@ public final class DialogDownloader extends MDownloader {
         }
     }
 
-    private boolean goonPMC() {
-        return goon( "number of pictures: " + getPMCSize() );
-    }
-
-    private boolean goonCLC() {
-        return goon( "number of chapters: " + getCLCSize() );
-    }
-
-    private static boolean goon( String msg ) {
-        return JOptionPane.showConfirmDialog( null, msg, "go on?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE ) == JOptionPane.OK_OPTION;
+    private boolean goon() {
+        String title = "go on?";
+        String message = "number of pictures: " + getPMCSize();
+        return JOptionPane.showConfirmDialog( null, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE ) == JOptionPane.OK_OPTION;
     }
 
 }

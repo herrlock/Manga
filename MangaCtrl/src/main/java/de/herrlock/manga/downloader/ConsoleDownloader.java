@@ -34,42 +34,28 @@ public final class ConsoleDownloader extends MDownloader {
     @Override
     protected void runX() {
         try {
-            if ( goonCLC() ) {
-                initPMC();
-                if ( goonPMC() ) {
-                    downloadAll();
-                }
+            if ( goon() ) {
+                downloadAll();
             }
         } catch ( RuntimeException ex ) {
             ex.printStackTrace( System.out );
             throw ex;
         }
     }
-    protected boolean goon() {
-        System.out.println( "go on? y|n" );
-        try {
-            char c = this.sc.next( ".+" ).charAt( 0 );
-            return c == 'y' || c == 'Y';
-        } catch ( NoSuchElementException ex ) {
-            return false;
-        }
-    }
 
-    private boolean goonCLC() {
-        int noOfChapters = getCLCSize();
-        if ( noOfChapters > 0 ) {
-            System.out.println( noOfChapters + " chapter" + ( noOfChapters > 1 ? "s" : "" ) + " availabile." );
-            return goon();
-        }
-        return false;
-    }
-
-    private boolean goonPMC() {
+    private boolean goon() {
         int noOfPictures = getPMCSize();
         if ( noOfPictures > 0 ) {
-            System.out.println( noOfPictures + " page" + ( noOfPictures > 1 ? "s" : "" ) + " availabile." );
-            return goon();
+            System.out.println( noOfPictures + " page" + ( noOfPictures > 1 ? "s" : "" ) + " availabile" );
+            System.out.println( "go on? y|n" );
+            try {
+                char c = this.sc.next( ".+" ).charAt( 0 );
+                return c == 'y' || c == 'Y';
+            } catch ( NoSuchElementException ex ) {
+                return false;
+            }
         }
+        System.out.println( "no pages availabile; exiting" );
         return false;
     }
 }

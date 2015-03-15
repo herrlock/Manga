@@ -11,6 +11,8 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -27,6 +29,16 @@ public final class DownloadQueueContainer {
     }
 
     /**
+     * adds a page to thie queue
+     * 
+     * @param p
+     *            the {@link Page} to add
+     */
+    public void add( Page p ) {
+        this.dlQueue.add( p );
+    }
+
+    /**
      * adds a new {@link Page} with the given parameters to the queue
      * 
      * @see Page#Page(URL, File, int)
@@ -36,13 +48,14 @@ public final class DownloadQueueContainer {
     }
 
     /**
-     * adds a page to thie queue
+     * adds a {@link Set} of Integer-URL-Pairs to this Container
      * 
-     * @param p
-     *            the {@link Page} to add
+     * @see DownloadQueueContainer#add(URL, File, int)
      */
-    public void add( Page p ) {
-        this.dlQueue.add( p );
+    public void addEntrySet( File chapterFolder, Set<Entry<Integer, URL>> entrySet ) {
+        for ( Entry<Integer, URL> e : entrySet ) {
+            this.add( e.getValue(), chapterFolder, e.getKey().intValue() );
+        }
     }
 
     /**
