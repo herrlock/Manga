@@ -110,13 +110,17 @@ public class ViewPage {
         Collections.sort( list, Collections.reverseOrder( Const.integerEntryComparator ) );
 
         Element lDiv = new Element( Tag.valueOf( "div" ), "" ).attr( "id", "leftdiv" );
-        lDiv.appendChild( wrapperDiv( list.remove( 0 ), false ) );
+        List<String> firstBlock = list.get( 0 ).getValue();
+        double maxChapter = Double.parseDouble( Collections.max( firstBlock ) );
+        if ( maxChapter % 10 > 0 ) {
+            // in case the first block does not have 10 chapters show them always
+            lDiv.appendChild( wrapperDiv( list.remove( 0 ), false ) );
+        }
         for ( Entry<Integer, List<String>> e : list ) {
             lDiv.appendChild( wrapperDiv( e, true ) );
         }
         return lDiv;
     }
-
     private static Element wrapperDiv( Entry<Integer, List<String>> e, boolean addHidelink ) {
         Element wrapperDiv = new Element( Tag.valueOf( "div" ), "" );
         Integer blockId = e.getKey();

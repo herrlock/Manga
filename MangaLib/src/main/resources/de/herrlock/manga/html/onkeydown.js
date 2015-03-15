@@ -1,5 +1,6 @@
 var inAnimation = false;
 document.onkeydown = function(e) {
+    var active = parseFloat(location.hash.substring(1) || 1);
     switch (e.keyCode) {
     case 37: // arrow left
     case 65: // 'a'

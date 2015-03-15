@@ -27,7 +27,7 @@ public final class ViewPageMain {
     }
 
     /**
-     * only fo testing
+     * only for testing
      * 
      * @param args
      *            unused
