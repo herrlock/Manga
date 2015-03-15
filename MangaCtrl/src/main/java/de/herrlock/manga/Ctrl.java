@@ -114,7 +114,7 @@ final class CtrlScene extends AbstractScene {
         }
     }
 
-    class MDTask extends Task<Void> {
+    private static class MDTask extends Task<Void> {
         private final Exec exec;
 
         public MDTask( Exec exec ) {
@@ -123,10 +123,8 @@ final class CtrlScene extends AbstractScene {
 
         @Override
         protected Void call() {
-            CtrlScene.this.runningText.setText( "Working, please wait" );
-            this.exec.execute();
-            CtrlScene.this.runningText.setText( "" );
             Platform.exit();
+            this.exec.execute();
             return null;
         }
     }
