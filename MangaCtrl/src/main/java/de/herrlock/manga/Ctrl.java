@@ -49,6 +49,7 @@ final class CtrlScene extends AbstractScene {
         parent.setBottom( this.bottomText );
         this.setScene( new Scene( parent ) );
     }
+
     private Node createCenter() {
         EventHandler<MouseEvent> clearText = new EventHandler<MouseEvent>() {
             @Override
@@ -83,6 +84,7 @@ final class CtrlScene extends AbstractScene {
         hbox.getChildren().addAll( btnStartDownload, stnShowHosts, btnCreateHTML );
         return hbox;
     }
+
     @Override
     public String getTitle() {
         return "Please select";

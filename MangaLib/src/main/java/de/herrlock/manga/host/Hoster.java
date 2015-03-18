@@ -11,9 +11,9 @@ import java.util.Locale;
  * 
  * @author HerrLock
  */
-public enum Hoster implements Comparator<Hoster> {
+public enum Hoster {
     MANGAPANDA( "Mangapanda", "http://www.mangapanda.com/" ), //
-    PUREMANGA( "PureManga", "http://www.pure-manga.org/" ), //
+    PUREMANGA( "Pure-Manga", "http://www.pure-manga.org/" ), //
     MANGAFOX( "Mangafox", "http://www.mangafox.me/" ), //
     ;
 
@@ -26,7 +26,7 @@ public enum Hoster implements Comparator<Hoster> {
      * @param url
      *            the Hoster's "main"-URL
      */
-    Hoster( String name, String url ) {
+    private Hoster( String name, String url ) {
         this.name = name;
         try {
             this.url = new URL( url );
@@ -37,6 +37,10 @@ public enum Hoster implements Comparator<Hoster> {
 
     public URL getURL() {
         return this.url;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     /**
@@ -59,21 +63,6 @@ public enum Hoster implements Comparator<Hoster> {
             default:
                 throw new RuntimeException( "Hoster \"" + this + "\" not found" );
         }
-    }
-
-    /**
-     * compares the hoster by their name
-     * 
-     * @param h1
-     *            the first Hoster
-     * @param h2
-     *            the second Hoster
-     */
-    @Override
-    public int compare( Hoster h1, Hoster h2 ) {
-        String o1Lower = h1.name.toLowerCase( Locale.GERMAN );
-        String o2Lower = h2.name.toLowerCase( Locale.GERMAN );
-        return o1Lower.compareTo( o2Lower );
     }
 
     /**
@@ -104,4 +93,22 @@ public enum Hoster implements Comparator<Hoster> {
     public String toString() {
         return this.name() + "\t" + this.url;
     }
+
+    public static final Comparator<Hoster> NAME_COMPARATOR = new Comparator<Hoster>() {
+        /**
+         * compares the hoster by their name
+         * 
+         * @param h1
+         *            the first Hoster
+         * @param h2
+         *            the second Hoster
+         */
+        @Override
+        public int compare( Hoster h1, Hoster h2 ) {
+            String o1Lower = h1.getName().toLowerCase( Locale.GERMAN );
+            String o2Lower = h2.getName().toLowerCase( Locale.GERMAN );
+            return o1Lower.compareTo( o2Lower );
+        }
+    };
+
 }
