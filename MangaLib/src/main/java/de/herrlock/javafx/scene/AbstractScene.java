@@ -21,5 +21,9 @@ public abstract class AbstractScene {
         return Arrays.asList();
     }
 
+    public Collection<String> getStylesheets() {
+        return Arrays.asList();
+    }
+
     public abstract String getTitle();
 }

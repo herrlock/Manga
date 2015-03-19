@@ -30,7 +30,7 @@ public final class Ctrl extends AbstractApplication {
 
     @Override
     public void start( Stage stage ) {
-        this.scene = new CtrlScene();
+        this.setScene( new CtrlScene() );
         super.start( stage );
     }
 }

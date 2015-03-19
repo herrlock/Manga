@@ -38,7 +38,7 @@ public class MDGui extends AbstractApplication {
 
     @Override
     public void start( Stage stage ) {
-        this.scene = new MDGuiStage();
+        this.setScene( new MDGuiStage() );
         super.start( stage );
     }
 }
