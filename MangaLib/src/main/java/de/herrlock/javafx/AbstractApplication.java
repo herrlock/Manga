@@ -13,11 +13,12 @@ public abstract class AbstractApplication extends Application {
         if ( this.abstractScene == null ) {
             throw new IllegalStateException( "need to initialize AbstractApplication.scene before starting this" );
         }
+        stage.setTitle( this.abstractScene.getTitle() );
+        stage.getIcons().addAll( this.abstractScene.getIcons() );
+
         Scene scene = this.abstractScene.getScene();
         scene.getStylesheets().addAll( this.abstractScene.getStylesheets() );
         stage.setScene( scene );
-        stage.setTitle( this.abstractScene.getTitle() );
-        stage.getIcons().addAll( this.abstractScene.getIcons() );
         stage.show();
     }
 

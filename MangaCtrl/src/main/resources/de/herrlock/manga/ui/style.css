@@ -1,34 +1,35 @@
+
 .gridpane {
-    -fx-hgap: 16;
-    -fx-vgap: 8;
-    /* remove later */
-    -fx-grid-lines-visible: true;
+	-fx-hgap: 16;
+	-fx-vgap: 8;
+	/* remove later */
+	-fx-grid-lines-visible: true;
 }
 
 .padding8 {
-    -fx-padding: 8px;
+	-fx-padding: 8px;
 }
 
 .padding16 {
-    -fx-padding: 16px;
+	-fx-padding: 16px;
 }
 
 .red {
-    -fx-background-color: #f99;
+	-fx-background-color: #f99;
 }
 
 .yellow {
-    -fx-background-color: #ff9;
+	-fx-background-color: #ff9;
 }
 
 .green {
-    -fx-background-color: #9f9;
+	-fx-background-color: #9f9;
 }
 
 .blue {
-    -fx-background-color: #99f;
+	-fx-background-color: #99f;
 }
 
 .grey {
-    -fx-background-color: #ccc;
+	-fx-background-color: #ccc;
 }

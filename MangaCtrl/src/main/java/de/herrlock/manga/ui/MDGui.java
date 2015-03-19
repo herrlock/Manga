@@ -15,14 +15,11 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import de.herrlock.javafx.AbstractApplication;
@@ -43,13 +40,19 @@ public class MDGui extends AbstractApplication {
 }
 
 class MDGuiStage extends AbstractScene {
+    private static final EventHandler<ActionEvent> DO_NOTHING_HANDLER = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle( ActionEvent arg0 ) {
+            System.out.println( "Action not implemented" );
+        }
+    };
+
     public MDGuiStage() {
         BorderPane parent = new BorderPane();
         parent.setTop( getTop() );
         parent.setRight( getRight() );
         parent.setBottom( getBottom() );
         parent.setCenter( getCenter() );
-
         this.setScene( new Scene( parent ) );
     }
 
@@ -61,34 +64,36 @@ class MDGuiStage extends AbstractScene {
     private Node getTop() {
         // TODO: decide title
         Text text = new Text( "someTitle" );
-        Font font = Font.font( "System", FontWeight.NORMAL, 30 );
-        text.setFont( font );
+        text.setFont( Font.font( "sans-serif", 30 ) );
+
         StackPane pane = new StackPane();
         pane.getChildren().addAll( text );
-        StackPane.setAlignment( text, Pos.TOP_CENTER );
+        pane.setAlignment( Pos.TOP_CENTER );
         pane.getStyleClass().add( "red" );
         return pane;
     }
 
     private Node getRight() {
-        Text title = new Text( "Hoster" );
-        title.setFont( new Font( 20 ) );
+        Text title = new Text( "Availabile Hoster" );
+        title.setFont( Font.font( "sans-serif", 20 ) );
 
-        GridPane hostPane = new GridPane();
-        hostPane.getStyleClass().addAll( "gridpane", "padding8" );
+        GridPane hostGrid = new GridPane();
+        hostGrid.getStyleClass().addAll( "gridpane", "padding8" );
         Hoster[] values = Hoster.sortedValues();
         for ( int y = 0; y < values.length; y++ ) {
-            hostPane.add( new Text( values[y].getName() ), 0, y );
-            hostPane.add( new Text( values[y].getURL().getHost().substring( 4 ) ), 1, y );
+            String hostname = values[y].getName();
+            hostGrid.add( new Text( hostname ), 0, y );
+            String hosturl = values[y].getURL().getHost().substring( 4 );
+            hostGrid.add( new Text( hosturl ), 1, y );
         }
 
         VBox vbox = new VBox( 8 );
-        hostPane.getStyleClass().addAll( "padding8" );
-        vbox.getChildren().addAll( title, hostPane );
+        vbox.getStyleClass().addAll( "padding8" );
+        vbox.getChildren().addAll( title, hostGrid );
+
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent( vbox );
         scrollPane.prefViewportWidthProperty().bind( vbox.widthProperty() );
-
         scrollPane.getStyleClass().add( "yellow" );
         return scrollPane;
     }
@@ -125,35 +130,36 @@ class MDGuiStage extends AbstractScene {
         TextField tfBtm = new TextField();
         tfBtm.setVisible( false );
 
-        GridPane gridpane = new GridPane();
-        gridpane.getStyleClass().addAll( "gridpane", "padding16" );
+        final GridPane gridPane = new GridPane();
+        gridPane.getStyleClass().addAll( "gridpane", "padding16" );
 
         {
             int y = 0;
-            gridpane.add( lblTop, 0, y );
-            gridpane.add( tfTop, 1, y++ );
-            gridpane.add( lblUrl, 0, y );
-            gridpane.add( tfUrl, 1, y++ );
-            gridpane.add( lblPattern, 0, y );
-            gridpane.add( tfPattern, 1, y++ );
+            gridPane.add( lblTop, 0, y );
+            gridPane.add( tfTop, 1, y++ );
 
-            gridpane.add( lblProxy, 0, y++ );
-            gridpane.add( lblProxyHost, 0, y );
-            gridpane.add( tfProxyHost, 1, y++ );
-            gridpane.add( lblProxyPort, 0, y );
-            gridpane.add( tfProxyPort, 1, y++ );
+            gridPane.add( lblUrl, 0, --y );
+            gridPane.add( tfUrl, 1, y++ );
+            gridPane.add( lblPattern, 0, y );
+            gridPane.add( tfPattern, 1, y++ );
 
-            gridpane.add( lblBtm, 0, y );
-            gridpane.add( tfBtm, 1, y++ );
+            gridPane.add( lblProxy, 0, y++ );
+            gridPane.add( lblProxyHost, 0, y );
+            gridPane.add( tfProxyHost, 1, y++ );
+            gridPane.add( lblProxyPort, 0, y );
+            gridPane.add( tfProxyPort, 1, y++ );
+
+            gridPane.add( lblBtm, 0, y );
+            gridPane.add( tfBtm, 1, y++ );
         }
 
-        ColumnConstraints cc1 = new ColumnConstraints();
-        cc1.setHgrow( Priority.ALWAYS );
-        ColumnConstraints cc2 = new ColumnConstraints();
-        cc2.setHgrow( Priority.ALWAYS );
-
-        gridpane.getStyleClass().add( "grey" );
-        return gridpane;
+        // ScrollPane scrollPane = new ScrollPane();
+        // scrollPane.setContent( gridPane );
+        // scrollPane.prefViewportWidthProperty().bind( gridPane.widthProperty() );
+        // scrollPane.getStyleClass().add( "grey" );
+        // return scrollPane;
+        gridPane.getStyleClass().add( "grey" );
+        return gridPane;
     }
 
     private Node getBottom() {
@@ -181,11 +187,4 @@ class MDGuiStage extends AbstractScene {
     public String getTitle() {
         return "MangaDownloader";
     }
-
-    private static final EventHandler<ActionEvent> DO_NOTHING_HANDLER = new EventHandler<ActionEvent>() {
-        @Override
-        public void handle( ActionEvent arg0 ) {
-            System.out.println( "Action not implemented" );
-        }
-    };
 }
