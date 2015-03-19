@@ -2,6 +2,7 @@ package de.herrlock.manga.ui;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.ResourceBundle;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -40,6 +41,9 @@ public class MDGui extends AbstractApplication {
 }
 
 class MDGuiStage extends AbstractScene {
+
+    private final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ui.ui" );
+
     private static final EventHandler<ActionEvent> DO_NOTHING_HANDLER = new EventHandler<ActionEvent>() {
         @Override
         public void handle( ActionEvent arg0 ) {
@@ -55,7 +59,6 @@ class MDGuiStage extends AbstractScene {
         parent.setCenter( getCenter() );
         this.setScene( new Scene( parent ) );
     }
-
     @Override
     public Collection<String> getStylesheets() {
         return Arrays.asList( "/de/herrlock/manga/ui/style.css" );
@@ -63,22 +66,24 @@ class MDGuiStage extends AbstractScene {
 
     private Node getTop() {
         // TODO: decide title
-        Text text = new Text( "someTitle" );
-        text.setFont( Font.font( "sans-serif", 30 ) );
+        Text text = new Text( this.i18n.getString( "top.title" ) );
+        text.getStyleClass().add( CCN.TEXT );
+        text.setFont( new Font( 30 ) );
 
         StackPane pane = new StackPane();
         pane.getChildren().addAll( text );
         pane.setAlignment( Pos.TOP_CENTER );
-        pane.getStyleClass().add( "red" );
+        pane.getStyleClass().add( CCN.RED );
         return pane;
     }
 
     private Node getRight() {
-        Text title = new Text( "Availabile Hoster" );
-        title.setFont( Font.font( "sans-serif", 20 ) );
+        Text title = new Text( this.i18n.getString( "right.title" ) );
+        title.setFont( new Font( 20 ) );
+        title.getStyleClass().add( CCN.TEXT );
 
         GridPane hostGrid = new GridPane();
-        hostGrid.getStyleClass().addAll( "gridpane", "padding8" );
+        hostGrid.getStyleClass().addAll( CCN.GRIDPANE, CCN.PADDING_8 );
         Hoster[] values = Hoster.sortedValues();
         for ( int y = 0; y < values.length; y++ ) {
             String hostname = values[y].getName();
@@ -88,13 +93,13 @@ class MDGuiStage extends AbstractScene {
         }
 
         VBox vbox = new VBox( 8 );
-        vbox.getStyleClass().addAll( "padding8" );
+        vbox.getStyleClass().addAll( CCN.PADDING_8 );
         vbox.getChildren().addAll( title, hostGrid );
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent( vbox );
         scrollPane.prefViewportWidthProperty().bind( vbox.widthProperty() );
-        scrollPane.getStyleClass().add( "yellow" );
+        scrollPane.getStyleClass().add( CCN.YELLOW );
         return scrollPane;
     }
 
@@ -107,23 +112,21 @@ class MDGuiStage extends AbstractScene {
         tfTop.setPrefColumnCount( 50 );
         tfTop.setVisible( false );
 
-        Label lblUrl = new Label( "URL *" );
+        String lblPre = "center.label.";
+
+        Label lblUrl = new Label( this.i18n.getString( lblPre + "url" ) );
         TextField tfUrl = new TextField();
         tfUrl.setPromptText( "http://www.example.org/manga/manganame" );
 
-        Label lblPattern = new Label( "Pattern" );
+        Label lblPattern = new Label( this.i18n.getString( lblPre + "pattern" ) );
         TextField tfPattern = new TextField();
         tfPattern.setPromptText( "1-10;15;17" );
 
         Label lblProxy = new Label( "Proxy" );
 
-        Label lblProxyHost = new Label( "Host" );
-        TextField tfProxyHost = new TextField();
-        tfProxyHost.setPromptText( "http://www.example.org/proxy" );
-
-        Label lblProxyPort = new Label( "Port" );
-        TextField tfProxyPort = new TextField();
-        tfProxyPort.setPromptText( "8080" );
+        Label lblProxyUrl = new Label( this.i18n.getString( lblPre + "proxyurl" ) );
+        TextField tfProxyUrl = new TextField();
+        tfProxyUrl.setPromptText( "http://www.example.org:8080/proxy" );
 
         Label lblBtm = new Label();
         lblBtm.setVisible( false );
@@ -131,7 +134,7 @@ class MDGuiStage extends AbstractScene {
         tfBtm.setVisible( false );
 
         final GridPane gridPane = new GridPane();
-        gridPane.getStyleClass().addAll( "gridpane", "padding16" );
+        gridPane.getStyleClass().addAll( CCN.GRIDPANE, CCN.PADDING_16 );
 
         {
             int y = 0;
@@ -144,10 +147,8 @@ class MDGuiStage extends AbstractScene {
             gridPane.add( tfPattern, 1, y++ );
 
             gridPane.add( lblProxy, 0, y++ );
-            gridPane.add( lblProxyHost, 0, y );
-            gridPane.add( tfProxyHost, 1, y++ );
-            gridPane.add( lblProxyPort, 0, y );
-            gridPane.add( tfProxyPort, 1, y++ );
+            gridPane.add( lblProxyUrl, 0, y );
+            gridPane.add( tfProxyUrl, 1, y++ );
 
             gridPane.add( lblBtm, 0, y );
             gridPane.add( tfBtm, 1, y++ );
@@ -156,14 +157,16 @@ class MDGuiStage extends AbstractScene {
         // ScrollPane scrollPane = new ScrollPane();
         // scrollPane.setContent( gridPane );
         // scrollPane.prefViewportWidthProperty().bind( gridPane.widthProperty() );
-        // scrollPane.getStyleClass().add( "grey" );
+        // scrollPane.getStyleClass().add(CCN.GREY );
         // return scrollPane;
-        gridPane.getStyleClass().add( "grey" );
+        gridPane.getStyleClass().add( CCN.GREY );
         return gridPane;
     }
-
     private Node getBottom() {
-        Button btnDownload = new Button( "DL" ), btnHTML = new Button( "HTML" ), btnExit = new Button( "Exit" );
+        String btnPre = "bottom.buttons.";
+        Button btnDownload = new Button( this.i18n.getString( btnPre + "download" ) );
+        Button btnHTML = new Button( this.i18n.getString( btnPre + "html" ) );
+        Button btnExit = new Button( this.i18n.getString( btnPre + "exit" ) );
 
         btnDownload.setOnAction( DO_NOTHING_HANDLER );
         btnDownload.setDefaultButton( true );
@@ -172,19 +175,41 @@ class MDGuiStage extends AbstractScene {
         btnExit.setCancelButton( true );
 
         HBox hbox = new HBox( 8 );
-        hbox.getStyleClass().add( "padding8" );
+        hbox.getStyleClass().add( CCN.PADDING_8 );
         hbox.getChildren().addAll( btnDownload, btnHTML, btnExit );
 
         AnchorPane pane = new AnchorPane();
         pane.getChildren().addAll( hbox );
         AnchorPane.setBottomAnchor( hbox, 0.0 );
         AnchorPane.setRightAnchor( hbox, 0.0 );
-        pane.getStyleClass().add( "green" );
+        pane.getStyleClass().add( CCN.GREEN );
         return pane;
     }
 
     @Override
     public String getTitle() {
         return "MangaDownloader";
+    }
+}
+
+/**
+ * CSS-Classname constants
+ */
+final class CCN {
+
+    public static final String RED = "red";
+    public static final String YELLOW = "yellow";
+    public static final String GREEN = "green";
+    public static final String BLUE = "blue";
+    public static final String GREY = "grey";
+
+    public static final String GRIDPANE = "gridpane";
+    public static final String TEXT = "text";
+
+    public static final String PADDING_8 = "padding8";
+    public static final String PADDING_16 = "padding16";
+
+    private CCN() {
+        // not used
     }
 }

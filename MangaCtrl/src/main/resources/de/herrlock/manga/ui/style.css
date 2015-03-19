@@ -1,4 +1,8 @@
 
+.text {
+	-fx-font-family: sans-serif;
+}
+
 .gridpane {
 	-fx-hgap: 16;
 	-fx-vgap: 8;
