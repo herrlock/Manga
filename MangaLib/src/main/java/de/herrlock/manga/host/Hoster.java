@@ -3,6 +3,7 @@ package de.herrlock.manga.host;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Locale;
 
@@ -92,6 +93,12 @@ public enum Hoster {
     @Override
     public String toString() {
         return this.name() + "\t" + this.url;
+    }
+
+    public static Hoster[] sortedValues() {
+        Hoster[] values = Hoster.values();
+        Arrays.sort( values, NAME_COMPARATOR );
+        return values;
     }
 
     public static final Comparator<Hoster> NAME_COMPARATOR = new Comparator<Hoster>() {

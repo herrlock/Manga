@@ -30,7 +30,8 @@ public class CheckPrintHoster {
         try ( ByteArrayOutputStream baos = new ByteArrayOutputStream() ) {
             try ( PrintStream ps = new PrintStream( baos, true, UTF_8 ) ) {
                 ps.println( "availabile hoster" );
-                for ( Hoster h : Hoster.values() ) {
+                Hoster[] values = Hoster.sortedValues();
+                for ( Hoster h : values ) {
                     ps.println( h );
                 }
             }

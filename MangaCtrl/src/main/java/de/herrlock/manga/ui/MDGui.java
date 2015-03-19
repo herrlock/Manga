@@ -76,8 +76,7 @@ class MDGuiStage extends AbstractScene {
 
         GridPane hostPane = new GridPane();
         hostPane.getStyleClass().addAll( "gridpane", "padding8" );
-        Hoster[] values = Hoster.values();
-        Arrays.sort( values, Hoster.NAME_COMPARATOR );
+        Hoster[] values = Hoster.sortedValues();
         for ( int y = 0; y < values.length; y++ ) {
             hostPane.add( new Text( values[y].getName() ), 0, y );
             hostPane.add( new Text( values[y].getURL().getHost().substring( 4 ) ), 1, y );
