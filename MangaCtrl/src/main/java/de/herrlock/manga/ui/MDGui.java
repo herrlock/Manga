@@ -1,12 +1,11 @@
 package de.herrlock.manga.ui;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -51,20 +50,12 @@ class MDGuiStage extends AbstractScene {
         parent.setBottom( getBottom() );
         parent.setCenter( getCenter() );
 
-        // set colors, for building-tests
-        setColor( parent.getTop(), "f99" );
-        setColor( parent.getRight(), "ff9" );
-        setColor( parent.getBottom(), "9f9" );
-        setColor( parent.getCenter(), "ccc" );
-        //
-
         this.setScene( new Scene( parent ) );
     }
 
-    private static void setColor( Node node, String color ) {
-        if ( node != null ) {
-            node.setStyle( "-fx-background-color: #" + color + ";" );
-        }
+    @Override
+    public Collection<String> getStylesheets() {
+        return Arrays.asList( "/de/herrlock/manga/ui/style.css" );
     }
 
     private Node getTop() {
@@ -75,6 +66,7 @@ class MDGuiStage extends AbstractScene {
         StackPane pane = new StackPane();
         pane.getChildren().addAll( text );
         StackPane.setAlignment( text, Pos.TOP_CENTER );
+        pane.getStyleClass().add( "red" );
         return pane;
     }
 
@@ -83,9 +75,7 @@ class MDGuiStage extends AbstractScene {
         title.setFont( new Font( 20 ) );
 
         GridPane hostPane = new GridPane();
-        hostPane.setHgap( 16 );
-        hostPane.setVgap( 8 );
-        hostPane.setPadding( new Insets( 0, 8, 8, 8 ) );
+        hostPane.getStyleClass().addAll( "gridpane", "padding8" );
         Hoster[] values = Hoster.values();
         Arrays.sort( values, Hoster.NAME_COMPARATOR );
         for ( int y = 0; y < values.length; y++ ) {
@@ -94,12 +84,13 @@ class MDGuiStage extends AbstractScene {
         }
 
         VBox vbox = new VBox( 8 );
-        vbox.setPadding( new Insets( 8 ) );
+        hostPane.getStyleClass().addAll( "padding8" );
         vbox.getChildren().addAll( title, hostPane );
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent( vbox );
         scrollPane.prefViewportWidthProperty().bind( vbox.widthProperty() );
 
+        scrollPane.getStyleClass().add( "yellow" );
         return scrollPane;
     }
 
@@ -136,11 +127,7 @@ class MDGuiStage extends AbstractScene {
         tfBtm.setVisible( false );
 
         GridPane gridpane = new GridPane();
-
-        gridpane.setHgap( 16 );
-        gridpane.setVgap( 8 );
-        gridpane.setPadding( new Insets( 16 ) );
-        gridpane.setGridLinesVisible( true );
+        gridpane.getStyleClass().addAll( "gridpane", "padding16" );
 
         {
             int y = 0;
@@ -166,6 +153,7 @@ class MDGuiStage extends AbstractScene {
         ColumnConstraints cc2 = new ColumnConstraints();
         cc2.setHgrow( Priority.ALWAYS );
 
+        gridpane.getStyleClass().add( "grey" );
         return gridpane;
     }
 
@@ -179,13 +167,14 @@ class MDGuiStage extends AbstractScene {
         btnExit.setCancelButton( true );
 
         HBox hbox = new HBox( 8 );
-        hbox.setPadding( new Insets( 8 ) );
+        hbox.getStyleClass().add( "padding8" );
         hbox.getChildren().addAll( btnDownload, btnHTML, btnExit );
 
         AnchorPane pane = new AnchorPane();
         pane.getChildren().addAll( hbox );
         AnchorPane.setBottomAnchor( hbox, 0.0 );
         AnchorPane.setRightAnchor( hbox, 0.0 );
+        pane.getStyleClass().add( "green" );
         return pane;
     }
 
