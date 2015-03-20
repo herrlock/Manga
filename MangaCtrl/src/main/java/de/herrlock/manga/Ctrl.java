@@ -67,11 +67,11 @@ final class CtrlScene extends AbstractScene {
             btnStartDownload.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "startDL" ) ) );
             btnStartDownload.setOnMouseExited( clearText );
         }
-        Button stnShowHosts = new Button( this.i18n.getString( buttonTextPrefix + "showHosts" ) );
+        Button btnShowHosts = new Button( this.i18n.getString( buttonTextPrefix + "showHosts" ) );
         {
-            stnShowHosts.setOnAction( new TaskHandler( new MDTask( Exec.PRINT_ALL_HOSTER ) ) );
-            stnShowHosts.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "showHosts" ) ) );
-            stnShowHosts.setOnMouseExited( clearText );
+            btnShowHosts.setOnAction( new TaskHandler( new MDTask( Exec.PRINT_ALL_HOSTER ) ) );
+            btnShowHosts.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "showHosts" ) ) );
+            btnShowHosts.setOnMouseExited( clearText );
         }
         Button btnCreateHTML = new Button( this.i18n.getString( buttonTextPrefix + "createHTML" ) );
         {
@@ -81,7 +81,7 @@ final class CtrlScene extends AbstractScene {
         }
         HBox hbox = new HBox( 8 );
         hbox.setPadding( new Insets( 8 ) );
-        hbox.getChildren().addAll( btnStartDownload, stnShowHosts, btnCreateHTML );
+        hbox.getChildren().addAll( btnStartDownload, btnShowHosts, btnCreateHTML );
         return hbox;
     }
 
