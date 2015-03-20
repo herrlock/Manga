@@ -2,9 +2,12 @@ package de.herrlock.manga.ui;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -59,6 +62,7 @@ class MDGuiStage extends AbstractScene {
         parent.setCenter( getCenter() );
         this.setScene( new Scene( parent ) );
     }
+
     @Override
     public Collection<String> getStylesheets() {
         return Arrays.asList( "/de/herrlock/manga/ui/style.css" );
@@ -105,63 +109,64 @@ class MDGuiStage extends AbstractScene {
 
     private Node getCenter() {
         // TODO: build center
-        Label lblTop = new Label();
-        lblTop.setPrefWidth( 150 );
-        lblTop.setVisible( false );
-        TextField tfTop = new TextField();
-        tfTop.setPrefColumnCount( 50 );
-        tfTop.setVisible( false );
-
-        String lblPre = "center.label.";
-
-        Label lblUrl = new Label( this.i18n.getString( lblPre + "url" ) );
-        TextField tfUrl = new TextField();
-        tfUrl.setPromptText( "http://www.example.org/manga/manganame" );
-
-        Label lblPattern = new Label( this.i18n.getString( lblPre + "pattern" ) );
-        TextField tfPattern = new TextField();
-        tfPattern.setPromptText( "1-10;15;17" );
-
-        Label lblProxy = new Label( "Proxy" );
-
-        Label lblProxyUrl = new Label( this.i18n.getString( lblPre + "proxyurl" ) );
-        TextField tfProxyUrl = new TextField();
-        tfProxyUrl.setPromptText( "http://www.example.org:8080/proxy" );
-
-        Label lblBtm = new Label();
-        lblBtm.setVisible( false );
-        TextField tfBtm = new TextField();
-        tfBtm.setVisible( false );
-
+        int y = 0;
         final GridPane gridPane = new GridPane();
-        gridPane.getStyleClass().addAll( CCN.GRIDPANE, CCN.PADDING_16 );
-
         {
-            int y = 0;
+            final Label lblTop = new Label();
+            lblTop.setPrefWidth( 150 );
+            lblTop.setVisible( false );
             gridPane.add( lblTop, 0, y );
-            gridPane.add( tfTop, 1, y++ );
 
-            gridPane.add( lblUrl, 0, --y );
-            gridPane.add( tfUrl, 1, y++ );
-            gridPane.add( lblPattern, 0, y );
-            gridPane.add( tfPattern, 1, y++ );
-
-            gridPane.add( lblProxy, 0, y++ );
-            gridPane.add( lblProxyUrl, 0, y );
-            gridPane.add( tfProxyUrl, 1, y++ );
-
-            gridPane.add( lblBtm, 0, y );
-            gridPane.add( tfBtm, 1, y++ );
+            final TextField tfTop = new TextField();
+            tfTop.setPrefColumnCount( 50 );
+            tfTop.setVisible( false );
+            gridPane.add( tfTop, 1, y );
         }
 
-        // ScrollPane scrollPane = new ScrollPane();
-        // scrollPane.setContent( gridPane );
-        // scrollPane.prefViewportWidthProperty().bind( gridPane.widthProperty() );
-        // scrollPane.getStyleClass().add(CCN.GREY );
-        // return scrollPane;
-        gridPane.getStyleClass().add( CCN.GREY );
+        String lblPre = "center.label.";
+        {
+            final Label lblUrl = new Label( this.i18n.getString( lblPre + "url" ) );
+            gridPane.add( lblUrl, 0, y );
+
+            final TextField tfUrl = new TextField();
+            ChangeListener<String> paramChangeListener = new EmptyListener( tfUrl );
+            paramChangeListener.changed( tfUrl.textProperty(), "", tfUrl.getText() );
+            tfUrl.textProperty().addListener( paramChangeListener );
+            tfUrl.setPromptText( "http://www.example.org/manga/manganame" );
+            gridPane.add( tfUrl, 1, y );
+            y++ ;
+        }
+        {
+            final Label lblPattern = new Label( this.i18n.getString( lblPre + "pattern" ) );
+            gridPane.add( lblPattern, 0, y );
+
+            final TextField tfPattern = new TextField();
+            tfPattern.setPromptText( "1-10;15;17" );
+            gridPane.add( tfPattern, 1, y );
+            y++ ;
+        }
+        {
+            final Label lblProxyAddress = new Label( this.i18n.getString( lblPre + "proxyaddress" ) );
+            gridPane.add( lblProxyAddress, 0, y );
+
+            final TextField tfProxyAddress = new TextField();
+            tfProxyAddress.setPromptText( "http://www.example.org:8080/proxy" );
+            gridPane.add( tfProxyAddress, 1, y );
+            y++ ;
+        }
+        {
+            final Label lblBtm = new Label();
+            lblBtm.setVisible( false );
+            gridPane.add( lblBtm, 0, y );
+
+            final TextField tfBtm = new TextField();
+            tfBtm.setVisible( false );
+            gridPane.add( tfBtm, 1, y );
+        }
+        gridPane.getStyleClass().addAll( CCN.GRIDPANE, CCN.PADDING_16, CCN.GREY );
         return gridPane;
     }
+
     private Node getBottom() {
         String btnPre = "bottom.buttons.";
         Button btnDownload = new Button( this.i18n.getString( btnPre + "download" ) );
@@ -192,19 +197,41 @@ class MDGuiStage extends AbstractScene {
     }
 }
 
+final class EmptyListener implements ChangeListener<String> {
+    private final TextField textField;
+
+    public EmptyListener( TextField textField ) {
+        this.textField = textField;
+    }
+
+    @Override
+    public void changed( ObservableValue<? extends String> obsValue, String string1, String string2 ) {
+        List<String> classes = this.textField.getStyleClass();
+        if ( string2.trim().isEmpty() ) {
+            classes.add( CCN.ISEMPTY );
+        } else {
+            classes.remove( CCN.ISEMPTY );
+        }
+    }
+}
+
 /**
  * CSS-Classname constants
  */
 final class CCN {
 
+    public static final String MAGENTA = "magenta";
     public static final String RED = "red";
     public static final String YELLOW = "yellow";
     public static final String GREEN = "green";
     public static final String BLUE = "blue";
+    public static final String CYAN = "cyan";
     public static final String GREY = "grey";
 
     public static final String GRIDPANE = "gridpane";
     public static final String TEXT = "text";
+
+    public static final String ISEMPTY = "isEmpty";
 
     public static final String PADDING_8 = "padding8";
     public static final String PADDING_16 = "padding16";

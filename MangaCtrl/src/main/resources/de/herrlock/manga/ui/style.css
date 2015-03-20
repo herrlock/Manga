@@ -10,12 +10,21 @@
 	-fx-grid-lines-visible: true;
 }
 
+.text-field .isEmpty {
+	-fx-text-box-border: red;
+	-fx-focus-color: red;
+}
+
 .padding8 {
 	-fx-padding: 8px;
 }
 
 .padding16 {
 	-fx-padding: 16px;
+}
+
+.magenta {
+	-fx-background-color: #f9f;
 }
 
 .red {
@@ -28,6 +37,10 @@
 
 .green {
 	-fx-background-color: #9f9;
+}
+
+.cyan {
+	-fx-background-color: #9ff;
 }
 
 .blue {
