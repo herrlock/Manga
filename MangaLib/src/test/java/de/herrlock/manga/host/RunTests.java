@@ -53,15 +53,17 @@ public class RunTests {
             List<Class<?>> allClasses = new ArrayList<>();
             if ( directory.exists() ) {
                 File[] files = directory.listFiles();
-                for ( File file : files ) {
-                    try {
-                        String filename = file.getName();
-                        if ( filename.endsWith( ".class" ) ) {
-                            String className = packageName + '.' + filename.substring( 0, filename.length() - 6 );
-                            allClasses.add( Class.forName( className ) );
+                if ( files != null ) {
+                    for ( File file : files ) {
+                        try {
+                            String filename = file.getName();
+                            if ( filename.endsWith( ".class" ) ) {
+                                String className = packageName + '.' + filename.substring( 0, filename.length() - 6 );
+                                allClasses.add( Class.forName( className ) );
+                            }
+                        } catch ( ClassNotFoundException ex ) {
+                            throw new RuntimeException( ex );
                         }
-                    } catch ( ClassNotFoundException ex ) {
-                        throw new RuntimeException( ex );
                     }
                 }
             }
