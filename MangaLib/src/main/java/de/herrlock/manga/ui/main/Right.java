@@ -1,4 +1,4 @@
-package de.herrlock.manga.ui;
+package de.herrlock.manga.ui.main;
 
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
