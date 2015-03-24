@@ -1,7 +1,5 @@
 package de.herrlock.manga.ui.main;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
@@ -9,13 +7,6 @@ import javafx.scene.layout.HBox;
 import de.herrlock.javafx.scene.NodeContainer;
 
 class Bottom extends NodeContainer {
-    private static final EventHandler<ActionEvent> DO_NOTHING_HANDLER = new EventHandler<ActionEvent>() {
-        @Override
-        public void handle( ActionEvent arg0 ) {
-            System.out.println( "Action not implemented" );
-        }
-    };
-
     @Override
     protected Node createNode() {
         String btnPre = "bottom.buttons.";
@@ -23,10 +14,10 @@ class Bottom extends NodeContainer {
         Button btnHTML = new Button( MDGuiStage.I18N.getString( btnPre + "html" ) );
         Button btnExit = new Button( MDGuiStage.I18N.getString( btnPre + "exit" ) );
 
-        btnDownload.setOnAction( DO_NOTHING_HANDLER );
+        btnDownload.setOnAction( MDGuiController.DO_NOTHING_HANDLER );
         btnDownload.setDefaultButton( true );
-        btnHTML.setOnAction( DO_NOTHING_HANDLER );
-        btnExit.setOnAction( DO_NOTHING_HANDLER );
+        btnHTML.setOnAction( MDGuiController.DO_NOTHING_HANDLER );
+        btnExit.setOnAction( MDGuiController.DO_NOTHING_HANDLER );
         btnExit.setCancelButton( true );
 
         HBox hbox = new HBox( 8 );
