@@ -21,6 +21,7 @@ import de.herrlock.javafx.scene.SceneContainer;
 import de.herrlock.manga.downloader.DialogDownloader;
 import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
+import de.herrlock.manga.jd.JDExport;
 
 public final class Ctrl extends AbstractApplication {
 
@@ -73,6 +74,12 @@ final class CtrlScene extends SceneContainer {
             btnShowHosts.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "showHosts" ) ) );
             btnShowHosts.setOnMouseExited( clearText );
         }
+        Button btnAddToJD = new Button( this.i18n.getString( buttonTextPrefix + "addToJD" ) );
+        {
+            btnAddToJD.setOnAction( new TaskHandler( new MDTask( Exec.ADD_TO_JD ) ) );
+            btnAddToJD.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "addToJD" ) ) );
+            btnAddToJD.setOnMouseExited( clearText );
+        }
         Button btnCreateHTML = new Button( this.i18n.getString( buttonTextPrefix + "createHTML" ) );
         {
             btnCreateHTML.setOnAction( new TaskHandler( new MDTask( Exec.VIEW_PAGE_MAIN ) ) );
@@ -81,10 +88,9 @@ final class CtrlScene extends SceneContainer {
         }
         HBox hbox = new HBox( 8 );
         hbox.setPadding( new Insets( 8 ) );
-        hbox.getChildren().addAll( btnStartDownload, btnShowHosts, btnCreateHTML );
+        hbox.getChildren().addAll( btnStartDownload, btnAddToJD, btnShowHosts, btnCreateHTML );
         return hbox;
     }
-
     @Override
     public String getTitle() {
         return "Please select";
@@ -142,6 +148,11 @@ abstract class Exec {
         @Override
         public void execute() {
             PrintAllHoster.execute();
+        }
+    }, ADD_TO_JD = new Exec() {
+        @Override
+        public void execute() {
+            JDExport.execute();
         }
     }, VIEW_PAGE_MAIN = new Exec() {
         @Override
