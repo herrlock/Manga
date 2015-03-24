@@ -8,8 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -47,29 +45,30 @@ public class JDExport extends MDownloader {
 
     @Override
     protected void runX() {
-        File path = this.clc.getPath();
-        List<Crawljob> list = new ArrayList<>();
-        Set<Entry<String, Map<Integer, URL>>> pmcEntries = this.pmc.getPictureMap().entrySet();
-        for ( Entry<String, Map<Integer, URL>> entry : pmcEntries ) {
+        try {
+            File outFolder = new File( "folderwatch" );
+            File path = this.clc.getPath();
+            Set<Entry<String, Map<Integer, URL>>> pmcEntries = this.pmc.getPictureMap().entrySet();
+            for ( Entry<String, Map<Integer, URL>> entry : pmcEntries ) {
+                String chapter = entry.getKey();
+                Crawljob c = new Crawljob( new File( path, chapter ), chapter );
+                Set<Entry<Integer, URL>> entrySet = entry.getValue().entrySet();
+                for ( Entry<Integer, URL> e : entrySet ) {
+                    String filename = e.getKey().toString();
+                    URL pictureUrl = this.clc.getImageLink( e.getValue() );
+                    c.addCrawljobEntry( filename, pictureUrl.toExternalForm() );
+                }
 
-            String key = entry.getKey();
-            Crawljob c = new Crawljob( new File( path, key ), key );
-
-            Set<Entry<Integer, URL>> entrySet = entry.getValue().entrySet();
-            for ( Entry<Integer, URL> e : entrySet ) {
-                c.addCrawljob( e.getKey().toString(), e.getValue().toExternalForm() );
+                File outFile = new File( outFolder, c.getFilename() );
+                try ( OutputStream out = new FileOutputStream( outFile ) ) {
+                    out.write( c.export().getBytes( StandardCharsets.UTF_8 ) );
+                    System.out.println( "print string -> " + outFile );
+                } catch ( IOException ex ) {
+                    throw new RuntimeException( ex );
+                }
             }
-
-            list.add( c );
-        }
-        File outFolder = new File( "folderwatch" );
-        for ( Crawljob c : list ) {
-            File outFile = new File( outFolder, c.getFilename() );
-            try ( OutputStream out = new FileOutputStream( outFile ) ) {
-                out.write( c.export().getBytes( StandardCharsets.UTF_8 ) );
-            } catch ( IOException ex ) {
-                throw new RuntimeException( ex );
-            }
+        } catch ( IOException ex ) {
+            throw new RuntimeException( ex );
         }
     }
 }

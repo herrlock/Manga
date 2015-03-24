@@ -20,7 +20,7 @@ public class Crawljob {
         this.packagenumber = packagenumber;
     }
 
-    public void addCrawljob( String filename, String url ) {
+    public void addCrawljobEntry( String filename, String url ) {
         this.entries.add( new CrawljobEntry( filename, url ) );
     }
 
@@ -30,9 +30,11 @@ public class Crawljob {
 
     public String export() {
         String ls = System.lineSeparator();
-        StringBuilder sb = new StringBuilder( ls );
-        sb.append( ls );
+        StringBuilder sb = new StringBuilder();
         for ( CrawljobEntry c : this.entries ) {
+            sb.append( ls );
+            sb.append( "->NEW ENTRY<-" );
+            sb.append( ls );
             sb.append( c.export() );
             sb.append( ls );
             sb.append( "downloadFolder=" );
@@ -41,7 +43,7 @@ public class Crawljob {
             sb.append( "packageName=" );
             sb.append( this.packagenumber );
             sb.append( ls );
-            sb.append( ls );
+            sb.append( ( char ) 0 );
         }
         return sb.toString();
     }
