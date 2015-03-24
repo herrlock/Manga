@@ -17,7 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import de.herrlock.javafx.AbstractApplication;
-import de.herrlock.javafx.scene.AbstractScene;
+import de.herrlock.javafx.scene.SceneContainer;
 import de.herrlock.manga.downloader.DialogDownloader;
 import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
@@ -35,7 +35,7 @@ public final class Ctrl extends AbstractApplication {
     }
 }
 
-final class CtrlScene extends AbstractScene {
+final class CtrlScene extends SceneContainer {
 
     private final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ctrl" );
     final Text runningText = new Text();

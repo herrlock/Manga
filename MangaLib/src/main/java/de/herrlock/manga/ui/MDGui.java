@@ -27,8 +27,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import de.herrlock.javafx.AbstractApplication;
-import de.herrlock.javafx.scene.AbstractScene;
 import de.herrlock.manga.host.Hoster;
+import de.herrlock.javafx.scene.SceneContainer;
 
 public class MDGui extends AbstractApplication {
 
@@ -43,7 +43,7 @@ public class MDGui extends AbstractApplication {
     }
 }
 
-class MDGuiStage extends AbstractScene {
+class MDGuiStage extends SceneContainer {
 
     private final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ui.ui" );
 

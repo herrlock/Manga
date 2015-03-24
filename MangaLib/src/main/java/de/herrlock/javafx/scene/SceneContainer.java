@@ -6,7 +6,7 @@ import java.util.Collection;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 
-public abstract class AbstractScene {
+public abstract class SceneContainer {
     private Scene scene;
 
     public Scene getScene() {
