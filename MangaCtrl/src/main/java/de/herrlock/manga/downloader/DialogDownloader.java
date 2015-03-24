@@ -1,6 +1,7 @@
 package de.herrlock.manga.downloader;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -25,9 +26,7 @@ public final class DialogDownloader extends MDownloader {
             if ( cp == null || "".equals( cp ) ) {
                 ViewPageMain.execute( dd.getTargetFolder() );
             }
-        } catch ( RuntimeException ex ) {
-            throw ex;
-        } catch ( Exception ex ) {
+        } catch ( IOException | InterruptedException ex ) {
             throw new RuntimeException( ex );
         }
     }

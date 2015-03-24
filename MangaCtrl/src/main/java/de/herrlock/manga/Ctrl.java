@@ -64,25 +64,25 @@ final class CtrlScene extends SceneContainer {
         Button btnStartDownload = new Button( this.i18n.getString( buttonTextPrefix + "startDL" ) );
         {
             btnStartDownload.setDefaultButton( true );
-            btnStartDownload.setOnAction( new TaskHandler( new MDTask( Exec.DIALOG_DOWNLOADER ) ) );
+            btnStartDownload.setOnAction( new TaskHandler( Exec.DIALOG_DOWNLOADER ) );
             btnStartDownload.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "startDL" ) ) );
             btnStartDownload.setOnMouseExited( clearText );
         }
         Button btnShowHosts = new Button( this.i18n.getString( buttonTextPrefix + "showHosts" ) );
         {
-            btnShowHosts.setOnAction( new TaskHandler( new MDTask( Exec.PRINT_ALL_HOSTER ) ) );
+            btnShowHosts.setOnAction( new TaskHandler( Exec.PRINT_ALL_HOSTER ) );
             btnShowHosts.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "showHosts" ) ) );
             btnShowHosts.setOnMouseExited( clearText );
         }
         Button btnAddToJD = new Button( this.i18n.getString( buttonTextPrefix + "addToJD" ) );
         {
-            btnAddToJD.setOnAction( new TaskHandler( new MDTask( Exec.ADD_TO_JD ) ) );
+            btnAddToJD.setOnAction( new TaskHandler( Exec.ADD_TO_JD ) );
             btnAddToJD.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "addToJD" ) ) );
             btnAddToJD.setOnMouseExited( clearText );
         }
         Button btnCreateHTML = new Button( this.i18n.getString( buttonTextPrefix + "createHTML" ) );
         {
-            btnCreateHTML.setOnAction( new TaskHandler( new MDTask( Exec.VIEW_PAGE_MAIN ) ) );
+            btnCreateHTML.setOnAction( new TaskHandler( Exec.VIEW_PAGE_MAIN ) );
             btnCreateHTML.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "createHTML" ) ) );
             btnCreateHTML.setOnMouseExited( clearText );
         }
@@ -112,13 +112,19 @@ final class CtrlScene extends SceneContainer {
     private static class TaskHandler implements EventHandler<ActionEvent> {
         private final Task<?> task;
 
+        public TaskHandler( Exec exec ) {
+            this( new MDTask( exec ) );
+        }
+
         public TaskHandler( Task<?> task ) {
             this.task = task;
         }
 
         @Override
         public void handle( ActionEvent event ) {
-            new Thread( this.task ).start();
+            Thread thread = new Thread( this.task );
+            Platform.exit();
+            thread.start();
         }
     }
 
@@ -131,8 +137,15 @@ final class CtrlScene extends SceneContainer {
 
         @Override
         protected Void call() {
-            Platform.exit();
-            this.exec.execute();
+            try {
+                this.exec.execute();
+            } catch ( RuntimeException ex ) {
+                ex.printStackTrace();
+                throw ex;
+            } catch ( Exception ex ) {
+                ex.printStackTrace();
+                throw new RuntimeException( ex );
+            }
             return null;
         }
     }
@@ -144,15 +157,15 @@ abstract class Exec {
         public void execute() {
             DialogDownloader.execute();
         }
-    }, PRINT_ALL_HOSTER = new Exec() {
-        @Override
-        public void execute() {
-            PrintAllHoster.execute();
-        }
     }, ADD_TO_JD = new Exec() {
         @Override
         public void execute() {
             JDExport.execute();
+        }
+    }, PRINT_ALL_HOSTER = new Exec() {
+        @Override
+        public void execute() {
+            PrintAllHoster.execute();
         }
     }, VIEW_PAGE_MAIN = new Exec() {
         @Override

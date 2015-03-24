@@ -32,9 +32,7 @@ public class JDExport extends MDownloader {
             JDExport jde = new JDExport( p );
             jde.start();
             jde.join();
-        } catch ( RuntimeException ex ) {
-            throw ex;
-        } catch ( Exception ex ) {
+        } catch ( IOException | InterruptedException ex ) {
             throw new RuntimeException( ex );
         }
     }
