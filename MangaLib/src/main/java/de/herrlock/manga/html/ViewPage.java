@@ -192,7 +192,8 @@ public class ViewPage {
         List<File> files = getChapters();
         int maxPages = 0;
         for ( File f : files ) {
-            maxPages = Math.max( maxPages, f.listFiles().length );
+            File[] listFiles = f.listFiles();
+            maxPages = Math.max( maxPages, listFiles == null ? 0 : listFiles.length );
         }
         return maxPages;
     }
@@ -215,7 +216,11 @@ public class ViewPage {
     }
 
     private List<File> getChapters() {
-        return Arrays.asList( this.folder.listFiles( Const.isDirectoryFilter ) );
+        File[] listFiles = this.folder.listFiles( Const.isDirectoryFilter );
+        if ( listFiles != null ) {
+            return Arrays.asList( listFiles );
+        }
+        return Arrays.asList();
     }
 }
 

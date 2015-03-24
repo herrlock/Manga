@@ -1,6 +1,7 @@
 package de.herrlock.manga.host;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -48,26 +49,30 @@ public class RunTests {
             dirs.add( new File( resource.getFile() ) );
         }
 
+        final FilenameFilter IS_CLASS_FILE_FILTER = new FilenameFilter() {
+            @Override
+            public boolean accept( File dir, String name ) {
+                return name.endsWith( ".class" );
+            }
+        };
+
         List<Class<? extends ChapterList>> classes = new ArrayList<>();
         for ( File directory : dirs ) {
-            List<Class<?>> allClasses = new ArrayList<>();
-            if ( directory.exists() ) {
-                File[] files = directory.listFiles();
-                for ( File file : files ) {
-                    try {
-                        String filename = file.getName();
-                        if ( filename.endsWith( ".class" ) ) {
-                            String className = packageName + '.' + filename.substring( 0, filename.length() - 6 );
-                            allClasses.add( Class.forName( className ) );
-                        }
-                    } catch ( ClassNotFoundException ex ) {
-                        throw new RuntimeException( ex );
-                    }
-                }
+            File[] files = directory.listFiles( IS_CLASS_FILE_FILTER );
+            if ( files == null ) {
+                break;
             }
-            for ( Class<?> c : allClasses ) {
-                if ( ChapterList.class.equals( c.getSuperclass() ) ) {
-                    classes.add( c.asSubclass( ChapterList.class ) );
+            for ( File file : files ) {
+                try {
+                    String filename = file.getName();
+                    int length = filename.length();
+                    String className = packageName + '.' + filename.substring( 0, length - 6 );
+                    Class<?> c = Class.forName( className );
+                    if ( ChapterList.class.equals( c.getSuperclass() ) ) {
+                        classes.add( c.asSubclass( ChapterList.class ) );
+                    }
+                } catch ( ClassNotFoundException ex ) {
+                    throw new RuntimeException( ex );
                 }
             }
         }

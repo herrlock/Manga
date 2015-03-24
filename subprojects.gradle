@@ -11,7 +11,7 @@ subprojects {
 	jar.dependsOn check
 	
 	dependencies {
-		testCompile 'junit:junit:4+'
+		testCompile 'junit:junit:4.12'
 	}
 	
 	findbugs {
