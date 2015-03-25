@@ -16,6 +16,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import javax.swing.JOptionPane;
+
 import de.herrlock.javafx.AbstractApplication;
 import de.herrlock.javafx.scene.SceneContainer;
 import de.herrlock.manga.downloader.DialogDownloader;
@@ -122,9 +125,8 @@ final class CtrlScene extends SceneContainer {
 
         @Override
         public void handle( ActionEvent event ) {
-            Thread thread = new Thread( this.task );
+            new Thread( this.task ).start();
             Platform.exit();
-            thread.start();
         }
     }
 
@@ -141,10 +143,8 @@ final class CtrlScene extends SceneContainer {
                 this.exec.execute();
             } catch ( RuntimeException ex ) {
                 ex.printStackTrace();
+                JOptionPane.showMessageDialog( null, ex );
                 throw ex;
-            } catch ( Exception ex ) {
-                ex.printStackTrace();
-                throw new RuntimeException( ex );
             }
             return null;
         }
