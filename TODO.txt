@@ -1,9 +1,4 @@
 
-1.3:
-- fill manga.html after download
- - update manga.html with better js
- - optional: create html-file from downloaded pages
-
 1.4:
 - build a user interface
 
@@ -12,11 +7,17 @@
 
 X:
 - reduce used system-resources (esp. RAM)
+- make jd-export faster
 
 later:
 - 
 
 ---
+
+1.3:
+- fill manga.html after download
+ - update manga.html with better js
+ - optional: create html-file from downloaded pages
 
 1.2:
 - add documentation (readme)
