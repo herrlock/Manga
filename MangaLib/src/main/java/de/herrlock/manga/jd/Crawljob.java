@@ -43,6 +43,8 @@ public class Crawljob {
             sb.append( "packageName=" );
             sb.append( this.packagenumber );
             sb.append( ls );
+            sb.append( "addOfflineLink=true" );
+            sb.append( ls );
             sb.append( ( char ) 0 );
         }
         return sb.toString();

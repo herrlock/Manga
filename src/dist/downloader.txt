@@ -10,6 +10,12 @@ url=
 # see readme for description
 pattern=
 
+# dependant
+# to export the links to JDownloader add the path to the folder where jd is located
+# example: jdhome=C:/Program Files/JDownloader2/
+important: use only forward slashes (/)
+jdhome=
+
 # optional
 # set this to use a proxy (without authentification)
 # proxyHost is the proxy's url
