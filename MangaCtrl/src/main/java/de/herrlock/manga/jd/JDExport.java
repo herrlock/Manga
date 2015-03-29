@@ -26,26 +26,25 @@ public class JDExport extends MDownloader {
 
     public static void execute() {
         System.out.println( "add to jd" );
+        Properties p = new Properties();
         try {
-            Properties p = new Properties();
             try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
                 p.load( fIn );
             }
-            String jdhome = p.getProperty( "jdhome" );
-            if ( jdhome == null || jdhome.trim().isEmpty() ) {
-                throw new RuntimeException( "\"jdhome\" must be set in downloader.txt" );
-            }
-            JDExport jde = new JDExport( p );
-            jde.start();
-            jde.join();
-        } catch ( IOException | InterruptedException ex ) {
+        } catch ( IOException ex ) {
             throw new RuntimeException( ex );
         }
+        String jdhome = p.getProperty( Constants.PARAM_JDHOME );
+        if ( jdhome == null || jdhome.trim().isEmpty() ) {
+            throw new RuntimeException( "\"" + Constants.PARAM_JDHOME + "\" must be set in downloader.txt" );
+        }
+        JDExport jde = new JDExport( p );
+        jde.start();
     }
 
     public JDExport( Properties p ) {
         super( p );
-        this.jdhome = new File( p.getProperty( "jdhome" ) );
+        this.jdhome = new File( p.getProperty( Constants.PARAM_JDHOME ) );
         if ( !( this.jdhome.exists() || this.jdhome.mkdir() ) ) {
             throw new RuntimeException( this.jdhome + " does not exist and could not be created" );
         }
@@ -100,7 +99,7 @@ public class JDExport extends MDownloader {
                 try {
                     String filename = this.e.getKey().toString();
                     URL pictureUrl = JDExport.this.getImageLink( this.e.getValue() );
-                        CrawljobFile.this.c.addCrawljobEntry( filename, pictureUrl.toExternalForm() );
+                    CrawljobFile.this.c.addCrawljobEntry( filename, pictureUrl.toExternalForm() );
                 } catch ( IOException ex ) {
                     throw new RuntimeException( ex );
                 }

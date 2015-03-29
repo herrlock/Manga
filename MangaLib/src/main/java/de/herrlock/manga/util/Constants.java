@@ -21,13 +21,13 @@ public final class Constants {
      */
     public static final String PARAM_PATTERN = "pattern";
     /**
-     * the name of the property for the path to store the downloads in
-     */
-    public static final String PARAM_FILEPATH = "filepath";
-    /**
      * the name of the property to set a custom timeout with
      */
     public static final String PARAM_TIMEOUT = "timeout";
+    /**
+     * the path to JDownloader's home-folder
+     */
+    public static final String PARAM_JDHOME = "jdhome";
     /**
      * the default value of th timeout
      */
