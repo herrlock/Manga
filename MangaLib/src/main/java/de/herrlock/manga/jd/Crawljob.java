@@ -2,13 +2,14 @@ package de.herrlock.manga.jd;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Crawljob {
 
     private final File folder;
     private final String packagenumber;
-    private final List<CrawljobEntry> entries = new ArrayList<>();
+    private final List<CrawljobEntry> entries = Collections.synchronizedList( new ArrayList<CrawljobEntry>() );
 
     /**
      * relative path eg. "./manganame_timestamp/01"
@@ -21,7 +22,9 @@ public class Crawljob {
     }
 
     public void addCrawljobEntry( String filename, String url ) {
-        this.entries.add( new CrawljobEntry( filename, url ) );
+        synchronized ( this.entries ) {
+            this.entries.add( new CrawljobEntry( filename, url ) );
+        }
     }
 
     public String getFilename() {
