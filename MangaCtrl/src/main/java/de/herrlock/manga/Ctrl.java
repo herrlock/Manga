@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -16,9 +17,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-import javax.swing.JOptionPane;
-
 import de.herrlock.javafx.AbstractApplication;
 import de.herrlock.javafx.scene.SceneContainer;
 import de.herrlock.manga.downloader.DialogDownloader;
@@ -42,13 +40,11 @@ public final class Ctrl extends AbstractApplication {
 final class CtrlScene extends SceneContainer {
 
     private final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ctrl" );
-    final Text runningText = new Text();
     final Text bottomText = new Text();
 
     CtrlScene() {
         BorderPane parent = new BorderPane();
         parent.setPadding( new Insets( 8, 24, 8, 24 ) );
-        parent.setTop( this.runningText );
         parent.setCenter( createCenter() );
         parent.setBottom( this.bottomText );
         this.setScene( new Scene( parent ) );
@@ -67,25 +63,25 @@ final class CtrlScene extends SceneContainer {
         Button btnStartDownload = new Button( this.i18n.getString( buttonTextPrefix + "startDL" ) );
         {
             btnStartDownload.setDefaultButton( true );
-            btnStartDownload.setOnAction( new TaskHandler( Exec.DIALOG_DOWNLOADER ) );
+            btnStartDownload.setOnAction( new ExecHandler( Exec.DIALOG_DOWNLOADER ) );
             btnStartDownload.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "startDL" ) ) );
             btnStartDownload.setOnMouseExited( clearText );
         }
         Button btnShowHosts = new Button( this.i18n.getString( buttonTextPrefix + "showHosts" ) );
         {
-            btnShowHosts.setOnAction( new TaskHandler( Exec.PRINT_ALL_HOSTER ) );
+            btnShowHosts.setOnAction( new ExecHandler( Exec.PRINT_ALL_HOSTER ) );
             btnShowHosts.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "showHosts" ) ) );
             btnShowHosts.setOnMouseExited( clearText );
         }
         Button btnAddToJD = new Button( this.i18n.getString( buttonTextPrefix + "addToJD" ) );
         {
-            btnAddToJD.setOnAction( new TaskHandler( Exec.ADD_TO_JD ) );
+            btnAddToJD.setOnAction( new ExecHandler( Exec.ADD_TO_JD ) );
             btnAddToJD.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "addToJD" ) ) );
             btnAddToJD.setOnMouseExited( clearText );
         }
         Button btnCreateHTML = new Button( this.i18n.getString( buttonTextPrefix + "createHTML" ) );
         {
-            btnCreateHTML.setOnAction( new TaskHandler( Exec.VIEW_PAGE_MAIN ) );
+            btnCreateHTML.setOnAction( new ExecHandler( Exec.VIEW_PAGE_MAIN ) );
             btnCreateHTML.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "createHTML" ) ) );
             btnCreateHTML.setOnMouseExited( clearText );
         }
@@ -112,43 +108,44 @@ final class CtrlScene extends SceneContainer {
         }
     }
 
-    private static class TaskHandler implements EventHandler<ActionEvent> {
-        private final Task<?> task;
+    private static class ExecHandler implements EventHandler<ActionEvent> {
+        final Task<Void> task;
 
-        public TaskHandler( Exec exec ) {
-            this( new MDTask( exec ) );
-        }
-
-        public TaskHandler( Task<?> task ) {
-            this.task = task;
+        public ExecHandler( final Exec exec ) {
+            this.task = new ExecHandlerTask( exec );
+            this.task.setOnFailed( new FailedHandler() );
         }
 
         @Override
         public void handle( ActionEvent event ) {
             new Thread( this.task ).start();
-            Platform.exit();
-        }
-    }
-
-    private static class MDTask extends Task<Void> {
-        private final Exec exec;
-
-        public MDTask( Exec exec ) {
-            this.exec = exec;
         }
 
-        @Override
-        protected Void call() {
-            try {
-                this.exec.execute();
-            } catch ( RuntimeException ex ) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog( null, ex );
-                throw ex;
+        class FailedHandler implements EventHandler<WorkerStateEvent> {
+            @Override
+            public void handle( WorkerStateEvent t ) {
+                Throwable exception = ExecHandler.this.task.getException();
+                throw exception instanceof RuntimeException ? ( RuntimeException ) exception : new RuntimeException( exception );
             }
-            return null;
         }
+
+        static class ExecHandlerTask extends Task<Void> {
+            private final Exec exec;
+
+            public ExecHandlerTask( Exec exec ) {
+                this.exec = exec;
+            }
+
+            @Override
+            protected Void call() {
+                Platform.exit();
+                this.exec.execute();
+                return null;
+            }
+        }
+
     }
+
 }
 
 abstract class Exec {
