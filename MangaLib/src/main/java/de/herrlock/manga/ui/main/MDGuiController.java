@@ -1,5 +1,7 @@
 package de.herrlock.manga.ui.main;
 
+import java.util.ResourceBundle;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
@@ -8,6 +10,7 @@ import javafx.event.EventHandler;
  *
  */
 public class MDGuiController {
+    public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ui.ui" );
 
     public static final EventHandler<ActionEvent> DO_NOTHING_HANDLER = new EventHandler<ActionEvent>() {
         @Override

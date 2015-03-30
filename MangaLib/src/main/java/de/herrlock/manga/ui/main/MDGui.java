@@ -3,7 +3,6 @@ package de.herrlock.manga.ui.main;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -29,8 +28,6 @@ public class MDGui extends AbstractApplication {
 }
 
 class MDGuiStage extends SceneContainer {
-
-    public static final ResourceBundle I18N = ResourceBundle.getBundle( "de.herrlock.manga.ui.ui" );
 
     public MDGuiStage() {
         BorderPane parent = new BorderPane();

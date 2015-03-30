@@ -12,7 +12,7 @@ import de.herrlock.manga.host.Hoster;
 class Right extends NodeContainer {
     @Override
     protected Node createNode() {
-        Text title = new Text( MDGuiStage.I18N.getString( "right.title" ) );
+        Text title = new Text( MDGuiController.i18n.getString( "right.title" ) );
         title.setFont( new Font( 20 ) );
         title.getStyleClass().add( CCN.TEXT );
 

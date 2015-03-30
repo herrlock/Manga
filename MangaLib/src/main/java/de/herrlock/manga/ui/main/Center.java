@@ -27,7 +27,7 @@ class Center extends NodeContainer {
 
         String lblPre = "center.label.";
         {
-            final Label lblUrl = new Label( MDGuiStage.I18N.getString( lblPre + "url" ) );
+            final Label lblUrl = new Label( MDGuiController.i18n.getString( lblPre + "url" ) );
             gridPane.add( lblUrl, 0, y );
 
             final TextField tfUrl = new TextField();
@@ -39,7 +39,7 @@ class Center extends NodeContainer {
             y++ ;
         }
         {
-            final Label lblPattern = new Label( MDGuiStage.I18N.getString( lblPre + "pattern" ) );
+            final Label lblPattern = new Label( MDGuiController.i18n.getString( lblPre + "pattern" ) );
             gridPane.add( lblPattern, 0, y );
 
             final TextField tfPattern = new TextField();
@@ -48,7 +48,7 @@ class Center extends NodeContainer {
             y++ ;
         }
         {
-            final Label lblProxyAddress = new Label( MDGuiStage.I18N.getString( lblPre + "proxyaddress" ) );
+            final Label lblProxyAddress = new Label( MDGuiController.i18n.getString( lblPre + "proxyaddress" ) );
             gridPane.add( lblProxyAddress, 0, y );
 
             final TextField tfProxyAddress = new TextField();
