@@ -38,8 +38,7 @@ public class JDExport extends MDownloader {
         if ( jdhome == null || jdhome.trim().isEmpty() ) {
             throw new RuntimeException( "\"" + Constants.PARAM_JDHOME + "\" must be set in downloader.txt" );
         }
-        JDExport jde = new JDExport( p );
-        jde.start();
+        new JDExport( p ).run();
     }
 
     public JDExport( Properties p ) {
@@ -55,7 +54,7 @@ public class JDExport extends MDownloader {
     }
 
     @Override
-    protected void runX() {
+    protected void run() {
         try {
             Set<Entry<String, Map<Integer, URL>>> pmcEntries = this.pmc.getPictureMap().entrySet();
             for ( Entry<String, Map<Integer, URL>> entry : pmcEntries ) {

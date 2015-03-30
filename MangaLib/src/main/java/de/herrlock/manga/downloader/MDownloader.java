@@ -16,14 +16,15 @@ import de.herrlock.manga.downloader.pmc.PictureMapContainer;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
 
-public abstract class MDownloader extends Thread {
+public abstract class MDownloader {
 
     protected final ChapterListContainer clc;
     protected final PictureMapContainer pmc;
     protected final DownloadQueueContainer dqc;
 
     /**
-     * creates a new Downloader. this constructor initializes the ChapterListContainer and the DownloadQueueContainer
+     * creates a new Downloader. this constructor initializes the ChapterListContainer, the PictureMapContainer and the
+     * DownloadQueueContainer
      * 
      * @param p
      *            the Properties to work with
@@ -40,23 +41,7 @@ public abstract class MDownloader extends Thread {
         this.dqc = new DownloadQueueContainer( this.clc );
     }
 
-    @Override
-    public void run() {
-        try {
-            runX();
-        } catch ( RuntimeException ex ) {
-            System.out.println( ex.getMessage() );
-            throw ex;
-        } catch ( Exception ex ) {
-            System.out.println( ex.getMessage() );
-            throw new RuntimeException( ex );
-        }
-    }
-
-    /**
-     * called only from MDownloader.run(), used to assert a custom run()-function in subclasses
-     */
-    protected abstract void runX();
+    protected abstract void run();
 
     /**
      * returns the number of Chapters in the ChapterListContainer

@@ -1,6 +1,7 @@
 package de.herrlock.manga.downloader;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.NoSuchElementException;
 import java.util.Properties;
@@ -13,17 +14,13 @@ public final class ConsoleDownloader extends MDownloader {
     private final Scanner sc;
 
     public static void execute() {
-        try {
-            Properties p = new Properties();
-            try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
-                p.load( fIn );
-            }
-            new ConsoleDownloader( p, System.in ).start();
-        } catch ( RuntimeException ex ) {
-            throw ex;
-        } catch ( Exception ex ) {
+        Properties p = new Properties();
+        try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
+            p.load( fIn );
+        } catch ( IOException ex ) {
             throw new RuntimeException( ex );
         }
+        new ConsoleDownloader( p, System.in ).run();
     }
 
     protected ConsoleDownloader( Properties p, InputStream in ) {
@@ -32,13 +29,12 @@ public final class ConsoleDownloader extends MDownloader {
     }
 
     @Override
-    protected void runX() {
+    protected void run() {
         try {
             if ( goon() ) {
                 downloadAll();
             }
         } catch ( RuntimeException ex ) {
-            ex.printStackTrace( System.out );
             throw ex;
         }
     }

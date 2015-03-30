@@ -23,13 +23,7 @@ public final class DialogDownloader extends MDownloader {
         }
         // properties loaded successful
         DialogDownloader dd = new DialogDownloader( p );
-        dd.start();
-        try {
-            // wait for downloader to complete
-            dd.join();
-        } catch ( InterruptedException ex ) {
-            throw new RuntimeException( ex );
-        }
+        dd.run();
         // create html pages in case no pattern is set
         String cp = Utils.getPattern();
         if ( cp == null || "".equals( cp ) ) {
@@ -42,7 +36,7 @@ public final class DialogDownloader extends MDownloader {
     }
 
     @Override
-    protected void runX() {
+    protected void run() {
         try {
             if ( goon() ) {
                 downloadAll();
