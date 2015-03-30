@@ -39,50 +39,51 @@ public final class Ctrl extends AbstractApplication {
 
 final class CtrlScene extends SceneContainer {
 
-    private final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ctrl" );
-    final Text bottomText = new Text();
+    private static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ctrl" );
+
+    static final Text runningText = new Text( "Running" );
+    static {
+        runningText.setVisible( false );
+    }
+    static final Text bottomText = new Text();
 
     CtrlScene() {
         BorderPane parent = new BorderPane();
         parent.setPadding( new Insets( 8, 24, 8, 24 ) );
+        parent.setTop( runningText );
         parent.setCenter( createCenter() );
-        parent.setBottom( this.bottomText );
+        parent.setBottom( bottomText );
         this.setScene( new Scene( parent ) );
     }
 
     private Node createCenter() {
-        EventHandler<MouseEvent> clearText = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle( MouseEvent event ) {
-                CtrlScene.this.bottomText.setText( "" );
-            }
-        };
+        EventHandler<MouseEvent> clearText = new SetTextHandler( "" );
 
         final String buttonTextPrefix = "button.text.";
-        final String buttonTooltipPrefix = "button.tooltip.";
-        Button btnStartDownload = new Button( this.i18n.getString( buttonTextPrefix + "startDL" ) );
+        final String btnTooltipPrefix = "button.tooltip.";
+        Button btnStartDownload = new Button( i18n.getString( buttonTextPrefix + "startDL" ) );
         {
             btnStartDownload.setDefaultButton( true );
             btnStartDownload.setOnAction( new ExecHandler( Exec.DIALOG_DOWNLOADER ) );
-            btnStartDownload.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "startDL" ) ) );
+            btnStartDownload.setOnMouseEntered( new SetTextHandler( CtrlScene.i18n.getString( btnTooltipPrefix + "startDL" ) ) );
             btnStartDownload.setOnMouseExited( clearText );
         }
-        Button btnShowHosts = new Button( this.i18n.getString( buttonTextPrefix + "showHosts" ) );
+        Button btnShowHosts = new Button( i18n.getString( buttonTextPrefix + "showHosts" ) );
         {
             btnShowHosts.setOnAction( new ExecHandler( Exec.PRINT_ALL_HOSTER ) );
-            btnShowHosts.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "showHosts" ) ) );
+            btnShowHosts.setOnMouseEntered( new SetTextHandler( i18n.getString( btnTooltipPrefix + "showHosts" ) ) );
             btnShowHosts.setOnMouseExited( clearText );
         }
-        Button btnAddToJD = new Button( this.i18n.getString( buttonTextPrefix + "addToJD" ) );
+        Button btnAddToJD = new Button( i18n.getString( buttonTextPrefix + "addToJD" ) );
         {
             btnAddToJD.setOnAction( new ExecHandler( Exec.ADD_TO_JD ) );
-            btnAddToJD.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "addToJD" ) ) );
+            btnAddToJD.setOnMouseEntered( new SetTextHandler( i18n.getString( btnTooltipPrefix + "addToJD" ) ) );
             btnAddToJD.setOnMouseExited( clearText );
         }
-        Button btnCreateHTML = new Button( this.i18n.getString( buttonTextPrefix + "createHTML" ) );
+        Button btnCreateHTML = new Button( i18n.getString( buttonTextPrefix + "createHTML" ) );
         {
             btnCreateHTML.setOnAction( new ExecHandler( Exec.VIEW_PAGE_MAIN ) );
-            btnCreateHTML.setOnMouseEntered( new SetTextHandler( this.i18n.getString( buttonTooltipPrefix + "createHTML" ) ) );
+            btnCreateHTML.setOnMouseEntered( new SetTextHandler( i18n.getString( btnTooltipPrefix + "createHTML" ) ) );
             btnCreateHTML.setOnMouseExited( clearText );
         }
         HBox hbox = new HBox( 8 );
@@ -90,12 +91,13 @@ final class CtrlScene extends SceneContainer {
         hbox.getChildren().addAll( btnStartDownload, btnAddToJD, btnShowHosts, btnCreateHTML );
         return hbox;
     }
+
     @Override
     public String getTitle() {
         return "Please select";
     }
 
-    private class SetTextHandler implements EventHandler<MouseEvent> {
+    private static class SetTextHandler implements EventHandler<MouseEvent> {
         private final String textToSet;
 
         public SetTextHandler( String textToSet ) {
@@ -104,16 +106,18 @@ final class CtrlScene extends SceneContainer {
 
         @Override
         public void handle( MouseEvent event ) {
-            CtrlScene.this.bottomText.setText( this.textToSet );
+            bottomText.setText( this.textToSet );
         }
     }
 
     private static class ExecHandler implements EventHandler<ActionEvent> {
+        final Exec exec;
         final Task<Void> task;
 
         public ExecHandler( final Exec exec ) {
-            this.task = new ExecHandlerTask( exec );
-            this.task.setOnFailed( new FailedHandler() );
+            this.exec = exec;
+            this.task = new ExecHandlerTask();
+            this.task.setOnFailed( new ExceptionHandler() );
         }
 
         @Override
@@ -121,29 +125,26 @@ final class CtrlScene extends SceneContainer {
             new Thread( this.task ).start();
         }
 
-        class FailedHandler implements EventHandler<WorkerStateEvent> {
+        class ExecHandlerTask extends Task<Void> {
+            @Override
+            protected Void call() {
+                runningText.setVisible( true );
+                try {
+                    ExecHandler.this.exec.execute();
+                } finally {
+                    Platform.exit();
+                }
+                return null;
+            }
+        }
+
+        class ExceptionHandler implements EventHandler<WorkerStateEvent> {
             @Override
             public void handle( WorkerStateEvent t ) {
                 Throwable exception = ExecHandler.this.task.getException();
                 throw exception instanceof RuntimeException ? ( RuntimeException ) exception : new RuntimeException( exception );
             }
         }
-
-        static class ExecHandlerTask extends Task<Void> {
-            private final Exec exec;
-
-            public ExecHandlerTask( Exec exec ) {
-                this.exec = exec;
-            }
-
-            @Override
-            protected Void call() {
-                Platform.exit();
-                this.exec.execute();
-                return null;
-            }
-        }
-
     }
 
 }
