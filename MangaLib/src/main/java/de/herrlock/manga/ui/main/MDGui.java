@@ -37,10 +37,9 @@ class MDGuiStage extends SceneContainer {
         parent.setCenter( new Center().getNode() );
         this.setScene( new Scene( parent ) );
     }
-
     @Override
     public Collection<String> getStylesheets() {
-        return Arrays.asList( "/de/herrlock/manga/ui/style.css" );
+        return Arrays.asList( "/de/herrlock/manga/ui/main/style.css" );
     }
 
     @Override

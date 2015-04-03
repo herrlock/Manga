@@ -7,10 +7,9 @@ import javafx.event.EventHandler;
 
 /**
  * @author Jan Rau
- *
  */
 public class MDGuiController {
-    public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ui.ui" );
+    public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.ui" );
 
     public static final EventHandler<ActionEvent> DO_NOTHING_HANDLER = new EventHandler<ActionEvent>() {
         @Override
