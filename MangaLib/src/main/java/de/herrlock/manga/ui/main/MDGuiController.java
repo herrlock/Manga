@@ -6,7 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 /**
- * @author Jan Rau
+ * @author HerrLock
  */
 public class MDGuiController {
     public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.ui" );

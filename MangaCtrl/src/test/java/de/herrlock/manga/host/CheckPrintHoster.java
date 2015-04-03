@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author Jan Rau
+ * @author HerrLock
  */
 public class CheckPrintHoster {
     private static final String UTF_8 = "UTF-8";

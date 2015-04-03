@@ -25,6 +25,6 @@
 		</HBox>
 	</center>
 	<bottom>
-		<Text fx:id="bottomText" text="bottomText" />
+		<Text fx:id="bottomText" text="" />
 	</bottom>
 </BorderPane>

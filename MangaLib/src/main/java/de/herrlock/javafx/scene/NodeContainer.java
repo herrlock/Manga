@@ -3,7 +3,7 @@ package de.herrlock.javafx.scene;
 import javafx.scene.Node;
 
 /**
- * @author Jan Rau
+ * @author HerrLock
  */
 public abstract class NodeContainer {
     private final Node node;

@@ -16,7 +16,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author Jan Rau
+ * @author HerrLock
  */
 public class RunTests {
 

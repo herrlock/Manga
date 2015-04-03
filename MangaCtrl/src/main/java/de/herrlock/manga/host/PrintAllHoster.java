@@ -3,7 +3,7 @@ package de.herrlock.manga.host;
 import java.io.PrintStream;
 
 /**
- * @author Jan Rau
+ * @author HerrLock
  */
 public final class PrintAllHoster {
     public static void execute() {
