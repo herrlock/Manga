@@ -14,6 +14,8 @@ import de.herrlock.javafx.scene.SceneContainer;
 
 public final class Ctrl extends AbstractApplication {
 
+    public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ctrl" );
+
     public static void main( String[] args ) {
         Application.launch( args );
     }
@@ -23,26 +25,21 @@ public final class Ctrl extends AbstractApplication {
         this.setScene( new CtrlScene() );
         super.start( stage );
     }
-}
 
-final class CtrlScene extends SceneContainer {
-
-    public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ctrl" );
-
-    CtrlScene() {
-        try {
-            URL location = CtrlScene.class.getResource( "CtrlScene.xml" );
-            FXMLLoader fxmlLoader = new FXMLLoader( location, i18n );
-            Parent root = ( Parent ) fxmlLoader.load();
-            this.setScene( new Scene( root ) );
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+    static class CtrlScene extends SceneContainer {
+        CtrlScene() {
+            try {
+                URL location = CtrlScene.class.getResource( "CtrlScene.xml" );
+                Parent root = FXMLLoader.load( location, i18n );
+                this.setScene( new Scene( root ) );
+            } catch ( IOException ex ) {
+                throw new RuntimeException( ex );
+            }
         }
 
-    }
-
-    @Override
-    public String getTitle() {
-        return "Please select";
+        @Override
+        public String getTitle() {
+            return i18n.getString( "scene.title" );
+        }
     }
 }

@@ -14,26 +14,26 @@ import de.herrlock.manga.jd.JDExport;
 public class CtrlController {
 
     @FXML
-    Text runningText, bottomText;
+    public Text runningText, bottomText;
 
     public void clearText() {
         this.bottomText.setText( "" );
     }
 
     public void showTextStart() {
-        CtrlController.this.bottomText.setText( CtrlScene.i18n.getString( "button.tooltip.startDL" ) );
+        CtrlController.this.bottomText.setText( Ctrl.i18n.getString( "button.tooltip.startDL" ) );
     }
 
     public void showTextHosts() {
-        CtrlController.this.bottomText.setText( CtrlScene.i18n.getString( "button.tooltip.showHosts" ) );
+        CtrlController.this.bottomText.setText( Ctrl.i18n.getString( "button.tooltip.showHosts" ) );
     }
 
     public void showTextJD() {
-        CtrlController.this.bottomText.setText( CtrlScene.i18n.getString( "button.tooltip.addToJD" ) );
+        CtrlController.this.bottomText.setText( Ctrl.i18n.getString( "button.tooltip.addToJD" ) );
     }
 
     public void showTextHTML() {
-        CtrlController.this.bottomText.setText( CtrlScene.i18n.getString( "button.tooltip.createHTML" ) );
+        CtrlController.this.bottomText.setText( Ctrl.i18n.getString( "button.tooltip.createHTML" ) );
     }
 
     public void startDownload() {
@@ -83,7 +83,6 @@ public class CtrlController {
             }
         }
     }
-
 }
 
 enum Exec {
