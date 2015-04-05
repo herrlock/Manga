@@ -17,11 +17,14 @@
 			<padding>
 				<Insets top="8" right="8" bottom="8" left="8" />
 			</padding>
-			<Button text="%button.text.startDL" onAction="#startDownload" onMouseEntered="#showTextStart" onMouseExited="#clearText"
-				defaultButton="true" />
-			<Button text="%button.text.showHosts" onAction="#showHosts" onMouseEntered="#showTextHosts" onMouseExited="#clearText" />
-			<Button text="%button.text.addToJD" onAction="#exportToJD" onMouseEntered="#showTextJD" onMouseExited="#clearText" />
-			<Button text="%button.text.createHTML" onAction="#createHTML" onMouseEntered="#showTextHTML" onMouseExited="#clearText" />
+			<Button fx:id="btnStartDL" text="%button.text.startDL" onAction="#startDownload" onMouseEntered="#showTextStart"
+				onMouseExited="#clearText" defaultButton="true" />
+			<Button fx:id="btnShowHosts" text="%button.text.showHosts" onAction="#showHosts" onMouseEntered="#showTextHosts"
+				onMouseExited="#clearText" />
+			<Button fx:id="btnAddToJD" text="%button.text.addToJD" onAction="#exportToJD" onMouseEntered="#showTextJD"
+				onMouseExited="#clearText" />
+			<Button fx:id="btnCreateHTML" text="%button.text.createHTML" onAction="#createHTML" onMouseEntered="#showTextHTML"
+				onMouseExited="#clearText" />
 		</HBox>
 	</center>
 	<bottom>
