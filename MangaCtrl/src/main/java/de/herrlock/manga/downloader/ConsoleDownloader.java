@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import de.herrlock.manga.util.Constants;
 
+@Deprecated
 public final class ConsoleDownloader extends MDownloader {
 
     private final Scanner sc;
