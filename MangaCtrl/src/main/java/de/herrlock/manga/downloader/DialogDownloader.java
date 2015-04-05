@@ -7,9 +7,7 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
-import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.util.Constants;
-import de.herrlock.manga.util.Utils;
 
 public final class DialogDownloader extends MDownloader {
 
@@ -24,11 +22,6 @@ public final class DialogDownloader extends MDownloader {
         // properties loaded successful
         DialogDownloader dd = new DialogDownloader( p );
         dd.run();
-        // create html pages in case no pattern is set
-        String cp = Utils.getPattern();
-        if ( cp == null || "".equals( cp ) ) {
-            ViewPageMain.execute( dd.getTargetFolder() );
-        }
     }
 
     protected DialogDownloader( Properties p ) {
