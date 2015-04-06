@@ -6,8 +6,6 @@
 .gridpane {
 	-fx-hgap: 16;
 	-fx-vgap: 8;
-	/* remove later */
-	-fx-grid-lines-visible: true;
 }
 
 .text-field .isEmpty {
