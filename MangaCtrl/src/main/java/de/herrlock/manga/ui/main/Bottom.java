@@ -10,16 +10,19 @@ class Bottom extends NodeContainer {
     @Override
     protected Node createNode() {
         String btnPre = "bottom.buttons.";
-        Button btnDownload = new Button( MDGuiController.i18n.getString( btnPre + "download" ) );
-        Button btnJDExport = new Button( MDGuiController.i18n.getString( btnPre + "jdexport" ) );
-        Button btnHTML = new Button( MDGuiController.i18n.getString( btnPre + "html" ) );
-        Button btnExit = new Button( MDGuiController.i18n.getString( btnPre + "exit" ) );
 
-        btnDownload.setOnAction( MDGuiController.DO_NOTHING_HANDLER );
+        Button btnDownload = new Button( MDGuiController.i18n.getString( btnPre + "download" ) );
+        btnDownload.setOnAction( MDGuiController.START_DOWNLOAD );
         btnDownload.setDefaultButton( true );
-        btnJDExport.setOnAction( MDGuiController.DO_NOTHING_HANDLER );
-        btnHTML.setOnAction( MDGuiController.DO_NOTHING_HANDLER );
-        btnExit.setOnAction( MDGuiController.DO_NOTHING_HANDLER );
+
+        Button btnJDExport = new Button( MDGuiController.i18n.getString( btnPre + "jdexport" ) );
+        btnJDExport.setOnAction( MDGuiController.EXPORT_TO_JD );
+
+        Button btnHTML = new Button( MDGuiController.i18n.getString( btnPre + "html" ) );
+        btnHTML.setOnAction( MDGuiController.CREATE_HTML );
+
+        Button btnExit = new Button( MDGuiController.i18n.getString( btnPre + "exit" ) );
+        btnExit.setOnAction( MDGuiController.EXIT_GUI );
         btnExit.setCancelButton( true );
 
         HBox hbox = new HBox( 8 );

@@ -3,11 +3,15 @@ package de.herrlock.manga.ui.main;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
+import de.herrlock.manga.util.Exec;
+import de.herrlock.manga.util.ExecHandlerTask;
 
 /**
  * @author HerrLock
@@ -15,13 +19,43 @@ import javafx.scene.control.TextField;
 public class MDGuiController {
     public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.ui" );
 
-    public static final EventHandler<ActionEvent> DO_NOTHING_HANDLER = new EventHandler<ActionEvent>() {
+    static final StringProperty urlProperty = new SimpleStringProperty();
+    static final StringProperty patternProperty = new SimpleStringProperty();
+    static final StringProperty proxyProperty = new SimpleStringProperty();
+    static final StringProperty jdhomeProperty = new SimpleStringProperty();
+
+    public static final EventHandler<ActionEvent> START_DOWNLOAD = new EventHandler<ActionEvent>() {
         @Override
-        public void handle( ActionEvent arg0 ) {
-            System.out.println( "Action not implemented" );
+        public void handle( ActionEvent event ) {
+            handleBtnClick( Exec.DIALOG_DOWNLOADER );
+        }
+    };
+    public static final EventHandler<ActionEvent> EXPORT_TO_JD = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle( ActionEvent event ) {
+            handleBtnClick( Exec.ADD_TO_JD );
+        }
+    };
+    public static final EventHandler<ActionEvent> CREATE_HTML = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle( ActionEvent event ) {
+            handleBtnClick( Exec.VIEW_PAGE_MAIN );
+        }
+    };
+    public static final EventHandler<ActionEvent> EXIT_GUI = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle( ActionEvent event ) {
+            handleBtnClick( Exec.DO_NOTHING );
         }
     };
 
+    public static void handleBtnClick( Exec exec ) {
+        new Thread( new ExecHandlerTask( exec ) ).start();
+    }
+
+    private MDGuiController() {
+        // not used
+    }
 }
 
 final class EmptyListener implements ChangeListener<String> {

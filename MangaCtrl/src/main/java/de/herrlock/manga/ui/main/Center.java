@@ -1,5 +1,6 @@
 package de.herrlock.manga.ui.main;
 
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -34,8 +35,10 @@ class Center extends NodeContainer {
 
             final TextField tfUrl = new TextField();
             ChangeListener<String> paramChangeListener = new EmptyListener( tfUrl );
-            paramChangeListener.changed( tfUrl.textProperty(), "", tfUrl.getText() );
-            tfUrl.textProperty().addListener( paramChangeListener );
+            StringProperty textProperty = tfUrl.textProperty();
+            MDGuiController.urlProperty.bind( textProperty );
+            paramChangeListener.changed( textProperty, "", tfUrl.getText() );
+            textProperty.addListener( paramChangeListener );
             tfUrl.setPromptText( "http://www.example.org/manga/manganame" );
             gridPane.add( tfUrl, 1, y );
             y++ ;
@@ -47,6 +50,7 @@ class Center extends NodeContainer {
             gridPane.add( lblPattern, 0, y );
 
             final TextField tfPattern = new TextField();
+            MDGuiController.patternProperty.bind( tfPattern.textProperty() );
             tfPattern.setPromptText( "1-10;15;17" );
             gridPane.add( tfPattern, 1, y );
             y++ ;
@@ -58,6 +62,7 @@ class Center extends NodeContainer {
             gridPane.add( lblProxyAddress, 0, y );
 
             final TextField tfProxyAddress = new TextField();
+            MDGuiController.proxyProperty.bind( tfProxyAddress.textProperty() );
             tfProxyAddress.setPromptText( "http://www.example.org:8080/proxy" );
             gridPane.add( tfProxyAddress, 1, y );
             y++ ;
@@ -69,6 +74,7 @@ class Center extends NodeContainer {
             gridPane.add( lblJDPath, 0, y );
 
             final TextField tfJDPath = new TextField();
+            MDGuiController.jdhomeProperty.bind( tfJDPath.textProperty() );
             tfJDPath.setPromptText( "C:/Program Files/JDownloader/" );
             gridPane.add( tfJDPath, 1, y );
             y++ ;

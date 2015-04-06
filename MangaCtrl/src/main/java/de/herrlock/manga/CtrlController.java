@@ -1,16 +1,10 @@
 package de.herrlock.manga;
 
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
-import de.herrlock.manga.downloader.DialogDownloader;
-import de.herrlock.manga.host.PrintAllHoster;
-import de.herrlock.manga.html.ViewPageMain;
-import de.herrlock.manga.jd.JDExport;
+import de.herrlock.manga.util.Exec;
+import de.herrlock.manga.util.ExecHandlerTask;
 
 public class CtrlController {
 
@@ -56,63 +50,19 @@ public class CtrlController {
         this.btnShowHosts.setOnAction( null );
         this.btnAddToJD.setOnAction( null );
         this.btnCreateHTML.setOnAction( null );
-        new Thread( new ExecHandlerTask( exec ) ).start();
+
+        new Thread( new ExecCtrlHandlerTask( exec ) ).start();
     }
 
-    class ExecHandlerTask extends Task<Void> {
-        private final Exec exec;
-
-        public ExecHandlerTask( Exec exec ) {
-            this.exec = exec;
-            setOnFailed( new ExceptionHandler() );
+    class ExecCtrlHandlerTask extends ExecHandlerTask {
+        public ExecCtrlHandlerTask( Exec exec ) {
+            super( exec );
         }
 
         @Override
         protected Void call() {
             CtrlController.this.runningText.setVisible( true );
-            try {
-                this.exec.execute();
-            } finally {
-                Platform.exit();
-            }
-            return null;
-        }
-
-        class ExceptionHandler implements EventHandler<WorkerStateEvent> {
-            @Override
-            public void handle( WorkerStateEvent t ) {
-                Throwable exception = ExecHandlerTask.this.getException();
-                throw exception instanceof RuntimeException ? ( RuntimeException ) exception : new RuntimeException( exception );
-            }
+            return super.call();
         }
     }
-}
-
-enum Exec {
-    DIALOG_DOWNLOADER {
-        @Override
-        public void execute() {
-            DialogDownloader.execute();
-        }
-    },
-    ADD_TO_JD {
-        @Override
-        public void execute() {
-            JDExport.execute();
-        }
-    },
-    PRINT_ALL_HOSTER {
-        @Override
-        public void execute() {
-            PrintAllHoster.execute();
-        }
-    },
-    VIEW_PAGE_MAIN {
-        @Override
-        public void execute() {
-            ViewPageMain.execute();
-        }
-    };
-
-    public abstract void execute();
 }
