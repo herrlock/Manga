@@ -1,0 +1,8 @@
+echo > log/err.log
+echo ------------------------ >> log/err.log
+date >> log/err.log
+java -cp "lib/*" de.herrlock.manga.ui.main.MDGui 2>&1 | tee -a log/err.log
+if [ "${PIPESTATUS[0]}" -ne "0" ] || [ $(grep -cE '.*' log/err.log) -gt 3 ] ; then
+	echo
+	cat log/err.log
+fi
