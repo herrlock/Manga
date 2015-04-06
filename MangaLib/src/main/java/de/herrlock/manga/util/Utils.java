@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import de.herrlock.exceptions.InitializeException;
 import de.herrlock.manga.connection.ConnectionFactory;
 import de.herrlock.manga.connection.DirectConnectionFactory;
 import de.herrlock.manga.connection.ProxyConnectionFactory;
@@ -64,8 +65,7 @@ public final class Utils {
         for ( String s : requiredParameters ) {
             String value = p.getProperty( s );
             if ( value == null || "".equals( value ) ) {
-                throw new RuntimeException( "Please fill the field \"" + s + "\" in the file "
-                    + new File( Constants.SETTINGS_FILE ).getAbsolutePath() );
+                throw new InitializeException( "The required property \"" + s + "\" is missing" );
             }
         }
 

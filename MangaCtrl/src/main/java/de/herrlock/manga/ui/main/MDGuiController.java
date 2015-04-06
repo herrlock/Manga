@@ -1,6 +1,7 @@
 package de.herrlock.manga.ui.main;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -10,6 +11,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
+import de.herrlock.exceptions.InitializeException;
+import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Exec;
 import de.herrlock.manga.util.ExecHandlerTask;
 
@@ -55,6 +58,35 @@ public class MDGuiController {
 
     private MDGuiController() {
         // not used
+    }
+
+    public static Properties getProperties() {
+        Properties p = new Properties();
+        {
+            String url = urlProperty.getValueSafe();
+            if ( "".equals( url ) ) {
+                throw new InitializeException( "No URL is set." );
+            }
+            p.put( Constants.PARAM_URL, url );
+        }
+        {
+            p.put( Constants.PARAM_PATTERN, patternProperty.getValueSafe() );
+        }
+        {
+            String proxy = proxyProperty.getValueSafe();
+            if ( !"".equals( proxy ) ) {
+                int lastIndex = proxy.lastIndexOf( ':' );
+                String proxyHost = proxy.substring( 0, lastIndex );
+                String proxyPort = proxy.substring( lastIndex + 1, proxy.length() );
+                p.put( Constants.PARAM_PROXY_HOST, proxyHost );
+                p.put( Constants.PARAM_PROXY_PORT, proxyPort );
+            }
+        }
+        {
+            p.put( Constants.PARAM_JDHOME, jdhomeProperty.getValueSafe() );
+        }
+        return p;
+
     }
 }
 

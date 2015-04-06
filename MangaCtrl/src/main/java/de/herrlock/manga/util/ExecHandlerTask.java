@@ -5,6 +5,10 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 
+import javax.swing.JOptionPane;
+
+import de.herrlock.exceptions.InitializeException;
+
 public class ExecHandlerTask extends Task<Void> {
     private final Exec exec;
 
@@ -15,10 +19,16 @@ public class ExecHandlerTask extends Task<Void> {
 
     @Override
     protected Void call() {
+        boolean exit = true;
         try {
             this.exec.execute();
+        } catch ( InitializeException ex ) {
+            exit = false;
+            JOptionPane.showMessageDialog( null, ex.getMessage() );
         } finally {
-            Platform.exit();
+            if ( exit ) {
+                Platform.exit();
+            }
         }
         return null;
     }

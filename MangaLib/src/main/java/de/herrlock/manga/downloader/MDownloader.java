@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import de.herrlock.exceptions.InitializeException;
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.downloader.dqc.DownloadQueueContainer;
 import de.herrlock.manga.downloader.pmc.PictureMapContainer;
@@ -35,7 +36,7 @@ public abstract class MDownloader {
         try {
             this.clc = new ChapterListContainer();
         } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+            throw new InitializeException( ex );
         }
         this.pmc = new PictureMapContainer( this.clc );
         this.dqc = new DownloadQueueContainer( this.clc );
