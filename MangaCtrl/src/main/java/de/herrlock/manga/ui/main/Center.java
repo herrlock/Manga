@@ -63,7 +63,7 @@ class Center extends NodeContainer {
 
             final TextField tfProxyAddress = new TextField();
             MDGuiController.proxyProperty.bind( tfProxyAddress.textProperty() );
-            tfProxyAddress.setPromptText( "http://www.example.org:8080/proxy" );
+            tfProxyAddress.setPromptText( "http://www.example.org:8080" );
             gridPane.add( tfProxyAddress, 1, y );
             y++ ;
         }

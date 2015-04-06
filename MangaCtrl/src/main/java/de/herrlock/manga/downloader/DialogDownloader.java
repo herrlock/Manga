@@ -20,8 +20,7 @@ public final class DialogDownloader extends MDownloader {
             throw new RuntimeException( ex );
         }
         // properties loaded successful
-        DialogDownloader dd = new DialogDownloader( p );
-        dd.run();
+        new DialogDownloader( p ).run();
     }
 
     protected DialogDownloader( Properties p ) {

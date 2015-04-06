@@ -106,8 +106,6 @@ public final class DownloadQueueContainer {
                     File outputFile = this.p.getTargetFile();
                     ImageIO.write( image, "jpg", outputFile );
                     System.out.println( "saved image to " + outputFile );
-                } catch ( SocketException | SocketTimeoutException ex ) {
-                    DownloadQueueContainer.this.add( this.p );
                 }
             } catch ( SocketException | SocketTimeoutException ex ) {
                 DownloadQueueContainer.this.add( this.p );
