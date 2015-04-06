@@ -40,7 +40,7 @@ public class CtrlController {
         handleBtnClick( Exec.PRINT_ALL_HOSTER );
     }
     public void exportToJD() {
-        handleBtnClick( Exec.ADD_TO_JD );
+        handleBtnClick( Exec.ADD_TO_JD_W_FILE );
     }
     public void createHTML() {
         handleBtnClick( Exec.VIEW_PAGE_MAIN );

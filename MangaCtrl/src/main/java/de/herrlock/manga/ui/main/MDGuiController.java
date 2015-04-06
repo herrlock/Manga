@@ -30,13 +30,13 @@ public class MDGuiController {
     public static final EventHandler<ActionEvent> START_DOWNLOAD = new EventHandler<ActionEvent>() {
         @Override
         public void handle( ActionEvent event ) {
-            handleBtnClick( Exec.DIALOG_DOWNLOADER );
+            handleBtnClick( Exec.GUI_DOWNLOADER );
         }
     };
     public static final EventHandler<ActionEvent> EXPORT_TO_JD = new EventHandler<ActionEvent>() {
         @Override
         public void handle( ActionEvent event ) {
-            handleBtnClick( Exec.ADD_TO_JD );
+            handleBtnClick( Exec.ADD_TO_JD_W_GUI );
         }
     };
     public static final EventHandler<ActionEvent> CREATE_HTML = new EventHandler<ActionEvent>() {

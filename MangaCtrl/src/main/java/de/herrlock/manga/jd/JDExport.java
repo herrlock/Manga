@@ -16,6 +16,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import de.herrlock.manga.downloader.MDownloader;
+import de.herrlock.manga.ui.main.MDGuiController;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
 
@@ -24,8 +25,7 @@ public class JDExport extends MDownloader {
     final File jdhome;
     final File path = this.clc.getPath();
 
-    public static void execute() {
-        System.out.println( "add to jd" );
+    public static void executeGetFileProperties() {
         Properties p = new Properties();
         try {
             try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
@@ -34,9 +34,19 @@ public class JDExport extends MDownloader {
         } catch ( IOException ex ) {
             throw new RuntimeException( ex );
         }
+        execute( p );
+    }
+
+    public static void executeGetGuiProperties() {
+        Properties p = MDGuiController.getProperties();
+        execute( p );
+    }
+
+    private static void execute( Properties p ) {
+        System.out.println( "add to jd" );
         String jdhome = p.getProperty( Constants.PARAM_JDHOME );
         if ( jdhome == null || jdhome.trim().isEmpty() ) {
-            throw new RuntimeException( "\"" + Constants.PARAM_JDHOME + "\" must be set in downloader.txt" );
+            throw new RuntimeException( "\"" + Constants.PARAM_JDHOME + "\" must be set" );
         }
         new JDExport( p ).run();
     }

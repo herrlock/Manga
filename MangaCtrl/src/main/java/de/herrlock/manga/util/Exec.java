@@ -1,6 +1,7 @@
 package de.herrlock.manga.util;
 
 import de.herrlock.manga.downloader.DialogDownloader;
+import de.herrlock.manga.downloader.GUIDownloader;
 import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.jd.JDExport;
@@ -12,10 +13,22 @@ public enum Exec {
             DialogDownloader.execute();
         }
     },
-    ADD_TO_JD {
+    GUI_DOWNLOADER {
         @Override
         public void execute() {
-            JDExport.execute();
+            GUIDownloader.execute();
+        }
+    },
+    ADD_TO_JD_W_FILE {
+        @Override
+        public void execute() {
+            JDExport.executeGetFileProperties();
+        }
+    },
+    ADD_TO_JD_W_GUI {
+        @Override
+        public void execute() {
+            JDExport.executeGetGuiProperties();
         }
     },
     VIEW_PAGE_MAIN {
