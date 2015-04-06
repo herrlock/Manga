@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import de.herrlock.exceptions.InitializeException;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Utils;
 
@@ -32,7 +33,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
         URL url = Utils.getMangaURL();
         Hoster h = Hoster.getHostByURL( url );
         if ( h == null ) {
-            throw new IllegalArgumentException( url + " could not be resolved to a registered host." );
+            throw new InitializeException( url + " could not be resolved to a registered host." );
         }
         return h.getChapterList( url );
     }

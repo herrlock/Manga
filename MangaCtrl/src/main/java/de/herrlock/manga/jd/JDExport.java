@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import de.herrlock.exceptions.InitializeException;
 import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.ui.main.MDGuiController;
 import de.herrlock.manga.util.Constants;
@@ -46,7 +47,7 @@ public class JDExport extends MDownloader {
         System.out.println( "add to jd" );
         String jdhome = p.getProperty( Constants.PARAM_JDHOME );
         if ( jdhome == null || jdhome.trim().isEmpty() ) {
-            throw new RuntimeException( "\"" + Constants.PARAM_JDHOME + "\" must be set" );
+            throw new InitializeException( "\"" + Constants.PARAM_JDHOME + "\" must be set" );
         }
         new JDExport( p ).run();
     }
