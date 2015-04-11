@@ -51,7 +51,9 @@ public class CtrlController {
         this.btnAddToJD.setOnAction( null );
         this.btnCreateHTML.setOnAction( null );
 
-        new Thread( new ExecCtrlHandlerTask( exec ) ).start();
+        Thread thread = new Thread( new ExecCtrlHandlerTask( exec ) );
+        thread.setDaemon( true );
+        thread.start();
     }
 
     class ExecCtrlHandlerTask extends ExecHandlerTask {
