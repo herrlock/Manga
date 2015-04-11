@@ -1,8 +1,6 @@
 ﻿
 1) get the url of the manga (eg. http://mangafox.me/manga/log_horizon/)
-2) fill url into downloader.txt after "url=" (line 5)
-3) run Dialog.bat (see a) below)
-4) look into the folder "download" the downloaded chapters are located there
-    (the numebrs at the end of the name are a timestamp to avoid accidentally overwriting the folder)
+2) run Gui.bat (Windows) or Gui (other)
+3) fill the fields in the GUI
+4) start the desired task
 
-a) when executing Dialog.bat step 2 is not required
