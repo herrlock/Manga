@@ -83,7 +83,7 @@ public class MDGuiController {
             }
         }
         {
-            p.put( Constants.PARAM_JDHOME, jdhomeProperty.getValueSafe() );
+            p.put( Constants.PARAM_JDFW, jdhomeProperty.getValueSafe() );
         }
         return p;
 

@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import de.herrlock.manga.util.Utils;
 
 public class JDExport extends MDownloader {
 
-    final File jdhome;
+    final File jdfwFolder;
     final File path = this.clc.getPath();
 
     public static void executeGetFileProperties() {
@@ -45,18 +46,19 @@ public class JDExport extends MDownloader {
 
     private static void execute( Properties p ) {
         System.out.println( "add to jd" );
-        String jdhome = p.getProperty( Constants.PARAM_JDHOME );
+        String jdhome = p.getProperty( Constants.PARAM_JDFW );
         if ( jdhome == null || jdhome.trim().isEmpty() ) {
-            throw new InitializeException( "\"" + Constants.PARAM_JDHOME + "\" must be set" );
+            throw new InitializeException( "\"" + Constants.PARAM_JDFW + "\" must be set" );
         }
         new JDExport( p ).run();
     }
 
     public JDExport( Properties p ) {
         super( p );
-        this.jdhome = new File( p.getProperty( Constants.PARAM_JDHOME ) );
-        if ( !( this.jdhome.exists() || this.jdhome.mkdir() ) ) {
-            throw new RuntimeException( this.jdhome + " does not exist and could not be created" );
+        System.err.println( "initialized MDownloader" );
+        this.jdfwFolder = new File( p.getProperty( Constants.PARAM_JDFW ) );
+        if ( !( this.jdfwFolder.exists() || this.jdfwFolder.mkdir() ) ) {
+            throw new RuntimeException( this.jdfwFolder + " does not exist and could not be created" );
         }
     }
 
@@ -69,8 +71,7 @@ public class JDExport extends MDownloader {
         try {
             Set<Entry<String, Map<Integer, URL>>> pmcEntries = this.pmc.getPictureMap().entrySet();
             for ( Entry<String, Map<Integer, URL>> entry : pmcEntries ) {
-                CrawljobFile cf = new CrawljobFile( entry.getKey(), entry.getValue().entrySet() );
-                cf.write();
+                new CrawljobFile( entry.getKey(), entry.getValue().entrySet() ).write();
             }
         } catch ( IOException ex ) {
             throw new RuntimeException( ex );
@@ -90,7 +91,7 @@ public class JDExport extends MDownloader {
         }
 
         public void write() throws IOException {
-            File outFile = new File( new File( JDExport.this.jdhome, "folderwatch" ), this.c.getFilename() );
+            File outFile = new File( JDExport.this.jdfwFolder, this.c.getFilename() );
             try ( OutputStream out = new FileOutputStream( outFile ) ) {
                 out.write( this.c.export().getBytes( StandardCharsets.UTF_8 ) );
                 System.out.println( "print string -> " + outFile );
@@ -106,10 +107,16 @@ public class JDExport extends MDownloader {
 
             @Override
             public void run() {
+                String filename = this.e.getKey().toString();
+                URL pictureUrl = getImageLink();
+                CrawljobFile.this.c.addCrawljobEntry( filename, pictureUrl.toExternalForm() );
+            }
+
+            private URL getImageLink() {
                 try {
-                    String filename = this.e.getKey().toString();
-                    URL pictureUrl = JDExport.this.getImageLink( this.e.getValue() );
-                    CrawljobFile.this.c.addCrawljobEntry( filename, pictureUrl.toExternalForm() );
+                    return JDExport.this.getImageLink( this.e.getValue() );
+                } catch ( SocketTimeoutException ex ) {
+                    return getImageLink();
                 } catch ( IOException ex ) {
                     throw new RuntimeException( ex );
                 }

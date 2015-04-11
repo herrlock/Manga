@@ -25,9 +25,9 @@ public final class Constants {
      */
     public static final String PARAM_TIMEOUT = "timeout";
     /**
-     * the path to JDownloader's home-folder
+     * the path to JDownloader's folderwatch-folder
      */
-    public static final String PARAM_JDHOME = "jdhome";
+    public static final String PARAM_JDFW = "jdfw";
     /**
      * the default value of th timeout
      */

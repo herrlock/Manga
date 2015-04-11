@@ -11,10 +11,10 @@ url=
 pattern=
 
 # dependant
-# to export the links to JDownloader add the path to the folder where jd is located
-# example: jdhome=C:/Program Files/JDownloader2/
+# to export the links to JDownloader (to use FolderWatch) add the path to the folderwatch-folder in your local jd-installation
+# example: jdfw=C:/Program Files/JDownloader2/folderwatch
 important: use only forward slashes (/)
-jdhome=
+jdfw=
 
 # optional
 # set this to use a proxy (without authentification)
