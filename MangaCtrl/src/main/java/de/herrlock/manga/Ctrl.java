@@ -22,7 +22,7 @@ public final class Ctrl extends AbstractApplication {
 
     @Override
     public void start( Stage stage ) {
-        this.setScene( new CtrlScene() );
+        setScene( new CtrlScene() );
         super.start( stage );
     }
 
@@ -31,7 +31,7 @@ public final class Ctrl extends AbstractApplication {
             try {
                 URL location = CtrlScene.class.getResource( "CtrlScene.xml" );
                 Parent root = FXMLLoader.load( location, i18n );
-                this.setScene( new Scene( root ) );
+                setScene( new Scene( root ) );
             } catch ( IOException ex ) {
                 throw new RuntimeException( ex );
             }
