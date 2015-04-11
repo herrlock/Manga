@@ -5,4 +5,5 @@ dependencies {
 
 clean << {
 	file('download').listFiles().each { it.deleteDir() }
+	file('folderwatch').listFiles().each { it.deleteDir() }
 }
