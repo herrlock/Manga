@@ -10,7 +10,7 @@
 		<Insets top="8" right="24" bottom="8" left="24" />
 	</padding>
 	<top>
-		<Text fx:id="runningText" text="Running... please wait" visible="false" />
+		<Text fx:id="runningText" text="%text.running" visible="false" />
 	</top>
 	<center>
 		<HBox spacing="8">
