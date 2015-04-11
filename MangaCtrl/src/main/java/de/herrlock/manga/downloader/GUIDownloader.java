@@ -30,10 +30,9 @@ public final class GUIDownloader extends MDownloader {
     }
 
     private boolean goon() {
-        String title = "go on?";
         String message = "number of pictures: " + getPMCSize();
-        int clicked = JOptionPane.showConfirmDialog( null, message, title, JOptionPane.YES_NO_OPTION,
+        int chosen = JOptionPane.showConfirmDialog( null, message, "go on?", JOptionPane.YES_NO_OPTION,
             JOptionPane.INFORMATION_MESSAGE );
-        return clicked == JOptionPane.OK_OPTION;
+        return chosen == JOptionPane.YES_OPTION;
     }
 }
