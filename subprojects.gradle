@@ -4,7 +4,6 @@ subprojects {
 	apply plugin: 'findbugs'
 	apply plugin: 'pmd'
 	apply plugin: 'maven-publish'
-	apply plugin: 'eclipse'
 	
 	sourceCompatibility = "1.7"
 	

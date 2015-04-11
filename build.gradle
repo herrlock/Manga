@@ -1,14 +1,12 @@
 
 allprojects {
+	apply plugin: 'eclipse'
+	
 	group 'de.herrlock'
 	version '1.4.0-BETA-SNAPSHOT'
 }
 
 apply from: 'subprojects.gradle'
-
-task eclipse (group: 'IDE', description: 'Creates the .project-file for the root-project') << {
-    file('.project').text = '<?xml version="1.0" encoding="UTF-8"?><projectDescription><name>Manga</name></projectDescription>'
-}
 
 task clean (type: Delete, group: 'build', description: 'Deletes the build directory. (R)') {
 	delete 'build/'
