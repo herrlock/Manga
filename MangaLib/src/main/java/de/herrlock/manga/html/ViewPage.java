@@ -96,6 +96,7 @@ public class ViewPage {
     private Element leftDiv() {
         Map<Integer, List<String>> blocks = new HashMap<>();
         {
+            // init map
             List<File> files = getSortedChapters( Collections.reverseOrder( Const.numericFilenameComparator ) );
             for ( File f : files ) {
                 String filename = f.getName();
@@ -199,8 +200,7 @@ public class ViewPage {
     }
 
     private void copyFile( String filename ) {
-        try {
-            InputStream resource = ViewPage.class.getResourceAsStream( filename );
+        try ( InputStream resource = ViewPage.class.getResourceAsStream( filename ) ) {
             List<String> readLines = Utils.readStream( resource );
             File toFile = new File( this.folder, filename );
             Utils.writeToFile( toFile, readLines );
@@ -225,6 +225,10 @@ public class ViewPage {
 }
 
 class Const {
+    /**
+     * a {@linkplain FileFilter} that filters directories.<br>
+     * {@linkplain FileFilter#accept(File)} returns true, if {@linkplain File#isDirectory()} is {@code true}
+     */
     static final FileFilter isDirectoryFilter = new FileFilter() {
         @Override
         public boolean accept( File pathname ) {
@@ -232,6 +236,11 @@ class Const {
         }
     };
 
+    /**
+     * copmares two {@link File}s by their name.<br>
+     * tries to use {@linkplain Integer#parseInt(String)} on both names and returns {@linkplain Integer#compare(int, int)}. If
+     * that fails it tries {@linkplain Double#parseDouble(String)} and returns {@linkplain Double#compare(double, double)}
+     */
     static final Comparator<File> numericFilenameComparator = new Comparator<File>() {
         @Override
         public int compare( File o1, File o2 ) {
@@ -249,6 +258,9 @@ class Const {
         }
     };
 
+    /**
+     * compares two {@code Entry<Integer, ?>}-objects by their keys
+     */
     static final Comparator<Entry<Integer, ?>> integerEntryComparator = new Comparator<Map.Entry<Integer, ?>>() {
         @Override
         public int compare( Entry<Integer, ?> o1, Entry<Integer, ?> o2 ) {

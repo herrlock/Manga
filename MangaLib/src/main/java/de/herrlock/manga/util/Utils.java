@@ -128,7 +128,7 @@ public final class Utils {
      *            the {@link InputStream} to read from
      * @return a {@link List} of Strings containing the lines from the read InputStream
      * @throws IOException
-     *             If an I/O error occurs
+     *             If an IOException occurs while reading from the stream or closing the stream
      */
     public static List<String> readStream( InputStream in ) throws IOException {
         List<String> list = new ArrayList<>();
@@ -141,6 +141,16 @@ public final class Utils {
         return list;
     }
 
+    /**
+     * writes the Strings from the second parameter to the File in the first parameter, separated by a newline-character
+     * 
+     * @param file
+     *            the file to write to
+     * @param readLines
+     *            the String to write
+     * @throws IOException
+     *             if a FileNotFoundException occurs while creating the PrintWriter
+     */
     public static void writeToFile( File file, List<String> readLines ) throws IOException {
         try ( PrintWriter pw = new PrintWriter( file, "UTF-8" ) ) {
             for ( String s : readLines ) {
