@@ -85,7 +85,7 @@ public class JDExport extends MDownloader {
             this.c = new Crawljob( new File( JDExport.this.path, chapter ), chapter );
             List<Thread> threads = new ArrayList<>( entrySet.size() );
             for ( Entry<Integer, URL> e : entrySet ) {
-                threads.add( new CrawljobFileEntry( e ) );
+                threads.add( new CrawljobFileEntryAdder( e ) );
             }
             Utils.startAndWaitForThreads( threads );
         }
@@ -98,18 +98,18 @@ public class JDExport extends MDownloader {
             }
         }
 
-        private class CrawljobFileEntry extends Thread {
+        private class CrawljobFileEntryAdder extends Thread {
             private final Entry<Integer, URL> e;
 
-            public CrawljobFileEntry( Entry<Integer, URL> e ) {
+            public CrawljobFileEntryAdder( Entry<Integer, URL> e ) {
                 this.e = e;
             }
 
             @Override
             public void run() {
                 String filename = this.e.getKey().toString();
-                URL pictureUrl = getImageLink();
-                CrawljobFile.this.c.addCrawljobEntry( filename, pictureUrl.toExternalForm() );
+                String pictureURL = getImageLink().toExternalForm();
+                CrawljobFile.this.c.addCrawljobEntry( filename, pictureURL );
             }
 
             private URL getImageLink() {
