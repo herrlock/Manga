@@ -13,10 +13,24 @@ import java.util.Locale;
  * @author HerrLock
  */
 public enum Hoster {
-    MANGAPANDA( "Mangapanda", "http://www.mangapanda.com/" ), //
-    PUREMANGA( "Pure-Manga", "http://www.pure-manga.org/" ), //
-    MANGAFOX( "Mangafox", "http://www.mangafox.me/" ), //
-    ;
+    MANGAPANDA( "Mangapanda", "http://www.mangapanda.com/" ) {
+        @Override
+        public ChapterList getChapterList( URL mangaUrl ) throws IOException {
+            return new MangaPanda( mangaUrl );
+        }
+    },
+    PUREMANGA( "Pure-Manga", "http://www.pure-manga.org/" ) {
+        @Override
+        public ChapterList getChapterList( URL mangaUrl ) throws IOException {
+            return new PureManga( mangaUrl );
+        }
+    },
+    MANGAFOX( "Mangafox", "http://www.mangafox.me/" ) {
+        @Override
+        public ChapterList getChapterList( URL mangaUrl ) throws IOException {
+            return new MangaFox( mangaUrl );
+        }
+    };
 
     private final String name;
     private final URL url;
@@ -53,18 +67,7 @@ public enum Hoster {
      * @throws IOException
      *             thrown by the constructors of the special ChapterList-implementations
      */
-    public ChapterList getChapterList( URL mangaUrl ) throws IOException {
-        switch ( this ) {
-            case MANGAPANDA:
-                return new MangaPanda( mangaUrl );
-            case PUREMANGA:
-                return new PureManga( mangaUrl );
-            case MANGAFOX:
-                return new MangaFox( mangaUrl );
-            default:
-                throw new RuntimeException( "Hoster \"" + this + "\" not found" );
-        }
-    }
+    public abstract ChapterList getChapterList( URL mangaUrl ) throws IOException;
 
     /**
      * checks all Hoster for the one that matches the given URL
