@@ -59,7 +59,7 @@ function choose(x) {
     var chp = toLoad + 1;
     $endlink.replaceWith($('<a/>', {
         'class' : 'whitelink',
-        id : 'choose' + chp,
+        id : 'endlink',
         href : 'javascript:void(0)',
         onclick : 'choose(' + chp + ')',
         title : 'Lade Kapitel ' + chp,
