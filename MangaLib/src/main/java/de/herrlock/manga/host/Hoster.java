@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * all defined Hoster
@@ -74,13 +75,14 @@ public enum Hoster {
      * @return the Hoster that has the given URL; when none is found {@code null}
      */
     public static Hoster getHostByURL( URL url ) {
+        Pattern www = Pattern.compile( "www\\..+" );
         String givenUrlHost = url.getHost();
-        if ( givenUrlHost.matches( "www\\..+" ) ) {
+        if ( www.matcher( givenUrlHost ).matches() ) {
             givenUrlHost = givenUrlHost.substring( 4 );
         }
         for ( Hoster h : Hoster.values() ) {
             String hostUrlHost = h.url.getHost();
-            if ( hostUrlHost.matches( "www\\..+" ) ) {
+            if ( www.matcher( hostUrlHost ).matches() ) {
                 hostUrlHost = hostUrlHost.substring( 4 );
             }
             if ( hostUrlHost.equalsIgnoreCase( givenUrlHost ) ) {
@@ -97,8 +99,9 @@ public enum Hoster {
 
     public static Hoster[] sortedValues() {
         Hoster[] values = Hoster.values();
-        Arrays.sort( values, NAME_COMPARATOR );
-        return values;
+        Hoster[] copy = Arrays.copyOf( values, values.length );
+        Arrays.sort( copy, NAME_COMPARATOR );
+        return copy;
     }
 
     public static final Comparator<Hoster> NAME_COMPARATOR = new Comparator<Hoster>() {
