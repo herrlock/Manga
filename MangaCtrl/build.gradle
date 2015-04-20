@@ -2,8 +2,3 @@
 dependencies {
     compile project(':MangaLib')
 }
-
-clean << {
-	file('download').listFiles().each { it.deleteDir() }
-	file('folderwatch').listFiles().each { it.deleteDir() }
-}
