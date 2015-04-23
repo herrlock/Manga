@@ -1,7 +1,6 @@
 package de.herrlock.manga.ui.main;
 
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -12,83 +11,67 @@ import de.herrlock.javafx.scene.NodeContainer;
 class Center extends NodeContainer {
     @Override
     protected Node createNode() {
-        int y = 0;
         final GridPane gridPane = new GridPane();
         {
             final Label lblTop = new Label();
             lblTop.setPrefWidth( 200 );
             lblTop.setVisible( false );
-            gridPane.add( lblTop, 0, y );
+            gridPane.add( lblTop, 0, 0 );
 
             final TextField tfTop = new TextField();
             tfTop.setPrefColumnCount( 50 );
             tfTop.setVisible( false );
-            gridPane.add( tfTop, 1, y );
+            gridPane.add( tfTop, 1, 0 );
         }
 
-        String lblPre = "center.label.";
-        {
-            String i18n_url = MDGuiController.i18n.getString( lblPre + "url" );
-            final Label lblUrl = new Label( i18n_url );
-            lblUrl.setTooltip( new Tooltip( i18n_url ) );
-            gridPane.add( lblUrl, 0, y );
-
-            final TextField tfUrl = new TextField();
-            ChangeListener<String> paramChangeListener = new EmptyListener( tfUrl );
-            StringProperty textProperty = tfUrl.textProperty();
-            MDGuiController.urlProperty.bind( textProperty );
-            paramChangeListener.changed( textProperty, "", tfUrl.getText() );
-            textProperty.addListener( paramChangeListener );
-            tfUrl.setPromptText( "http://www.example.org/manga/manganame" );
-            gridPane.add( tfUrl, 1, y );
-            y++ ;
+        String[] keys = {
+            "url", "pattern", "proxyaddress", "jdhome"
+        };
+        String[] prompttexts = {
+            "http://www.example.org/manga/manganame", "1-10;15;17", "http://www.example.org:8080",
+            "C:/Program Files/JDownloader/"
+        };
+        StringProperty[] props = {
+            MDGuiController.urlProperty, MDGuiController.patternProperty, MDGuiController.proxyProperty,
+            MDGuiController.jdhomeProperty
+        };
+        for ( int i = 0; i < keys.length; i++ ) {
+            String key = keys[i];
+            gridPane.add( new XLabel( key ), 0, i );
+            gridPane.add( new XTextField( key, prompttexts[i], props[i] ), 1, i );
         }
-        {
-            String i18n_pattern = MDGuiController.i18n.getString( lblPre + "pattern" );
-            final Label lblPattern = new Label( i18n_pattern );
-            lblPattern.setTooltip( new Tooltip( i18n_pattern ) );
-            gridPane.add( lblPattern, 0, y );
 
-            final TextField tfPattern = new TextField();
-            MDGuiController.patternProperty.bind( tfPattern.textProperty() );
-            tfPattern.setPromptText( "1-10;15;17" );
-            gridPane.add( tfPattern, 1, y );
-            y++ ;
-        }
-        {
-            String i18n_proxyaddress = MDGuiController.i18n.getString( lblPre + "proxyaddress" );
-            final Label lblProxyAddress = new Label( i18n_proxyaddress );
-            lblProxyAddress.setTooltip( new Tooltip( i18n_proxyaddress ) );
-            gridPane.add( lblProxyAddress, 0, y );
-
-            final TextField tfProxyAddress = new TextField();
-            MDGuiController.proxyProperty.bind( tfProxyAddress.textProperty() );
-            tfProxyAddress.setPromptText( "http://www.example.org:8080" );
-            gridPane.add( tfProxyAddress, 1, y );
-            y++ ;
-        }
-        {
-            String i18n_jdhome = MDGuiController.i18n.getString( lblPre + "jdhome" );
-            final Label lblJDPath = new Label( i18n_jdhome );
-            lblJDPath.setTooltip( new Tooltip( i18n_jdhome ) );
-            gridPane.add( lblJDPath, 0, y );
-
-            final TextField tfJDPath = new TextField();
-            MDGuiController.jdhomeProperty.bind( tfJDPath.textProperty() );
-            tfJDPath.setPromptText( "C:/Program Files/JDownloader/" );
-            gridPane.add( tfJDPath, 1, y );
-            y++ ;
-        }
         {
             final Label lblBtm = new Label();
             lblBtm.setVisible( false );
-            gridPane.add( lblBtm, 0, y );
+            gridPane.add( lblBtm, 0, keys.length );
 
             final TextField tfBtm = new TextField();
             tfBtm.setVisible( false );
-            gridPane.add( tfBtm, 1, y );
+            gridPane.add( tfBtm, 1, keys.length );
         }
         gridPane.getStyleClass().addAll( CCN.GRIDPANE, CCN.PADDING_16, CCN.GREY );
         return gridPane;
+    }
+
+    private static class XLabel extends Label {
+        private static final String lblPre = "center.label.";
+
+        public XLabel( String i18nKey ) {
+            String i18nValue = MDGuiController.i18n.getString( lblPre + i18nKey );
+            setText( i18nValue );
+            setTooltip( new Tooltip( i18nValue ) );
+        }
+    }
+
+    private static class XTextField extends TextField {
+        private static final String txtPre = "center.textfield.";
+
+        public XTextField( String i18nKey, String prompttext, StringProperty prop ) {
+            String i18nValue = MDGuiController.i18n.getString( txtPre + i18nKey );
+            setTooltip( new Tooltip( i18nValue ) );
+            setPromptText( prompttext );
+            prop.bind( textProperty() );
+        }
     }
 }
