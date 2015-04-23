@@ -101,7 +101,7 @@ public class Crawljob {
             sb.append( System.lineSeparator() );
             sb.append( "filename=" );
             sb.append( this.filename );
-            sb.append( ".png" );
+            sb.append( ".jpg" );
             return sb.toString();
         }
     }
