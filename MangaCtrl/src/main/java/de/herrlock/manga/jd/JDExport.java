@@ -55,7 +55,6 @@ public class JDExport extends MDownloader {
 
     public JDExport( Properties p ) {
         super( p );
-        System.err.println( "initialized MDownloader" );
         this.jdfwFolder = new File( p.getProperty( Constants.PARAM_JDFW ) );
         if ( !( this.jdfwFolder.exists() || this.jdfwFolder.mkdir() ) ) {
             throw new RuntimeException( this.jdfwFolder + " does not exist and could not be created" );
