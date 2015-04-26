@@ -5,7 +5,7 @@ function init() {
     // das aktuelle kapitel anzeigen
     choose(parseFloat(location.hash.substring(1) || "1") || 1);
     // den obersten sidebarblock (die freien kapitel) öffnen
-    show(chapterblock);
+    show(manga.chapterblock);
 }
 
 /**
@@ -26,7 +26,7 @@ function choose(x) {
     $('title').html('Kapitel ' + toLoad);
     // seitenüberschrift ändern (z.B. "Kapitel 623:"
     $('#pagetitle').html('Kapitel ' + toLoad + ':');
-    for (var i = 1; i <= max_pages; i++) {
+    for (var i = 1; i <= manga.max_pages; i++) {
         // pfad zur bilddatei
         var url = toLoad + '\/' + (i < 10 ? "0" + i : i) + '.jpg';
         // bild auf existenz prüfen
@@ -45,7 +45,7 @@ function choose(x) {
         textDecoration : "",
         color : ""
     };
-    if (toLoad < chapter) {
+    if (toLoad < manga.chapter) {
         // der link auf das nächste kapitel wird geändert
         css.textDecoration = 'underline';
         css.color = 'red';
@@ -74,7 +74,7 @@ function choose(x) {
  * show block number x in the left menu, hide all the others
  */
 function show(x) {
-    for (var i = chapterblock - 1; i >= 0; i--) {
+    for (var i = manga.chapterblock - 1; i >= 0; i--) {
         $('#block' + i).slideUp();
         $('#arrow' + i).html('&#x25ba;');
     }

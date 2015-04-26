@@ -69,10 +69,20 @@ public class ViewPage {
 
         List<File> files = getChapters();
         File maxFile = Collections.max( files, Const.numericFilenameComparator );
-        String max = maxFile.getName();
+        int max = Integer.parseInt( maxFile.getName() );
 
-        head.appendElement( "script" ).text(
-            "var chapter = " + max + ",  max_pages = " + this.maxImgs + ", chapterblock = (chapter - (chapter % 10)) / 10;" );
+        StringBuilder mangaObject = new StringBuilder();
+        mangaObject.append( "var manga = {" );
+        mangaObject.append( "chapter: " );
+        mangaObject.append( max );
+        mangaObject.append( "," );
+        mangaObject.append( "max_pages: " );
+        mangaObject.append( this.maxImgs );
+        mangaObject.append( "," );
+        mangaObject.append( "chapterblock: " );
+        mangaObject.append( ( max - ( max % 10 ) ) / 10 );
+        mangaObject.append( "};" );
+        head.appendElement( "script" ).text( mangaObject.toString() );
 
         String[] js = {
             "jquery-2.1.3.min.js", "onkeydown.js", "main.js"
