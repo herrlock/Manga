@@ -32,10 +32,10 @@ public final class PictureMapContainer {
     }
 
     /**
-     * @return the {@link Map} containing the chapters
+     * @return a copy of the {@link Map} containing the chapters
      */
     public Map<String, Map<Integer, URL>> getPictureMap() {
-        return this.picturemap;
+        return new HashMap<>( this.picturemap );
     }
 
     /**
