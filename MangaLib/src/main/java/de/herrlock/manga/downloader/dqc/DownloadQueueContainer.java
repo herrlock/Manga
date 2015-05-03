@@ -9,10 +9,11 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -48,14 +49,22 @@ public final class DownloadQueueContainer {
     }
 
     /**
-     * adds a {@link Set} of Integer-URL-Pairs to this Container
+     * adds a {@link Collection} of Integer-URL-Pairs to this Container
      * 
      * @see DownloadQueueContainer#add(URL, File, int)
      */
-    public void addEntrySet( File chapterFolder, Set<Entry<Integer, URL>> entrySet ) {
+    public void addEntrySet( File chapterFolder, Collection<Entry<Integer, URL>> entrySet ) {
         for ( Entry<Integer, URL> e : entrySet ) {
             this.add( e.getValue(), chapterFolder, e.getKey().intValue() );
         }
+    }
+    /**
+     * adds a {@link Map} of Integer-URL-Pairs to this Container
+     * 
+     * @see DownloadQueueContainer#add(File, Collection)
+     */
+    public void addMap( File chapterFolder, Map<Integer, URL> map ) {
+        addEntrySet( chapterFolder, map.entrySet() );
     }
 
     /**

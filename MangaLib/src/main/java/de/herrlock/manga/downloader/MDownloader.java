@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import de.herrlock.exceptions.InitializeException;
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
@@ -74,7 +73,8 @@ public abstract class MDownloader {
         List<String> keys = new ArrayList<>( picturemap.keySet() );
         Collections.sort( keys, Constants.STRING_NUMBER_COMPARATOR );
         for ( String key : keys ) {
-            downloadChapter( key, picturemap.get( key ) );
+            Map<Integer, URL> urlMap = picturemap.get( key );
+            downloadChapter( key, urlMap );
             picturemap.remove( key );
         }
     }
@@ -95,8 +95,7 @@ public abstract class MDownloader {
         File chapterFolder = new File( this.clc.getPath(), key );
         if ( chapterFolder.exists() || chapterFolder.mkdirs() ) {
             // add pictures to queue
-            Set<Map.Entry<Integer, URL>> entrySet = urlMap.entrySet();
-            this.dqc.addEntrySet( chapterFolder, entrySet );
+            this.dqc.addMap( chapterFolder, urlMap );
             // start download
             this.dqc.downloadPages();
         } else {
