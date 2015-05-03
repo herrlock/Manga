@@ -14,6 +14,10 @@ public final class ConsoleDownloader extends MDownloader {
 
     private final Scanner sc;
 
+    public static void main( String[] args ) {
+        execute();
+    }
+
     public static void execute() {
         Properties p = new Properties();
         try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
