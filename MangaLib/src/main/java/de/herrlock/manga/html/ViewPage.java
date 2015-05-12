@@ -80,7 +80,7 @@ public class ViewPage {
         mangaObject.append( this.maxImgs );
         mangaObject.append( "," );
         mangaObject.append( "chapterblock: " );
-        mangaObject.append( ( max - ( max % 10 ) ) / 10 );
+        mangaObject.append( ( max - max % 10 ) / 10 );
         mangaObject.append( "};" );
         head.appendElement( "script" ).text( mangaObject.toString() );
 
