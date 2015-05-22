@@ -6,7 +6,7 @@ import java.net.URL;
  * @author HerrLock
  */
 public abstract class Location {
-    private String path;
+    private final String path;
 
     public Location( String path ) {
         this.path = path;

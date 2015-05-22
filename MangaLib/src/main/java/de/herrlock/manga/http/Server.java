@@ -18,21 +18,6 @@ import java.util.Map.Entry;
  */
 public class Server extends ServerSocket implements Runnable {
 
-    public static void main( String[] args ) {
-        try ( Server server = new Server() ) {
-            Thread serverThread = new Thread( server );
-            serverThread.start();
-
-            server.registerLocation( new DefaultLocation() );
-            server.registerLocation( new AddLocation() );
-            server.registerLocation( new JQueryLocation() );
-
-            serverThread.join();
-        } catch ( IOException | InterruptedException ex ) {
-            throw new RuntimeException( ex );
-        }
-    }
-
     private final Map<String, Location> locations = new HashMap<>();
     private final Location _404Location = new NotFoundLocation();
 
