@@ -42,7 +42,7 @@ public class UtilsReadStream {
         return Arrays.asList( strings );
     }
 
-    public UtilsReadStream( String[] strings ) {
+    public UtilsReadStream( String... strings ) {
         this.string = join( strings );
     }
 

@@ -1,6 +1,7 @@
 
 dependencies {
 	compile 'org.jsoup:jsoup:1.8.2'
+	compile 'commons-io:commons-io:+'
 	compile files(System.properties.'java.home' + '/lib/jfxrt.jar')
 }
 

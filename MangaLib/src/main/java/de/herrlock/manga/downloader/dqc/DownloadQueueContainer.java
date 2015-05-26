@@ -1,13 +1,14 @@
 package de.herrlock.manga.downloader.dqc;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.imageio.ImageIO;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.util.Utils;
@@ -108,14 +110,11 @@ public final class DownloadQueueContainer {
             try {
                 URL imageURL = DownloadQueueContainer.this.clc.getImageLink( this.p.getURL() );
                 URLConnection con = Utils.getConnection( imageURL );
-                try ( InputStream in = con.getInputStream() ) {
-                    System.out.println( "start reading image " + imageURL );
-                    BufferedImage image = ImageIO.read( in );
-                    System.out.println( "read image " + imageURL );
-                    File outputFile = this.p.getTargetFile();
-                    ImageIO.write( image, "jpg", outputFile );
-                    System.out.println( "saved image to " + outputFile );
-                }
+                InputStream in = con.getInputStream();
+                File outputFile = this.p.getTargetFile();
+                System.out.println( "start reading image " + imageURL );
+                FileUtils.copyInputStreamToFile( in, outputFile );
+                System.out.println( "saved image to " + outputFile );
             } catch ( SocketException | SocketTimeoutException ex ) {
                 DownloadQueueContainer.this.add( this.p );
             } catch ( IOException ex ) {
