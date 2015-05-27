@@ -72,14 +72,11 @@ public class ViewPage {
         int max = Integer.parseInt( maxFile.getName() );
 
         StringBuilder mangaObject = new StringBuilder();
-        mangaObject.append( "var manga = {" );
-        mangaObject.append( "chapter: " );
+        mangaObject.append( "var manga={chapter: " );
         mangaObject.append( max );
-        mangaObject.append( "," );
-        mangaObject.append( "max_pages: " );
+        mangaObject.append( ",max_pages: " );
         mangaObject.append( this.maxImgs );
-        mangaObject.append( "," );
-        mangaObject.append( "chapterblock: " );
+        mangaObject.append( ",chapterblock: " );
         mangaObject.append( ( max - max % 10 ) / 10 );
         mangaObject.append( "};" );
         head.appendElement( "script" ).text( mangaObject.toString() );

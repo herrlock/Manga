@@ -14,7 +14,7 @@ public final class ConsoleDownloader extends MDownloader {
 
     private final Scanner sc;
 
-    public static void main( String[] args ) {
+    public static void main( String... args ) {
         execute();
     }
 

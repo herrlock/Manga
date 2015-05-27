@@ -29,11 +29,9 @@ public abstract class Response {
         StringBuilder sb = new StringBuilder();
         sb.append( "HTTP/1.1 " );
         sb.append( this.code );
-        sb.append( "\n" );
-        sb.append( "Content-Type: " );
+        sb.append( "\nContent-Type: " );
         sb.append( getCotentType() );
-        sb.append( "\n" );
-        sb.append( "Date: " );
+        sb.append( "\nDate: " );
         sb.append( new Date().toString() );
         sb.append( "\n\n" );
         sb.append( getData() );

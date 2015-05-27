@@ -12,7 +12,7 @@ import de.herrlock.javafx.scene.SceneContainer;
 
 public class MDGui extends AbstractApplication {
 
-    public static void main( String[] args ) {
+    public static void main( String... args ) {
         Application.launch( args );
     }
 

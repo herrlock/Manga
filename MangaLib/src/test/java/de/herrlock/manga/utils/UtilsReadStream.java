@@ -61,7 +61,8 @@ public class UtilsReadStream {
         if ( arr.length > 0 ) {
             StringBuilder sb = new StringBuilder( arr[0] );
             for ( int i = 1; i < arr.length; i++ ) {
-                sb.append( '\n' + arr[i] );
+                sb.append( '\n' );
+                sb.append( arr[i] );
             }
             return sb.toString();
         }

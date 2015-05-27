@@ -16,7 +16,7 @@ public final class Ctrl extends AbstractApplication {
 
     public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ctrl" );
 
-    public static void main( String[] args ) {
+    public static void main( String... args ) {
         Application.launch( args );
     }
 
