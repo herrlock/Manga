@@ -37,7 +37,8 @@ public final class ChapterListContainer {
         this.chapterlist = ChapterList.getInstance();
         String mangaName = this.chapterlist.getMangaName().toLowerCase( Locale.ENGLISH ).replace( ' ', '_' );
         String timestamp = new SimpleDateFormat( "YYMMddHHmmss", Locale.GERMAN ).format( new Date() );
-        this.path = new File( Constants.TARGET_FOLDER, mangaName + "_" + timestamp );
+        String mangaNameEscaped = mangaName.replaceAll( "[\\/:*?<>\"|]", "_" );
+        this.path = new File( Constants.TARGET_FOLDER, mangaNameEscaped + "_" + timestamp );
     }
 
     /**

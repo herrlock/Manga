@@ -99,7 +99,7 @@ public abstract class MDownloader {
             // start download
             this.dqc.downloadPages();
         } else {
-            throw new RuntimeException( chapterFolder + "does not exists and could not be created" );
+            throw new RuntimeException( chapterFolder + " does not exists and could not be created" );
         }
         System.out.println( "finished chapter " + key + "\n" );
     }
