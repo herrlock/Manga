@@ -1,10 +1,14 @@
-package de.herrlock.manga.http;
+package de.herrlock.manga.http.location;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
+import de.herrlock.manga.http.Response;
+import de.herrlock.manga.http.Server;
+import de.herrlock.manga.http.TextResponse;
 
 /**
  * @author HerrLock

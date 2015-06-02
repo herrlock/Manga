@@ -1,9 +1,12 @@
-package de.herrlock.manga.http;
+package de.herrlock.manga.http.location;
 
 import java.net.URL;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+
+import de.herrlock.manga.http.DocumentResponse;
+import de.herrlock.manga.http.Response;
 
 /**
  * @author HerrLock

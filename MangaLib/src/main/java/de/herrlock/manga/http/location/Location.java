@@ -1,6 +1,8 @@
-package de.herrlock.manga.http;
+package de.herrlock.manga.http.location;
 
 import java.net.URL;
+
+import de.herrlock.manga.http.Response;
 
 /**
  * @author HerrLock

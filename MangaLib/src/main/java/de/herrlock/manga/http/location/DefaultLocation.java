@@ -1,4 +1,4 @@
-package de.herrlock.manga.http;
+package de.herrlock.manga.http.location;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,6 +6,10 @@ import java.net.URL;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
+import de.herrlock.manga.http.DocumentResponse;
+import de.herrlock.manga.http.Response;
+import de.herrlock.manga.http.Server;
 
 /**
  * @author HerrLock

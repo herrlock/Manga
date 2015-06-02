@@ -13,6 +13,9 @@ import java.util.Map.Entry;
 
 import org.apache.commons.io.IOUtils;
 
+import de.herrlock.manga.http.location.Location;
+import de.herrlock.manga.http.location.NotFoundLocation;
+
 /**
  * @author HerrLock
  */

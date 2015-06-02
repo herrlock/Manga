@@ -1,8 +1,11 @@
-package de.herrlock.manga.http;
+package de.herrlock.manga.http.location;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import de.herrlock.manga.http.Response;
+import de.herrlock.manga.http.ServerException;
 
 /**
  * @author Jan Rau
