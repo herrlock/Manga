@@ -1,12 +1,87 @@
 <!DOCTYPE HTML>
 <html>
   <head>
+	<title>MangaLoader Web v.001</title>
     <meta charset="UTF-8"/>
     <script src="jquery.js"></script>
+	<script>
+		$(function(){
+			$(".eingabe").hide();
+			$("#eingabe1").show();
+			$("#selector").change(function(){
+				var auswahl = $(this).find("option:selected").index();
+				$(".eingabe").hide();
+				if(auswahl == 0) {
+					$("#eingabe1").show();
+				} else if(auswahl == 1) {
+					$("#eingabe2").show();
+				} else if(auswahl == 2) {
+					$("#eingabe3").show();
+				}
+			});
+		});
+	</script>
+	<style type="text/css">
+		html {
+			background-image: url('background.jpg');
+			background-repeat: no-repeat;
+			background-position:  top center;
+			background-size: 100%;
+		}
+		
+		form#auswahl {
+			position: absolute;
+			width: 300px;
+			left: calc(50% - 150px);
+			top: 50px;
+			background-color: lightgray;
+			padding: 15px;
+			border-radius: 15px;
+			opacity: 0.8;
+		}
+		
+		form.eingabe {
+			position: absolute;
+			width: 300px;
+			height: 150px;
+			left: calc(50% - 150px);
+			top: 105px;
+			background-color: lightgray;
+			padding: 15px;
+			border-radius: 15px;
+			opacity: 0.8;
+		}
+	</style>
   </head>
   <body>
     <br/>
-    <form action="/add">
+	<form id="auswahl">
+		<select id="selector" name="Download Typ">
+			<option selected>Standard</option>
+			<option>per JDownloader</option>
+			<option>als erzeugte HTML</option>
+		</select>
+	</form>
+    <form action="/add" class="eingabe" id="eingabe1">
+      <table>
+        <tr>
+          <td> <label for="url">URL: </label> </td>
+          <td> <input type="url" name="url"/> </td>
+        </tr>
+        <tr>
+          <td> <label for="proxyurl">Proxy-URL: </label> </td>
+          <td> <input type="url" name="proxyurl"/> </td>
+        </tr>
+        <tr>
+          <td> <label for="proxyport">Proxy-Port: </label> </td>
+          <td> <input type="number" min="0" max="65536" name="proxyport"/> </td>
+        </tr>
+      </table>
+      <br/>
+      <button type="reset">zur&#xFC;cksetzen</button>
+      <button type="submit">absenden</button>
+    </form>
+	<form action="/add" class="eingabe" id="eingabe2">
       <table>
         <tr>
           <td> <label for="url">URL: </label> </td>
@@ -23,6 +98,17 @@
         <tr>
           <td> <label for="proxyport">Proxy-Port: </label> </td>
           <td> <input type="number" min="0" max="65536" name="proxyport"/> </td>
+        </tr>
+      </table>
+      <br/>
+      <button type="reset">zur&#xFC;cksetzen</button>
+      <button type="submit">absenden</button>
+    </form>
+	<form action="/add" class="eingabe" id="eingabe3">
+      <table>
+        <tr>
+          <td> <label for="folder">Folder: </label> </td>
+          <td> <input type="text" name="folder"/> </td>
         </tr>
       </table>
       <br/>

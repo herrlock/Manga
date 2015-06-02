@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <script src="jquery.js"></script>
+  </head>
+  <body>
+    <br/>
+    <form action="/add">
+      <table>
+        <tr>
+          <td> <label for="url">URL: </label> </td>
+          <td> <input type="url" name="url"/> </td>
+        </tr>
+        <tr>
+          <td> <label for="folder">JD-Folder: </label> </td>
+          <td> <input type="text" name="folder"/> </td>
+        </tr>
+        <tr>
+          <td> <label for="proxyurl">Proxy-URL: </label> </td>
+          <td> <input type="url" name="proxyurl"/> </td>
+        </tr>
+        <tr>
+          <td> <label for="proxyport">Proxy-Port: </label> </td>
+          <td> <input type="number" min="0" max="65536" name="proxyport"/> </td>
+        </tr>
+      </table>
+      <br/>
+      <button type="reset">zur&#xFC;cksetzen</button>
+      <button type="submit">absenden</button>
+    </form>
+  </body>
+</html>
