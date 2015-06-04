@@ -9,6 +9,10 @@ import javax.swing.JOptionPane;
  */
 public final class ViewPageMain {
 
+    public static void main( String[] args ) {
+        execute();
+    }
+
     public static void execute() {
         String input = JOptionPane.showInputDialog( "Input the folder where the chapters are." );
         if ( input != null ) {
