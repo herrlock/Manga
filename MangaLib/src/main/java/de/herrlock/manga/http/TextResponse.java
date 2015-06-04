@@ -1,5 +1,7 @@
 package de.herrlock.manga.http;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * @author HerrLock
  */
@@ -29,8 +31,8 @@ public class TextResponse extends Response {
     }
 
     @Override
-    protected Object getData() {
-        return this.text;
+    public byte[] getData() {
+        return this.text.getBytes( StandardCharsets.UTF_8 );
     }
 
     @Override

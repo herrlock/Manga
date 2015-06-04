@@ -21,11 +21,10 @@ public abstract class Response {
         return this;
     }
 
-    protected abstract Object getData();
+    public abstract byte[] getData();
     protected abstract String getContentType();
 
-    @Override
-    public String toString() {
+    public String createHTTPHeader() {
         StringBuilder sb = new StringBuilder();
         sb.append( "HTTP/1.1 " );
         sb.append( this.code );
@@ -34,7 +33,6 @@ public abstract class Response {
         sb.append( "\nDate: " );
         sb.append( new Date().toString() );
         sb.append( "\n\n" );
-        sb.append( getData() );
         return sb.toString();
     }
 }

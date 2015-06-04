@@ -1,5 +1,7 @@
 package de.herrlock.manga.http;
 
+import java.nio.charset.StandardCharsets;
+
 import org.jsoup.nodes.Document;
 
 /**
@@ -31,8 +33,8 @@ public class DocumentResponse extends Response {
     }
 
     @Override
-    protected Object getData() {
-        return this.document;
+    public byte[] getData() {
+        return this.document.toString().getBytes( StandardCharsets.UTF_8 );
     }
 
     @Override

@@ -1,7 +1,7 @@
 package de.herrlock.manga.http.location;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
@@ -21,16 +21,16 @@ public class BackgroundImageLocation extends Location {
     @Override
     public Response handleXHR( URL url ) {
         try {
-            final StringWriter writer = new StringWriter();
-            IOUtils.copy( Server.class.getResourceAsStream( "background.jpg" ), writer );
+            final ByteArrayOutputStream out = new ByteArrayOutputStream();
+            IOUtils.copy( Server.class.getResourceAsStream( "background.jpg" ), out );
             return new Response() {
                 {
                     setCode( 200 );
                 }
 
                 @Override
-                protected Object getData() {
-                    return writer.toString();
+                public byte[] getData() {
+                    return out.toByteArray();
                 }
 
                 @Override

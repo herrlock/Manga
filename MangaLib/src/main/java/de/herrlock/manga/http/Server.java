@@ -44,9 +44,10 @@ public class Server extends ServerSocket implements Runnable {
                     String[] split = requestPart.split( " ", 3 );
                     URL url = new URL( "http://localhost" + split[1] );
 
-                    Response result = handleXHR( url );
+                    Response res = handleXHR( url );
                     try ( OutputStream out = socket.getOutputStream() ) {
-                        IOUtils.write( result.toString(), out );
+                        IOUtils.write( res.createHTTPHeader(), out );
+                        IOUtils.write( res.getData(), out );
                     }
                 }
             }
