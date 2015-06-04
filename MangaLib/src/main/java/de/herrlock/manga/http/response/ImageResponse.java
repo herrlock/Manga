@@ -14,8 +14,6 @@ import org.apache.commons.io.IOUtils;
  */
 public class ImageResponse extends Response {
     private byte[] bytes;
-    // TODO: change contenttype
-    private final String contentType = "image/jpg";
 
     public ImageResponse( InputStream imageStream ) throws IOException {
         super( 200 );
@@ -28,6 +26,7 @@ public class ImageResponse extends Response {
             this.bytes = out.toByteArray();
         }
     }
+
     public ImageResponse( ByteArrayOutputStream out ) {
         super( 200 );
         this.bytes = out.toByteArray();
@@ -40,6 +39,6 @@ public class ImageResponse extends Response {
 
     @Override
     protected String getContentType() {
-        return this.contentType;
+        return "image";
     }
 }
