@@ -1,4 +1,4 @@
-package de.herrlock.manga.http;
+package de.herrlock.manga.http.response;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

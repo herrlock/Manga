@@ -15,6 +15,8 @@ import org.apache.commons.io.IOUtils;
 
 import de.herrlock.manga.http.location.Location;
 import de.herrlock.manga.http.location.NotFoundLocation;
+import de.herrlock.manga.http.response.Response;
+import de.herrlock.manga.http.response.ServerExceptionResponse;
 
 /**
  * @author HerrLock

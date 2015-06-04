@@ -1,4 +1,4 @@
-package de.herrlock.manga.http;
+package de.herrlock.manga.http.response;
 
 import java.nio.charset.StandardCharsets;
 

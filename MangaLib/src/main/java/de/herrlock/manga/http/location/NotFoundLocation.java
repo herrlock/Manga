@@ -5,8 +5,8 @@ import java.net.URL;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import de.herrlock.manga.http.DocumentResponse;
-import de.herrlock.manga.http.Response;
+import de.herrlock.manga.http.response.DocumentResponse;
+import de.herrlock.manga.http.response.Response;
 
 /**
  * @author HerrLock

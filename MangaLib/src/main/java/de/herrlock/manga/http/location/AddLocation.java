@@ -4,8 +4,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.herrlock.manga.http.Response;
 import de.herrlock.manga.http.ServerException;
+import de.herrlock.manga.http.response.Response;
 
 /**
  * @author Jan Rau

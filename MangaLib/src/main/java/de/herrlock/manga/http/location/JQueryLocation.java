@@ -6,9 +6,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-import de.herrlock.manga.http.Response;
 import de.herrlock.manga.http.Server;
 import de.herrlock.manga.http.TextResponse;
+import de.herrlock.manga.http.response.Response;
 
 /**
  * @author HerrLock

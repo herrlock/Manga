@@ -2,7 +2,7 @@ package de.herrlock.manga.http.location;
 
 import java.net.URL;
 
-import de.herrlock.manga.http.Response;
+import de.herrlock.manga.http.response.Response;
 
 /**
  * @author HerrLock

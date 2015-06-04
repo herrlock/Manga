@@ -1,4 +1,4 @@
-package de.herrlock.manga.http;
+package de.herrlock.manga.http.response;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -13,20 +13,15 @@ public class ImageResponse extends Response {
     private byte[] bytes;
     private String contentType = "image/jpg";
 
-    public ImageResponse( InputStream imageStream ) {
+    public ImageResponse( InputStream imageStream ) throws IOException {
         super( 200 );
         if ( imageStream == null ) {
             setCode( 404 );
             this.bytes = "ImageNotFound".getBytes( UTF_8 );
         } else {
-            try {
-                final ByteArrayOutputStream out = new ByteArrayOutputStream();
-                IOUtils.copy( imageStream, out );
-                this.bytes = out.toByteArray();
-            } catch ( IOException ex ) {
-                this.bytes = ex.getMessage().getBytes( UTF_8 );
-                setCode( 500 );
-            }
+            final ByteArrayOutputStream out = new ByteArrayOutputStream();
+            IOUtils.copy( imageStream, out );
+            this.bytes = out.toByteArray();
         }
     }
     public ImageResponse( ByteArrayOutputStream out ) {
