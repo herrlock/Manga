@@ -1,7 +1,9 @@
 package de.herrlock.manga.http.location;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Random;
 
 import de.herrlock.manga.http.Server;
 import de.herrlock.manga.http.ServerException;
@@ -20,9 +22,31 @@ public class BackgroundImageLocation extends Location {
     @Override
     public Response handleXHR( URL url ) {
         try {
-            return new ImageResponse( Server.class.getResourceAsStream( "background.jpg" ) );
+            return new ImageResponse( Image.getRandom().getStream() );
         } catch ( IOException ex ) {
             throw new ServerException( ex );
+        }
+    }
+
+    static enum Image {
+        NAUSICAA( "nausicaä.jpg" );
+
+        private static final Random RANDOM = new Random();
+        private final String filename;
+
+        private Image( String filename ) {
+            this.filename = filename;
+        }
+
+        public static Image getRandom() {
+            Image[] values = Image.values();
+            int length = values.length;
+            int rnd = RANDOM.nextInt( length );
+            return values[rnd];
+        }
+
+        public InputStream getStream() {
+            return Server.class.getResourceAsStream( this.filename );
         }
     }
 }
