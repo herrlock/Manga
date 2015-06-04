@@ -187,9 +187,11 @@ public class ViewPage {
             Element imgblock = rDiv.appendElement( "div" ).attr( "id", "IMGBlock" + i ).attr( "class", "IMGBlock" );
             imgblock.appendElement( "h2" ).text( ( i < 10 ? "0" : "" ) + i );
 
-            Element imgdiv = imgblock.appendElement( "div" ).attr( "style", "text-align:center" ).attr( "class", "center" );
+            Element imgdiv = imgblock.appendElement( "div" ).attr( "class", "center" );
             imgdiv.appendElement( "img" ).attr( "id", "page" + i ).attr( "class", "image" ).attr( "src", "null.jpg" )
                 .attr( "alt", "null" + i + ".jpg" );
+
+            imgblock.appendElement( "hr" ).attr( "class", "separator" );
         }
         // endlink - load next chapter
         rDiv.appendElement( "h1" ).attr( "id", "endlink" ).text( "Link to the next chapter" );
