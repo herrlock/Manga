@@ -9,9 +9,13 @@ import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 
+/**
+ * @author HerrLock
+ */
 public class ImageResponse extends Response {
     private byte[] bytes;
-    private String contentType = "image/jpg";
+    // TODO: change contenttype
+    private final String contentType = "image/jpg";
 
     public ImageResponse( InputStream imageStream ) throws IOException {
         super( 200 );

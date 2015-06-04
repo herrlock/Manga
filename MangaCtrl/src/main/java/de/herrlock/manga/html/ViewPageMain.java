@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
  */
 public final class ViewPageMain {
 
-    public static void main( String[] args ) {
+    public static void main( String... args ) {
         execute();
     }
 
