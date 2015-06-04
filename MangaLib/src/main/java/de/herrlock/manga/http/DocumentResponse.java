@@ -36,7 +36,7 @@ public class DocumentResponse extends Response {
     }
 
     @Override
-    protected String getCotentType() {
+    protected String getContentType() {
         return "text/html";
     }
 

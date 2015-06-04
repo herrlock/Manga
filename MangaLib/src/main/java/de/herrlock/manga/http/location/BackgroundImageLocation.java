@@ -34,7 +34,7 @@ public class BackgroundImageLocation extends Location {
                 }
 
                 @Override
-                protected String getCotentType() {
+                protected String getContentType() {
                     return "image/jpg";
                 }
             };

@@ -22,7 +22,7 @@ public abstract class Response {
     }
 
     protected abstract Object getData();
-    protected abstract String getCotentType();
+    protected abstract String getContentType();
 
     @Override
     public String toString() {
@@ -30,7 +30,7 @@ public abstract class Response {
         sb.append( "HTTP/1.1 " );
         sb.append( this.code );
         sb.append( "\nContent-Type: " );
-        sb.append( getCotentType() );
+        sb.append( getContentType() );
         sb.append( "\nDate: " );
         sb.append( new Date().toString() );
         sb.append( "\n\n" );
