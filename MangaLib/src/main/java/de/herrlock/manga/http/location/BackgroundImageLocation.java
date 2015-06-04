@@ -1,10 +1,6 @@
 package de.herrlock.manga.http.location;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.net.URL;
-
-import org.apache.commons.io.IOUtils;
 
 import de.herrlock.manga.http.ImageResponse;
 import de.herrlock.manga.http.Response;
@@ -21,13 +17,6 @@ public class BackgroundImageLocation extends Location {
 
     @Override
     public Response handleXHR( URL url ) {
-        try {
-            final ByteArrayOutputStream out = new ByteArrayOutputStream();
-            IOUtils.copy( Server.class.getResourceAsStream( "background.jpg" ), out );
-            return new ImageResponse( out );
-
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
-        }
+        return new ImageResponse( Server.class.getResourceAsStream( "background.jpg" ) );
     }
 }
