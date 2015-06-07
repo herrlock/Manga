@@ -6,113 +6,48 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import de.herrlock.exceptions.InitializeException;
-import de.herrlock.manga.connection.ConnectionFactory;
-import de.herrlock.manga.connection.DirectConnectionFactory;
-import de.herrlock.manga.connection.ProxyConnectionFactory;
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 public final class Utils {
 
     /**
-     * the required properties
-     */
-    private static final List<String> requiredParameters = Collections.unmodifiableList( Arrays.asList( Constants.PARAM_URL ) );
-
-    /**
-     * the current arguments
-     */
-    private static Map<String, String> arguments;
-    /**
-     * the active ConnectionFactory
-     */
-    private static ConnectionFactory conFactory;
-
-    /**
-     * @return the current arguments
-     */
-    public static Map<String, String> getArguments() {
-        if ( arguments == null ) {
-            throw new RuntimeException( "arguments not yet initialized" );
-        }
-        return arguments;
-    }
-
-    /**
-     * sets {@link Utils#arguments} to the values from the given {@link Properties}<br>
-     * validates the properties for required parameters, in case a required parameter is missing en exception is thrown
-     * 
-     * @param p
-     *            the Properties to set as current arguments
-     */
-    public static void setArguments( Properties p ) {
-        // check arguments for required parameters
-        for ( String s : requiredParameters ) {
-            String value = p.getProperty( s );
-            if ( value == null || "".equals( value ) ) {
-                throw new InitializeException( "The required property \"" + s + "\" is missing" );
-            }
-        }
-
-        // copy Properties to Map
-        Map<String, String> m = new ConcurrentHashMap<>();
-        for ( String s : p.stringPropertyNames() ) {
-            m.put( s, p.getProperty( s ) );
-        }
-        arguments = Collections.unmodifiableMap( m );
-
-        // create a new ConnectionFactory depending on the proxy-parameters
-        String host = m.get( Constants.PARAM_PROXY_HOST );
-        String port = m.get( Constants.PARAM_PROXY_PORT );
-        String timeout = m.get( Constants.PARAM_TIMEOUT );
-        boolean proxyHostAvailabile = host != null && !"".equals( host );
-        boolean proxyPortAvailabile = port != null && !"".equals( port );
-        if ( proxyHostAvailabile && proxyPortAvailabile ) {
-            conFactory = new ProxyConnectionFactory( timeout, host, port );
-        } else {
-            conFactory = new DirectConnectionFactory( timeout );
-        }
-    }
-
-    /**
      * creates a connection
      * 
-     * @param url
-     *            the url to create a connection from
+     * @param conf
+     *            the DOwnloadonfiguration to create a connection from
      * @return a {@link URLConnection} from the given {@link URL}
      * @throws IOException
      *             if an I/O exception occurs.
-     * @see ConnectionFactory#getConnection(URL)
      */
-    public static URLConnection getConnection( URL url ) throws IOException {
-        return conFactory.getConnection( url );
+    public static URLConnection getConnection( URL url, DownloadConfiguration conf ) throws IOException {
+        final Proxy proxy = conf.getProxy();
+        final URLConnection con = url.openConnection( proxy );
+        con.setConnectTimeout( Constants.PARAM_TIMEOUT_DEFAULT );
+        con.setReadTimeout( 2 * Constants.PARAM_TIMEOUT_DEFAULT );
+        return con;
     }
 
     /**
      * fetches data from the given URL and parses it to a {@link Document}
      * 
-     * @param url
-     *            the URL to read from
+     * @param conf
+     *            the conf with the URL to read from
      * @return a document, parsed from the given URL
      * @throws IOException
      */
-    public static Document getDocument( URL url ) throws IOException {
-        URLConnection con = getConnection( url );
+    public static Document getDocument( URL url, DownloadConfiguration conf ) throws IOException {
+        URLConnection con = getConnection( url, conf );
         List<String> list = readStream( con.getInputStream() );
         StringBuilder sb = new StringBuilder();
         for ( String s : list ) {
@@ -157,36 +92,6 @@ public final class Utils {
                 pw.println( s );
             }
         }
-    }
-
-    /**
-     * returns the URL from the current arguments, optional appended to {@code http://}
-     * 
-     * @return a proper URL
-     * @throws RuntimeException
-     *             in case of a {@link MalformedURLException}
-     */
-    public static URL getMangaURL() {
-        try {
-            String _url = arguments.get( Constants.PARAM_URL );
-            if ( !_url.startsWith( "http" ) ) {
-                // prepend http://, in case it is not present
-                _url = "http://" + _url;
-            }
-            return new URL( _url );
-        } catch ( MalformedURLException ex ) {
-            throw new RuntimeException( ex );
-        }
-    }
-
-    /**
-     * gets the pattern from the current arguments
-     * 
-     * @return the entry with the key from {@link Constants#PARAM_PATTERN} (
-     *         {@value de.herrlock.manga.util.Constants#PARAM_PATTERN})
-     */
-    public static String getPattern() {
-        return arguments.get( Constants.PARAM_PATTERN );
     }
 
     /**

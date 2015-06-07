@@ -33,13 +33,9 @@ public final class Constants {
      */
     public static final int PARAM_TIMEOUT_DEFAULT = 5_000;
     /**
-     * the name of the property for setting the proxy-host
+     * the name of the property for setting the proxy-url
      */
-    public static final String PARAM_PROXY_HOST = "proxyHost";
-    /**
-     * the name of the property for setting the proxy-port
-     */
-    public static final String PARAM_PROXY_PORT = "proxyPort";
+    public static final String PARAM_PROXY = "proxy";
 
     /**
      * the default location to save the downloads into
