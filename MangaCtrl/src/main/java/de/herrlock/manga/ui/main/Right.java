@@ -22,7 +22,7 @@ class Right extends NodeContainer {
         for ( int y = 0; y < values.length; y++ ) {
             String hostname = values[y].getName();
             hostGrid.add( new Text( hostname ), 0, y );
-            String hosturl = values[y].getURL().getHost().substring( 4 );
+            String hosturl = values[y].getUrl().getHost().substring( 4 );
             hostGrid.add( new Text( hosturl ), 1, y );
         }
 

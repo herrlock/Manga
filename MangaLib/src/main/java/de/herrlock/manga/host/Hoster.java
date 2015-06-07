@@ -53,7 +53,7 @@ public enum Hoster {
         }
     }
 
-    public URL getURL() {
+    public URL getUrl() {
         return this.url;
     }
 
