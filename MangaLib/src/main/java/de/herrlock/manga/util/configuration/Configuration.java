@@ -36,8 +36,7 @@ public abstract class Configuration {
         String proxyHost = proxyUrl.getHost();
         int proxyPort = proxyUrl.getPort();
         InetSocketAddress sa = new InetSocketAddress( proxyHost, proxyPort );
-        Proxy proxy = new Proxy( Proxy.Type.HTTP, sa );
-        return proxy;
+        return new Proxy( Proxy.Type.HTTP, sa );
     }
 
     protected static ChapterPattern _createPattern( Properties p ) {
@@ -47,5 +46,9 @@ public abstract class Configuration {
     protected static File _createFolderwatch( Properties p ) {
         String fwPath = p.getProperty( Constants.PARAM_JDFW );
         return new File( fwPath );
+    }
+
+    protected Configuration() {
+        // not used directly
     }
 }

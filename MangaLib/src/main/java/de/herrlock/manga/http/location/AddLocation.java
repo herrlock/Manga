@@ -55,7 +55,7 @@ public class AddLocation extends Location {
     private static final class SimpleDownloaderThread extends Thread {
         private final DownloadConfiguration conf;
 
-        private SimpleDownloaderThread( DownloadConfiguration conf ) {
+        SimpleDownloaderThread( DownloadConfiguration conf ) {
             this.conf = conf;
         }
 

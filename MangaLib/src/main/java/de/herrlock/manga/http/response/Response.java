@@ -10,7 +10,7 @@ import java.util.Map.Entry;
  */
 public abstract class Response {
     private int code;
-    private Map<String, String> header = new HashMap<>();
+    private final Map<String, String> header = new HashMap<>();
 
     public Response() {
         this( -1 );
