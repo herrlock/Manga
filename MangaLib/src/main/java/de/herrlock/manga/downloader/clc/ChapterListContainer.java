@@ -11,6 +11,7 @@ import java.util.Map;
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
  * a container-class for the class {@link ChapterList}. also knows the folder where to save the pages into
@@ -30,11 +31,13 @@ public final class ChapterListContainer {
     /**
      * creates a container for the ChapterList
      * 
+     * @param conf
+     *            the {@link DownloadConfiguration} to use
      * @throws IOException
      * @see ChapterList#getInstance()
      */
-    public ChapterListContainer() throws IOException {
-        this.chapterlist = ChapterList.getInstance();
+    public ChapterListContainer( DownloadConfiguration conf ) throws IOException {
+        this.chapterlist = ChapterList.getInstance( conf );
         String mangaName = this.chapterlist.getMangaName().toLowerCase( Locale.ENGLISH ).replace( ' ', '_' );
         String timestamp = new SimpleDateFormat( "YYMMddHHmmss", Locale.GERMAN ).format( new Date() );
         String mangaNameEscaped = mangaName.replaceAll( "[\\/:*?<>\"|]", "_" );

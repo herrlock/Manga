@@ -75,11 +75,7 @@ public class MDGuiController {
         {
             String proxy = proxyProperty.getValueSafe();
             if ( !"".equals( proxy ) ) {
-                int lastIndex = proxy.lastIndexOf( ':' );
-                String proxyHost = proxy.substring( 0, lastIndex );
-                String proxyPort = proxy.substring( lastIndex + 1, proxy.length() );
-                p.put( Constants.PARAM_PROXY_HOST, proxyHost );
-                p.put( Constants.PARAM_PROXY_PORT, proxyPort );
+                p.put( Constants.PARAM_PROXY, proxy );
             }
         }
         {

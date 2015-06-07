@@ -5,15 +5,17 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 import de.herrlock.manga.ui.main.MDGuiController;
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 public final class GUIDownloader extends MDownloader {
 
     public static void execute() {
         Properties p = MDGuiController.getProperties();
-        new GUIDownloader( p ).run();
+        DownloadConfiguration conf = DownloadConfiguration.create( p );
+        new GUIDownloader( conf ).run();
     }
 
-    protected GUIDownloader( Properties p ) {
+    protected GUIDownloader( DownloadConfiguration p ) {
         super( p );
     }
 

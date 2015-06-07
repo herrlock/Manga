@@ -21,6 +21,7 @@ import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.ui.main.MDGuiController;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
+import de.herrlock.manga.util.configuration.JDConfiguration;
 
 public class JDExport extends MDownloader {
 
@@ -50,12 +51,13 @@ public class JDExport extends MDownloader {
         if ( jdhome == null || jdhome.trim().isEmpty() ) {
             throw new InitializeException( "\"" + Constants.PARAM_JDFW + "\" must be set" );
         }
-        new JDExport( p ).run();
+        JDConfiguration conf = JDConfiguration.create( p );
+        new JDExport( conf ).run();
     }
 
-    public JDExport( Properties p ) {
-        super( p );
-        this.jdfwFolder = new File( p.getProperty( Constants.PARAM_JDFW ) );
+    public JDExport( JDConfiguration conf ) {
+        super( conf );
+        this.jdfwFolder = conf.getFolderwatch();
         if ( !( this.jdfwFolder.exists() || this.jdfwFolder.mkdir() ) ) {
             throw new RuntimeException( this.jdfwFolder + " does not exist and could not be created" );
         }

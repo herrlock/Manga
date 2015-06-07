@@ -8,6 +8,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 public final class ConsoleDownloader extends MDownloader {
 
@@ -24,11 +25,12 @@ public final class ConsoleDownloader extends MDownloader {
         } catch ( IOException ex ) {
             throw new RuntimeException( ex );
         }
-        new ConsoleDownloader( p, System.in ).run();
+        DownloadConfiguration conf = DownloadConfiguration.create( p );
+        new ConsoleDownloader( conf, System.in ).run();
     }
 
-    protected ConsoleDownloader( Properties p, InputStream in ) {
-        super( p );
+    protected ConsoleDownloader( DownloadConfiguration conf, InputStream in ) {
+        super( conf );
         this.sc = new Scanner( in, "UTF-8" );
     }
 

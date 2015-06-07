@@ -8,6 +8,7 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 public final class DialogDownloader extends MDownloader {
 
@@ -20,11 +21,12 @@ public final class DialogDownloader extends MDownloader {
             throw new RuntimeException( ex );
         }
         // properties loaded successful
-        new DialogDownloader( p ).run();
+        DownloadConfiguration conf = DownloadConfiguration.create( p );
+        new DialogDownloader( conf ).run();
     }
 
-    protected DialogDownloader( Properties p ) {
-        super( p );
+    protected DialogDownloader( DownloadConfiguration conf ) {
+        super( conf );
     }
 
     @Override

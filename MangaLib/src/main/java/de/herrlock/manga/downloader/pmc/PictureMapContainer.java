@@ -17,8 +17,8 @@ public final class PictureMapContainer {
     /**
      * a {@link Map} containing the {@link URL}s of all the pages
      */
-    final Map<String, Map<Integer, URL>> picturemap;
-    final ChapterListContainer clc;
+    private final Map<String, Map<Integer, URL>> picturemap;
+    private final ChapterListContainer clc;
 
     public PictureMapContainer( ChapterListContainer clc ) {
         this.clc = clc;
@@ -51,6 +51,14 @@ public final class PictureMapContainer {
         return noOfPictures;
     }
 
+    void addEntry( String number, Map<Integer, URL> pageMap ) {
+        this.picturemap.put( number, pageMap );
+    }
+
+    Map<Integer, URL> getAllPageURLs( Chapter chapter ) throws IOException {
+        return this.clc.getAllPageURLs( chapter );
+    }
+
     /**
      * A Thread to add all pages of a chapter to the surrounding PictureMapContainer
      * 
@@ -67,7 +75,7 @@ public final class PictureMapContainer {
         @Override
         public void run() {
             Map<Integer, URL> pageMap = getMap();
-            PictureMapContainer.this.picturemap.put( this.chapter.getNumber(), pageMap );
+            PictureMapContainer.this.addEntry( this.chapter.getNumber(), pageMap );
             System.out.println( this.chapter );
         }
 
@@ -79,7 +87,7 @@ public final class PictureMapContainer {
         private Map<Integer, URL> getMap() {
             Map<Integer, URL> allPages;
             try {
-                allPages = PictureMapContainer.this.clc.getAllPageURLs( this.chapter );
+                allPages = PictureMapContainer.this.getAllPageURLs( this.chapter );
             } catch ( SocketTimeoutException stex ) {
                 System.out.println( "read timed out (chapter " + this.chapter.getNumber() + "), trying again" );
                 allPages = getMap();

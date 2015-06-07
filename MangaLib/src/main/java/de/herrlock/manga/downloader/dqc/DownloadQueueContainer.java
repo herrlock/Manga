@@ -18,14 +18,17 @@ import org.apache.commons.io.FileUtils;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.util.Utils;
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 public final class DownloadQueueContainer {
 
     private final List<Page> dlQueue = new ArrayList<>();
-    final ChapterListContainer clc;
+    private final ChapterListContainer clc;
+    private final DownloadConfiguration conf;
 
-    public DownloadQueueContainer( ChapterListContainer clc ) {
+    public DownloadQueueContainer( ChapterListContainer clc, DownloadConfiguration conf ) {
         this.clc = clc;
+        this.conf = conf;
     }
 
     /**
@@ -86,6 +89,14 @@ public final class DownloadQueueContainer {
         }
     }
 
+    URL getImageLink( URL pageUrl ) throws IOException {
+        return this.clc.getImageLink( pageUrl );
+    }
+
+    URLConnection getConnection( URL url ) throws IOException {
+        return Utils.getConnection( url, this.conf );
+    }
+
     /**
      * A Thread to download one image
      * 
@@ -105,8 +116,8 @@ public final class DownloadQueueContainer {
         @Override
         public void run() {
             try {
-                URL imageURL = DownloadQueueContainer.this.clc.getImageLink( this.p.getURL() );
-                URLConnection con = Utils.getConnection( imageURL );
+                URL imageURL = DownloadQueueContainer.this.getImageLink( this.p.getURL() );
+                URLConnection con = getConnection( imageURL );
                 InputStream in = con.getInputStream();
                 File outputFile = this.p.getTargetFile();
                 System.out.println( "start reading image " + imageURL );
