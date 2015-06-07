@@ -11,15 +11,16 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import de.herrlock.manga.util.Utils;
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 final class PureManga extends ChapterList {
     private static final long serialVersionUID = 1L;
 
     private final String name;
 
-    public PureManga( URL url ) throws IOException {
-        super();
-        Document document = Utils.getDocument( url );
+    public PureManga( URL url, DownloadConfiguration conf ) throws IOException {
+        super( conf );
+        Document document = Utils.getDocument( url, conf );
 
         this.name = document.select( "#content h2.titlebg" ).first().text();
 
@@ -44,14 +45,14 @@ final class PureManga extends ChapterList {
 
     @Override
     public URL imgLink( URL url ) throws IOException {
-        String src = Utils.getDocument( url ).select( "#page>.inner>a>img" ).first().attr( "src" );
+        String src = Utils.getDocument( url, this.conf ).select( "#page>.inner>a>img" ).first().attr( "src" );
         return new URL( url, src );
     }
 
     @Override
     protected Map<Integer, URL> _getAllPageURLs( URL url ) throws IOException {
         Map<Integer, URL> result = new ConcurrentHashMap<>();
-        Elements li = Utils.getDocument( url ).select( ".dropdown_right>ul>li" );
+        Elements li = Utils.getDocument( url, this.conf ).select( ".dropdown_right>ul>li" );
         for ( Element e : li ) {
             Element link = e.getElementsByTag( "a" ).first();
             int number = Integer.parseInt( link.text().substring( 6 ) );

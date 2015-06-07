@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
+
 /**
  * all defined Hoster
  * 
@@ -16,20 +18,20 @@ import java.util.regex.Pattern;
 public enum Hoster {
     MANGAPANDA( "Mangapanda", "http://www.mangapanda.com/" ) {
         @Override
-        public ChapterList getChapterList( URL mangaUrl ) throws IOException {
-            return new MangaPanda( mangaUrl );
+        public ChapterList getChapterList( URL mangaUrl, DownloadConfiguration conf ) throws IOException {
+            return new MangaPanda( mangaUrl, conf );
         }
     },
     PUREMANGA( "Pure-Manga", "http://www.pure-manga.org/" ) {
         @Override
-        public ChapterList getChapterList( URL mangaUrl ) throws IOException {
-            return new PureManga( mangaUrl );
+        public ChapterList getChapterList( URL mangaUrl, DownloadConfiguration conf ) throws IOException {
+            return new PureManga( mangaUrl, conf );
         }
     },
     MANGAFOX( "Mangafox", "http://www.mangafox.me/" ) {
         @Override
-        public ChapterList getChapterList( URL mangaUrl ) throws IOException {
-            return new MangaFox( mangaUrl );
+        public ChapterList getChapterList( URL mangaUrl, DownloadConfiguration conf ) throws IOException {
+            return new MangaFox( mangaUrl, conf );
         }
     };
 
@@ -68,7 +70,7 @@ public enum Hoster {
      * @throws IOException
      *             thrown by the constructors of the special ChapterList-implementations
      */
-    public abstract ChapterList getChapterList( URL mangaUrl ) throws IOException;
+    public abstract ChapterList getChapterList( URL mangaUrl, DownloadConfiguration conf ) throws IOException;
 
     /**
      * checks all Hoster for the one that matches the given URL

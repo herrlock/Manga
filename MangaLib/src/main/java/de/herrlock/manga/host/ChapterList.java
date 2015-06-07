@@ -6,12 +6,11 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import de.herrlock.exceptions.InitializeException;
 import de.herrlock.manga.host.ChapterList.Chapter;
-import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.ChapterPattern;
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
  * A class the consists of multiple Chapters
@@ -21,6 +20,7 @@ import de.herrlock.manga.util.ChapterPattern;
 public abstract class ChapterList extends ArrayList<Chapter> {
 
     private final ChapterPattern cp;
+    protected final DownloadConfiguration conf;
 
     /**
      * creates an instance of {@linkplain ChapterList}, gets the right {@linkplain Hoster} from the {@linkplain URL} in
@@ -30,24 +30,25 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @throws IOException
      *             thrown by {@link Hoster#getChapterList(URL)}
      */
-    public static ChapterList getInstance() throws IOException {
-        URL url = Utils.getMangaURL();
+    public static ChapterList getInstance( DownloadConfiguration conf ) throws IOException {
+        URL url = conf.getUrl();
         Hoster h = Hoster.getHostByURL( url );
         if ( h == null ) {
             throw new InitializeException( url + " could not be resolved to a registered host." );
         }
-        return h.getChapterList( url );
+        return h.getChapterList( url, conf );
     }
 
     /**
      * creates a new ChapterList. reads the ChapterPattern from the central arguments in Utils
      */
-    protected ChapterList() {
-        String pattern = Utils.getPattern();
-        boolean patternIsEmpty = pattern == null || "".equals( pattern );
-        this.cp = patternIsEmpty ? null : new ChapterPattern( pattern );
+    protected ChapterList( DownloadConfiguration conf ) {
+        this.conf = conf;
+        ChapterPattern pattern = conf.getPattern();
+        String patternText = pattern.getPatternText();
+        boolean patternIsEmpty = patternText == null || "".equals( patternText );
+        this.cp = patternIsEmpty ? null : pattern;
     }
-
     /**
      * adds a chapter to this list if the ChapterPattern is null (none defined) or the given number is contained in the
      * ChapterPattern

@@ -11,15 +11,16 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import de.herrlock.manga.util.Utils;
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 final class MangaFox extends ChapterList {
     private static final long serialVersionUID = 1L;
 
     private final String name;
 
-    public MangaFox( URL url ) throws IOException {
-        super();
-        Document document = Utils.getDocument( url );
+    public MangaFox( URL url, DownloadConfiguration conf ) throws IOException {
+        super( conf );
+        Document document = Utils.getDocument( url, conf );
 
         this.name = document.select( "#series_info>.cover>img" ).first().attr( "alt" );
 
@@ -48,14 +49,14 @@ final class MangaFox extends ChapterList {
 
     @Override
     public URL imgLink( URL url ) throws IOException {
-        String src = Utils.getDocument( url ).getElementById( "image" ).attr( "src" );
+        String src = Utils.getDocument( url, this.conf ).getElementById( "image" ).attr( "src" );
         return new URL( url, src );
     }
 
     @Override
     protected Map<Integer, URL> _getAllPageURLs( URL url ) throws IOException {
         Map<Integer, URL> result = new ConcurrentHashMap<>();
-        Elements pages = Utils.getDocument( url ).select( "select.m" ).first().getElementsByTag( "option" );
+        Elements pages = Utils.getDocument( url, this.conf ).select( "select.m" ).first().getElementsByTag( "option" );
         Element last = pages.last();
         if ( "Comments".equals( last.text() ) ) {
             pages.remove( last );

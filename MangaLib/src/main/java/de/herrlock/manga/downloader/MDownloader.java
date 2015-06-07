@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import de.herrlock.exceptions.InitializeException;
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
@@ -15,6 +14,7 @@ import de.herrlock.manga.downloader.dqc.DownloadQueueContainer;
 import de.herrlock.manga.downloader.pmc.PictureMapContainer;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 public abstract class MDownloader {
 
@@ -26,21 +26,19 @@ public abstract class MDownloader {
      * creates a new Downloader. this constructor initializes the ChapterListContainer, the PictureMapContainer and the
      * DownloadQueueContainer
      * 
-     * @param p
-     *            the Properties to work with
+     * @param conf
+     *            the Configuration to use
      */
-    public MDownloader( Properties p ) {
-        Utils.setArguments( p );
-        System.out.println( Utils.getMangaURL() );
+    public MDownloader( DownloadConfiguration conf ) {
+        System.out.println( conf.getUrl() );
         try {
-            this.clc = new ChapterListContainer();
+            this.clc = new ChapterListContainer( conf );
         } catch ( IOException ex ) {
             throw new InitializeException( ex );
         }
         this.pmc = new PictureMapContainer( this.clc );
-        this.dqc = new DownloadQueueContainer( this.clc );
+        this.dqc = new DownloadQueueContainer( this.clc, conf );
     }
-
     protected abstract void run();
 
     /**
