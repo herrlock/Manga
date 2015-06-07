@@ -106,7 +106,7 @@ public final class DownloadQueueContainer {
         private final Page p;
 
         public DownloadThread( Page p ) {
-            Utils.trace( "new DownloadThread( " + p.getURL() + " )" );
+            Utils.trace( "new DownloadThread( " + p.getUrl() + " )" );
             this.p = p;
         }
 
@@ -116,7 +116,7 @@ public final class DownloadQueueContainer {
         @Override
         public void run() {
             try {
-                URL imageURL = DownloadQueueContainer.this.getImageLink( this.p.getURL() );
+                URL imageURL = DownloadQueueContainer.this.getImageLink( this.p.getUrl() );
                 URLConnection con = getConnection( imageURL );
                 InputStream in = con.getInputStream();
                 File outputFile = this.p.getTargetFile();
@@ -128,7 +128,7 @@ public final class DownloadQueueContainer {
             } catch ( IOException ex ) {
                 if ( ex.getMessage().contains( "503" ) ) {
                     // http-statuscode 503
-                    System.out.println( "HTTP-Status 503 (" + this.p.getURL() + "), trying again" );
+                    System.out.println( "HTTP-Status 503 (" + this.p.getUrl() + "), trying again" );
                     DownloadQueueContainer.this.add( this.p );
                 } else {
                     throw new RuntimeException( ex );
@@ -168,7 +168,7 @@ public final class DownloadQueueContainer {
          * 
          * @return the {@link URL} of this page
          */
-        public URL getURL() {
+        public URL getUrl() {
             return this.pageUrl;
         }
 
