@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import de.herrlock.exceptions.InitializeException;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Utils;
+import de.herrlock.manga.util.ChapterPattern;
 
 /**
  * A class the consists of multiple Chapters
@@ -109,73 +110,6 @@ public abstract class ChapterList extends ArrayList<Chapter> {
         @Override
         public String toString() {
             return MessageFormat.format( "{0}: {1}", this.number, this.chapterUrl );
-        }
-    }
-
-    /**
-     * A List of Strings that is used to
-     * 
-     * @author HerrLock
-     */
-    private static class ChapterPattern extends ArrayList<String> {
-        private static final long serialVersionUID = 1L;
-        /**
-         * the regex for the patterns<br>
-         * accepts "a list of strings seperated by semicolons"
-         */
-        private static final Pattern REGEX = Pattern.compile( "^([^;]+;)*([^;]+)$" );
-
-        /**
-         * a valid pattern consists of the chapter-numbers seperated by semicolon, or an interval of chapters, defined by the
-         * first chapter, a hyphen and the last chapter<br>
-         * eg:
-         * <table>
-         * <tr>
-         * <th>pattern</th>
-         * <th>matched chapters</th>
-         * </tr>
-         * <tr>
-         * <td>42</td>
-         * <td>chapter 42</td>
-         * </tr>
-         * <tr>
-         * <td>42;45</td>
-         * <td>chapters 42 and 45</td>
-         * </tr>
-         * <tr>
-         * <td>42-46</td>
-         * <td>chapters 42 to 46 (42, 43, 44, 45, 46)</td>
-         * </tr>
-         * <tr>
-         * <td>42-46;50-52</td>
-         * <td>chapters 42 to 46 and 50 to 52 (42, 43, 44, 45, 46, 50, 51, 52)</td>
-         * </tr>
-         * </table>
-         * 
-         * @param pattern
-         *            the pattern to analyze
-         */
-        ChapterPattern( String pattern ) {
-            // accept only if valid
-            if ( REGEX.matcher( pattern ).matches() ) {
-                // split string at ';'
-                for ( String s : pattern.split( ";" ) ) {
-                    String[] chapter = s.split( "-" );
-                    if ( chapter.length == 1 ) {
-                        // a single chapter
-                        super.add( s );
-                    } else if ( chapter.length == 2 ) {
-                        // an interval of chapters
-                        int first = Integer.parseInt( chapter[0] );
-                        int last = Integer.parseInt( chapter[1] );
-                        for ( int i = first; i <= last; i++ ) {
-                            super.add( i + "" );
-                        }
-                    } else {
-                        throw new RuntimeException( "chapterPattern is invalid" );
-                    }
-                }
-            }
         }
     }
 
