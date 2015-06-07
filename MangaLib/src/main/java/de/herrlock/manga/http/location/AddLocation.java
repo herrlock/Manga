@@ -12,8 +12,7 @@ import de.herrlock.manga.http.response.Response;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
- * @author Jan Rau
- *
+ * @author HerrLock
  */
 public class AddLocation extends Location {
 
@@ -45,19 +44,28 @@ public class AddLocation extends Location {
 
         final DownloadConfiguration conf = DownloadConfiguration.create( p );
 
-        new Thread() {
-            @Override
-            public void run() {
-                new SimpleDownloader( conf ).run();
-            }
-        }.start();
+        Thread t = new SimpleDownloaderThread( conf );
+        t.start();
 
         TextResponse res = new TextResponse( 301 );
         res.setHeader( "Location", "/md" );
         return res;
     }
 
-    private static class SimpleDownloader extends MDownloader {
+    private static final class SimpleDownloaderThread extends Thread {
+        private final DownloadConfiguration conf;
+
+        private SimpleDownloaderThread( DownloadConfiguration conf ) {
+            this.conf = conf;
+        }
+
+        @Override
+        public void run() {
+            new SimpleDownloader( this.conf ).run();
+        }
+    }
+
+    private static final class SimpleDownloader extends MDownloader {
         SimpleDownloader( DownloadConfiguration conf ) {
             super( conf );
         }
