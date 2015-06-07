@@ -1,11 +1,15 @@
 package de.herrlock.manga.http.location;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URLDecoder;
+import java.util.Properties;
 
+import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.http.ServerException;
+import de.herrlock.manga.http.TextResponse;
 import de.herrlock.manga.http.response.Response;
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
  * @author Jan Rau
@@ -18,26 +22,50 @@ public class AddLocation extends Location {
     }
 
     @Override
-    public Response handleXHR( URL url ) {
-        String queryString = url.getQuery();
+    public Response handleXHR( URL requestUrl ) {
+        String queryString = requestUrl.getQuery();
         if ( queryString == null ) {
             throw new ServerException( "queryString is null" );
         }
         String[] querys = queryString.split( "&" );
-
-        Map<String, String> params = new HashMap<>( querys.length );
+        final Properties p = new Properties();
         for ( String param : querys ) {
             String[] paramArr = param.split( "=" );
             String value = "";
             if ( paramArr.length == 2 ) {
                 value = paramArr[1];
             }
-            params.put( paramArr[0], value );
+            try {
+                value = URLDecoder.decode( value, "UTF-8" );
+            } catch ( UnsupportedEncodingException ex ) {
+                throw new RuntimeException( ex );
+            }
+            p.setProperty( paramArr[0], value );
         }
 
-        System.out.println( params );
-        // TODO: this function
-        return null;
+        final DownloadConfiguration conf = DownloadConfiguration.create( p );
+
+        new Thread() {
+            @Override
+            public void run() {
+                new SimpleDownloader( conf ).run();
+            }
+        }.start();
+
+        TextResponse res = new TextResponse( 301 );
+        res.setHeader( "Location", "/md" );
+        return res;
+    }
+
+    private static class SimpleDownloader extends MDownloader {
+        SimpleDownloader( DownloadConfiguration conf ) {
+            super( conf );
+        }
+
+        @Override
+        protected void run() {
+            downloadAll();
+        }
     }
 
 }
