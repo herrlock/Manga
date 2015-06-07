@@ -48,8 +48,10 @@ public class Server extends ServerSocket implements Runnable {
 
                     Response res = handleXHR( url );
                     try ( OutputStream out = socket.getOutputStream() ) {
-                        IOUtils.write( res.createHTTPHeader(), out );
-                        IOUtils.write( res.getData(), out );
+                        String httpHeader = res.createHTTPHeader();
+                        IOUtils.write( httpHeader, out );
+                        byte[] data = res.getData();
+                        IOUtils.write( data, out );
                     }
                 }
             }

@@ -11,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import de.herrlock.manga.downloader.dqc.DownloadQueueContainer.Page;
+
 @RunWith( Parameterized.class )
 public class TestPage {
 
