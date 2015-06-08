@@ -18,7 +18,6 @@ public class ChapterPattern {
      */
     private static final Pattern REGEX = Pattern.compile( "^([^;]+;)*([^;]+)$" );
 
-    private final String patternText;
     private final Collection<String> elements;
 
     /**
@@ -52,7 +51,6 @@ public class ChapterPattern {
      *            the pattern to analyze
      */
     public ChapterPattern( String pattern ) {
-        this.patternText = pattern;
         Set<String> result = new HashSet<>();
         // accept only if valid
         if ( REGEX.matcher( pattern ).matches() ) {
@@ -75,10 +73,6 @@ public class ChapterPattern {
             }
         }
         this.elements = Collections.unmodifiableCollection( result );
-    }
-
-    public String getPatternText() {
-        return this.patternText;
     }
 
     public boolean contains( String s ) {

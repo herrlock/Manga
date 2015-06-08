@@ -44,10 +44,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      */
     protected ChapterList( DownloadConfiguration conf ) {
         this.conf = conf;
-        ChapterPattern pattern = conf.getPattern();
-        String patternText = pattern.getPatternText();
-        boolean patternIsEmpty = patternText == null || "".equals( patternText );
-        this.cp = patternIsEmpty ? null : pattern;
+        this.cp = conf.getPattern();
     }
     /**
      * adds a chapter to this list if the ChapterPattern is null (none defined) or the given number is contained in the
