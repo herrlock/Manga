@@ -18,8 +18,5 @@ jdfw=
 
 # optional
 # set this to use a proxy (without authentification)
-# proxyHost is the proxy's url
-# proxyPort is the proxy's port
 # both do not have default values, when nothing is defined nothing is used
-proxyHost=
-proxyPort=
+proxy=
