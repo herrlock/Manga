@@ -11,13 +11,7 @@
 			$("#selector").change(function(){
 				var auswahl = $(this).find("option:selected").index();
 				$(".eingabe").hide();
-				if(auswahl == 0) {
-					$("#eingabe1").show();
-				} else if(auswahl == 1) {
-					$("#eingabe2").show();
-				} else if(auswahl == 2) {
-					$("#eingabe3").show();
-				}
+				$("#eingabe"+(auswahl+1)).show();
 			});
 		});
 	</script>
@@ -31,8 +25,8 @@
 		
 		form#auswahl {
 			position: absolute;
-			width: 300px;
-			left: calc(50% - 150px);
+			width: 240px;
+			left: calc(50% - 120px);
 			top: 50px;
 			background-color: lightgray;
 			padding: 15px;
@@ -42,9 +36,9 @@
 		
 		form.eingabe {
 			position: absolute;
-			width: 300px;
-			height: 150px;
-			left: calc(50% - 150px);
+			width: 240px;
+			height: 175px;
+			left: calc(50% - 120px);
 			top: 105px;
 			background-color: lightgray;
 			padding: 15px;
@@ -59,7 +53,6 @@
 		<select id="selector" name="Download Typ">
 			<option selected>Standard</option>
 			<option>per JDownloader</option>
-			<option>als erzeugte HTML</option>
 		</select>
 	</form>
     <form action="/add" class="eingabe" id="eingabe1">
@@ -71,6 +64,10 @@
         <tr>
           <td> <label for="proxy">Proxy-URL: </label> </td>
           <td> <input type="url" name="proxy"/> </td>
+        </tr>
+		<tr>
+          <td> <label for="chapter">Kapitel: </label> </td>
+          <td> <input name="chapter"/> </td>
         </tr>
       </table>
       <br/>
@@ -85,22 +82,15 @@
         </tr>
         <tr>
           <td> <label for="folder">JD-Folder: </label> </td>
-          <td> <input type="file" name="folder"/> </td>
+          <td> <input type="text" name="folder"/> </td>
         </tr>
         <tr>
           <td> <label for="proxy">Proxy-URL: </label> </td>
           <td> <input type="url" name="proxy"/> </td>
         </tr>
-      </table>
-      <br/>
-      <button type="reset">zur&#xFC;cksetzen</button>
-      <button type="submit">absenden</button>
-    </form>
-	<form action="/add" class="eingabe" id="eingabe3">
-      <table>
-        <tr>
-          <td> <label for="folder">Folder: </label> </td>
-          <td> <input type="text" name="folder"/> </td>
+		<tr>
+          <td> <label for="chapter">Kapitel: </label> </td>
+          <td> <input name="chapter"/> </td>
         </tr>
       </table>
       <br/>
