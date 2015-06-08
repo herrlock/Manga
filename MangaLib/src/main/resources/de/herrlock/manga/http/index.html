@@ -8,6 +8,7 @@
 		$(function(){
 			$(".eingabe").hide();
 			$("#eingabe1").show();
+			$("#selector")[0].selectedIndex=0;
 			$("#selector").change(function(){
 				var auswahl = $(this).find("option:selected").index();
 				$(".eingabe").hide();
