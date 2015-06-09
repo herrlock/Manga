@@ -7,8 +7,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import de.herrlock.manga.http.Server;
-import de.herrlock.manga.http.TextResponse;
 import de.herrlock.manga.http.response.Response;
+import de.herrlock.manga.http.response.TextResponse;
 
 /**
  * @author HerrLock

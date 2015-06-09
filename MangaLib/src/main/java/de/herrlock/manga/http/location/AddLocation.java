@@ -7,8 +7,8 @@ import java.util.Properties;
 
 import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.http.ServerException;
-import de.herrlock.manga.http.TextResponse;
 import de.herrlock.manga.http.response.Response;
+import de.herrlock.manga.http.response.TextResponse;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**

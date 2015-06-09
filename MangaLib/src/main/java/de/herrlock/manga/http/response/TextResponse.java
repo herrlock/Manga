@@ -1,8 +1,6 @@
-package de.herrlock.manga.http;
+package de.herrlock.manga.http.response;
 
 import java.nio.charset.StandardCharsets;
-
-import de.herrlock.manga.http.response.Response;
 
 /**
  * @author HerrLock
