@@ -29,7 +29,7 @@ public class BackgroundImageLocation extends Location {
     }
 
     static enum Image {
-        NAUSICAA( "nausicaa.jpg" );
+        NAUSICAA( "nausicaa.jpg" ), ONEPIECE( "onepiece.jpg" );
 
         private static final Random RANDOM = new Random();
         private final String filename;
