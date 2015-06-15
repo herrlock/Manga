@@ -14,9 +14,9 @@ import de.herrlock.manga.http.response.Response;
 /**
  * @author HerrLock
  */
-public class DefaultLocation extends Location {
+public class IndexHtmlLocation extends Location {
 
-    public DefaultLocation() {
+    public IndexHtmlLocation() {
         super( "md" );
     }
 

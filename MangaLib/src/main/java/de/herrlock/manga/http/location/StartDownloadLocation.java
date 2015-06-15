@@ -14,10 +14,10 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 /**
  * @author HerrLock
  */
-public class AddLocation extends Location {
+public class StartDownloadLocation extends Location {
 
-    public AddLocation() {
-        super( "add" );
+    public StartDownloadLocation() {
+        super( "start" );
     }
 
     @Override

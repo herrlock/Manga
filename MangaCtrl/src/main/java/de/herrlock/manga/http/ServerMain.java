@@ -2,9 +2,9 @@ package de.herrlock.manga.http;
 
 import java.io.IOException;
 
-import de.herrlock.manga.http.location.AddLocation;
+import de.herrlock.manga.http.location.StartDownloadLocation;
 import de.herrlock.manga.http.location.BackgroundImageLocation;
-import de.herrlock.manga.http.location.DefaultLocation;
+import de.herrlock.manga.http.location.IndexHtmlLocation;
 import de.herrlock.manga.http.location.JQueryLocation;
 
 /**
@@ -25,9 +25,9 @@ public final class ServerMain {
 
     private static void addLocations( Server server ) {
         // /md, default-page
-        server.registerLocation( new DefaultLocation() );
-        // /add, to start
-        server.registerLocation( new AddLocation() );
+        server.registerLocation( new IndexHtmlLocation() );
+        // /start, to start
+        server.registerLocation( new StartDownloadLocation() );
 
         // /jquery.js, returns jquery
         server.registerLocation( new JQueryLocation() );
