@@ -7,8 +7,6 @@ subprojects {
 	
 	sourceCompatibility = "1.7"
 	
-	jar.dependsOn check
-	
 	dependencies {
 		testCompile 'junit:junit:4.12'
 	}
@@ -48,7 +46,6 @@ subprojects {
 	}
 	
 	eclipse.project {
-		natures 'org.springsource.ide.eclipse.gradle.core.nature'
 		buildCommand 'edu.umd.cs.findbugs.plugin.eclipse.findbugsBuilder'
 	}
 	

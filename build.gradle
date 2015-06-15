@@ -18,6 +18,7 @@ task createLibs (type: Copy, description: 'Create jar from subprojects and copie
 	into temp + 'lib'
     subprojects.each { s -> 
 		dependsOn s.jar
+		dependsOn s.check
 		from s.jar
 		from s.configurations.runtime
 	}
