@@ -17,11 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.io.FileUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
-
-import de.herrlock.manga.util.Utils;
 
 public class ViewPage {
     private final File folder;
@@ -210,9 +209,8 @@ public class ViewPage {
 
     private void copyFile( String filename ) {
         try ( InputStream resource = ViewPage.class.getResourceAsStream( filename ) ) {
-            List<String> readLines = Utils.readStream( resource );
             File toFile = new File( this.folder, filename );
-            Utils.writeToFile( toFile, readLines );
+            FileUtils.copyInputStreamToFile( resource, toFile );
         } catch ( IOException ex ) {
             throw new RuntimeException( ex );
         }

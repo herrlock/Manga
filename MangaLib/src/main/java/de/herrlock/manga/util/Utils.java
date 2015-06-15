@@ -1,19 +1,15 @@
 package de.herrlock.manga.util;
 
-import java.io.BufferedReader;
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -22,10 +18,12 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 public final class Utils {
 
     /**
-     * creates a connection
+     * creates a connection with the given {@linkplain DownloadConfiguration}
      * 
+     * @param url
+     *            the {@link URL} to create a connection from
      * @param conf
-     *            the DOwnloadonfiguration to create a connection from
+     *            the {@link DownloadConfiguration} to create a connection with
      * @return a {@link URLConnection} from the given {@link URL}
      * @throws IOException
      *             if an I/O exception occurs.
@@ -33,14 +31,16 @@ public final class Utils {
     public static URLConnection getConnection( URL url, DownloadConfiguration conf ) throws IOException {
         final Proxy proxy = conf.getProxy();
         final URLConnection con = url.openConnection( proxy );
-        con.setConnectTimeout( Constants.PARAM_TIMEOUT_DEFAULT );
-        con.setReadTimeout( 2 * Constants.PARAM_TIMEOUT_DEFAULT );
+        con.setConnectTimeout( conf.getConnectTimeout() );
+        con.setReadTimeout( 2 * conf.getReadTimeout() );
         return con;
     }
 
     /**
      * fetches data from the given URL and parses it to a {@link Document}
      * 
+     * @param url
+     *            the {@link URL} to read from
      * @param conf
      *            the conf with the URL to read from
      * @return a document, parsed from the given URL
@@ -48,50 +48,12 @@ public final class Utils {
      */
     public static Document getDocument( URL url, DownloadConfiguration conf ) throws IOException {
         URLConnection con = getConnection( url, conf );
-        List<String> list = readStream( con.getInputStream() );
-        StringBuilder sb = new StringBuilder();
-        for ( String s : list ) {
-            sb.append( s );
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try ( InputStream in = con.getInputStream() ) {
+            IOUtils.copy( in, baos );
         }
-        return Jsoup.parse( sb.toString() );
-    }
-
-    /**
-     * reads the given {@link InputStream} and stores the result in a {@link List}
-     * 
-     * @param in
-     *            the {@link InputStream} to read from
-     * @return a {@link List} of Strings containing the lines from the read InputStream
-     * @throws IOException
-     *             If an IOException occurs while reading from the stream or closing the stream
-     */
-    public static List<String> readStream( InputStream in ) throws IOException {
-        List<String> list = new ArrayList<>();
-        try ( BufferedReader reader = new BufferedReader( new InputStreamReader( in, StandardCharsets.UTF_8 ) ) ) {
-            String nextline = null;
-            while ( ( nextline = reader.readLine() ) != null ) {
-                list.add( nextline );
-            }
-        }
-        return list;
-    }
-
-    /**
-     * writes the Strings from the second parameter to the File in the first parameter, separated by a newline-character
-     * 
-     * @param file
-     *            the file to write to
-     * @param readLines
-     *            the String to write
-     * @throws IOException
-     *             if a FileNotFoundException occurs while creating the PrintWriter
-     */
-    public static void writeToFile( File file, List<String> readLines ) throws IOException {
-        try ( PrintWriter pw = new PrintWriter( file, "UTF-8" ) ) {
-            for ( String s : readLines ) {
-                pw.println( s );
-            }
-        }
+        String result = baos.toString( StandardCharsets.UTF_8.name() );
+        return Jsoup.parse( result );
     }
 
     /**
