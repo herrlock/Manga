@@ -1,102 +1,108 @@
 <!DOCTYPE HTML>
 <html>
-  <head>
-	<title>MangaLoader WebUI</title>
-    <meta charset="UTF-8"/>
-    <script src="jquery.js"></script>
-	<script>
-		$(function(){
-			$(".eingabe").hide();
-			$("#eingabe1").show();
-			$("#selector")[0].selectedIndex=0;
-			$("#selector").change(function(){
-				var auswahl = $(this).find("option:selected").index();
-				$(".eingabe").hide();
-				$("#eingabe"+(auswahl+1)).show();
-			});
-		});
-	</script>
-	<style type="text/css">
-		html {
-			background-image: url('background.jpg');
-			background-repeat: no-repeat;
-			background-position:  top center;
-			background-size: 100%;
-		}
-		
-		form#auswahl {
-			position: absolute;
-			width: 240px;
-			left: calc(50% - 120px);
-			top: 50px;
-			background-color: lightgray;
-			padding: 15px;
-			border-radius: 15px;
-			opacity: 0.8;
-		}
-		
-		form.eingabe {
-			position: absolute;
-			width: 240px;
-			height: 155px;
-			left: calc(50% - 120px);
-			top: 105px;
-			background-color: lightgray;
-			padding: 15px;
-			border-radius: 15px;
-			opacity: 0.8;
-		}
-	</style>
-  </head>
-  <body>
-    <br/>
-	<form id="auswahl">
-		<select id="selector" name="Download Typ">
-			<option selected>Standard</option>
-			<option>per JDownloader</option>
-		</select>
-	</form>
-    <form action="/add" class="eingabe" id="eingabe1">
-      <table>
-        <tr>
-          <td> <label for="url">URL: </label> </td>
-          <td> <input type="url" name="url"/> </td>
-        </tr>
-        <tr>
-          <td> <label for="proxy">Proxy-URL: </label> </td>
-          <td> <input type="url" name="proxy"/> </td>
-        </tr>
-		<tr>
-          <td> <label for="chapter">Kapitel: </label> </td>
-          <td> <input name="chapter"/> </td>
-        </tr>
-      </table>
-      <br/>
-      <button type="reset">zur&#xFC;cksetzen</button>
-      <button type="submit">absenden</button>
-    </form>
-	<form action="/add" class="eingabe" id="eingabe2">
-      <table>
-        <tr>
-          <td> <label for="url">URL: </label> </td>
-          <td> <input type="url" name="url"/> </td>
-        </tr>
-        <tr>
-          <td> <label for="folder">JD-Folder: </label> </td>
-          <td> <input type="text" name="folder"/> </td>
-        </tr>
-        <tr>
-          <td> <label for="proxy">Proxy-URL: </label> </td>
-          <td> <input type="url" name="proxy"/> </td>
-        </tr>
-		<tr>
-          <td> <label for="chapter">Kapitel: </label> </td>
-          <td> <input name="chapter"/> </td>
-        </tr>
-      </table>
-      <br/>
-      <button type="reset">zur&#xFC;cksetzen</button>
-      <button type="submit">absenden</button>
-    </form>
-  </body>
+<head>
+<title>MangaLoader WebUI</title>
+<meta charset="UTF-8" />
+<script src="jquery.js"></script>
+<script>
+    function showOnly(c, duration) {
+        if (c === "dl" || c == "jd") {
+            $("form#eingabe div").each(function(i, e) {
+                var $this = $(this);
+                if ($this.hasClass(c)) {
+                    $this.slideDown(duration);
+                } else {
+                    $this.slideUp(duration);
+                }
+            });
+        }
+    }
+    function showSelected(duration) {
+        showOnly($("#selector > option:selected")[0].value, duration);
+    }
+    $(function() {
+        showSelected(0);
+        $("#selector").change(showSelected);
+        $("#submit").click(function() {
+            var queryArr = $("#eingabe > div > input")
+			    .filter((i,elem) => $(elem).is(":visible"))
+                .map((i,elem) => elem.id + "=" + elem.value)
+                .toArray();
+            var query = "&" + queryArr.join(",");
+            var url = "http://localhost:1905/start" + query;
+            $.get(encodeURIComponent(url));
+        });
+    });
+</script>
+<style type="text/css">
+html {
+	background-image: url('background.jpg');
+	background-repeat: no-repeat;
+	background-position: top center;
+	background-size: 100%;
+}
+
+div#content {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: lightgray;
+	border-radius: 15px;
+	opacity: 0.8;
+	min-width: 30rem;
+}
+
+div#auswahl, form#eingabe {
+	margin: 15px;
+}
+
+#eingabe>div {
+	clear: both;
+	margin: 4px;
+	padding: 4px;
+}
+
+#eingabe>div>label {
+	float: left;
+}
+
+#eingabe>div>input {
+	float: right;
+	width: 25em;
+}
+
+p#buttons {
+	float: left;
+}
+</style>
+</head>
+<body>
+	<br />
+	<div id="content">
+		<div id="auswahl">
+			<select id="selector">
+				<option value="dl">Download</option>
+				<option value="jd">per JDownloader</option>
+			</select>
+		</div>
+		<form id="eingabe">
+			<div class="dl jd">
+				<label for="url">URL:&nbsp; </label> <input type="url" id="url" />
+			</div>
+			<div class="dl jd">
+				<label for="proxy">Proxy-URL:&nbsp; </label> <input type="url" id="proxy" />
+			</div>
+			<div class="jd">
+				<label for="folder">JD-Folder:&nbsp; </label> <input type="text" id="folder" />
+			</div>
+			<div class="dl jd">
+				<label for="chapter">Kapitel:&nbsp; </label> <input type="text" id="chapter" />
+			</div>
+			<p id="buttons">
+				<button type="reset">zur&uuml;cksetzen</button>
+				<button type="button" id="submit">absenden</button>
+			</p>
+		</form>
+	</div>
+</body>
 </html>
