@@ -54,6 +54,11 @@ public abstract class Configuration {
         return result;
     }
 
+    protected static int _createTimeout( Properties p ) {
+        String timeoutString = p.getProperty( Constants.PARAM_TIMEOUT );
+        return timeoutString == null ? Constants.PARAM_TIMEOUT_DEFAULT : Integer.parseInt( timeoutString );
+    }
+
     protected static File _createFolderwatch( Properties p ) {
         String fwPath = p.getProperty( Constants.PARAM_JDFW );
         return new File( fwPath );

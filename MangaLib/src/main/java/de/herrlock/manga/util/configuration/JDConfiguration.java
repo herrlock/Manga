@@ -14,12 +14,13 @@ public class JDConfiguration extends DownloadConfiguration {
         URL url = _createUrl( p );
         Proxy proxy = _createProxy( p );
         ChapterPattern pattern = _createPattern( p );
+        int timeout = _createTimeout( p );
         File folderwatch = _createFolderwatch( p );
-        return new JDConfiguration( url, proxy, pattern, folderwatch );
+        return new JDConfiguration( url, proxy, pattern, timeout, folderwatch );
     }
 
-    public JDConfiguration( URL url, Proxy proxy, ChapterPattern pattern, File folderwatch ) {
-        super( url, proxy, pattern );
+    public JDConfiguration( URL url, Proxy proxy, ChapterPattern pattern, int timeout, File folderwatch ) {
+        super( url, proxy, pattern, timeout );
         this.folderwatch = folderwatch;
     }
 

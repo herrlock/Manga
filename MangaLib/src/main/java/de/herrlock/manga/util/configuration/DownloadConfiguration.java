@@ -5,26 +5,25 @@ import java.net.URL;
 import java.util.Properties;
 
 import de.herrlock.manga.util.ChapterPattern;
-import de.herrlock.manga.util.Constants;
 
 public class DownloadConfiguration extends Configuration {
     private final URL url;
     private final Proxy proxy;
     private final ChapterPattern pattern;
-    private final int connectTimeout = Constants.PARAM_TIMEOUT_DEFAULT;
-    private final int readTimeout = 2 * Constants.PARAM_TIMEOUT_DEFAULT;
+    private final int timeout;
 
     public static DownloadConfiguration create( Properties p ) {
         URL url = _createUrl( p );
         Proxy proxy = _createProxy( p );
         ChapterPattern pattern = _createPattern( p );
-        return new DownloadConfiguration( url, proxy, pattern );
+        int timeout = _createTimeout( p );
+        return new DownloadConfiguration( url, proxy, pattern, timeout );
     }
-
-    public DownloadConfiguration( URL url, Proxy proxy, ChapterPattern pattern ) {
+    public DownloadConfiguration( URL url, Proxy proxy, ChapterPattern pattern, int timeout ) {
         this.url = url;
         this.proxy = proxy;
         this.pattern = pattern;
+        this.timeout = timeout;
     }
 
     public final URL getUrl() {
@@ -39,11 +38,7 @@ public class DownloadConfiguration extends Configuration {
         return this.pattern;
     }
 
-    public int getConnectTimeout() {
-        return this.connectTimeout;
-    }
-
-    public int getReadTimeout() {
-        return this.readTimeout;
+    public int getTimeout() {
+        return this.timeout;
     }
 }
