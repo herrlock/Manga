@@ -17,13 +17,17 @@ public class ImageResponse extends Response {
 
     public ImageResponse( InputStream imageStream ) throws IOException {
         super( 200 );
-        if ( imageStream == null ) {
-            setCode( 404 );
-            this.bytes = "ImageNotFound".getBytes( UTF_8 );
-        } else {
-            final ByteArrayOutputStream out = new ByteArrayOutputStream();
-            IOUtils.copy( imageStream, out );
-            this.bytes = out.toByteArray();
+        try {
+            if ( imageStream == null ) {
+                setCode( 404 );
+                this.bytes = "ImageNotFound".getBytes( UTF_8 );
+            } else {
+                final ByteArrayOutputStream out = new ByteArrayOutputStream();
+                IOUtils.copy( imageStream, out );
+                this.bytes = out.toByteArray();
+            }
+        } finally {
+            IOUtils.closeQuietly( imageStream );
         }
     }
 
