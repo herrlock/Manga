@@ -51,9 +51,9 @@ public final class Constants {
      */
     public static final Comparator<String> STRING_NUMBER_COMPARATOR = new Comparator<String>() {
         @Override
-        public int compare( String s1, String s2 ) {
-            double d1 = Double.parseDouble( s1 );
-            double d2 = Double.parseDouble( s2 );
+        public int compare( final String s1, final String s2 ) {
+            final double d1 = Double.parseDouble( s1 );
+            final double d2 = Double.parseDouble( s2 );
             return Double.compare( d1, d2 );
         }
     };

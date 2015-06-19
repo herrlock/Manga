@@ -28,11 +28,11 @@ public final class Utils {
      * @throws IOException
      *             if an I/O exception occurs.
      */
-    public static URLConnection getConnection( URL url, DownloadConfiguration conf ) throws IOException {
+    public static URLConnection getConnection( final URL url, final DownloadConfiguration conf ) throws IOException {
         final Proxy proxy = conf.getProxy();
         final URLConnection con = url.openConnection( proxy );
-        con.setConnectTimeout( conf.getConnectTimeout() );
-        con.setReadTimeout( 2 * conf.getReadTimeout() );
+        con.setConnectTimeout( conf.getTimeout() );
+        con.setReadTimeout( 2 * conf.getTimeout() );
         return con;
     }
 
@@ -46,13 +46,13 @@ public final class Utils {
      * @return a document, parsed from the given URL
      * @throws IOException
      */
-    public static Document getDocument( URL url, DownloadConfiguration conf ) throws IOException {
-        URLConnection con = getConnection( url, conf );
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try ( InputStream in = con.getInputStream() ) {
+    public static Document getDocument( final URL url, final DownloadConfiguration conf ) throws IOException {
+        final URLConnection con = getConnection( url, conf );
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try ( final InputStream in = con.getInputStream() ) {
             IOUtils.copy( in, baos );
         }
-        String result = baos.toString( StandardCharsets.UTF_8.name() );
+        final String result = baos.toString( StandardCharsets.UTF_8.name() );
         return Jsoup.parse( result );
     }
 
@@ -66,7 +66,7 @@ public final class Utils {
      * @see Thread#start()
      * @see Thread#join()
      */
-    public static void startAndWaitForThreads( Collection<? extends Thread> threads ) {
+    public static void startAndWaitForThreads( final Collection<? extends Thread> threads ) {
         // start all threads
         for ( Thread t : threads ) {
             t.start();
@@ -88,7 +88,7 @@ public final class Utils {
      * @param message
      *            the message to trace
      */
-    public static void trace( Object message ) {
+    public static void trace( final Object message ) {
         Constants.TRACE.println( message );
     }
 
