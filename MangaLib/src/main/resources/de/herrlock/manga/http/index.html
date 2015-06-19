@@ -24,51 +24,55 @@
         showSelected(0);
         $("#selector").change(showSelected);
         $("#submit").click(function() {
-            console.log("#submit click");
-            //             $.ajax({
-            //                 url : "/start"
-            //             });
+            var queryArr = $("#eingabe > div > input")
+			    .filter((i,elem) => $(elem).is(":visible"))
+                .map((i,elem) => elem.id + "=" + elem.value)
+                .toArray();
+            var query = "&" + queryArr.join(",");
+            var url = "http://localhost:1905/start" + query;
+            $.get(encodeURIComponent(url));
         });
     });
 </script>
 <style type="text/css">
 html {
-    background-image: url('background.jpg');
-    background-repeat: no-repeat;
-    background-position: top center;
-    background-size: 100%;
+	background-image: url('background.jpg');
+	background-repeat: no-repeat;
+	background-position: top center;
+	background-size: 100%;
 }
 
 div#content {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: lightgray;
-    border-radius: 15px;
-    opacity: 0.8;
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: lightgray;
+	border-radius: 15px;
+	opacity: 0.8;
+	min-width: 30rem;
 }
 
 div#auswahl, form#eingabe {
-    margin: 15px;
+	margin: 15px;
 }
 
 #eingabe>div {
-    clear: both;
-    margin: 4px;
-    padding: 4px;
+	clear: both;
+	margin: 4px;
+	padding: 4px;
 }
 
 #eingabe>div>label {
-    float: left;
-    /*     padding: 2px; */
-    /*     margin: 2px; */
+	float: left;
 }
 
 #eingabe>div>input {
-    float: right;
-    width: 20em;
-    /*     padding: 2px; */
-    /*     margin: 2px; */
+	float: right;
+	width: 25em;
+}
+
+p#buttons {
+	float: left;
 }
 </style>
 </head>
@@ -83,19 +87,16 @@ div#auswahl, form#eingabe {
 		</div>
 		<form id="eingabe">
 			<div class="dl jd">
-				<label for="url">URL:&nbsp; </label> <input type="url" name="url" />
+				<label for="url">URL:&nbsp; </label> <input type="url" id="url" />
 			</div>
 			<div class="dl jd">
-				<label for="proxy">Proxy-URL:&nbsp; </label> <input type="url"
-					name="proxy" />
+				<label for="proxy">Proxy-URL:&nbsp; </label> <input type="url" id="proxy" />
 			</div>
 			<div class="jd">
-				<label for="folder">JD-Folder:&nbsp; </label> <input type="text"
-					name="folder" />
+				<label for="folder">JD-Folder:&nbsp; </label> <input type="text" id="folder" />
 			</div>
 			<div class="dl jd">
-				<label for="chapter">Kapitel:&nbsp; </label> <input type="text"
-					name="chapter" />
+				<label for="chapter">Kapitel:&nbsp; </label> <input type="text" id="chapter" />
 			</div>
 			<p id="buttons">
 				<button type="reset">zur&uuml;cksetzen</button>
