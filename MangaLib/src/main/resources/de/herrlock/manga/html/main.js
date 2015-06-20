@@ -57,14 +57,10 @@ function choose(x) {
     $endlink.css(css);
 
     var chp = toLoad + 1;
-    $endlink.replaceWith($('<a/>', {
-        'class' : 'whitelink',
-        id : 'endlink',
-        href : 'javascript:void(0)',
+    $('a#chooseNext').attr({
         onclick : 'choose(' + chp + ')',
-        title : 'Lade Kapitel ' + chp,
-        text : 'Kapitel ' + chp
-    }));
+        title : 'Lade Kapitel ' + chp
+    }).text('Kapitel ' + chp);
 
     // nach einer sekunde (1000 ms) werden die bildgrößen überprüft und ggf. angepasst
     setTimeout(adjustIMGWidth, 1000);

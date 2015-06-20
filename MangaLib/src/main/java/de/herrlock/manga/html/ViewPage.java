@@ -193,7 +193,7 @@ public class ViewPage {
             imgblock.appendElement( "hr" ).attr( "class", "separator" );
         }
         // endlink - load next chapter
-        rDiv.appendElement( "h1" ).attr( "id", "endlink" ).text( "Link to the next chapter" );
+        rDiv.appendElement( "h1" ).attr( "id", "endlink" ).appendChild( whitelink( "Next" ) );
         return rDiv;
     }
 
