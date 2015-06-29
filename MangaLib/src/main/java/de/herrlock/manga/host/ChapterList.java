@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
-import de.herrlock.exceptions.InitializeException;
+import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.ChapterPattern;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;

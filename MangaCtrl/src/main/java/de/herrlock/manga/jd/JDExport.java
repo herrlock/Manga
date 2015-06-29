@@ -16,8 +16,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import de.herrlock.exceptions.InitializeException;
 import de.herrlock.manga.downloader.MDownloader;
+import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.ui.main.MDGuiController;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;

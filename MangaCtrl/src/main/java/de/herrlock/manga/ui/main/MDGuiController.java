@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import de.herrlock.manga.exceptions.InitializeException;
+import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.Exec;
+import de.herrlock.manga.util.ExecHandlerTask;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -11,10 +15,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
-import de.herrlock.exceptions.InitializeException;
-import de.herrlock.manga.util.Constants;
-import de.herrlock.manga.util.Exec;
-import de.herrlock.manga.util.ExecHandlerTask;
 
 /**
  * @author HerrLock

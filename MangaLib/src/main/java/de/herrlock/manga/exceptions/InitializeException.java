@@ -1,4 +1,4 @@
-package de.herrlock.exceptions;
+package de.herrlock.manga.exceptions;
 
 /**
  * an exception that indicates that sth. happened while initializing the download, so the application can stay opened.

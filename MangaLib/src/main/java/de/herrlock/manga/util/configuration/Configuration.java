@@ -7,7 +7,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.util.Properties;
 
-import de.herrlock.exceptions.InitializeException;
+import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.util.ChapterPattern;
 import de.herrlock.manga.util.Constants;
 

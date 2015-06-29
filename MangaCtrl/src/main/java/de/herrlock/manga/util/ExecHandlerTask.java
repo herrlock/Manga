@@ -1,13 +1,12 @@
 package de.herrlock.manga.util;
 
+import javax.swing.JOptionPane;
+
+import de.herrlock.manga.exceptions.InitializeException;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
-
-import javax.swing.JOptionPane;
-
-import de.herrlock.exceptions.InitializeException;
 
 public class ExecHandlerTask extends Task<Void> {
     private final Exec exec;
