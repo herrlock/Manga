@@ -18,9 +18,9 @@
 				<padding>
 					<Insets top="8" right="8" left="8" />
 				</padding>
-				<Button fx:id="btnStartPDL" text="%button.text.startPDL" onAction="#startPDownload" onMouseEntered="#showTextDStart"
+				<Button fx:id="btnStartPDL" text="%button.text.startPDL" onAction="#startPDownload" onMouseEntered="#showTextPStart"
 					onMouseExited="#clearText" defaultButton="true" />
-				<Button fx:id="btnStartDDL" text="%button.text.startDDL" onAction="#startDDownload" onMouseEntered="#showTextPStart"
+				<Button fx:id="btnStartDDL" text="%button.text.startDDL" onAction="#startDDownload" onMouseEntered="#showTextDStart"
 					onMouseExited="#clearText" />
 			</HBox>
 			<HBox spacing="8">
