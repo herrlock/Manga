@@ -11,7 +11,7 @@ public class CtrlController {
     @FXML
     public Text runningText, bottomText;
     @FXML
-    public Button btnStartDL, btnShowHosts, btnAddToJD, btnCreateHTML;
+    public Button btnStartDDL, btnStartPDL, btnShowHosts, btnAddToJD, btnCreateHTML;
 
     public void clearText() {
         this.bottomText.setText( "" );
@@ -52,7 +52,8 @@ public class CtrlController {
         handleBtnClick( Exec.VIEW_PAGE_MAIN );
     }
     public void handleBtnClick( Exec exec ) {
-        this.btnStartDL.setOnAction( null );
+        this.btnStartDDL.setOnAction( null );
+        this.btnStartPDL.setOnAction( null );
         this.btnShowHosts.setOnAction( null );
         this.btnAddToJD.setOnAction( null );
         this.btnCreateHTML.setOnAction( null );
