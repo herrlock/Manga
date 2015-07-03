@@ -13,19 +13,28 @@
 		<Text fx:id="runningText" text="%text.running" visible="false" />
 	</top>
 	<center>
-		<HBox spacing="8">
-			<padding>
-				<Insets top="8" right="8" bottom="8" left="8" />
-			</padding>
-			<Button fx:id="btnStartDL" text="%button.text.startDL" onAction="#startDownload" onMouseEntered="#showTextStart"
-				onMouseExited="#clearText" defaultButton="true" />
-			<Button fx:id="btnShowHosts" text="%button.text.showHosts" onAction="#showHosts" onMouseEntered="#showTextHosts"
-				onMouseExited="#clearText" />
-			<Button fx:id="btnAddToJD" text="%button.text.addToJD" onAction="#exportToJD" onMouseEntered="#showTextJD"
-				onMouseExited="#clearText" />
-			<Button fx:id="btnCreateHTML" text="%button.text.createHTML" onAction="#createHTML" onMouseEntered="#showTextHTML"
-				onMouseExited="#clearText" />
-		</HBox>
+		<VBox spacing="8">
+			<HBox spacing="8">
+				<padding>
+					<Insets top="8" right="8" left="8" />
+				</padding>
+				<Button fx:id="btnStartPDL" text="%button.text.startPDL" onAction="#startPDownload" onMouseEntered="#showTextDStart"
+					onMouseExited="#clearText" defaultButton="true" />
+				<Button fx:id="btnStartDDL" text="%button.text.startDDL" onAction="#startDDownload" onMouseEntered="#showTextPStart"
+					onMouseExited="#clearText" />
+			</HBox>
+			<HBox spacing="8">
+				<padding>
+					<Insets right="8" bottom="8" left="8" />
+				</padding>
+				<Button fx:id="btnShowHosts" text="%button.text.showHosts" onAction="#showHosts" onMouseEntered="#showTextHosts"
+					onMouseExited="#clearText" />
+				<Button fx:id="btnAddToJD" text="%button.text.addToJD" onAction="#exportToJD" onMouseEntered="#showTextJD"
+					onMouseExited="#clearText" />
+				<Button fx:id="btnCreateHTML" text="%button.text.createHTML" onAction="#createHTML" onMouseEntered="#showTextHTML"
+					onMouseExited="#clearText" />
+			</HBox>
+		</VBox>
 	</center>
 	<bottom>
 		<Text fx:id="bottomText" text="" />

@@ -17,8 +17,11 @@ public class CtrlController {
         this.bottomText.setText( "" );
     }
 
-    public void showTextStart() {
-        setBottomText( "button.tooltip.startDL" );
+    public void showTextDStart() {
+        setBottomText( "button.tooltip.startDDL" );
+    }
+    public void showTextPStart() {
+        setBottomText( "button.tooltip.startPDL" );
     }
     public void showTextHosts() {
         setBottomText( "button.tooltip.showHosts" );
@@ -33,8 +36,11 @@ public class CtrlController {
         CtrlController.this.bottomText.setText( Ctrl.i18n.getString( i18nKey ) );
     }
 
-    public void startDownload() {
+    public void startDDownload() {
         handleBtnClick( Exec.DIALOG_DOWNLOADER );
+    }
+    public void startPDownload() {
+        handleBtnClick( Exec.PLAIN_DOWNLOADER );
     }
     public void showHosts() {
         handleBtnClick( Exec.PRINT_ALL_HOSTER );
