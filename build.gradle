@@ -34,7 +34,25 @@ task copyDist (type: Copy, description: 'Copy content of \"src/dist\" to the tem
 	into temp
 }
 
-task dist (type: Zip, group: 'build', description: 'Creates a distribution', dependsOn: ['createLibs', 'copyOther', 'copyDist']) {
+task compileRun (description: 'Compile run.cs and copy the exe into the build-folder') {
+    def folder = 'src/main/cs'
+    def filename = 'Run.exe'
+    def exefile = new File(folder, filename)
+    def target = mkdir('build/temp/')
+    doLast {
+        exec {
+            workingDir folder
+            commandLine 'cmd', '/c', 'csc', '/t:winexe', "/out:${filename}", '/nologo', 'run.cs'
+        }
+        copy {
+            from exefile
+            into target
+        }
+        delete exefile
+    }
+}
+
+task dist (type: Zip, group: 'build', description: 'Creates a distribution', dependsOn: [createLibs, copyOther, copyDist, compileRun]) {
     destinationDir = file('build')
     baseName = project.name
     version = project.version
@@ -42,3 +60,4 @@ task dist (type: Zip, group: 'build', description: 'Creates a distribution', dep
     into baseName + '-' + version
     from temp
 }
+
