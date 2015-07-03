@@ -56,7 +56,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      *            the chapter's URL
      */
     protected void addChapter( String number, URL chapterUrl ) {
-        if ( this.cp == null || this.cp.contains( number ) ) {
+        if ( this.cp.contains( number ) ) {
             super.add( new Chapter( number, chapterUrl ) );
         }
     }

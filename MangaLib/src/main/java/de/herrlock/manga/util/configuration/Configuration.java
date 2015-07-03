@@ -47,20 +47,22 @@ public abstract class Configuration {
 
     protected static ChapterPattern _createPattern( Properties p ) {
         String patternString = p.getProperty( Constants.PARAM_PATTERN );
-        ChapterPattern result = null;
-        if ( patternString != null && !"".equals( patternString ) ) {
-            result = new ChapterPattern( patternString );
-        }
-        return result;
+        return new ChapterPattern( patternString );
     }
 
     protected static int _createTimeout( Properties p ) {
         String timeoutString = p.getProperty( Constants.PARAM_TIMEOUT );
-        return timeoutString == null ? Constants.PARAM_TIMEOUT_DEFAULT : Integer.parseInt( timeoutString );
+        if ( timeoutString == null || timeoutString.trim().equals( "" ) ) {
+            return Constants.PARAM_TIMEOUT_DEFAULT;
+        }
+        return Integer.parseInt( timeoutString );
     }
 
     protected static File _createFolderwatch( Properties p ) {
         String fwPath = p.getProperty( Constants.PARAM_JDFW );
+        if ( fwPath == null || fwPath.trim().equals( "" ) ) {
+            throw new InitializeException( "property " + Constants.PARAM_JDFW + " is required but not availabile." );
+        }
         return new File( fwPath );
     }
 

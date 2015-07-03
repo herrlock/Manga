@@ -17,7 +17,7 @@ public class ChapterPattern {
      * the regex for the patterns<br>
      * accepts "a list of strings seperated by semicolons"
      */
-    private static final Pattern REGEX = Pattern.compile( "^([^;]+;)*([^;]+)$" );
+    public static final Pattern REGEX = Pattern.compile( "^([^;]+;)*([^;]+)$" );
 
     private final Collection<Interval> elements;
 
@@ -49,12 +49,12 @@ public class ChapterPattern {
      * </table>
      * 
      * @param pattern
-     *            the pattern to analyze
+     *            the pattern to analyze, in case of {@code null} or an empty string an empty collection is used
      */
     public ChapterPattern( String pattern ) {
         Set<Interval> result = new HashSet<>();
         // accept only if valid
-        if ( REGEX.matcher( pattern ).matches() ) {
+        if ( pattern != null && REGEX.matcher( pattern ).matches() ) {
             // split string at ';'
             for ( String s : pattern.split( ";" ) ) {
                 result.add( new Interval( s.split( "-" ) ) );

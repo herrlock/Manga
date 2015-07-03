@@ -57,6 +57,16 @@ public class TestChapterPattern {
     }
 
     @Test
+    public void testNull() throws ReflectiveOperationException {
+        ChapterPattern cp = new ChapterPattern( null );
+        Field declaredField = cp.getClass().getDeclaredField( "elements" );
+        declaredField.setAccessible( true );
+        @SuppressWarnings( "unchecked" )
+        Collection<Interval> c = ( Collection<Interval> ) declaredField.get( cp );
+        assertTrue( "an CP with null as arguments must not create elements", c.isEmpty() );
+    }
+
+    @Test
     public void testInvalid() throws ReflectiveOperationException {
         ChapterPattern cp = new ChapterPattern( "10;" );
         Field declaredField = cp.getClass().getDeclaredField( "elements" );
