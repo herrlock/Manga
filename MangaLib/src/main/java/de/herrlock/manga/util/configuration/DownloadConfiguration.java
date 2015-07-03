@@ -19,6 +19,7 @@ public class DownloadConfiguration extends Configuration {
         int timeout = _createTimeout( p );
         return new DownloadConfiguration( url, proxy, pattern, timeout );
     }
+
     public DownloadConfiguration( URL url, Proxy proxy, ChapterPattern pattern, int timeout ) {
         this.url = url;
         this.proxy = proxy;

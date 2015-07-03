@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -48,11 +47,10 @@ public final class Utils {
      */
     public static Document getDocument( final URL url, final DownloadConfiguration conf ) throws IOException {
         final URLConnection con = getConnection( url, conf );
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final String result;
         try ( final InputStream in = con.getInputStream() ) {
-            IOUtils.copy( in, baos );
+            result = IOUtils.toString( in, StandardCharsets.UTF_8 );
         }
-        final String result = baos.toString( StandardCharsets.UTF_8.name() );
         return Jsoup.parse( result );
     }
 
