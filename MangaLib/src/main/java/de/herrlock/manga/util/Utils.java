@@ -1,6 +1,5 @@
 package de.herrlock.manga.util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Proxy;
@@ -10,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -90,6 +90,11 @@ public final class Utils {
      */
     public static void trace( final Object message ) {
         Constants.TRACE.println( message );
+    }
+    public static void trace( final Throwable t ) {
+        Constants.TRACE.println( "---" );
+        t.printStackTrace( Constants.TRACE );
+        Constants.TRACE.println( "---" );
     }
 
     private Utils() {
