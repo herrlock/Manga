@@ -19,7 +19,15 @@ public class ChapterPattern {
      */
     public static final Pattern REGEX = Pattern.compile( "^([^;]+;)*([^;]+)$" );
 
+    /**
+     * the Interval-elements to search
+     */
     private final Collection<Interval> elements;
+    /**
+     * stores, if the Collection elements contains any entries. True, if the Collection is empty, so when using
+     * {@link ChapterPattern#contains(String)} true can be returned when no element is availabile
+     */
+    private final boolean fallback;
 
     /**
      * a valid pattern consists of the chapter-numbers seperated by semicolon, or an interval of chapters, defined by the first
@@ -61,6 +69,7 @@ public class ChapterPattern {
             }
         }
         this.elements = Collections.unmodifiableCollection( result );
+        this.fallback = this.elements.isEmpty();
     }
 
     public boolean contains( String s ) {
@@ -69,7 +78,7 @@ public class ChapterPattern {
                 return true;
             }
         }
-        return false;
+        return this.fallback;
     }
 
     static class Interval {
