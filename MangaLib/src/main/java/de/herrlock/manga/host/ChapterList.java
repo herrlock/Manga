@@ -36,7 +36,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
         if ( h == null ) {
             throw new InitializeException( url + " could not be resolved to a registered host." );
         }
-        return h.getChapterList( url, conf );
+        return h.getChapterList( conf );
     }
 
     /**

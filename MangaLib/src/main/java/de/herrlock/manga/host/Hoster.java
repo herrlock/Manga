@@ -18,20 +18,20 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 public enum Hoster {
     MANGAPANDA( "Mangapanda", "http://www.mangapanda.com/" ) {
         @Override
-        public ChapterList getChapterList( URL mangaUrl, DownloadConfiguration conf ) throws IOException {
-            return new MangaPanda( mangaUrl, conf );
+        public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
+            return new MangaPanda( conf );
         }
     },
     PUREMANGA( "Pure-Manga", "http://www.pure-manga.org/" ) {
         @Override
-        public ChapterList getChapterList( URL mangaUrl, DownloadConfiguration conf ) throws IOException {
-            return new PureManga( mangaUrl, conf );
+        public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
+            return new PureManga( conf );
         }
     },
     MANGAFOX( "Mangafox", "http://www.mangafox.me/" ) {
         @Override
-        public ChapterList getChapterList( URL mangaUrl, DownloadConfiguration conf ) throws IOException {
-            return new MangaFox( mangaUrl, conf );
+        public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
+            return new MangaFox( conf );
         }
     };
 
@@ -64,13 +64,13 @@ public enum Hoster {
     /**
      * creates an instance of a Host, specified by the URL's host-part
      * 
-     * @param mangaUrl
-     *            the URL to the mainpage
+     * @param conf
+     *            the {@link DownloadConfiguration} from the downloader
      * @return an instance of the ChapterList specified by the current {@link Hoster}-Object
      * @throws IOException
      *             thrown by the constructors of the special ChapterList-implementations
      */
-    public abstract ChapterList getChapterList( URL mangaUrl, DownloadConfiguration conf ) throws IOException;
+    public abstract ChapterList getChapterList( DownloadConfiguration conf ) throws IOException;
 
     /**
      * checks all Hoster for the one that matches the given URL

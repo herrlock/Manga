@@ -17,9 +17,9 @@ final class MangaPanda extends ChapterList {
 
     private final String name;
 
-    public MangaPanda( URL url, DownloadConfiguration conf ) throws IOException {
+    public MangaPanda( DownloadConfiguration conf ) throws IOException {
         super( conf );
-        Document document = Utils.getDocument( url, conf );
+        Document document = Utils.getDocument( conf.getUrl(), conf );
 
         this.name = document.select( "#mangaproperties h2.aname" ).first().text();
 
@@ -32,7 +32,7 @@ final class MangaPanda extends ChapterList {
             String[] nameAndNumber = link.text().split( " " );
             String number = nameAndNumber[nameAndNumber.length - 1];
 
-            URL chapterUrl = new URL( url, link.attr( "href" ) );
+            URL chapterUrl = new URL( conf.getUrl(), link.attr( "href" ) );
 
             super.addChapter( number, chapterUrl );
         }

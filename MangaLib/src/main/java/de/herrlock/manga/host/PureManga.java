@@ -18,9 +18,9 @@ final class PureManga extends ChapterList {
 
     private final String name;
 
-    public PureManga( URL url, DownloadConfiguration conf ) throws IOException {
+    public PureManga( DownloadConfiguration conf ) throws IOException {
         super( conf );
-        Document document = Utils.getDocument( url, conf );
+        Document document = Utils.getDocument( conf.getUrl(), conf );
 
         this.name = document.select( "#content h2.titlebg" ).first().text();
 
@@ -31,7 +31,7 @@ final class PureManga extends ChapterList {
             String[] chapterNrAndName = link.text().split( ":" );
             String number = chapterNrAndName[0].split( " " )[1];
 
-            URL chapterUrl = new URL( url, link.attr( "href" ) );
+            URL chapterUrl = new URL( conf.getUrl(), link.attr( "href" ) );
 
             super.addChapter( number, chapterUrl );
         }

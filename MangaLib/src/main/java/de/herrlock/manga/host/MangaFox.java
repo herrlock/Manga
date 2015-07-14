@@ -18,9 +18,9 @@ final class MangaFox extends ChapterList {
 
     private final String name;
 
-    public MangaFox( URL url, DownloadConfiguration conf ) throws IOException {
+    public MangaFox( DownloadConfiguration conf ) throws IOException {
         super( conf );
-        Document document = Utils.getDocument( url, conf );
+        Document document = Utils.getDocument( conf.getUrl(), conf );
 
         this.name = document.select( "#series_info>.cover>img" ).first().attr( "alt" );
 
@@ -35,7 +35,7 @@ final class MangaFox extends ChapterList {
             String[] nnumber = a.text().split( " " );
             String number = nnumber[nnumber.length - 1];
 
-            URL chapterUrl = new URL( url, a.attr( "href" ) );
+            URL chapterUrl = new URL( conf.getUrl(), a.attr( "href" ) );
 
             super.addChapter( number, chapterUrl );
         }
