@@ -1,6 +1,12 @@
 
 1.4:
-- build a user interface
+- build the web-based gui
+ - get some images with a "valid" copyright
+ - easy way to start and stop the server
+- fcking release it finally
+
+1.5:
+- use java.util.concurrent.* package for more complex execution with progress-callbacks
 
 X:
 - reduce used system-resources (esp. RAM)
