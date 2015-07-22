@@ -17,7 +17,7 @@ import de.herrlock.manga.http.response.Response;
 public class IndexHtmlLocation extends Location {
 
     public IndexHtmlLocation() {
-        super( "md" );
+        super( "" );
     }
 
     @Override

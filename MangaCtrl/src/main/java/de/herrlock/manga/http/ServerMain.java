@@ -24,12 +24,12 @@ public final class ServerMain {
     }
 
     private static void addLocations( Server server ) {
-        // /md, default-page
+        // "/", default-page
         server.registerLocation( new IndexHtmlLocation() );
-        // /start, to start
+        // "/start", to start
         server.registerLocation( new StartDownloadLocation() );
 
-        // /jquery.js, returns jquery
+        // "/jquery.js", returns jquery
         server.registerLocation( new JQueryLocation() );
 
         server.registerLocation( new BackgroundImageLocation() );
