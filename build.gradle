@@ -52,7 +52,7 @@ task compileRun (description: 'Compile run.cs and copy the exe into the build-fo
     }
 }
 
-task dist (type: Zip, group: 'build', description: 'Creates a distribution', dependsOn: [createLibs, copyOther, copyDist, compileRun]) {
+task dist (type: Zip, group: 'build', description: 'Creates a distribution in a zip-file', dependsOn: [createLibs, copyOther, copyDist, compileRun]) {
     destinationDir = file('build')
     baseName = project.name
     version = project.version
