@@ -2,19 +2,15 @@ package de.herrlock.manga.downloader.dqc;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.apache.commons.io.FileUtils;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.util.Utils;
@@ -93,10 +89,6 @@ public final class DownloadQueueContainer {
         return this.clc.getImageLink( pageUrl );
     }
 
-    URLConnection getConnection( URL url ) throws IOException {
-        return Utils.getConnection( url, this.conf );
-    }
-
     /**
      * A Thread to download one image
      * 
@@ -117,11 +109,9 @@ public final class DownloadQueueContainer {
         public void run() {
             try {
                 URL imageURL = DownloadQueueContainer.this.getImageLink( this.p.getUrl() );
-                URLConnection con = getConnection( imageURL );
-                InputStream in = con.getInputStream();
                 File outputFile = this.p.getTargetFile();
                 System.out.println( "start reading image " + imageURL );
-                FileUtils.copyInputStreamToFile( in, outputFile );
+                Utils.copyResponseToFile( imageURL, DownloadQueueContainer.this.conf, outputFile );
                 System.out.println( "saved image to " + outputFile );
             } catch ( SocketException | SocketTimeoutException ex ) {
                 DownloadQueueContainer.this.add( this.p );

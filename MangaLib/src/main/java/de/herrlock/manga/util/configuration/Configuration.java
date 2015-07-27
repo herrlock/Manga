@@ -1,11 +1,13 @@
 package de.herrlock.manga.util.configuration;
 
 import java.io.File;
-import java.net.InetSocketAddress;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.net.Proxy;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Properties;
+
+import org.apache.http.HttpHost;
 
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.util.ChapterPattern;
@@ -28,7 +30,7 @@ public abstract class Configuration {
         return url;
     }
 
-    protected static Proxy _createProxy( Properties p ) {
+    protected static HttpHost _createProxy( Properties p ) {
         // get proxy
         try {
             String urlString = p.getProperty( Constants.PARAM_PROXY );
@@ -36,13 +38,13 @@ public abstract class Configuration {
                 URL proxyUrl = new URL( urlString );
                 String proxyHost = proxyUrl.getHost();
                 int proxyPort = proxyUrl.getPort();
-                InetSocketAddress sa = new InetSocketAddress( proxyHost, proxyPort );
-                return new Proxy( Proxy.Type.HTTP, sa );
+                InetAddress proxyAddress = InetAddress.getByName( proxyHost );
+                return new HttpHost( proxyAddress, proxyPort );
             }
-        } catch ( MalformedURLException ex ) {
-            throw new InitializeException( "proxy-url is malformed", ex );
+        } catch ( MalformedURLException | UnknownHostException ex ) {
+            throw new InitializeException( "proxy-url is malformed or not recognized.", ex );
         }
-        return Proxy.NO_PROXY;
+        return null;
     }
 
     protected static ChapterPattern _createPattern( Properties p ) {
