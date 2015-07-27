@@ -10,6 +10,7 @@ import java.util.Map;
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.ChapterPattern;
+import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -31,11 +32,13 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      *             thrown by {@link Hoster#getChapterList(URL)}
      */
     public static ChapterList getInstance( DownloadConfiguration conf ) throws IOException {
+        Utils.LOG.println( "ChapterList.getInstance" );
         URL url = conf.getUrl();
         Hoster h = Hoster.getHostByURL( url );
         if ( h == null ) {
             throw new InitializeException( url + " could not be resolved to a registered host." );
         }
+        Utils.LOG.println( "Selected Hoster: " + h.getName() );
         return h.getChapterList( conf );
     }
 

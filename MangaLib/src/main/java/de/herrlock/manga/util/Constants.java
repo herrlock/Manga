@@ -1,10 +1,5 @@
 package de.herrlock.manga.util;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 
 public final class Constants {
@@ -57,18 +52,6 @@ public final class Constants {
             return Double.compare( d1, d2 );
         }
     };
-
-    /**
-     * a PrintWriter to write tracing-messages with
-     */
-    public static final PrintWriter TRACE;
-    static {
-        try {
-            TRACE = new PrintWriter( new OutputStreamWriter( new FileOutputStream( TRACE_FILE ), StandardCharsets.UTF_8 ), true );
-        } catch ( FileNotFoundException ex ) {
-            throw new RuntimeException( ex );
-        }
-    }
 
     private Constants() {
         // not called

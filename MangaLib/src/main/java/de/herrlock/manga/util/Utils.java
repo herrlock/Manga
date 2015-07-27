@@ -1,13 +1,10 @@
 package de.herrlock.manga.util;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -21,11 +18,17 @@ import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import de.herrlock.manga.ui.LogWindow;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 public final class Utils {
+    public static final LogWindow LOG = new LogWindow();
 
     private static final CloseableHttpClient client = HttpClients.createDefault();
+
+    static {
+        LOG.show();
+    }
 
     public static HttpGet createHttpGet( final URL url, final DownloadConfiguration conf ) {
         HttpGet get = new HttpGet( url.toExternalForm() );
@@ -48,13 +51,13 @@ public final class Utils {
      * @throws IOException
      */
     public static Document getDocument( final URL url, final DownloadConfiguration conf ) throws IOException {
-        final HttpGet httpGet = createHttpGet( url, conf );
-        return client.execute( httpGet, ResponseHandlers.TO_DOCUMENT_HANDLER );
+        return getDataAndExecuteResponseHandler( url, conf, ResponseHandlers.TO_DOCUMENT_HANDLER );
     }
 
-    public static void copyDataToFile( final URL url, final DownloadConfiguration conf, File outputFile ) throws IOException {
+    public static <T> T getDataAndExecuteResponseHandler( final URL url, final DownloadConfiguration conf,
+        ResponseHandler<T> handler ) throws IOException {
         final HttpGet httpGet = createHttpGet( url, conf );
-        client.execute( httpGet, ResponseHandlers.newCopyToFileHandler( outputFile ) );
+        return client.execute( httpGet, handler );
     }
 
     /**
@@ -82,22 +85,6 @@ public final class Utils {
         }
     }
 
-    /**
-     * trace an object<br>
-     * calls {@link Constants#TRACE}{@code .}{@link java.io.PrintWriter#println(Object) println(Object)}
-     * 
-     * @param message
-     *            the message to trace
-     */
-    public static void trace( final Object message ) {
-        Constants.TRACE.println( message );
-    }
-    public static void trace( final Throwable t ) {
-        Constants.TRACE.println( "---" );
-        t.printStackTrace( Constants.TRACE );
-        Constants.TRACE.println( "---" );
-    }
-
     private Utils() {
         // not called
     }
@@ -123,23 +110,9 @@ public final class Utils {
             }
         };
 
-        public static ResponseHandler<Void> newCopyToFileHandler( final File outputFile ) {
-            return new ResponseHandler<Void>() {
-                @Override
-                public Void handleResponse( HttpResponse response ) throws ClientProtocolException, IOException {
-                    HttpEntity entity = response.getEntity();
-                    try ( InputStream in = entity.getContent() ) {
-                        FileUtils.copyInputStreamToFile( in, outputFile );
-                    } finally {
-                        EntityUtils.consume( entity );
-                    }
-                    return null;
-                }
-            };
-        }
-
         private ResponseHandlers() {
             // not used
         }
     }
+
 }

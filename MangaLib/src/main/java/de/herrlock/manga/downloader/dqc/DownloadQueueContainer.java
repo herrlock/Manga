@@ -2,6 +2,7 @@ package de.herrlock.manga.downloader.dqc;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -12,6 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.util.EntityUtils;
+
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
@@ -20,7 +28,7 @@ public final class DownloadQueueContainer {
 
     private final List<Page> dlQueue = new ArrayList<>();
     private final ChapterListContainer clc;
-    private final DownloadConfiguration conf;
+    final DownloadConfiguration conf;
 
     public DownloadQueueContainer( ChapterListContainer clc, DownloadConfiguration conf ) {
         this.clc = clc;
@@ -70,11 +78,11 @@ public final class DownloadQueueContainer {
      * clears the queue, calls itself in case a download timed out
      */
     public void downloadPages() {
-        Utils.trace( "downloadPages()" );
+        Utils.LOG.println( "DownloadQueueContainer.downloadPages" );
         List<Page> pages = Collections.unmodifiableList( new ArrayList<>( this.dlQueue ) );
         this.dlQueue.clear();
         // download pictures from the ChapterListContainer
-        List<DownloadThread> threads = new ArrayList<>( pages.size() );
+        List<Thread> threads = new ArrayList<>( pages.size() );
         for ( Page p : pages ) {
             threads.add( new DownloadThread( p ) );
         }
@@ -96,10 +104,23 @@ public final class DownloadQueueContainer {
      */
     private final class DownloadThread extends Thread {
         private final Page p;
+        private final ResponseHandler<Void> handler;
 
-        public DownloadThread( Page p ) {
-            Utils.trace( "new DownloadThread( " + p.getUrl() + " )" );
+        public DownloadThread( final Page p ) {
+            Utils.LOG.println( "DownloadThread.DownloadThread( " + p.getUrl() + " )" );
             this.p = p;
+            this.handler = new ResponseHandler<Void>() {
+                @Override
+                public Void handleResponse( HttpResponse response ) throws ClientProtocolException, IOException {
+                    HttpEntity entity = response.getEntity();
+                    try ( InputStream in = entity.getContent() ) {
+                        FileUtils.copyInputStreamToFile( in, p.getTargetFile() );
+                    } finally {
+                        EntityUtils.consume( entity );
+                    }
+                    return null;
+                }
+            };
         }
 
         /**
@@ -110,9 +131,9 @@ public final class DownloadQueueContainer {
             try {
                 URL imageURL = DownloadQueueContainer.this.getImageLink( this.p.getUrl() );
                 File outputFile = this.p.getTargetFile();
-                System.out.println( "start reading image " + imageURL );
-                Utils.copyDataToFile( imageURL, DownloadQueueContainer.this.conf, outputFile );
-                System.out.println( "saved image to " + outputFile );
+                Utils.LOG.println( "start reading image " + imageURL );
+                Utils.getDataAndExecuteResponseHandler( imageURL, DownloadQueueContainer.this.conf, this.handler );
+                Utils.LOG.println( "saved image to " + outputFile );
             } catch ( SocketException | SocketTimeoutException ex ) {
                 DownloadQueueContainer.this.add( this.p );
             } catch ( IOException ex ) {

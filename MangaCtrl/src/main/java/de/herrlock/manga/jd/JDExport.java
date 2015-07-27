@@ -2,10 +2,8 @@ package de.herrlock.manga.jd;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +13,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+
+import org.apache.commons.io.FileUtils;
 
 import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.exceptions.InitializeException;
@@ -46,7 +46,7 @@ public class JDExport extends MDownloader {
     }
 
     private static void execute( Properties p ) {
-        System.out.println( "add to jd" );
+        Utils.LOG.println( "JDExport.execute" );
         String jdhome = p.getProperty( Constants.PARAM_JDFW );
         if ( jdhome == null || jdhome.trim().isEmpty() ) {
             throw new InitializeException( "\"" + Constants.PARAM_JDFW + "\" must be set" );
@@ -93,10 +93,9 @@ public class JDExport extends MDownloader {
 
         public void write() throws IOException {
             File outFile = new File( JDExport.this.jdfwFolder, this.c.getFilename() );
-            try ( OutputStream out = new FileOutputStream( outFile ) ) {
-                out.write( this.c.export().getBytes( StandardCharsets.UTF_8 ) );
-                System.out.println( "print string -> " + outFile );
-            }
+            byte[] bytes = this.c.export().getBytes( StandardCharsets.UTF_8 );
+            FileUtils.writeByteArrayToFile( outFile, bytes );
+            Utils.LOG.println( "print string -> " + outFile );
         }
 
         private class CrawljobFileEntryAdder extends Thread {

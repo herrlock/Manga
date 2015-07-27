@@ -76,7 +76,7 @@ public final class PictureMapContainer {
         public void run() {
             Map<Integer, URL> pageMap = getMap();
             PictureMapContainer.this.addEntry( this.chapter.getNumber(), pageMap );
-            System.out.println( this.chapter );
+            Utils.LOG.println( this.chapter.toString() );
         }
 
         /**

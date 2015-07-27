@@ -30,7 +30,8 @@ public abstract class MDownloader {
      *            the Configuration to use
      */
     public MDownloader( DownloadConfiguration conf ) {
-        System.out.println( conf.getUrl() );
+        Utils.LOG.println( "MDownloader.MDownloader" );
+        Utils.LOG.println( conf.getUrl().toExternalForm() );
         try {
             this.clc = new ChapterListContainer( conf );
         } catch ( IOException ex ) {
@@ -39,6 +40,7 @@ public abstract class MDownloader {
         this.pmc = new PictureMapContainer( this.clc );
         this.dqc = new DownloadQueueContainer( this.clc, conf );
     }
+
     protected abstract void run();
 
     /**
@@ -47,7 +49,7 @@ public abstract class MDownloader {
      * @return the number of Chapters
      * @see ChapterListContainer#getSize()
      */
-    public int getCLCSize() {
+    public final int getCLCSize() {
         return this.clc.getSize();
     }
 
@@ -57,7 +59,7 @@ public abstract class MDownloader {
      * @return the number of Pictures
      * @see PictureMapContainer#getSize()
      */
-    public int getPMCSize() {
+    public final int getPMCSize() {
         return this.pmc.getSize();
     }
 
@@ -66,14 +68,17 @@ public abstract class MDownloader {
      * basically calls {@link #downloadChapter(String, Map)} for every chapter
      */
     public void downloadAll() {
-        Utils.trace( "downloadAll()" );
+        Utils.LOG.println( "MDownloader.downloadAll" );
         Map<String, Map<Integer, URL>> picturemap = this.pmc.getPictureMap();
         List<String> keys = new ArrayList<>( picturemap.keySet() );
         Collections.sort( keys, Constants.STRING_NUMBER_COMPARATOR );
+        Utils.LOG.setProgressMax( getCLCSize() );
+        int progress = 0;
         for ( String key : keys ) {
             Map<Integer, URL> urlMap = picturemap.get( key );
             downloadChapter( key, urlMap );
             picturemap.remove( key );
+            Utils.LOG.setProgress( ++progress );
         }
     }
 
@@ -88,8 +93,8 @@ public abstract class MDownloader {
      * @see DownloadQueueContainer#downloadPages()
      */
     private void downloadChapter( String key, Map<Integer, URL> urlMap ) {
-        Utils.trace( "downloadChapter( " + key + " )" );
-        System.out.println( "Download chapter " + key + " (" + urlMap.size() + " pages)" );
+        Utils.LOG.println( "MDownloader.downloadChapter( " + key + " )" );
+        Utils.LOG.println( "Download chapter " + key + " (" + urlMap.size() + " pages)" );
         File chapterFolder = new File( this.clc.getPath(), key );
         if ( chapterFolder.exists() || chapterFolder.mkdirs() ) {
             // add pictures to queue
@@ -99,7 +104,7 @@ public abstract class MDownloader {
         } else {
             throw new RuntimeException( chapterFolder + " does not exists and could not be created" );
         }
-        System.out.println( "finished chapter " + key + "\n" );
+        Utils.LOG.println( "finished chapter " + key + "\n" );
     }
 
     /**
