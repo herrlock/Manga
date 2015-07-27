@@ -52,7 +52,7 @@ public final class Utils {
         return client.execute( httpGet, ResponseHandlers.TO_DOCUMENT_HANDLER );
     }
 
-    public static void copyResponseToFile( final URL url, final DownloadConfiguration conf, File outputFile ) throws IOException {
+    public static void copyDataToFile( final URL url, final DownloadConfiguration conf, File outputFile ) throws IOException {
         final HttpGet httpGet = createHttpGet( url, conf );
         client.execute( httpGet, ResponseHandlers.newCopyToFileHandler( outputFile ) );
     }

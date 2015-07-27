@@ -111,7 +111,7 @@ public final class DownloadQueueContainer {
                 URL imageURL = DownloadQueueContainer.this.getImageLink( this.p.getUrl() );
                 File outputFile = this.p.getTargetFile();
                 System.out.println( "start reading image " + imageURL );
-                Utils.copyResponseToFile( imageURL, DownloadQueueContainer.this.conf, outputFile );
+                Utils.copyDataToFile( imageURL, DownloadQueueContainer.this.conf, outputFile );
                 System.out.println( "saved image to " + outputFile );
             } catch ( SocketException | SocketTimeoutException ex ) {
                 DownloadQueueContainer.this.add( this.p );
