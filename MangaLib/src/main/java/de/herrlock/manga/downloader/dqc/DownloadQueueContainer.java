@@ -19,12 +19,15 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.util.EntityUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 public final class DownloadQueueContainer {
+    static final Logger logger = LogManager.getLogger();
 
     private final List<Page> dlQueue = new ArrayList<>();
     private final ChapterListContainer clc;
@@ -78,7 +81,7 @@ public final class DownloadQueueContainer {
      * clears the queue, calls itself in case a download timed out
      */
     public void downloadPages() {
-        Utils.LOG.println( "DownloadQueueContainer.downloadPages" );
+        logger.entry();
         List<Page> pages = Collections.unmodifiableList( new ArrayList<>( this.dlQueue ) );
         this.dlQueue.clear();
         // download pictures from the ChapterListContainer
@@ -107,7 +110,7 @@ public final class DownloadQueueContainer {
         private final ResponseHandler<Void> handler;
 
         public DownloadThread( final Page p ) {
-            Utils.LOG.println( "DownloadThread.DownloadThread( " + p.getUrl() + " )" );
+            logger.entry( p.getUrl() );
             this.p = p;
             this.handler = new ResponseHandler<Void>() {
                 @Override
@@ -131,9 +134,9 @@ public final class DownloadQueueContainer {
             try {
                 URL imageURL = DownloadQueueContainer.this.getImageLink( this.p.getUrl() );
                 File outputFile = this.p.getTargetFile();
-                Utils.LOG.println( "start reading image " + imageURL );
+                logger.debug( "start reading image " + imageURL );
                 Utils.getDataAndExecuteResponseHandler( imageURL, DownloadQueueContainer.this.conf, this.handler );
-                Utils.LOG.println( "saved image to " + outputFile );
+                logger.debug( "saved image to " + outputFile );
             } catch ( SocketException | SocketTimeoutException ex ) {
                 DownloadQueueContainer.this.add( this.p );
             } catch ( IOException ex ) {

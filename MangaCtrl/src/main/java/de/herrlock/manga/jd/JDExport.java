@@ -46,7 +46,7 @@ public class JDExport extends MDownloader {
     }
 
     private static void execute( Properties p ) {
-        Utils.LOG.println( "JDExport.execute" );
+        logger.entry();
         String jdhome = p.getProperty( Constants.PARAM_JDFW );
         if ( jdhome == null || jdhome.trim().isEmpty() ) {
             throw new InitializeException( "\"" + Constants.PARAM_JDFW + "\" must be set" );
@@ -95,7 +95,7 @@ public class JDExport extends MDownloader {
             File outFile = new File( JDExport.this.jdfwFolder, this.c.getFilename() );
             byte[] bytes = this.c.export().getBytes( StandardCharsets.UTF_8 );
             FileUtils.writeByteArrayToFile( outFile, bytes );
-            Utils.LOG.println( "print string -> " + outFile );
+            logger.info( "print string -> {}", outFile );
         }
 
         private class CrawljobFileEntryAdder extends Thread {

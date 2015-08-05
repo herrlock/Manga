@@ -18,17 +18,11 @@ import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import de.herrlock.manga.ui.LogWindow;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 public final class Utils {
-    public static final LogWindow LOG = new LogWindow();
 
     private static final CloseableHttpClient client = HttpClients.createDefault();
-
-    static {
-        LOG.show();
-    }
 
     public static HttpGet createHttpGet( final URL url, final DownloadConfiguration conf ) {
         HttpGet get = new HttpGet( url.toExternalForm() );

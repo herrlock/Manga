@@ -8,15 +8,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.downloader.dqc.DownloadQueueContainer;
 import de.herrlock.manga.downloader.pmc.PictureMapContainer;
 import de.herrlock.manga.exceptions.InitializeException;
+import de.herrlock.manga.ui.LogWindow;
 import de.herrlock.manga.util.Constants;
-import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 public abstract class MDownloader {
+    protected static final Logger logger = LogManager.getLogger();
 
     protected final ChapterListContainer clc;
     protected final PictureMapContainer pmc;
@@ -30,8 +34,8 @@ public abstract class MDownloader {
      *            the Configuration to use
      */
     public MDownloader( DownloadConfiguration conf ) {
-        Utils.LOG.println( "MDownloader.MDownloader" );
-        Utils.LOG.println( conf.getUrl().toExternalForm() );
+        logger.entry();
+        logger.info( conf.getUrl().toExternalForm() );
         try {
             this.clc = new ChapterListContainer( conf );
         } catch ( IOException ex ) {
@@ -68,17 +72,17 @@ public abstract class MDownloader {
      * basically calls {@link #downloadChapter(String, Map)} for every chapter
      */
     public void downloadAll() {
-        Utils.LOG.println( "MDownloader.downloadAll" );
+        logger.entry();
         Map<String, Map<Integer, URL>> picturemap = this.pmc.getPictureMap();
         List<String> keys = new ArrayList<>( picturemap.keySet() );
         Collections.sort( keys, Constants.STRING_NUMBER_COMPARATOR );
-        Utils.LOG.setProgressMax( getCLCSize() );
+        LogWindow.setProgressMax( keys.size() );
         int progress = 0;
         for ( String key : keys ) {
             Map<Integer, URL> urlMap = picturemap.get( key );
             downloadChapter( key, urlMap );
             picturemap.remove( key );
-            Utils.LOG.setProgress( ++progress );
+            LogWindow.setProgress( ++progress );
         }
     }
 
@@ -93,8 +97,8 @@ public abstract class MDownloader {
      * @see DownloadQueueContainer#downloadPages()
      */
     private void downloadChapter( String key, Map<Integer, URL> urlMap ) {
-        Utils.LOG.println( "MDownloader.downloadChapter( " + key + " )" );
-        Utils.LOG.println( "Download chapter " + key + " (" + urlMap.size() + " pages)" );
+        logger.entry( key );
+        logger.info( "Download chapter {} ({} pages)", key, urlMap.size() );
         File chapterFolder = new File( this.clc.getPath(), key );
         if ( chapterFolder.exists() || chapterFolder.mkdirs() ) {
             // add pictures to queue
@@ -104,7 +108,7 @@ public abstract class MDownloader {
         } else {
             throw new RuntimeException( chapterFolder + " does not exists and could not be created" );
         }
-        Utils.LOG.println( "finished chapter " + key + "\n" );
+        logger.info( "finished chapter {}\n", key );
     }
 
     /**

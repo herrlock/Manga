@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration packages="de.herrlock.manga.ui">
+	<Appenders>
+		<JTextAreaAppender />
+		<File name="FileTrace" append="false" bufferedIO="true" fileName="log/trace.log"
+			immediateFlush="false">
+			<PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+		</File>
+		<File name="ApacheLogger" append="false" bufferedIO="true"
+			fileName="log/apache.log" immediateFlush="false">
+			<PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+		</File>
+		<Console name="ConsoleTrace" target="SYSTEM_OUT">
+			<PatternLayout pattern="%m%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="org.apache.http" level="info" additivity="false">
+			<AppenderRef ref="ApacheLogger" />
+		</Logger>
+		<Root level="all">
+			<AppenderRef ref="JTextArea" />
+			<AppenderRef ref="ConsoleTrace" />
+			<AppenderRef ref="FileTrace" />
+		</Root>
+	</Loggers>
+
+</Configuration>

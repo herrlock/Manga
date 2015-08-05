@@ -7,12 +7,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * A List of Strings that is used to
  * 
  * @author HerrLock
  */
 public class ChapterPattern {
+    private static final Logger logger = LogManager.getLogger();
     /**
      * the regex for the patterns<br>
      * accepts "a list of strings seperated by semicolons"
@@ -60,7 +64,7 @@ public class ChapterPattern {
      *            the pattern to analyze, in case of {@code null} or an empty string an empty collection is used
      */
     public ChapterPattern( String pattern ) {
-        Utils.LOG.println( "ChapterPatern.ChapterPatter( " + pattern + " )" );
+        logger.trace( "ChapterPatern.ChapterPatter( {} )", pattern );
         Set<Interval> result = new HashSet<>();
         // accept only if valid
         if ( pattern != null && REGEX.matcher( pattern ).matches() ) {

@@ -8,11 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Utils;
 
 public final class PictureMapContainer {
+    static final Logger logger = LogManager.getLogger();
 
     /**
      * a {@link Map} containing the {@link URL}s of all the pages
@@ -76,7 +80,7 @@ public final class PictureMapContainer {
         public void run() {
             Map<Integer, URL> pageMap = getMap();
             PictureMapContainer.this.addEntry( this.chapter.getNumber(), pageMap );
-            Utils.LOG.println( this.chapter.toString() );
+            logger.info( this.chapter.toString() );
         }
 
         /**
