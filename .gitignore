@@ -1,14 +1,21 @@
+
+## eclipse-files
 .classpath
 .project
-.gradle/
 .settings/
 bin/
+
+## gradle-files
+.gradle/
 build/
 
+## files for local testing
+# MangaCtrl
 MangaCtrl/downloader.txt
 MangaCtrl/download/
 MangaCtrl/log/
 MangaCtrl/folderwatch/
-
+# MangaLib
 MangaLib/src/main/resources/de/herrlock/manga/http/background.jpg
 MangaLib/src/main/resources/de/herrlock/manga/http/jquery.js
+MangaLib/log/
