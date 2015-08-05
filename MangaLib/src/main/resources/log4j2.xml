@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration packages="de.herrlock.manga.ui">
+	<Properties>
+		<Property name="patternLayout">%d{HH:mm:ss.SSS} [%t] %-5level %logger{1.}.%M - %m%n</Property>
+	</Properties>
 	<Appenders>
 		<JTextAreaAppender />
-		<File name="FileTrace" append="false" bufferedIO="true" fileName="log/trace.log"
-			immediateFlush="false">
-			<PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+		<File name="FileTrace" append="false" bufferedIO="true" fileName="log/trace.log" immediateFlush="false">
+			<PatternLayout pattern="${patternLayout}" />
 		</File>
-		<File name="ApacheLogger" append="false" bufferedIO="true"
-			fileName="log/apache.log" immediateFlush="false">
-			<PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+		<File name="ApacheLogger" append="false" bufferedIO="true" fileName="log/apache.log" immediateFlush="false">
+			<PatternLayout pattern="${patternLayout}" />
 		</File>
 		<Console name="ConsoleTrace" target="SYSTEM_OUT">
-			<PatternLayout pattern="%m%n" />
+			<PatternLayout pattern="${patternLayout}" />
 		</Console>
 	</Appenders>
 	<Loggers>
