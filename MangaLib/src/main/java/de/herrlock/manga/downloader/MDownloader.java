@@ -15,7 +15,7 @@ import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.downloader.dqc.DownloadQueueContainer;
 import de.herrlock.manga.downloader.pmc.PictureMapContainer;
 import de.herrlock.manga.exceptions.InitializeException;
-import de.herrlock.manga.ui.LogWindow;
+import de.herrlock.manga.ui.log.LogWindow;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 

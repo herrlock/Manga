@@ -1,4 +1,4 @@
-package de.herrlock.manga.ui;
+package de.herrlock.manga.ui.log;
 
 import java.awt.BorderLayout;
 import java.awt.Container;

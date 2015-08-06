@@ -1,4 +1,4 @@
-package de.herrlock.manga.ui;
+package de.herrlock.manga.ui.log;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter.Result;
