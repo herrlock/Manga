@@ -8,7 +8,7 @@ import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.jd.JDExport;
 
 public interface Exec {
-    public static final Exec DIALOG_DOWNLOADER = new Exec() {
+    Exec DIALOG_DOWNLOADER = new Exec() {
         @Override
         public void execute() {
             DialogDownloader.execute();
@@ -50,5 +50,5 @@ public interface Exec {
         }
     };
 
-    public abstract void execute();
+    void execute();
 }

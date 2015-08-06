@@ -14,7 +14,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  */
 public final class GUIDownloader extends MDownloader {
 
-    public static void main( String[] args ) {
+    public static void main( String... args ) {
         logger.entry();
         execute();
     }

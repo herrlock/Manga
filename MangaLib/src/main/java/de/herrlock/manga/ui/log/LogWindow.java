@@ -30,7 +30,14 @@ public final class LogWindow {
     private static final List<String> lafPrefs = Collections
         .unmodifiableList( Arrays.asList( "Windows Classic", "Windows", "Nimbus", "Metal" ) );
 
+    private static final LogWindow instance = new LogWindow();
+
+    private final JFrame frame;
+    private final JTextArea textarea = new JTextArea( 30, 70 );
+    private final JProgressBar progressbar = new JProgressBar();
+
     static {
+        // try to set a LookAndFeel
         Map<String, LookAndFeelInfo> lookAndFeels = new HashMap<>( lafPrefs.size() );
         for ( LookAndFeelInfo lookAndFeelInfo : UIManager.getInstalledLookAndFeels() ) {
             lookAndFeels.put( lookAndFeelInfo.getName(), lookAndFeelInfo );
@@ -51,12 +58,6 @@ public final class LogWindow {
         System.out.println( UIManager.getLookAndFeel().getName() );
 
     }
-
-    private static final LogWindow instance = new LogWindow();
-
-    private final JFrame frame;
-    private final JTextArea textarea = new JTextArea( 30, 70 );
-    private final JProgressBar progressbar = new JProgressBar();
 
     public static void setProgressMax( int max ) {
         synchronized ( instance.progressbar ) {
