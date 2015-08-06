@@ -10,15 +10,26 @@ import java.util.Scanner;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
+/**
+ * Starts the Download after printing informations about the number of Pictures to download to STDOUT and receiving a confirmation
+ * the proceed by STDIN. Reads the settings from the central settings-file.
+ * 
+ * @deprecated Maybe use PlainDownloader instead
+ * 
+ * @author HerrLock
+ */
+@Deprecated
 public final class ConsoleDownloader extends MDownloader {
 
     private final Scanner sc;
 
     public static void main( String... args ) {
+        logger.entry();
         execute();
     }
 
     public static void execute() {
+        logger.entry();
         Properties p = new Properties();
         try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
             p.load( fIn );
@@ -29,13 +40,14 @@ public final class ConsoleDownloader extends MDownloader {
         new ConsoleDownloader( conf, System.in ).run();
     }
 
-    protected ConsoleDownloader( DownloadConfiguration conf, InputStream in ) {
+    private ConsoleDownloader( DownloadConfiguration conf, InputStream in ) {
         super( conf );
         this.sc = new Scanner( in, "UTF-8" );
     }
 
     @Override
     protected void run() {
+        logger.entry();
         try {
             if ( goon() ) {
                 downloadAll();

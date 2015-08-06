@@ -7,20 +7,32 @@ import javax.swing.JOptionPane;
 import de.herrlock.manga.ui.main.MDGuiController;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
+/**
+ * A Downloader-Implementation that gets its Configuration from the GUI.
+ * 
+ * @author HerrLock
+ */
 public final class GUIDownloader extends MDownloader {
 
+    public static void main( String[] args ) {
+        logger.entry();
+        execute();
+    }
+
     public static void execute() {
+        logger.entry();
         Properties p = MDGuiController.getProperties();
         DownloadConfiguration conf = DownloadConfiguration.create( p );
         new GUIDownloader( conf ).run();
     }
 
-    protected GUIDownloader( DownloadConfiguration p ) {
+    private GUIDownloader( DownloadConfiguration p ) {
         super( p );
     }
 
     @Override
     protected void run() {
+        logger.entry();
         try {
             if ( goon() ) {
                 downloadAll();

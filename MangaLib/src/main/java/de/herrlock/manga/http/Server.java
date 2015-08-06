@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.http.location.Location;
 import de.herrlock.manga.http.location.NotFoundLocation;
@@ -22,6 +24,8 @@ import de.herrlock.manga.http.response.ServerExceptionResponse;
  * @author HerrLock
  */
 public class Server extends ServerSocket implements Runnable {
+
+    private static final Logger logger = LogManager.getLogger();
 
     private final Map<String, Location> locations = new HashMap<>();
     private final Location location404 = new NotFoundLocation();
@@ -36,8 +40,9 @@ public class Server extends ServerSocket implements Runnable {
 
     @Override
     public void run() {
+        logger.entry();
         try {
-            System.out.println( "started" );
+            logger.info( "started, request data at http://localhost:{}/", this.getLocalPort() );
             while ( true ) {
                 Socket socket = this.accept();
                 System.out.println( socket );
@@ -62,9 +67,9 @@ public class Server extends ServerSocket implements Runnable {
 
     public Response handleXHR( URL url ) {
         String path = url.getPath();
-        System.out.println( "Path: " + path );
+        logger.info( "Path: {}", path );
         String query = url.getQuery();
-        System.out.println( "Query: " + query );
+        logger.info( "Query: {}", query );
 
         Location loc = this.location404;
         for ( Entry<String, Location> entry : this.locations.entrySet() ) {
@@ -76,13 +81,13 @@ public class Server extends ServerSocket implements Runnable {
         try {
             return loc.handleXHR( url );
         } catch ( ServerException ex ) {
-            System.err.println( ex );
+            logger.error( ex );
             return new ServerExceptionResponse( ex );
         }
     }
 
     public void registerLocation( Location loc ) {
-        System.out.println( "register \"/" + loc.getPath() + "\"" );
+        logger.info( "register \"/{}\"", loc.getPath() );
         String path = "/" + loc.getPath();
         if ( this.locations.containsKey( path ) ) {
             throw new RuntimeException( path + " already registered" );

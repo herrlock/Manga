@@ -7,7 +7,7 @@ import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.jd.JDExport;
 
-public abstract class Exec {
+public interface Exec {
     public static final Exec DIALOG_DOWNLOADER = new Exec() {
         @Override
         public void execute() {

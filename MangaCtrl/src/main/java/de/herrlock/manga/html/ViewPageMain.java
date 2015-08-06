@@ -4,12 +4,18 @@ import java.io.File;
 
 import javax.swing.JOptionPane;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * @author HerrLock
  */
 public final class ViewPageMain {
 
+    private static final Logger logger = LogManager.getLogger();
+
     public static void main( String... args ) {
+        logger.entry();
         execute();
     }
 
@@ -18,7 +24,7 @@ public final class ViewPageMain {
         if ( input != null ) {
             File folder = new File( input );
             if ( folder.exists() ) {
-                ViewPage.execute( folder );
+                execute( folder );
             } else {
                 JOptionPane.showMessageDialog( null, "Folder does not exists." );
             }

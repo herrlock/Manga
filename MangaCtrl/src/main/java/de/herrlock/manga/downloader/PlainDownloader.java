@@ -11,17 +11,19 @@ import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
- * simply downloads everything after starting
+ * Simply starts the download without any confirmation,
  * 
  * @author HerrLock
  */
 public final class PlainDownloader extends MDownloader {
 
     public static void main( String... args ) {
+        logger.entry();
         execute();
     }
 
     public static void execute() {
+        logger.entry();
         Properties p = new Properties();
         // load properties
         try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
@@ -34,12 +36,13 @@ public final class PlainDownloader extends MDownloader {
         new PlainDownloader( conf ).run();
     }
 
-    protected PlainDownloader( DownloadConfiguration conf ) {
+    private PlainDownloader( DownloadConfiguration conf ) {
         super( conf );
     }
 
     @Override
     protected void run() {
+        logger.entry();
         try {
             downloadAll();
         } catch ( RuntimeException ex ) {

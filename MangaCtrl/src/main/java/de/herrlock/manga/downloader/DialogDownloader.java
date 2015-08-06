@@ -10,9 +10,20 @@ import javax.swing.JOptionPane;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
+/**
+ * Initializes the download and starts it after confirming the number of pictures with a {@link JOptionPane}
+ * 
+ * @author Herrlock
+ */
 public final class DialogDownloader extends MDownloader {
 
+    public static void main( String... args ) {
+        logger.entry();
+        execute();
+    }
+
     public static void execute() {
+        logger.entry();
         Properties p = new Properties();
         // load properties
         try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
@@ -25,12 +36,13 @@ public final class DialogDownloader extends MDownloader {
         new DialogDownloader( conf ).run();
     }
 
-    protected DialogDownloader( DownloadConfiguration conf ) {
+    private DialogDownloader( DownloadConfiguration conf ) {
         super( conf );
     }
 
     @Override
     protected void run() {
+        logger.entry();
         try {
             if ( goon() ) {
                 downloadAll();
