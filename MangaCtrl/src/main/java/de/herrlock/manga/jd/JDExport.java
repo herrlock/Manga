@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.io.FileUtils;
 
@@ -84,11 +85,11 @@ public class JDExport extends MDownloader {
 
         public CrawljobFile( String chapter, Set<Entry<Integer, URL>> entrySet ) {
             this.c = new Crawljob( new File( JDExport.this.path, chapter ), chapter );
-            List<Thread> threads = new ArrayList<>( entrySet.size() );
+            List<CrawljobFileEntryAdder> callables = new ArrayList<>( entrySet.size() );
             for ( Entry<Integer, URL> e : entrySet ) {
-                threads.add( new CrawljobFileEntryAdder( e ) );
+                callables.add( new CrawljobFileEntryAdder( e ) );
             }
-            Utils.startAndWaitForThreads( threads );
+            Utils.callCallables( callables );
         }
 
         public void write() throws IOException {
@@ -98,7 +99,7 @@ public class JDExport extends MDownloader {
             logger.info( "print string -> {}", outFile );
         }
 
-        private class CrawljobFileEntryAdder extends Thread {
+        private class CrawljobFileEntryAdder implements Callable<Void> {
             private final Entry<Integer, URL> e;
 
             public CrawljobFileEntryAdder( Entry<Integer, URL> e ) {
@@ -106,10 +107,11 @@ public class JDExport extends MDownloader {
             }
 
             @Override
-            public void run() {
+            public Void call() {
                 String filename = this.e.getKey().toString();
                 String pictureURL = getImageLink().toExternalForm();
                 CrawljobFile.this.c.addCrawljobEntry( filename, pictureURL );
+                return null;
             }
 
             private URL getImageLink() {

@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
@@ -85,12 +86,11 @@ public final class DownloadQueueContainer {
         List<Page> pages = Collections.unmodifiableList( new ArrayList<>( this.dlQueue ) );
         this.dlQueue.clear();
         // download pictures from the ChapterListContainer
-        List<Thread> threads = new ArrayList<>( pages.size() );
+        List<DownloadThread> callables = new ArrayList<>( pages.size() );
         for ( Page p : pages ) {
-            threads.add( new DownloadThread( p ) );
+            callables.add( new DownloadThread( p ) );
         }
-        Utils.startAndWaitForThreads( threads );
-        // download failed pictures from the current chapter
+        Utils.callCallables( callables );
         if ( !this.dlQueue.isEmpty() ) {
             downloadPages();
         }
@@ -105,7 +105,7 @@ public final class DownloadQueueContainer {
      * 
      * @author HerrLock
      */
-    private final class DownloadThread extends Thread {
+    private final class DownloadThread implements Callable<Void> {
         private final Page p;
         private final ResponseHandler<Void> handler;
 
@@ -130,7 +130,7 @@ public final class DownloadQueueContainer {
          * downloads the page
          */
         @Override
-        public void run() {
+        public Void call() {
             try {
                 URL imageURL = DownloadQueueContainer.this.getImageLink( this.p.getUrl() );
                 File outputFile = this.p.getTargetFile();
@@ -148,6 +148,7 @@ public final class DownloadQueueContainer {
                     throw new RuntimeException( ex );
                 }
             }
+            return null;
         }
     }
 

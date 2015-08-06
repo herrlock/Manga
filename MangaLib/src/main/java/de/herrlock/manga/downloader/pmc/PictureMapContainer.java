@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,11 +29,11 @@ public final class PictureMapContainer {
         this.clc = clc;
         int clcSize = clc.getSize();
         this.picturemap = new HashMap<>( clcSize );
-        List<Thread> threads = new ArrayList<>( clcSize );
+        List<PictureMapThread> callables = new ArrayList<>( clcSize );
         for ( Chapter chapter : clc.getChapters() ) {
-            threads.add( new PictureMapThread( chapter ) );
+            callables.add( new PictureMapThread( chapter ) );
         }
-        Utils.startAndWaitForThreads( threads );
+        Utils.callCallables( callables );
     }
 
     /**
@@ -68,7 +69,7 @@ public final class PictureMapContainer {
      * 
      * @author HerrLock
      */
-    private final class PictureMapThread extends Thread {
+    private final class PictureMapThread implements Callable<Void> {
 
         private final Chapter chapter;
 
@@ -77,10 +78,11 @@ public final class PictureMapContainer {
         }
 
         @Override
-        public void run() {
+        public Void call() {
             Map<Integer, URL> pageMap = getMap();
             PictureMapContainer.this.addEntry( this.chapter.getNumber(), pageMap );
             logger.info( this.chapter.toString() );
+            return null;
         }
 
         /**

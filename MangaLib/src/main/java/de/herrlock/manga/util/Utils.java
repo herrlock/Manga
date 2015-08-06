@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -22,6 +27,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 public final class Utils {
 
+    private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20 );
     private static final CloseableHttpClient client = HttpClients.createDefault();
 
     public static HttpGet createHttpGet( final URL url, final DownloadConfiguration conf ) {
@@ -63,7 +69,9 @@ public final class Utils {
      *             in case of an {@link InterruptedException}
      * @see Thread#start()
      * @see Thread#join()
+     * @deprecated use {@link #callCallables(Collection)} instead
      */
+    @Deprecated
     public static void startAndWaitForThreads( final Collection<? extends Thread> threads ) {
         // start all threads
         for ( Thread t : threads ) {
@@ -74,6 +82,14 @@ public final class Utils {
             for ( Thread t : threads ) {
                 t.join();
             }
+        } catch ( InterruptedException ex ) {
+            throw new RuntimeException( ex );
+        }
+    }
+
+    public static <T> List<Future<T>> callCallables( final Collection<? extends Callable<T>> callables ) {
+        try {
+            return THREAD_POOL.invokeAll( callables );
         } catch ( InterruptedException ex ) {
             throw new RuntimeException( ex );
         }
