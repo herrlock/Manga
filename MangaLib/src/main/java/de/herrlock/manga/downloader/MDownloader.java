@@ -108,7 +108,7 @@ public abstract class MDownloader {
         } else {
             throw new RuntimeException( chapterFolder + " does not exists and could not be created" );
         }
-        logger.info( "finished chapter {}\n", key );
+        logger.info( "finished chapter {}", key );
     }
 
     /**
