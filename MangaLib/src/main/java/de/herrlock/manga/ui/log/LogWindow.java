@@ -27,8 +27,7 @@ import org.apache.logging.log4j.Logger;
 public final class LogWindow {
     private static final Logger logger = LogManager.getLogger();
 
-    private static final List<String> lafPrefs = Collections
-        .unmodifiableList( Arrays.asList( "Windows Classic", "Windows", "Nimbus", "Metal" ) );
+    private static final List<String> lafPrefs = Collections.unmodifiableList( Arrays.asList( "Windows", "Nimbus", "Metal" ) );
 
     private static final LogWindow instance = new LogWindow();
 
