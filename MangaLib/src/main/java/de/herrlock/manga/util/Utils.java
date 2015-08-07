@@ -9,6 +9,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -24,7 +25,8 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 public final class Utils {
 
-    private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20 );
+    private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20, new DaemonThreadFactory() );
+
     private static final CloseableHttpClient client = HttpClients.createDefault();
 
     public static final ResponseHandler<String> TO_STRING_HANDLER = new ResponseHandler<String>() {
@@ -94,4 +96,34 @@ public final class Utils {
         // not called
     }
 
+    /**
+     * creates new Threads with the given ThreadFactory and marks them as daemon-threads
+     * 
+     * @author HerrLock
+     */
+    private static final class DaemonThreadFactory implements ThreadFactory {
+        private final ThreadFactory threadFactory;
+
+        /**
+         * uses {@link Executors#defaultThreadFactory()} as {@link ThreadFactory}
+         */
+        public DaemonThreadFactory() {
+            this( Executors.defaultThreadFactory() );
+        }
+
+        /**
+         * @param threadFactory
+         *            the {@link ThreadFactory} to use
+         */
+        public DaemonThreadFactory( ThreadFactory threadFactory ) {
+            this.threadFactory = threadFactory;
+        }
+
+        @Override
+        public Thread newThread( Runnable r ) {
+            Thread t = this.threadFactory.newThread( r );
+            t.setDaemon( true );
+            return t;
+        }
+    }
 }
