@@ -3,15 +3,14 @@
 - build the web-based gui
  - get some images with a "valid" copyright
  - easy way to start and stop the server
-- fcking release it finally
+- release it finally
 
 1.5:
 - use java.util.concurrent.* package for more complex execution with progress-callbacks
 
 X:
-- reduce used system-resources (esp. RAM)
+- average filesize
 - make jd-export faster
-- option to download directly into a zip-file
 
 later:
 - 
