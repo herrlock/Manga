@@ -10,7 +10,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 final class MangaFox extends ChapterList {
@@ -20,7 +19,7 @@ final class MangaFox extends ChapterList {
 
     public MangaFox( DownloadConfiguration conf ) throws IOException {
         super( conf );
-        Document document = Utils.getDocument( conf.getUrl(), conf );
+        Document document = getDocument( conf.getUrl() );
 
         this.name = document.select( "#series_info>.cover>img" ).first().attr( "alt" );
 
@@ -49,14 +48,14 @@ final class MangaFox extends ChapterList {
 
     @Override
     public URL imgLink( URL url ) throws IOException {
-        String src = Utils.getDocument( url, this.conf ).getElementById( "image" ).attr( "src" );
+        String src = getDocument( url ).getElementById( "image" ).attr( "src" );
         return new URL( url, src );
     }
 
     @Override
     protected Map<Integer, URL> _getAllPageURLs( URL url ) throws IOException {
         Map<Integer, URL> result = new ConcurrentHashMap<>();
-        Elements pages = Utils.getDocument( url, this.conf ).select( "select.m" ).first().getElementsByTag( "option" );
+        Elements pages = getDocument( url ).select( "select.m" ).first().getElementsByTag( "option" );
         Element last = pages.last();
         if ( "Comments".equals( last.text() ) ) {
             pages.remove( last );

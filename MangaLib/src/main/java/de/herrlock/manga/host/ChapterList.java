@@ -7,12 +7,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.ChapterPattern;
+import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -52,6 +58,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
         this.conf = conf;
         this.cp = conf.getPattern();
     }
+
     /**
      * adds a chapter to this list if the ChapterPattern is null (none defined) or the given number is contained in the
      * ChapterPattern
@@ -92,6 +99,26 @@ public abstract class ChapterList extends ArrayList<Chapter> {
     public Map<Integer, URL> getAllPageURLs( Chapter c ) throws IOException {
         return getAllPageURLs( c.chapterUrl );
     }
+
+    /**
+     * fetches data from the given URL and parses it to a {@link Document}
+     * 
+     * @param url
+     *            the {@link URL} to read from
+     * @return a document, parsed from the given URL
+     * @throws IOException
+     */
+    protected Document getDocument( final URL url ) throws IOException {
+        return Utils.getDataAndExecuteResponseHandler( url, this.conf, TO_DOCUMENT_HANDLER );
+    }
+
+    public static final ResponseHandler<Document> TO_DOCUMENT_HANDLER = new ResponseHandler<Document>() {
+        @Override
+        public Document handleResponse( HttpResponse response ) throws ClientProtocolException, IOException {
+            String result = Utils.TO_STRING_HANDLER.handleResponse( response );
+            return Jsoup.parse( result );
+        }
+    };
 
     /**
      * a class to

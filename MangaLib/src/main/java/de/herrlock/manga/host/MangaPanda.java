@@ -9,7 +9,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 final class MangaPanda extends ChapterList {
@@ -19,7 +18,7 @@ final class MangaPanda extends ChapterList {
 
     public MangaPanda( DownloadConfiguration conf ) throws IOException {
         super( conf );
-        Document document = Utils.getDocument( conf.getUrl(), conf );
+        Document document = getDocument( conf.getUrl() );
 
         this.name = document.select( "#mangaproperties h2.aname" ).first().text();
 
@@ -45,14 +44,14 @@ final class MangaPanda extends ChapterList {
 
     @Override
     public URL imgLink( URL url ) throws IOException {
-        String src = Utils.getDocument( url, this.conf ).getElementById( "img" ).attr( "src" );
+        String src = getDocument( url ).getElementById( "img" ).attr( "src" );
         return new URL( url, src );
     }
 
     @Override
     protected Map<Integer, URL> _getAllPageURLs( URL url ) throws IOException {
         Map<Integer, URL> result = new ConcurrentHashMap<>();
-        Elements pages = Utils.getDocument( url, this.conf ).select( "#pageMenu>option" );
+        Elements pages = getDocument( url ).select( "#pageMenu>option" );
         for ( Element e : pages ) {
             result.put( Integer.parseInt( e.text() ), new URL( url, e.attr( "value" ) ) );
         }

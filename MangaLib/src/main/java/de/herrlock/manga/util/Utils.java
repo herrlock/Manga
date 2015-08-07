@@ -13,15 +13,12 @@ import java.util.concurrent.Future;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
@@ -29,6 +26,18 @@ public final class Utils {
 
     private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20 );
     private static final CloseableHttpClient client = HttpClients.createDefault();
+
+    public static final ResponseHandler<String> TO_STRING_HANDLER = new ResponseHandler<String>() {
+        @Override
+        public String handleResponse( HttpResponse response ) throws IOException {
+            HttpEntity entity = response.getEntity();
+            try {
+                return EntityUtils.toString( entity, StandardCharsets.UTF_8 );
+            } finally {
+                EntityUtils.consume( entity );
+            }
+        }
+    };
 
     public static HttpGet createHttpGet( final URL url, final DownloadConfiguration conf ) {
         HttpGet get = new HttpGet( url.toExternalForm() );
@@ -38,20 +47,6 @@ public final class Utils {
             .build();
         get.setConfig( config );
         return get;
-    }
-
-    /**
-     * fetches data from the given URL and parses it to a {@link Document}
-     * 
-     * @param url
-     *            the {@link URL} to read from
-     * @param conf
-     *            the conf with the URL to read from
-     * @return a document, parsed from the given URL
-     * @throws IOException
-     */
-    public static Document getDocument( final URL url, final DownloadConfiguration conf ) throws IOException {
-        return getDataAndExecuteResponseHandler( url, conf, ResponseHandlers.TO_DOCUMENT_HANDLER );
     }
 
     public static <T> T getDataAndExecuteResponseHandler( final URL url, final DownloadConfiguration conf,
@@ -97,32 +92,6 @@ public final class Utils {
 
     private Utils() {
         // not called
-    }
-
-    public static class ResponseHandlers {
-        public static final ResponseHandler<String> TO_STRING_HANDLER = new ResponseHandler<String>() {
-            @Override
-            public String handleResponse( HttpResponse response ) throws IOException {
-                HttpEntity entity = response.getEntity();
-                try {
-                    return EntityUtils.toString( entity, StandardCharsets.UTF_8 );
-                } finally {
-                    EntityUtils.consume( entity );
-                }
-            }
-        };
-
-        public static final ResponseHandler<Document> TO_DOCUMENT_HANDLER = new ResponseHandler<Document>() {
-            @Override
-            public Document handleResponse( HttpResponse response ) throws ClientProtocolException, IOException {
-                String result = TO_STRING_HANDLER.handleResponse( response );
-                return Jsoup.parse( result );
-            }
-        };
-
-        private ResponseHandlers() {
-            // not used
-        }
     }
 
 }
