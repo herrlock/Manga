@@ -26,11 +26,11 @@
         $("#submit").click(function() {
             var queryArr = $("#eingabe > div > input")
 			    .filter((i,elem) => $(elem).is(":visible"))
-                .map((i,elem) => elem.id + "=" + elem.value)
+                .map((i,elem) => encodeURIComponent(elem.id) + "=" + encodeURIComponent(elem.value))
                 .toArray();
-            var query = "&" + queryArr.join(",");
-            var url = "http://localhost:1905/start" + query;
-            $.get(encodeURIComponent(url));
+            var query = "?" + queryArr.join("&");
+            var url = "/start" + query;
+            $.get(url);
         });
     });
 </script>
