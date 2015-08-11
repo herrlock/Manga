@@ -42,6 +42,9 @@ public abstract class Configuration {
         try {
             String urlString = p.getProperty( Constants.PARAM_PROXY );
             if ( urlString != null && !"".equals( urlString ) ) {
+                if ( !urlString.startsWith( "http://" ) ) {
+                    urlString = "http://" + urlString;
+                }
                 URL proxyUrl = new URL( urlString );
                 String proxyHost = proxyUrl.getHost();
                 int proxyPort = proxyUrl.getPort();
