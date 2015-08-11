@@ -45,7 +45,7 @@ public class Server extends ServerSocket implements Runnable {
             logger.info( "started, request data at http://localhost:{}/", this.getLocalPort() );
             while ( true ) {
                 Socket socket = this.accept();
-                System.out.println( socket );
+                logger.debug( socket );
                 try ( InputStream in = socket.getInputStream() ) {
                     String requestPart = IOUtils.lineIterator( in, StandardCharsets.UTF_8 ).nextLine();
                     String[] split = requestPart.split( " ", 3 );
@@ -67,9 +67,9 @@ public class Server extends ServerSocket implements Runnable {
 
     public Response handleXHR( URL url ) {
         String path = url.getPath();
-        logger.info( "Path: {}", path );
+        logger.debug( "Path: {}", path );
         String query = url.getQuery();
-        logger.info( "Query: {}", query );
+        logger.debug( "Query: {}", query );
 
         Location loc = this.location404;
         for ( Entry<String, Location> entry : this.locations.entrySet() ) {
