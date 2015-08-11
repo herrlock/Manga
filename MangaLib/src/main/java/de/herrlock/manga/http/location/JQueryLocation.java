@@ -24,7 +24,7 @@ public class JQueryLocation extends Location {
         TextResponse response = new TextResponse();
 
         try ( BufferedReader reader = new BufferedReader( new InputStreamReader(
-            Server.class.getResourceAsStream( "/de/herrlock/manga/html/jquery-2.1.3.min.js" ), StandardCharsets.UTF_8 ) ) ) {
+            Server.class.getResourceAsStream( "/de/herrlock/manga/http/jquery-2.1.3.min.js" ), StandardCharsets.UTF_8 ) ) ) {
             StringBuilder sb = new StringBuilder();
             String nextline;
             while ( ( nextline = reader.readLine() ) != null ) {
