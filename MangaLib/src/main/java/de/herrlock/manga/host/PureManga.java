@@ -3,13 +3,12 @@ package de.herrlock.manga.host;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 final class PureManga extends ChapterList {
@@ -49,14 +48,14 @@ final class PureManga extends ChapterList {
     }
 
     @Override
-    protected Map<Integer, URL> _getAllPageURLs( URL url ) throws IOException {
-        Map<Integer, URL> result = new ConcurrentHashMap<>();
+    protected EntryList<Integer, URL> _getAllPageURLs( URL url ) throws IOException {
+        EntryList<Integer, URL> result = new EntryList<>();
         Elements li = getDocument( url ).select( ".dropdown_right>ul>li" );
         for ( Element e : li ) {
             Element link = e.getElementsByTag( "a" ).first();
             int number = Integer.parseInt( link.text().substring( 6 ) );
             URL absUrl = new URL( url, link.attr( "href" ) );
-            result.put( number, absUrl );
+            result.addEntry( number, absUrl );
         }
         return result;
     }

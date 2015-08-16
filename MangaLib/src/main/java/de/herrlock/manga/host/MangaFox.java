@@ -3,13 +3,12 @@ package de.herrlock.manga.host;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 final class MangaFox extends ChapterList {
@@ -53,8 +52,8 @@ final class MangaFox extends ChapterList {
     }
 
     @Override
-    protected Map<Integer, URL> _getAllPageURLs( URL url ) throws IOException {
-        Map<Integer, URL> result = new ConcurrentHashMap<>();
+    protected EntryList<Integer, URL> _getAllPageURLs( URL url ) throws IOException {
+        EntryList<Integer, URL> result = new EntryList<>();
         Elements pages = getDocument( url ).select( "select.m" ).first().getElementsByTag( "option" );
         Element last = pages.last();
         if ( "Comments".equals( last.text() ) ) {
@@ -62,7 +61,8 @@ final class MangaFox extends ChapterList {
         }
         for ( Element e : pages ) {
             int number = Integer.parseInt( e.text() );
-            result.put( number, new URL( url, e.attr( "value" ) + ".html" ) );
+            URL value = new URL( url, e.attr( "value" ) + ".html" );
+            result.addEntry( number, value );
         }
         return result;
     }

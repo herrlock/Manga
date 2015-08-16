@@ -3,16 +3,16 @@ package de.herrlock.manga.downloader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.downloader.dqc.DownloadQueueContainer;
+import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.downloader.pmc.PictureMapContainer;
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.ui.log.LogWindow;
@@ -73,15 +73,16 @@ public abstract class MDownloader {
      */
     public void downloadAll() {
         logger.entry();
-        Map<String, Map<Integer, URL>> picturemap = this.pmc.getPictureMap();
-        List<String> keys = new ArrayList<>( picturemap.keySet() );
-        Collections.sort( keys, Constants.STRING_NUMBER_COMPARATOR );
-        LogWindow.setProgressMax( keys.size() );
+        EntryList<String, EntryList<Integer, URL>> entries = this.pmc.getEntries();
+        Collections.sort( entries, entries.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
+        LogWindow.setProgressMax( entries.size() );
+        LogWindow.setProgress( 0 );
         int progress = 0;
-        for ( String key : keys ) {
-            Map<Integer, URL> urlMap = picturemap.get( key );
+        for ( Entry<String, EntryList<Integer, URL>> entry : entries ) {
+            EntryList<Integer, URL> urlMap = entry.getValue();
+            String key = entry.getKey();
             downloadChapter( key, urlMap );
-            picturemap.remove( key );
+            entries.remove( key );
             LogWindow.setProgress( ++progress );
         }
     }
@@ -92,17 +93,17 @@ public abstract class MDownloader {
      * 
      * @param key
      *            the name of the chapter (in general it is a number as String)
-     * @param urlMap
+     * @param entries
      *            a map containing the URLs for the pictures
      * @see DownloadQueueContainer#downloadPages()
      */
-    private void downloadChapter( String key, Map<Integer, URL> urlMap ) {
+    private void downloadChapter( String key, EntryList<Integer, URL> entries ) {
         logger.entry( key );
-        logger.info( "Download chapter {} ({} pages)", key, urlMap.size() );
+        logger.info( "Download chapter {} ({} pages)", key, entries.size() );
         File chapterFolder = new File( this.clc.getPath(), key );
         if ( chapterFolder.exists() || chapterFolder.mkdirs() ) {
             // add pictures to queue
-            this.dqc.addMap( chapterFolder, urlMap );
+            this.dqc.addEntryList( chapterFolder, entries );
             // start download
             this.dqc.downloadPages();
         } else {

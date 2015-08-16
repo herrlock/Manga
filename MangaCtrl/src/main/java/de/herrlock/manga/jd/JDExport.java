@@ -9,15 +9,14 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.io.FileUtils;
 
 import de.herrlock.manga.downloader.MDownloader;
+import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.ui.main.MDGuiController;
 import de.herrlock.manga.util.Constants;
@@ -71,9 +70,9 @@ public class JDExport extends MDownloader {
     @Override
     protected void run() {
         try {
-            Set<Entry<String, Map<Integer, URL>>> pmcEntries = this.pmc.getPictureMap().entrySet();
-            for ( Entry<String, Map<Integer, URL>> entry : pmcEntries ) {
-                new CrawljobFile( entry.getKey(), entry.getValue().entrySet() ).write();
+            EntryList<String, EntryList<Integer, URL>> pmcEntries = this.pmc.getEntries();
+            for ( Entry<String, EntryList<Integer, URL>> entry : pmcEntries ) {
+                new CrawljobFile( entry.getKey(), entry.getValue() ).write();
             }
         } catch ( IOException ex ) {
             throw new RuntimeException( ex );
@@ -83,7 +82,7 @@ public class JDExport extends MDownloader {
     private class CrawljobFile {
         final Crawljob c;
 
-        public CrawljobFile( String chapter, Set<Entry<Integer, URL>> entrySet ) {
+        public CrawljobFile( String chapter, EntryList<Integer, URL> entrySet ) {
             this.c = new Crawljob( new File( JDExport.this.path, chapter ), chapter );
             List<CrawljobFileEntryAdder> callables = new ArrayList<>( entrySet.size() );
             for ( Entry<Integer, URL> e : entrySet ) {

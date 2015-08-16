@@ -6,8 +6,8 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
+import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Constants;
@@ -85,7 +85,7 @@ public final class ChapterListContainer {
         return this.chapterlist.imgLink( pageUrl );
     }
 
-    public Map<Integer, URL> getAllPageURLs( Chapter chapter ) throws IOException {
+    public EntryList<Integer, URL> getAllPageURLs( Chapter chapter ) throws IOException {
         return this.chapterlist.getAllPageURLs( chapter );
     }
 }

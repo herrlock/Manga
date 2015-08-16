@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -15,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.ChapterPattern;
@@ -84,19 +83,20 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      */
     public abstract URL imgLink( URL url ) throws IOException;
 
-    public Map<Integer, URL> getAllPageURLs( URL url ) throws IOException {
-        return Collections.unmodifiableMap( _getAllPageURLs( url ) );
+    public EntryList<Integer, URL> getAllPageURLs( URL url ) throws IOException {
+        // TODO: make immutable
+        return _getAllPageURLs( url );
     }
 
     /**
      * returns all page-{@link URL}s of one chapter
      */
-    protected abstract Map<Integer, URL> _getAllPageURLs( URL url ) throws IOException;
+    protected abstract EntryList<Integer, URL> _getAllPageURLs( URL url ) throws IOException;
 
     /**
      * gets all URLs for one Chapter
      */
-    public Map<Integer, URL> getAllPageURLs( Chapter c ) throws IOException {
+    public EntryList<Integer, URL> getAllPageURLs( Chapter c ) throws IOException {
         return getAllPageURLs( c.chapterUrl );
     }
 

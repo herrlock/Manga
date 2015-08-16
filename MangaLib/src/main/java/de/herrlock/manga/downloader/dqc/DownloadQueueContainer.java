@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
@@ -24,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
+import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
@@ -63,18 +63,10 @@ public final class DownloadQueueContainer {
      * 
      * @see DownloadQueueContainer#add(URL, File, int)
      */
-    public void addEntrySet( File chapterFolder, Collection<Entry<Integer, URL>> entrySet ) {
-        for ( Entry<Integer, URL> e : entrySet ) {
+    public void addEntryList( File chapterFolder, EntryList<Integer, URL> entryList ) {
+        for ( Entry<Integer, URL> e : entryList ) {
             this.add( e.getValue(), chapterFolder, e.getKey().intValue() );
         }
-    }
-    /**
-     * adds a {@link Map} of Integer-URL-Pairs to this Container
-     * 
-     * @see DownloadQueueContainer#add(File, Collection)
-     */
-    public void addMap( File chapterFolder, Map<Integer, URL> map ) {
-        addEntrySet( chapterFolder, map.entrySet() );
     }
 
     /**

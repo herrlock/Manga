@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
 import org.apache.logging.log4j.LogManager;
@@ -22,13 +22,13 @@ public final class PictureMapContainer {
     /**
      * a {@link Map} containing the {@link URL}s of all the pages
      */
-    private final Map<String, Map<Integer, URL>> picturemap;
+    private final EntryList<String, EntryList<Integer, URL>> entries;
     private final ChapterListContainer clc;
 
     public PictureMapContainer( ChapterListContainer clc ) {
         this.clc = clc;
         int clcSize = clc.getSize();
-        this.picturemap = new HashMap<>( clcSize );
+        this.entries = new EntryList<>( clcSize );
         List<PictureMapThread> callables = new ArrayList<>( clcSize );
         for ( Chapter chapter : clc.getChapters() ) {
             callables.add( new PictureMapThread( chapter ) );
@@ -39,8 +39,8 @@ public final class PictureMapContainer {
     /**
      * @return a copy of the {@link Map} containing the chapters
      */
-    public Map<String, Map<Integer, URL>> getPictureMap() {
-        return new HashMap<>( this.picturemap );
+    public EntryList<String, EntryList<Integer, URL>> getEntries() {
+        return new EntryList<>( this.entries );
     }
 
     /**
@@ -50,17 +50,17 @@ public final class PictureMapContainer {
      */
     public int getSize() {
         int noOfPictures = 0;
-        for ( Map<Integer, URL> m : this.picturemap.values() ) {
-            noOfPictures += m.size();
+        for ( Entry<String, EntryList<Integer, URL>> m : this.entries ) {
+            noOfPictures += m.getValue().size();
         }
         return noOfPictures;
     }
 
-    void addEntry( String number, Map<Integer, URL> pageMap ) {
-        this.picturemap.put( number, pageMap );
+    void addEntry( String number, EntryList<Integer, URL> pageMap ) {
+        this.entries.addEntry( number, pageMap );
     }
 
-    Map<Integer, URL> getAllPageURLs( Chapter chapter ) throws IOException {
+    EntryList<Integer, URL> getAllPageURLs( Chapter chapter ) throws IOException {
         return this.clc.getAllPageURLs( chapter );
     }
 
@@ -79,7 +79,7 @@ public final class PictureMapContainer {
 
         @Override
         public Void call() {
-            Map<Integer, URL> pageMap = getMap();
+            EntryList<Integer, URL> pageMap = getMap();
             PictureMapContainer.this.addEntry( this.chapter.getNumber(), pageMap );
             logger.info( this.chapter.toString() );
             return null;
@@ -90,8 +90,8 @@ public final class PictureMapContainer {
          * 
          * @return a {@link Map} containing the URLs of the pages
          */
-        private Map<Integer, URL> getMap() {
-            Map<Integer, URL> allPages;
+        private EntryList<Integer, URL> getMap() {
+            EntryList<Integer, URL> allPages;
             try {
                 allPages = PictureMapContainer.this.getAllPageURLs( this.chapter );
             } catch ( SocketTimeoutException stex ) {
