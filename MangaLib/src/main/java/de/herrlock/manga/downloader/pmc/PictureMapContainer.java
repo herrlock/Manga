@@ -17,7 +17,7 @@ import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Utils;
 
 public final class PictureMapContainer {
-    static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * a {@link Map} containing the {@link URL}s of all the pages

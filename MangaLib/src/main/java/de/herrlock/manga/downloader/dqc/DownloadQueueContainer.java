@@ -150,7 +150,7 @@ public final class DownloadQueueContainer {
         }
     }
 
-    protected static final class Page {
+    static final class Page {
         /**
          * the {@link URL} where to read this page from
          */
