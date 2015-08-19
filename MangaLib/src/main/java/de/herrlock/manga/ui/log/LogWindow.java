@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BoundedRangeModel;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -33,7 +35,10 @@ public final class LogWindow {
 
     private final JFrame frame;
     private final JTextArea textarea = new JTextArea( 30, 70 );
-    private final JProgressBar progressbar = new JProgressBar();
+    private final JProgressBar chapterProgressbar = new JProgressBar();
+    private final BoundedRangeModel chapterProgressModel = this.chapterProgressbar.getModel();
+    private final JProgressBar totalProgressbar = new JProgressBar();
+    private final BoundedRangeModel totalProgressModel = this.totalProgressbar.getModel();
 
     static {
         // try to set a LookAndFeel
@@ -58,15 +63,33 @@ public final class LogWindow {
 
     }
 
+    public static void setChapterProgressMax( int max ) {
+        synchronized ( instance.chapterProgressModel ) {
+            instance.chapterProgressModel.setMaximum( max );
+        }
+    }
+
+    public static void setChapterProgress( int progress ) {
+        synchronized ( instance.chapterProgressModel ) {
+            instance.chapterProgressModel.setValue( progress );
+        }
+    }
+
+    public static void setChapterProgressPlusOne() {
+        synchronized ( instance.chapterProgressModel ) {
+            instance.chapterProgressModel.setValue( instance.chapterProgressModel.getValue() + 1 );
+        }
+    }
+
     public static void setProgressMax( int max ) {
-        synchronized ( instance.progressbar ) {
-            instance.progressbar.setMaximum( max );
+        synchronized ( instance.totalProgressModel ) {
+            instance.totalProgressModel.setMaximum( max );
         }
     }
 
     public static void setProgress( int progress ) {
-        synchronized ( instance.progressbar ) {
-            instance.progressbar.setValue( progress );
+        synchronized ( instance.totalProgressModel ) {
+            instance.totalProgressModel.setValue( progress );
         }
     }
 
@@ -87,12 +110,18 @@ public final class LogWindow {
         this.frame.setDefaultCloseOperation( WindowConstants.DISPOSE_ON_CLOSE );
 
         Container contentPane = this.frame.getContentPane();
-        contentPane.add( this.progressbar, BorderLayout.PAGE_END );
+
+        JPanel pbPanel = new JPanel( new BorderLayout( 0, 0 ) );
+        pbPanel.add( this.chapterProgressbar, BorderLayout.PAGE_START );
+        pbPanel.add( this.totalProgressbar, BorderLayout.PAGE_END );
+        contentPane.add( pbPanel, BorderLayout.PAGE_END );
+
         JScrollPane jScrollPane = new JScrollPane( this.textarea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED );
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER );
         contentPane.add( jScrollPane, BorderLayout.PAGE_START );
 
-        this.progressbar.setStringPainted( true );
+        this.totalProgressbar.setStringPainted( true );
+        this.chapterProgressbar.setStringPainted( true );
         this.frame.pack();
         this.frame.setVisible( true );
     }

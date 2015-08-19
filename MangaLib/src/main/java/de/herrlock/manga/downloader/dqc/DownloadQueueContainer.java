@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.downloader.pmc.EntryList;
+import de.herrlock.manga.ui.log.LogWindow;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
@@ -82,6 +83,8 @@ public final class DownloadQueueContainer {
         for ( Page p : pages ) {
             callables.add( new DownloadThread( p ) );
         }
+        LogWindow.setChapterProgress( 0 );
+        LogWindow.setChapterProgressMax( callables.size() * 3 );
         Utils.callCallables( callables );
         if ( !this.dlQueue.isEmpty() ) {
             downloadPages();
@@ -124,11 +127,14 @@ public final class DownloadQueueContainer {
         @Override
         public Void call() {
             try {
+                LogWindow.setChapterProgressPlusOne();
                 URL imageURL = DownloadQueueContainer.this.getImageLink( this.p.getUrl() );
                 File outputFile = this.p.getTargetFile();
+                LogWindow.setChapterProgressPlusOne();
                 logger.debug( "start reading image " + imageURL );
                 Utils.getDataAndExecuteResponseHandler( imageURL, DownloadQueueContainer.this.conf, this.handler );
                 logger.debug( "saved image to " + outputFile );
+                LogWindow.setChapterProgressPlusOne();
             } catch ( SocketException | SocketTimeoutException ex ) {
                 DownloadQueueContainer.this.add( this.p );
             } catch ( IOException ex ) {
