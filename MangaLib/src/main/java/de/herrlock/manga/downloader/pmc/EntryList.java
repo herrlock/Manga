@@ -3,28 +3,48 @@ package de.herrlock.manga.downloader.pmc;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author HerrLock
  */
-public class EntryList<K, V> extends ArrayList<SimpleImmutableEntry<K, V>> {
-    private static final long serialVersionUID = 1L;
+public class EntryList<K, V> implements Iterable<SimpleImmutableEntry<K, V>> {
+    private final List<SimpleImmutableEntry<K, V>> entries;
 
     public EntryList() {
-        super();
+        this.entries = new ArrayList<>();
     }
 
     public EntryList( int initialCapacity ) {
-        super( initialCapacity );
+        this.entries = new ArrayList<>( initialCapacity );
     }
 
-    public EntryList( Collection<SimpleImmutableEntry<K, V>> c ) {
-        super( c );
+    public EntryList( EntryList<K, V> entryList ) {
+        this( entryList.entries );
+    }
+
+    public EntryList( Collection<? extends SimpleImmutableEntry<K, V>> c ) {
+        this.entries = new ArrayList<>( c );
     }
 
     public void addEntry( K key, V value ) {
-        this.add( new SimpleImmutableEntry<>( key, value ) );
+        this.entries.add( new SimpleImmutableEntry<>( key, value ) );
+    }
+
+    public int size() {
+        return this.entries.size();
+    }
+
+    public void sort( Comparator<? super SimpleImmutableEntry<K, V>> c ) {
+        Collections.sort( this.entries, c );
+    }
+
+    @Override
+    public Iterator<SimpleImmutableEntry<K, V>> iterator() {
+        return this.entries.iterator();
     }
 
     public Comparator<SimpleImmutableEntry<String, ?>> getStringComparator( final Comparator<String> comparator ) {
@@ -35,4 +55,5 @@ public class EntryList<K, V> extends ArrayList<SimpleImmutableEntry<K, V>> {
             }
         };
     }
+
 }

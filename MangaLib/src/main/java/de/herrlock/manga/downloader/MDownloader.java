@@ -3,8 +3,6 @@ package de.herrlock.manga.downloader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
@@ -69,20 +67,19 @@ public abstract class MDownloader {
 
     /**
      * downloads everything in the PictureMapContainer<br>
-     * basically calls {@link #downloadChapter(String, Map)} for every chapter
+     * basically calls {@link #downloadChapter(String, EntryList)} for every chapter
      */
     public void downloadAll() {
         logger.entry();
         EntryList<String, EntryList<Integer, URL>> entries = this.pmc.getEntries();
-        Collections.sort( entries, entries.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
-        LogWindow.setProgressMax( entries.size() );
+        entries.sort( entries.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
         LogWindow.setProgress( 0 );
+        LogWindow.setProgressMax( entries.size() );
         int progress = 0;
         for ( Entry<String, EntryList<Integer, URL>> entry : entries ) {
             EntryList<Integer, URL> urlMap = entry.getValue();
             String key = entry.getKey();
             downloadChapter( key, urlMap );
-            entries.remove( key );
             LogWindow.setProgress( ++progress );
         }
     }
