@@ -33,7 +33,8 @@ public final class PlainDownloader extends MDownloader {
         }
         // properties loaded successful
         DownloadConfiguration conf = DownloadConfiguration.create( p );
-        new PlainDownloader( conf ).run();
+        PlainDownloader dlImpl = new PlainDownloader( conf );
+        dlImpl.run();
     }
 
     private PlainDownloader( DownloadConfiguration conf ) {

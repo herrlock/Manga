@@ -59,8 +59,6 @@ public final class LogWindow {
                 }
             }
         }
-        System.out.println( UIManager.getLookAndFeel().getName() );
-
     }
 
     public static void setChapterProgressMax( int max ) {

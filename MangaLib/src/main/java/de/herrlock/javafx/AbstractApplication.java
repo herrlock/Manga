@@ -11,7 +11,7 @@ public abstract class AbstractApplication extends Application {
     @Override
     public void start( Stage stage ) {
         if ( this.container == null ) {
-            throw new IllegalStateException( "need to initialize AbstractApplication.scene before starting this" );
+            throw new IllegalStateException( "need to initialize AbstractApplication.container before starting this" );
         }
         stage.setTitle( this.container.getTitle() );
         stage.getIcons().addAll( this.container.getIcons() );
@@ -22,7 +22,7 @@ public abstract class AbstractApplication extends Application {
         stage.show();
     }
 
-    public void setScene( SceneContainer scene ) {
-        this.container = scene;
+    public void setScene( SceneContainer container ) {
+        this.container = container;
     }
 }
