@@ -15,32 +15,47 @@ import de.herrlock.manga.http.location.StartDownloadLocation;
  */
 public final class ServerMain {
     private static final Logger logger = LogManager.getLogger();
+    
+    private final Server server;
 
     public static void main( String... args ) {
         logger.entry();
-        try ( Server server = new Server() ) {
-            addLocations( server );
-            Thread serverThread = new Thread( server );
-            serverThread.start();
-            serverThread.join();
-        } catch ( IOException | InterruptedException ex ) {
+        ServerMain srvMain = new ServerMain();
+        srvMain.startServer();
+    }
+
+    public ServerMain() {
+        this( 1905 );
+    }
+
+    public ServerMain( int port ) {
+        try {
+            this.server = new Server( port );
+            this.addDefaultLocations();
+        } catch ( IOException ex ) {
             throw new RuntimeException( ex );
         }
     }
 
-    private static void addLocations( Server server ) {
+    public void startServer() {
+        Thread serverThread = new Thread( this.server );
+        serverThread.start();
+    }
+
+    public void stopServer() {
+        this.server.stopServer();
+    }
+
+    private void addDefaultLocations() {
         // "/", default-page
-        server.registerLocation( new IndexHtmlLocation() );
+        this.server.registerLocation( new IndexHtmlLocation() );
         // "/start", to start
-        server.registerLocation( new StartDownloadLocation() );
+        this.server.registerLocation( new StartDownloadLocation() );
 
         // "/jquery.js", returns jquery
-        server.registerLocation( new JQueryLocation() );
-
-        server.registerLocation( new BackgroundImageLocation() );
+        this.server.registerLocation( new JQueryLocation() );
+        // "/background.jpg", returns an random entry from a collection of images
+        this.server.registerLocation( new BackgroundImageLocation() );
     }
 
-    private ServerMain() {
-        // nothing to do
-    }
 }

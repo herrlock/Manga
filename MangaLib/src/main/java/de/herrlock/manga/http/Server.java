@@ -29,6 +29,7 @@ public class Server extends ServerSocket implements Runnable {
 
     private final Map<String, Location> locations = new HashMap<>();
     private final Location location404 = new NotFoundLocation();
+    private boolean goOn = true;
 
     public Server() throws IOException {
         this( 1905 );
@@ -43,7 +44,7 @@ public class Server extends ServerSocket implements Runnable {
         logger.entry();
         try {
             logger.info( "started, request data at http://localhost:{}/", this.getLocalPort() );
-            while ( true ) {
+            while ( this.goOn ) {
                 Socket socket = this.accept();
                 logger.debug( socket );
                 try ( InputStream in = socket.getInputStream() ) {
@@ -63,6 +64,10 @@ public class Server extends ServerSocket implements Runnable {
         } catch ( IOException ex ) {
             throw new RuntimeException( ex );
         }
+    }
+
+    public void stopServer() {
+        this.goOn = false;
     }
 
     public Response handleXHR( URL url ) {
