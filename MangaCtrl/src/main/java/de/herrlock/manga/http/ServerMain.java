@@ -1,6 +1,7 @@
 package de.herrlock.manga.http;
 
 import java.io.IOException;
+import java.net.SocketException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,8 +16,9 @@ import de.herrlock.manga.http.location.StartDownloadLocation;
  */
 public final class ServerMain {
     private static final Logger logger = LogManager.getLogger();
-    
+
     private final Server server;
+    private Thread serverThread;
 
     public static void main( String... args ) {
         logger.entry();
@@ -38,12 +40,29 @@ public final class ServerMain {
     }
 
     public void startServer() {
-        Thread serverThread = new Thread( this.server );
-        serverThread.start();
+        logger.entry();
+        if ( this.serverThread == null ) {
+            logger.debug( "serverThread created" );
+            this.serverThread = new Thread( this.server );
+        }
+        if ( !this.serverThread.isAlive() ) {
+            logger.debug( "serverThread started" );
+            this.serverThread.start();
+        }
     }
 
     public void stopServer() {
-        this.server.stopServer();
+        logger.entry();
+        try {
+            this.server.stopServer();
+            this.server.close();
+        } catch ( SocketException ex ) {
+            this.serverThread.interrupt();
+            this.serverThread = null;
+            logger.info( "stopped server" );
+        } catch ( IOException ex ) {
+            throw new RuntimeException( ex );
+        }
     }
 
     private void addDefaultLocations() {

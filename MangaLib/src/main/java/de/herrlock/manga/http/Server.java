@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -45,6 +46,7 @@ public class Server extends ServerSocket implements Runnable {
         try {
             logger.info( "started, request data at http://localhost:{}/", this.getLocalPort() );
             while ( this.goOn ) {
+                logger.debug( "socket waiting" );
                 Socket socket = this.accept();
                 logger.debug( socket );
                 try ( InputStream in = socket.getInputStream() ) {
@@ -61,6 +63,8 @@ public class Server extends ServerSocket implements Runnable {
                     }
                 }
             }
+        } catch ( SocketException ex ) {
+            logger.info( "server stopped" );
         } catch ( IOException ex ) {
             throw new RuntimeException( ex );
         }

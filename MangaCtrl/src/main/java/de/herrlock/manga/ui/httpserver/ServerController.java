@@ -7,6 +7,9 @@ import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.http.ServerMain;
 
+/**
+ * @author HerrLock
+ */
 public class ServerController {
 
     private static final Logger logger = LogManager.getLogger();
