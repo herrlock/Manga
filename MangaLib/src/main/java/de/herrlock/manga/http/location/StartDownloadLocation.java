@@ -48,7 +48,7 @@ public class StartDownloadLocation extends Location {
         t.start();
 
         TextResponse res = new TextResponse( 301 );
-        res.setHeader( "Location", "/md" );
+        res.setHeader( "Location", "/" );
         return res;
     }
 

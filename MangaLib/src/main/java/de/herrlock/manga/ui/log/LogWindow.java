@@ -114,7 +114,7 @@ public final class LogWindow {
 
     private LogWindow() {
         this.frame = new JFrame( "Log and Progress" );
-        this.frame.setDefaultCloseOperation( WindowConstants.DISPOSE_ON_CLOSE );
+        this.frame.setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
 
         Container contentPane = this.frame.getContentPane();
 
