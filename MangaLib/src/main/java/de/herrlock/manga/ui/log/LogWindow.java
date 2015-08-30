@@ -2,6 +2,7 @@ package de.herrlock.manga.ui.log;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -27,6 +29,7 @@ import org.apache.logging.log4j.Logger;
  * @author HerrLock
  */
 public final class LogWindow {
+
     private static final Logger logger = LogManager.getLogger();
 
     private static final List<String> lafPrefs = Collections.unmodifiableList( Arrays.asList( "Windows", "Nimbus", "Metal" ) );
@@ -93,7 +96,13 @@ public final class LogWindow {
 
     public static void dispose() {
         synchronized ( instance.frame ) {
-            instance.frame.dispose();
+            final JFrame f = instance.frame;
+            SwingUtilities.invokeLater( new Runnable() {
+                @Override
+                public void run() {
+                    f.dispatchEvent( new WindowEvent( f, WindowEvent.WINDOW_CLOSING ) );
+                }
+            } );
         }
     }
 

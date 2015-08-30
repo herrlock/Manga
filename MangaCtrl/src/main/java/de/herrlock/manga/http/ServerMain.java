@@ -10,6 +10,7 @@ import de.herrlock.manga.http.location.BackgroundImageLocation;
 import de.herrlock.manga.http.location.IndexHtmlLocation;
 import de.herrlock.manga.http.location.JQueryLocation;
 import de.herrlock.manga.http.location.StartDownloadLocation;
+import de.herrlock.manga.http.location.StopServerLocation;
 
 /**
  * @author HerrLock
@@ -75,6 +76,9 @@ public final class ServerMain {
         this.server.registerLocation( new JQueryLocation() );
         // "/background.jpg", returns an random entry from a collection of images
         this.server.registerLocation( new BackgroundImageLocation() );
+
+        // "/stopServer", stops the server
+        this.server.registerLocation( new StopServerLocation() );
     }
 
 }

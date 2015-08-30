@@ -20,6 +20,8 @@ import de.herrlock.manga.http.location.Location;
 import de.herrlock.manga.http.location.NotFoundLocation;
 import de.herrlock.manga.http.response.Response;
 import de.herrlock.manga.http.response.ServerExceptionResponse;
+import de.herrlock.manga.http.response.TextResponse;
+import de.herrlock.manga.ui.log.LogWindow;
 
 /**
  * @author HerrLock
@@ -30,7 +32,7 @@ public class Server extends ServerSocket implements Runnable {
 
     private final Map<String, Location> locations = new HashMap<>();
     private final Location location404 = new NotFoundLocation();
-    private boolean goOn = true;
+    private boolean active = true;
 
     public Server() throws IOException {
         this( 1905 );
@@ -45,7 +47,7 @@ public class Server extends ServerSocket implements Runnable {
         logger.entry();
         try {
             logger.info( "started, request data at http://localhost:{}/", this.getLocalPort() );
-            while ( this.goOn ) {
+            while ( this.active ) {
                 logger.debug( "socket waiting" );
                 Socket socket = this.accept();
                 logger.debug( socket );
@@ -71,7 +73,9 @@ public class Server extends ServerSocket implements Runnable {
     }
 
     public void stopServer() {
-        this.goOn = false;
+        logger.info( "stopping Server" );
+        this.active = false;
+        LogWindow.dispose();
     }
 
     public Response handleXHR( URL url ) {
@@ -92,11 +96,14 @@ public class Server extends ServerSocket implements Runnable {
         } catch ( ServerException ex ) {
             logger.error( ex );
             return new ServerExceptionResponse( ex );
+        } catch ( CloseServerException ex ) {
+            this.stopServer();
+            return new TextResponse( 200, "stoppedServer" );
         }
     }
 
     public void registerLocation( Location loc ) {
-        logger.info( "register \"/{}\"", loc.getPath() );
+        logger.debug( "register \"/{}\"", loc.getPath() );
         String path = "/" + loc.getPath();
         if ( this.locations.containsKey( path ) ) {
             throw new RuntimeException( path + " already registered" );

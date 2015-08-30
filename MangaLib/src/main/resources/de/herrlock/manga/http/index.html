@@ -32,6 +32,9 @@
             var url = "/start" + query;
             $.get(url);
         });
+        $("#stopServer").click(function() {
+            $.get("stopServer");
+        });
     });
 </script>
 <style type="text/css">
@@ -99,8 +102,9 @@ p#buttons {
 				<label for="chapter">Kapitel:&nbsp; </label> <input type="text" id="chapter" />
 			</div>
 			<p id="buttons">
-				<button type="reset">zur&uuml;cksetzen</button>
 				<button type="button" id="submit">absenden</button>
+				<button type="reset">zur&uuml;cksetzen</button>
+				<button id="stopServer" type="button">Server stoppen</button>
 			</p>
 		</form>
 	</div>
