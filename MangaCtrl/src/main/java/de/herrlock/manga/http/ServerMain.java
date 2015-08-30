@@ -80,5 +80,4 @@ public final class ServerMain {
         // "/stopServer", stops the server
         this.server.registerLocation( new StopServerLocation() );
     }
-
 }
