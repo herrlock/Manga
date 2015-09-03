@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A class representing a single Crawljob-file that contains a whole Chapter
+ * 
+ * @author HerrLock
+ */
 public class Crawljob {
 
     private final File folder;
