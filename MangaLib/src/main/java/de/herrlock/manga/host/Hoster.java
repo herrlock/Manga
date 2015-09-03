@@ -15,19 +15,29 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * 
  * @author HerrLock
  */
+// TODO refactor to implement an Interface to enable registering additional Hoster
 public enum Hoster {
+    /**
+     * Hoster Mangapanda with the URL mangapanda.com
+     */
     MANGAPANDA( "Mangapanda", "http://www.mangapanda.com/" ) {
         @Override
         public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
             return new MangaPanda( conf );
         }
     },
+    /**
+     * Hoster Pure-Manga with the URL pure-manga.org
+     */
     PUREMANGA( "Pure-Manga", "http://www.pure-manga.org/" ) {
         @Override
         public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
             return new PureManga( conf );
         }
     },
+    /**
+     * Hoster Mangafox with the URL mangafox.me
+     */
     MANGAFOX( "Mangafox", "http://www.mangafox.me/" ) {
         @Override
         public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
@@ -53,10 +63,20 @@ public enum Hoster {
         }
     }
 
+    /**
+     * Getter for the Hoster's URL
+     * 
+     * @return the base-url of the Hoster
+     */
     public URL getUrl() {
         return this.url;
     }
 
+    /**
+     * Getter for the Hoster's name
+     * 
+     * @return the name of the Hoster
+     */
     public String getName() {
         return this.name;
     }
@@ -102,6 +122,11 @@ public enum Hoster {
         return this.name() + "\t" + this.url;
     }
 
+    /**
+     * sorts the result of {@link #values()} with the {@link #NAME_COMPARATOR}
+     * 
+     * @return a sorted array of all Hosters
+     */
     public static Hoster[] sortedValues() {
         Hoster[] values = Hoster.values();
         Hoster[] copy = Arrays.copyOf( values, values.length );
@@ -109,6 +134,9 @@ public enum Hoster {
         return copy;
     }
 
+    /**
+     * A {@link Comparator} to compare to {@linkplain Hoster} with their {@linkplain #getName() name}
+     */
     public static final Comparator<Hoster> NAME_COMPARATOR = new Comparator<Hoster>() {
         /**
          * compares the hoster by their name

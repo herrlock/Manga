@@ -34,7 +34,8 @@ public final class ChapterListContainer {
      * @param conf
      *            the {@link DownloadConfiguration} to use
      * @throws IOException
-     * @see ChapterList#getInstance()
+     *             thrown by {@link ChapterList#getInstance(DownloadConfiguration)}
+     * @see ChapterList#getInstance(DownloadConfiguration)
      */
     public ChapterListContainer( DownloadConfiguration conf ) throws IOException {
         this.chapterlist = ChapterList.getInstance( conf );
@@ -79,13 +80,22 @@ public final class ChapterListContainer {
      *            the {@link URL} of the (html)-page
      * @return the direct {@link URL} of the picture
      * @throws IOException
-     * @xee ChapterList#imgLink(URL)
+     *             thrown by {@link ChapterList#imgLink(URL)}
+     * @see ChapterList#imgLink(URL)
      */
     public URL getImageLink( URL pageUrl ) throws IOException {
         return this.chapterlist.imgLink( pageUrl );
     }
 
+    /**
+     * 
+     * @param chapter
+     *            the chapter to get the URLs for
+     * @return an {@link EntryList} containing all URLs
+     * @throws IOException
+     *             thrown by {@link ChapterList#getAllPageURLs(URL)}
+     */
     public EntryList<Integer, URL> getAllPageURLs( Chapter chapter ) throws IOException {
-        return this.chapterlist.getAllPageURLs( chapter );
+        return this.chapterlist.getAllPageURLs( chapter.getChapterUrl() );
     }
 }

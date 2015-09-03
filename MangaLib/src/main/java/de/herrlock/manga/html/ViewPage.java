@@ -22,11 +22,21 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
+/**
+ * 
+ * @author HerrLock
+ */
 public class ViewPage {
     private final File folder;
     private final Document document;
     private final int maxImgs;
 
+    /**
+     * Creates the new ViewPage-instance and prints the html to the destination
+     * 
+     * @param folder
+     *            the folder to save the created files into
+     */
     public static void execute( File folder ) {
         Document doc = new ViewPage( folder ).getDocument();
         Path p = new File( folder, "index.html" ).toPath();
@@ -38,6 +48,12 @@ public class ViewPage {
         }
     }
 
+    /**
+     * Create a new ViewPage in the given {@linkplain File folder}
+     * 
+     * @param folder
+     *            the folder where to create the ViewPages
+     */
     public ViewPage( File folder ) {
         System.out.println( "create files in folder " + folder );
         this.folder = folder;
@@ -47,6 +63,9 @@ public class ViewPage {
         this.document.appendChild( createBody() );
     }
 
+    /**
+     * @return the Document built
+     */
     public Document getDocument() {
         return this.document;
     }
@@ -187,8 +206,8 @@ public class ViewPage {
             imgblock.appendElement( "h2" ).text( ( i < 10 ? "0" : "" ) + i );
 
             Element imgdiv = imgblock.appendElement( "div" ).attr( "class", "center" );
-            imgdiv.appendElement( "img" ).attr( "id", "page" + i ).attr( "class", "image" ).attr( "src", "null.jpg" )
-                .attr( "alt", "null" + i + ".jpg" );
+            imgdiv.appendElement( "img" ).attr( "id", "page" + i ).attr( "class", "image" ).attr( "src", "null.jpg" ).attr( "alt",
+                "null" + i + ".jpg" );
 
             imgblock.appendElement( "hr" ).attr( "class", "separator" );
         }

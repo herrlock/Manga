@@ -8,7 +8,7 @@ import de.herrlock.manga.http.response.Response;
 /**
  * A Location to request the Server to stop
  * 
- * @author Jan
+ * @author Herrlock
  */
 public class StopServerLocation extends Location {
 
