@@ -2,7 +2,6 @@ package de.herrlock.manga.util;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -11,36 +10,35 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
+/**
+ * A central class for static methods
+ * 
+ * @author HerrLock
+ */
 public final class Utils {
 
     private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20, new DaemonThreadFactory() );
+    private static final CloseableHttpClient CLIENT = HttpClients.createDefault();
 
-    private static final CloseableHttpClient client = HttpClients.createDefault();
-
-    public static final ResponseHandler<String> TO_STRING_HANDLER = new ResponseHandler<String>() {
-        @Override
-        public String handleResponse( HttpResponse response ) throws IOException {
-            HttpEntity entity = response.getEntity();
-            try {
-                return EntityUtils.toString( entity, StandardCharsets.UTF_8 );
-            } finally {
-                EntityUtils.consume( entity );
-            }
-        }
-    };
-
+    /**
+     * Creates new {@link HttpGet} to the given {@link URL} and with the given {@link DownloadConfiguration}
+     * 
+     * @param url
+     *            the {@link URL} to connect to
+     * @param conf
+     *            a {@link DownloadConfiguration} containing the parameters to use
+     * @return a new {@link HttpGet}
+     */
     public static HttpGet createHttpGet( final URL url, final DownloadConfiguration conf ) {
         HttpGet get = new HttpGet( url.toExternalForm() );
         int timeout = conf.getTimeout();
@@ -51,10 +49,48 @@ public final class Utils {
         return get;
     }
 
+    /**
+     * Executes the given {@link HttpGet} with a {@link CloseableHttpClient}
+     * 
+     * @param <T>
+     *            the result-type of the ResponseHandler
+     * @param httpGet
+     *            the {@link HttpGet} to execute
+     * @param handler
+     *            the {@link ResponseHandler} to process the result with
+     * @return the result of the {@link ResponseHandler}
+     * @throws IOException
+     *             thrown by {@link CloseableHttpClient#execute(org.apache.http.client.methods.HttpUriRequest)}
+     * @throws ClientProtocolException
+     *             thrown by {@link CloseableHttpClient#execute(org.apache.http.client.methods.HttpUriRequest)}
+     */
+    public static <T> T executeHttpGet( final HttpGet httpGet, final ResponseHandler<T> handler )
+        throws IOException, ClientProtocolException {
+        return CLIENT.execute( httpGet, handler );
+    }
+
+    /**
+     * Creates a {@link HttpGet} with {@link #createHttpGet(URL, DownloadConfiguration)} and executes it with
+     * {@link #executeHttpGet(HttpGet, ResponseHandler)}
+     * 
+     * @param <T>
+     *            the result-type of the ResponseHandler
+     * @param url
+     *            the {@link URL} to connect to
+     * @param conf
+     *            a {@link DownloadConfiguration} containing the parameters to use
+     * @param handler
+     *            the {@link ResponseHandler} to process the result with
+     * @return the result of the {@link ResponseHandler}
+     * @throws IOException
+     *             thrown by {@link CloseableHttpClient#execute(org.apache.http.client.methods.HttpUriRequest)}
+     * @throws ClientProtocolException
+     *             thrown by {@link CloseableHttpClient#execute(org.apache.http.client.methods.HttpUriRequest)}
+     */
     public static <T> T getDataAndExecuteResponseHandler( final URL url, final DownloadConfiguration conf,
-        ResponseHandler<T> handler ) throws IOException {
+        ResponseHandler<T> handler ) throws IOException, ClientProtocolException {
         final HttpGet httpGet = createHttpGet( url, conf );
-        return client.execute( httpGet, handler );
+        return executeHttpGet( httpGet, handler );
     }
 
     /**
@@ -64,8 +100,6 @@ public final class Utils {
      *            the {@link Thread}s to start and wait for
      * @throws RuntimeException
      *             in case of an {@link InterruptedException}
-     * @see Thread#start()
-     * @see Thread#join()
      * @deprecated use {@link #callCallables(Collection)} instead
      */
     @Deprecated
@@ -84,6 +118,13 @@ public final class Utils {
         }
     }
 
+    /**
+     * Invokes all given Callables
+     * 
+     * @param callables
+     *            the {@link Callable}s to execute
+     * @return the result of {@link ExecutorService#invokeAll(Collection)}
+     */
     public static <T> List<Future<T>> callCallables( final Collection<? extends Callable<T>> callables ) {
         try {
             return THREAD_POOL.invokeAll( callables );

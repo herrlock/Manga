@@ -5,9 +5,9 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 import de.herrlock.manga.exceptions.InitializeException;
-import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Exec;
 import de.herrlock.manga.util.ExecHandlerTask;
+import de.herrlock.manga.util.configuration.Configuration;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -67,19 +67,19 @@ public class MDGuiController {
             if ( "".equals( url ) ) {
                 throw new InitializeException( "No URL is set." );
             }
-            p.put( Constants.PARAM_URL, url );
+            p.put( Configuration.URL, url );
         }
         {
-            p.put( Constants.PARAM_PATTERN, patternProperty.getValueSafe() );
+            p.put( Configuration.PATTERN, patternProperty.getValueSafe() );
         }
         {
             String proxy = proxyProperty.getValueSafe();
             if ( !"".equals( proxy ) ) {
-                p.put( Constants.PARAM_PROXY, proxy );
+                p.put( Configuration.PROXY, proxy );
             }
         }
         {
-            p.put( Constants.PARAM_JDFW, jdhomeProperty.getValueSafe() );
+            p.put( Configuration.JDFW, jdhomeProperty.getValueSafe() );
         }
         return p;
 

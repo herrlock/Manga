@@ -13,17 +13,55 @@ import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.util.ChapterPattern;
-import de.herrlock.manga.util.Constants;
 
+/**
+ * A configuration to pass multiple settings in one object around. Can be subclasses to define custom behavior.
+ * 
+ * @author HerrLock
+ */
 public abstract class Configuration {
-    protected static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
-    protected static URL _createUrl( Properties p ) {
+    /**
+     * the name of the property for the url
+     */
+    public static final String URL = "url";
+    /**
+     * the name of the property for the downloadpattern
+     */
+    public static final String PATTERN = "pattern";
+    /**
+     * the name of the property to set a custom timeout with
+     */
+    public static final String TIMEOUT = "timeout";
+    /**
+     * the default value of the timeout
+     */
+    public static final short TIMEOUT_DEFAULT = 5_000;
+    /**
+     * the path to JDownloader's folderwatch-folder
+     */
+    public static final String JDFW = "jdfw";
+    /**
+     * the name of the property for setting the proxy-url
+     */
+    public static final String PROXY = "proxy";
+
+    /**
+     * creates a {@link URL} from the property {@value #URL} in the given Properties
+     * 
+     * @param p
+     *            the {@link Properties} where to search for an url
+     * @return the reated URL
+     * @throws InitializeException
+     *             in case the URL is not availabile or malformed
+     */
+    protected static URL _createUrl( Properties p ) throws InitializeException {
         logger.entry();
         // get url
         URL url;
         try {
-            String urlString = p.getProperty( Constants.PARAM_URL );
+            String urlString = p.getProperty( URL );
             if ( urlString == null || "".equals( urlString ) ) {
                 throw new InitializeException( "url is not filled but required" );
             }
@@ -36,11 +74,20 @@ public abstract class Configuration {
         return url;
     }
 
-    protected static HttpHost _createProxy( Properties p ) {
+    /**
+     * Creates a {@link HttpHost} that serves as proxy
+     * 
+     * @param p
+     *            the {@link Properties} where to search for proxy-settings
+     * @return a {@link HttpHost} containing the proxy-settings, or {@code null}, when no proxy is defined
+     * @throws InitializeException
+     *             in case the given url is malformed or cannot be resolved
+     */
+    protected static HttpHost _createProxy( Properties p ) throws InitializeException {
         logger.entry();
         // get proxy
         try {
-            String urlString = p.getProperty( Constants.PARAM_PROXY );
+            String urlString = p.getProperty( PROXY );
             if ( urlString != null && !"".equals( urlString ) ) {
                 if ( !urlString.startsWith( "http://" ) ) {
                     urlString = "http://" + urlString;
@@ -60,34 +107,61 @@ public abstract class Configuration {
         return null;
     }
 
+    /**
+     * Creates a {@link ChapterPattern} to choose specific Chapters to download
+     * 
+     * @param p
+     *            the {@link Properties} where to search for a pattern
+     * @return a {@link ChapterPattern} containing the containing the chosen Chaptern
+     */
     protected static ChapterPattern _createPattern( Properties p ) {
         logger.entry();
-        String patternString = p.getProperty( Constants.PARAM_PATTERN );
+        String patternString = p.getProperty( PATTERN );
         logger.debug( "ChapterPattern: {}", patternString );
         return new ChapterPattern( patternString );
     }
 
+    /**
+     * Parses the timeout from the {@link Properties} or chooses the default-value
+     * 
+     * @param p
+     *            the {@link Properties} where to search for a timeout
+     * @return an {@code int} containing the timeout, either the parsed value from the {@link Properties} or the default-value
+     *         from {@link #TIMEOUT_DEFAULT} ({@value #TIMEOUT_DEFAULT})
+     */
     protected static int _createTimeout( Properties p ) {
         logger.entry();
-        String timeoutString = p.getProperty( Constants.PARAM_TIMEOUT );
+        String timeoutString = p.getProperty( TIMEOUT );
         if ( timeoutString == null || timeoutString.trim().equals( "" ) ) {
-            logger.debug( "Timeout: Default ({})", Constants.PARAM_TIMEOUT_DEFAULT );
-            return Constants.PARAM_TIMEOUT_DEFAULT;
+            logger.debug( "Timeout: using default-value ({})", TIMEOUT_DEFAULT );
+            return TIMEOUT_DEFAULT;
         }
         logger.debug( "Timeout: {}", timeoutString );
         return Integer.parseInt( timeoutString );
     }
 
-    protected static File _createFolderwatch( Properties p ) {
+    /**
+     * Creates a {@link File} pointing to JDownloader's folderwatch-folder
+     * 
+     * @param p
+     *            the {@link Properties} where to search for a file-description
+     * @return a {@link File} pointing to the folderwatch-folder of the local JDownloader-installation
+     * @throws InitializeException
+     *             in case the required property cannot be found
+     */
+    protected static File _createFolderwatch( Properties p ) throws InitializeException {
         logger.entry();
-        String fwPath = p.getProperty( Constants.PARAM_JDFW );
+        String fwPath = p.getProperty( JDFW );
         if ( fwPath == null || fwPath.trim().equals( "" ) ) {
-            throw new InitializeException( "property " + Constants.PARAM_JDFW + " is required but not availabile." );
+            throw new InitializeException( "property " + JDFW + " is required but not availabile." );
         }
         logger.debug( "Folderwatch-Folder: {}", fwPath );
         return new File( fwPath );
     }
 
+    /**
+     * Default-constuctor fo subclasses
+     */
     protected Configuration() {
         // not used directly
     }

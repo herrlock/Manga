@@ -64,7 +64,7 @@ public class ChapterPattern {
      *            the pattern to analyze, in case of {@code null} or an empty string an empty collection is used
      */
     public ChapterPattern( String pattern ) {
-        logger.trace( "ChapterPatern.ChapterPatter( {} )", pattern );
+        logger.entry( pattern );
         Set<Interval> result = new HashSet<>();
         // accept only if valid
         if ( pattern != null && REGEX.matcher( pattern ).matches() ) {
@@ -77,12 +77,21 @@ public class ChapterPattern {
         this.fallback = this.elements.isEmpty();
     }
 
+    /**
+     * Checks, if a given Chapternumber is contained in the ChapterPattern
+     * 
+     * @param s
+     *            the number of the Chapter to check
+     * @return true, if any Interval contains the given Chapter's number
+     */
     public boolean contains( String s ) {
+        // check if any Interval contains the chapter
         for ( Interval i : this.elements ) {
             if ( i.contains( s ) ) {
                 return true;
             }
         }
+        // return true, if the ChapterPattern is empty, false otherwise
         return this.fallback;
     }
 

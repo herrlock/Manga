@@ -21,6 +21,7 @@ import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.ui.main.MDGuiController;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
+import de.herrlock.manga.util.configuration.Configuration;
 import de.herrlock.manga.util.configuration.JDConfiguration;
 
 public class JDExport extends MDownloader {
@@ -47,9 +48,9 @@ public class JDExport extends MDownloader {
 
     private static void execute( Properties p ) {
         logger.entry();
-        String jdhome = p.getProperty( Constants.PARAM_JDFW );
+        String jdhome = p.getProperty( Configuration.JDFW );
         if ( jdhome == null || jdhome.trim().isEmpty() ) {
-            throw new InitializeException( "\"" + Constants.PARAM_JDFW + "\" must be set" );
+            throw new InitializeException( "\"" + Configuration.JDFW + "\" must be set" );
         }
         JDConfiguration conf = JDConfiguration.create( p );
         new JDExport( conf ).run();

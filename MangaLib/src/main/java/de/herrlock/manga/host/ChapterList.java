@@ -2,12 +2,15 @@ package de.herrlock.manga.host;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -115,8 +118,12 @@ public abstract class ChapterList extends ArrayList<Chapter> {
     public static final ResponseHandler<Document> TO_DOCUMENT_HANDLER = new ResponseHandler<Document>() {
         @Override
         public Document handleResponse( HttpResponse response ) throws ClientProtocolException, IOException {
-            String result = Utils.TO_STRING_HANDLER.handleResponse( response );
-            return Jsoup.parse( result );
+            HttpEntity entity = response.getEntity();
+            try {
+                return Jsoup.parse( EntityUtils.toString( entity, StandardCharsets.UTF_8 ) );
+            } finally {
+                EntityUtils.consume( entity );
+            }
         }
     };
 
