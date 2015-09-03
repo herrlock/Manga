@@ -12,10 +12,15 @@ import de.herrlock.manga.http.response.ImageResponse;
 import de.herrlock.manga.http.response.Response;
 
 /**
+ * A Location for the background-image, returns a random image
+ * 
  * @author HerrLock
  */
 public class BackgroundImageLocation extends Location {
 
+    /**
+     * Create a new BackgroundImageLocation
+     */
     public BackgroundImageLocation() {
         super( "background.jpg" );
     }

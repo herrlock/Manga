@@ -11,10 +11,15 @@ import de.herrlock.manga.http.response.Response;
 import de.herrlock.manga.http.response.TextResponse;
 
 /**
+ * A Location that returns jquery
+ * 
  * @author HerrLock
  */
 public class JQueryLocation extends Location {
 
+    /**
+     * Create a new JQueryLocation
+     */
     public JQueryLocation() {
         super( "jquery.js" );
     }

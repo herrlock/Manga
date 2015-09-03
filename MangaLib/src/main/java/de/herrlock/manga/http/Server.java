@@ -1,8 +1,10 @@
 package de.herrlock.manga.http;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -34,10 +36,24 @@ public class Server extends ServerSocket implements Runnable {
     private final Location location404 = new NotFoundLocation();
     private boolean active = true;
 
+    /**
+     * Creates a Server that lets a {@link ServerSocket} listen to the port 1905
+     * 
+     * @throws IOException
+     *             thrown by {@link Server#Server(int)}
+     */
     public Server() throws IOException {
         this( 1905 );
     }
 
+    /**
+     * Creates a Server that lets a {@link ServerSocket} listen to the given port
+     * 
+     * @param port
+     *            the port to listen to
+     * @throws IOException
+     *             thrown by {@link ServerSocket#ServerSocket(int)}
+     */
     public Server( int port ) throws IOException {
         super( port );
     }
@@ -66,19 +82,29 @@ public class Server extends ServerSocket implements Runnable {
                 }
             }
         } catch ( SocketException ex ) {
-            logger.info( "server stopped" );
+            logger.info( "stopping server" );
         } catch ( IOException ex ) {
             throw new RuntimeException( ex );
+        } finally {
+            logger.info( "server stopped" );
         }
     }
 
+    /**
+     * 
+     */
     public void stopServer() {
-        logger.info( "stopping Server" );
-        this.active = false;
-        LogWindow.dispose();
+        try ( Socket s = new Socket( "localhost", 1905 ) ) {
+            try ( BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter( s.getOutputStream(), StandardCharsets.UTF_8 ) ) ) {
+                writer.write( "GET /stopServer HTTP/1.1" );
+            }
+        } catch ( IOException ex ) {
+            throw new ServerException( ex );
+        }
     }
 
-    public Response handleXHR( URL url ) {
+    private Response handleXHR( URL url ) {
         String path = url.getPath();
         logger.debug( "Path: {}", path );
         String query = url.getQuery();
@@ -97,16 +123,26 @@ public class Server extends ServerSocket implements Runnable {
             logger.error( ex );
             return new ServerExceptionResponse( ex );
         } catch ( CloseServerException ex ) {
-            this.stopServer();
+            logger.info( "stopping Server" );
+            this.active = false;
+            LogWindow.dispose();
             return new TextResponse( 200, "stoppedServer" );
         }
     }
 
-    public void registerLocation( Location loc ) {
+    /**
+     * adds a {@link Location} to request data from to this server
+     * 
+     * @param loc
+     *            the {@link Location} to add
+     * @throws IllegalArgumentException
+     *             in case the path is already registered
+     */
+    public void registerLocation( Location loc ) throws IllegalArgumentException {
         logger.debug( "register \"/{}\"", loc.getPath() );
         String path = "/" + loc.getPath();
         if ( this.locations.containsKey( path ) ) {
-            throw new RuntimeException( path + " already registered" );
+            throw new IllegalArgumentException( path + " already registered" );
         }
         this.locations.put( path, loc );
     }

@@ -12,10 +12,15 @@ import de.herrlock.manga.http.response.TextResponse;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
+ * A Location to start the download
+ * 
  * @author HerrLock
  */
 public class StartDownloadLocation extends Location {
 
+    /**
+     * Create a new StartDownloadLocation
+     */
     public StartDownloadLocation() {
         super( "start" );
     }

@@ -9,10 +9,15 @@ import de.herrlock.manga.http.response.DocumentResponse;
 import de.herrlock.manga.http.response.Response;
 
 /**
+ * A Location that can be returnes by default when no other Loation matches
+ * 
  * @author HerrLock
  */
 public class NotFoundLocation extends Location {
 
+    /**
+     * Create a new NotFoundLocation
+     */
     public NotFoundLocation() {
         super( "404" );
     }

@@ -12,10 +12,15 @@ import de.herrlock.manga.http.response.DocumentResponse;
 import de.herrlock.manga.http.response.Response;
 
 /**
+ * A Location that serves as main-entrance point, the html-file shown in the browser
+ * 
  * @author HerrLock
  */
 public class IndexHtmlLocation extends Location {
 
+    /**
+     * Create a new IndexHtmlLocation
+     */
     public IndexHtmlLocation() {
         super( "" );
     }

@@ -10,11 +10,21 @@ import java.util.Arrays;
 import org.apache.commons.io.IOUtils;
 
 /**
+ * A {@link Response} that returns an image. The stored data cannot be changed after creation.
+ * 
  * @author HerrLock
  */
 public class ImageResponse extends Response {
-    private byte[] bytes;
+    private final byte[] bytes;
 
+    /**
+     * Creates a new ImageResponse with the bytes loaded from the given InputStream
+     * 
+     * @param imageStream
+     *            the {@link InputStream} to load the image from
+     * @throws IOException
+     *             thrown by {@link IOUtils#copy(InputStream, java.io.OutputStream)}
+     */
     public ImageResponse( InputStream imageStream ) throws IOException {
         super( 200 );
         try {
@@ -31,6 +41,12 @@ public class ImageResponse extends Response {
         }
     }
 
+    /**
+     * Creates a new ImageResponse with the bytes stores in the given {@link ByteArrayOutputStream}
+     * 
+     * @param out
+     *            a {@link ByteArrayOutputStream} that contains the image-data
+     */
     public ImageResponse( ByteArrayOutputStream out ) {
         super( 200 );
         this.bytes = out.toByteArray();
