@@ -32,8 +32,6 @@ public final class LogWindow {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private static final List<String> lafPrefs = Collections.unmodifiableList( Arrays.asList( "Windows", "Nimbus", "Metal" ) );
-
     private static final LogWindow instance = new LogWindow();
 
     private final JFrame frame;
@@ -44,6 +42,7 @@ public final class LogWindow {
     private final BoundedRangeModel totalProgressModel = this.totalProgressbar.getModel();
 
     static {
+        final List<String> lafPrefs = Collections.unmodifiableList( Arrays.asList( "Windows", "Nimbus", "Metal" ) );
         // try to set a LookAndFeel
         Map<String, LookAndFeelInfo> lookAndFeels = new HashMap<>( lafPrefs.size() );
         for ( LookAndFeelInfo lookAndFeelInfo : UIManager.getInstalledLookAndFeels() ) {
@@ -64,36 +63,70 @@ public final class LogWindow {
         }
     }
 
+    /**
+     * Sets the maximal value for the {@link JProgressBar} indicating the progress of the current chapter. Synchronized on the
+     * JProgressBar's model
+     * 
+     * @param max
+     *            the maximal value
+     */
     public static void setChapterProgressMax( int max ) {
         synchronized ( instance.chapterProgressModel ) {
             instance.chapterProgressModel.setMaximum( max );
         }
     }
 
+    /**
+     * Sets the current value for the {@link JProgressBar} indicating the progress of the current chapter. Synchronized on the
+     * JProgressBar's model
+     * 
+     * @param progress
+     *            the current value
+     */
     public static void setChapterProgress( int progress ) {
         synchronized ( instance.chapterProgressModel ) {
             instance.chapterProgressModel.setValue( progress );
         }
     }
 
+    /**
+     * Increases the current value for the {@link JProgressBar} indicating the progress of the current chapter by one.
+     * Synchronized on the JProgressBar's model
+     * 
+     */
     public static void setChapterProgressPlusOne() {
         synchronized ( instance.chapterProgressModel ) {
             instance.chapterProgressModel.setValue( instance.chapterProgressModel.getValue() + 1 );
         }
     }
 
+    /**
+     * Sets the current value for the {@link JProgressBar} indicating the total progress. Synchronized on the JProgressBar's model
+     * 
+     * @param max
+     *            the maximal value
+     */
     public static void setProgressMax( int max ) {
         synchronized ( instance.totalProgressModel ) {
             instance.totalProgressModel.setMaximum( max );
         }
     }
 
+    /**
+     * Sets the current value for the {@link JProgressBar} indicating the total progress. Synchronized on the JProgressBar's model
+     * 
+     * @param progress
+     *            the current value
+     */
     public static void setProgress( int progress ) {
         synchronized ( instance.totalProgressModel ) {
             instance.totalProgressModel.setValue( progress );
         }
     }
 
+    /**
+     * Dispatches the {@link WindowEvent#WINDOW_CLOSING WINDOW_CLOSING}-event to the frame. Synchronized on the JFrame
+     */
     public static void dispose() {
         synchronized ( instance.frame ) {
             final JFrame f = instance.frame;
@@ -106,6 +139,12 @@ public final class LogWindow {
         }
     }
 
+    /**
+     * Adds a message to this frame's textarea. Synchronized on the {@link JTextArea}
+     * 
+     * @param message
+     *            the String to add, inserted at the top, followed by a {@code \n}
+     */
     public static void addMessage( String message ) {
         synchronized ( instance.textarea ) {
             instance.textarea.insert( message + "\n", 0 );

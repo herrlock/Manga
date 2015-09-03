@@ -9,6 +9,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+/**
+ * an Appender for log4j writing the logged messages to the {@link LogWindow}'s {@link javax.swing.JTextArea}
+ * 
+ * @author HerrLock
+ */
 @Plugin( name = "JTextAreaAppender", category = "Core", elementType = "appender" )
 public final class JTextAreaAppender extends AbstractAppender {
     private static final long serialVersionUID = 1L;
@@ -26,6 +31,9 @@ public final class JTextAreaAppender extends AbstractAppender {
         LogWindow.addMessage( formattedMessage );
     }
 
+    /**
+     * @return the instance of this Appender to avoid multiple instances
+     */
     @PluginFactory
     public static JTextAreaAppender getInstance() {
         return instance;
