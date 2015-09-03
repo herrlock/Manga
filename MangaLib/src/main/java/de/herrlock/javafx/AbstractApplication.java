@@ -1,10 +1,13 @@
 package de.herrlock.javafx;
 
+import de.herrlock.javafx.scene.SceneContainer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import de.herrlock.javafx.scene.SceneContainer;
 
+/**
+ * @author HerrLock
+ */
 public abstract class AbstractApplication extends Application {
     private SceneContainer container = null;
 
@@ -22,6 +25,12 @@ public abstract class AbstractApplication extends Application {
         stage.show();
     }
 
+    /**
+     * Sets the SceneContainer to use, the contained Scene is shown by this Application
+     * 
+     * @param container
+     *            the {@link SceneContainer} to use
+     */
     public void setScene( SceneContainer container ) {
         this.container = container;
     }
