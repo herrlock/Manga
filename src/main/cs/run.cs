@@ -1,3 +1,4 @@
+using System.Diagnostics;
 
 namespace MD
 {
@@ -5,11 +6,9 @@ namespace MD
 	{
 		static void Main()
 		{
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
-            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-            startInfo.FileName = "cmd.exe";
-            startInfo.Arguments = "/C java -cp \"lib/*\" de.herrlock.manga.Ctrl 2>>log/err.log";
+            ProcessStartInfo startInfo = new ProcessStartInfo("cmd.exe", "/C java -cp \"lib/*\" de.herrlock.manga.Ctrl");
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            Process process = new Process();
             process.StartInfo = startInfo;
             process.Start();
 		}
