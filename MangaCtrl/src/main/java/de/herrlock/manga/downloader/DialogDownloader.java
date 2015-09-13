@@ -11,11 +11,28 @@ import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
- * Initializes the download and starts it after confirming the number of pictures with a {@link JOptionPane}
+ * Initializes the download and starts it after confirming the number of pictures and an estimated whole size of the images with a
+ * {@link JOptionPane}
  * 
  * @author Herrlock
  */
 public final class DialogDownloader extends MDownloader {
+
+    /**
+     * the average filesize in kB.<br>
+     * estimated from :
+     * <dl>
+     * <dt>700 chapters of Naruto from Mangapanda</dt>
+     * <dd>156.6 kB</dd>
+     * <dt>799 chapters of OnePiece from Mangapanda</dt>
+     * <dd>183.7 kB</dd>
+     * <dt>700 + some coloured chapters of Naruto from Mangafox</dt>
+     * <dd>139.2 kB</dd>
+     * <dt>799 chapters of OnePiece from Mangafox</dt>
+     * <dd>230.6 kB</dd>
+     * </dl>
+     */
+    private static final int avgSize = 177;
 
     public static void main( String... args ) {
         logger.entry();
@@ -55,7 +72,9 @@ public final class DialogDownloader extends MDownloader {
 
     private boolean goon() {
         String title = "go on?";
-        String message = "number of pictures: " + getPMCSize();
+        int noOfPictures = getPMCSize();
+        int estimatedSize = noOfPictures * avgSize / 1000;
+        String message = "Number of pictures: " + noOfPictures + "\n" + "Estimated entire size: " + estimatedSize + " MB";
         int clicked = JOptionPane.showConfirmDialog( null, message, title, JOptionPane.YES_NO_OPTION,
             JOptionPane.INFORMATION_MESSAGE );
         return clicked == JOptionPane.OK_OPTION;
