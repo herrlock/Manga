@@ -17,11 +17,28 @@ import de.herrlock.manga.ui.log.LogWindow;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
+/**
+ * An abstract class to implement downloaders with different behaviour
+ * 
+ * @author HerrLock
+ */
 public abstract class MDownloader {
+    /**
+     * the logger for this class and its subclasses
+     */
     protected static final Logger logger = LogManager.getLogger();
 
+    /**
+     * contains the {@link ChapterListContainer}
+     */
     protected final ChapterListContainer clc;
+    /**
+     * contains the links to the actual images
+     */
     protected final PictureMapContainer pmc;
+    /**
+     * contains the current queue of downloads
+     */
     protected final DownloadQueueContainer dqc;
 
     /**
@@ -43,6 +60,9 @@ public abstract class MDownloader {
         this.dqc = new DownloadQueueContainer( this.clc, conf );
     }
 
+    /**
+     * An abstract method to implement different conditions to start the download. This method should call {@link #downloadAll()}
+     */
     protected abstract void run();
 
     /**
@@ -66,10 +86,18 @@ public abstract class MDownloader {
     }
 
     /**
-     * downloads everything in the PictureMapContainer<br>
-     * basically calls {@link #downloadChapter(String, EntryList)} for every chapter
+     * @return the folder where the downloaded chapters are stored in
+     * 
+     * @see ChapterListContainer#getPath()
      */
-    public void downloadAll() {
+    public File getTargetFolder() {
+        return this.clc.getPath();
+    }
+
+    /**
+     * downloads everything in the PictureMapContainer
+     */
+    protected void downloadAll() {
         logger.entry();
         EntryList<String, EntryList<Integer, URL>> entries = this.pmc.getEntries();
         entries.sort( entries.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
@@ -86,7 +114,7 @@ public abstract class MDownloader {
 
     /**
      * downloads the Chapter with the "name"of {@code key} and the pictures from {@code urlMap}<br>
-     * adds every Chapter th the DownloadQueueContainer and starts the download
+     * adds every Chapter to the DownloadQueueContainer and starts the download
      * 
      * @param key
      *            the name of the chapter (in general it is a number as String)
@@ -107,15 +135,6 @@ public abstract class MDownloader {
             throw new RuntimeException( chapterFolder + " does not exists and could not be created" );
         }
         logger.info( "finished chapter {}", key );
-    }
-
-    /**
-     * returns the folder where the downloaded chapters are stored in
-     * 
-     * @see ChapterListContainer#getPath()
-     */
-    public File getTargetFolder() {
-        return this.clc.getPath();
     }
 
 }

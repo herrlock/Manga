@@ -8,6 +8,9 @@ import org.junit.Test;
  */
 public class TestCrawljobEntry {
 
+    /**
+     * Test the method CrawljobEntry.export()
+     */
     @Test
     public void testExport() {
         CrawljobEntry crawljobEntry = new CrawljobEntry( "filename", "url" );

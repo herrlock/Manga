@@ -20,6 +20,12 @@ import org.junit.Test;
  */
 public class RunTests {
 
+    /**
+     * Checks all Hoster-classes in the host-package
+     * 
+     * @throws IOException
+     *             if an IOException occurs
+     */
     @Test
     public void checkHoster() throws IOException {
         Collection<Class<? extends ChapterList>> classes = getClasses( "de.herrlock.manga.host" );

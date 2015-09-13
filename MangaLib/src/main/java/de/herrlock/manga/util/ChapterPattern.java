@@ -70,7 +70,19 @@ public class ChapterPattern {
         if ( pattern != null && REGEX.matcher( pattern ).matches() ) {
             // split string at ';'
             for ( String s : pattern.split( ";" ) ) {
-                result.add( new Interval( s.split( "-" ) ) );
+                String[] chapters = s.split( "-" );
+                final Interval toAdd;
+                if ( chapters.length == 1 ) {
+                    // chapters.length == 1
+                    toAdd = new Interval( chapters[0] );
+                } else if ( chapters.length > 1 ) {
+                    // chapters.length >= 2, ignore arguments after the second value
+                    toAdd = new Interval( chapters[0], chapters[1] );
+                } else {
+                    // chapters.length == 0
+                    throw new IllegalArgumentException( "invalid, did not pass any arguments" );
+                }
+                result.add( toAdd );
             }
         }
         this.elements = Collections.unmodifiableCollection( result );
@@ -100,29 +112,28 @@ public class ChapterPattern {
         private final BigDecimal intervalEnd;
 
         /**
-         * @param parts
-         *            the start and end of the Interval as Varargs
-         * @throws IllegalArgumentException
-         *             in case {@code parts.length} is 0
+         * @param chapter
+         *            the start and end of the Interval
          */
-        public Interval( String... parts ) {
-            if ( parts.length >= 1 ) {
-                this.intervalStart = new BigDecimal( parts[0] );
-                if ( parts.length >= 2 ) {
-                    // multiple arguments, ignore all after the second :)
-                    this.intervalEnd = new BigDecimal( parts[1] );
-                } else {
-                    // one argument, so start and end are the same
-                    this.intervalEnd = new BigDecimal( parts[0] );
-                }
-            } else {
-                // parts.length == 0
-                throw new IllegalArgumentException( "invalid, did not pass any arguments" );
-            }
+        public Interval( String chapter ) {
+            this( chapter, chapter );
+        }
 
+        /**
+         * @param intervalStart
+         *            the start of the Interval
+         * @param intervalEnd
+         *            the end of the Interval
+         */
+        public Interval( String intervalStart, String intervalEnd ) {
+            this.intervalStart = new BigDecimal( intervalStart );
+            this.intervalEnd = new BigDecimal( intervalEnd );
         }
 
         public boolean contains( String s ) {
+            if ( s == null ) {
+                return false;
+            }
             return contains( new BigDecimal( s ) );
         }
 

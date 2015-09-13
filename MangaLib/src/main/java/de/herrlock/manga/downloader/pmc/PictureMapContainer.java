@@ -16,6 +16,11 @@ import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Utils;
 
+/**
+ * A container for the actual urls of the images
+ * 
+ * @author HerrLock
+ */
 public final class PictureMapContainer {
     private static final Logger logger = LogManager.getLogger();
 
@@ -25,6 +30,12 @@ public final class PictureMapContainer {
     private final EntryList<String, EntryList<Integer, URL>> entries;
     private final ChapterListContainer clc;
 
+    /**
+     * Creates a new PictureMapContainer
+     * 
+     * @param clc
+     *            the container with the list of chapters
+     */
     public PictureMapContainer( ChapterListContainer clc ) {
         this.clc = clc;
         int clcSize = clc.getSize();

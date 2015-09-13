@@ -28,6 +28,11 @@ import de.herrlock.manga.ui.log.LogWindow;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
+/**
+ * A container for a list of downloads
+ * 
+ * @author HerrLock
+ */
 public final class DownloadQueueContainer {
     static final Logger logger = LogManager.getLogger();
 
@@ -35,6 +40,12 @@ public final class DownloadQueueContainer {
     private final ChapterListContainer clc;
     final DownloadConfiguration conf;
 
+    /**
+     * @param clc
+     *            the container with the list of chapters
+     * @param conf
+     *            the configuration to use
+     */
     public DownloadQueueContainer( ChapterListContainer clc, DownloadConfiguration conf ) {
         this.clc = clc;
         this.conf = conf;
@@ -44,16 +55,22 @@ public final class DownloadQueueContainer {
      * adds a page to thie queue
      * 
      * @param p
-     *            the {@link Page} to add
+     *            the page to add
      */
     public void add( Page p ) {
         this.dlQueue.add( p );
     }
 
     /**
-     * adds a new {@link Page} with the given parameters to the queue
+     * adds a new page with the given parameters to the queue
      * 
-     * @see Page#Page(URL, File, int)
+     * @param pageUrl
+     *            the page's URL
+     * @param chapterFolder
+     *            the folder to store the page in
+     * @param pageNumber
+     *            the number of the page
+     * 
      */
     public void add( URL pageUrl, File chapterFolder, int pageNumber ) {
         this.add( new Page( pageUrl, chapterFolder, pageNumber ) );
@@ -62,7 +79,11 @@ public final class DownloadQueueContainer {
     /**
      * adds a {@link Collection} of Integer-URL-Pairs to this Container
      * 
-     * @see DownloadQueueContainer#add(URL, File, int)
+     * @param chapterFolder
+     *            the folder to store the pages in
+     * @param entryList
+     *            the list of entries
+     * 
      */
     public void addEntryList( File chapterFolder, EntryList<Integer, URL> entryList ) {
         for ( Entry<Integer, URL> e : entryList ) {
@@ -147,51 +168,6 @@ public final class DownloadQueueContainer {
                 }
             }
             return null;
-        }
-    }
-
-    public static final class Page {
-        /**
-         * the {@link URL} where to read this page from
-         */
-        private final URL pageUrl;
-        /**
-         * the {@link File} where this page will be saved
-         */
-        private final File targetFile;
-
-        /**
-         * creates a new page
-         * 
-         * @param pageUrl
-         *            the {@link URL} where to read from
-         * @param chapterFolder
-         *            the folder where the page will be stored
-         * @param pageNumber
-         *            the number of the page, sets the filename (with optional prepended '0')
-         */
-        public Page( URL pageUrl, File chapterFolder, int pageNumber ) {
-            this.pageUrl = pageUrl;
-            String _nr = ( pageNumber > 9 ? "" : "0" ) + pageNumber;
-            this.targetFile = new File( chapterFolder, _nr + ".jpg" );
-        }
-
-        /**
-         * getter for this page's {@link URL}
-         * 
-         * @return the {@link URL} of this page
-         */
-        public URL getUrl() {
-            return this.pageUrl;
-        }
-
-        /**
-         * getter for this page's save-location
-         * 
-         * @return the {@link File} where to store this page
-         */
-        public File getTargetFile() {
-            return this.targetFile;
         }
     }
 }
