@@ -1,13 +1,14 @@
 package de.herrlock.manga.ui.main;
 
+import de.herrlock.javafx.scene.NodeContainer;
+import de.herrlock.manga.host.Hoster;
+import de.herrlock.manga.host.ProvidedHoster;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import de.herrlock.javafx.scene.NodeContainer;
-import de.herrlock.manga.host.Hoster;
 
 class Right extends NodeContainer {
     @Override
@@ -18,7 +19,7 @@ class Right extends NodeContainer {
 
         GridPane hostGrid = new GridPane();
         hostGrid.getStyleClass().addAll( CCN.GRIDPANE, CCN.PADDING_8 );
-        Hoster[] values = Hoster.sortedValues();
+        Hoster[] values = ProvidedHoster.sortedValues();
         for ( int y = 0; y < values.length; y++ ) {
             String hostname = values[y].getName();
             hostGrid.add( new Text( hostname ), 0, y );

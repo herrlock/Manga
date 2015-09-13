@@ -21,7 +21,7 @@ import org.junit.Test;
 public class RunTests {
 
     /**
-     * Checks all Hoster-classes in the host-package
+     * Checks all ProvidedHoster-classes in the host-package
      * 
      * @throws IOException
      *             if an IOException occurs
@@ -33,9 +33,9 @@ public class RunTests {
         for ( Class<? extends ChapterList> c : classes ) {
             classnames.add( c.getSimpleName().toLowerCase( Locale.GERMAN ) );
         }
-        Hoster[] hoster = Hoster.values();
+        ProvidedHoster[] hoster = ProvidedHoster.values();
         Set<String> hosternames = new HashSet<>( hoster.length );
-        for ( Hoster h : hoster ) {
+        for ( ProvidedHoster h : hoster ) {
             hosternames.add( h.name().toLowerCase( Locale.GERMAN ) );
         }
 

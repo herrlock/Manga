@@ -12,7 +12,7 @@ public final class PrintAllHoster {
 
     public static void printHoster( PrintStream out ) {
         out.println( "availabile hoster" );
-        Hoster[] values = Hoster.sortedValues();
+        Hoster[] values = ProvidedHoster.sortedValues();
         for ( Hoster h : values ) {
             out.println( h );
         }

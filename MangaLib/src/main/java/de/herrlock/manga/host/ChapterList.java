@@ -48,7 +48,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
     public static ChapterList getInstance( DownloadConfiguration conf ) throws IOException {
         logger.entry();
         URL url = conf.getUrl();
-        Hoster h = Hoster.getHostByURL( url );
+        Hoster h = ProvidedHoster.getHostByURL( url );
         if ( h == null ) {
             throw new InitializeException( url + " could not be resolved to a registered host." );
         }
