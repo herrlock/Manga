@@ -1,12 +1,17 @@
 package de.herrlock.manga.ui.main;
 
+import static de.herrlock.manga.util.Execs.ADD_TO_JD_W_GUI;
+import static de.herrlock.manga.util.Execs.DO_NOTHING;
+import static de.herrlock.manga.util.Execs.GUI_DOWNLOADER;
+import static de.herrlock.manga.util.Execs.VIEW_PAGE_MAIN;
+
 import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import de.herrlock.javafx.handler.Exec;
+import de.herrlock.javafx.handler.ExecHandlerTask;
 import de.herrlock.manga.exceptions.InitializeException;
-import de.herrlock.manga.util.Exec;
-import de.herrlock.manga.util.ExecHandlerTask;
 import de.herrlock.manga.util.configuration.Configuration;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -30,25 +35,25 @@ public class MDGuiController {
     public static final EventHandler<ActionEvent> START_DOWNLOAD = new EventHandler<ActionEvent>() {
         @Override
         public void handle( ActionEvent event ) {
-            handleBtnClick( Exec.GUI_DOWNLOADER );
+            handleBtnClick( GUI_DOWNLOADER );
         }
     };
     public static final EventHandler<ActionEvent> EXPORT_TO_JD = new EventHandler<ActionEvent>() {
         @Override
         public void handle( ActionEvent event ) {
-            handleBtnClick( Exec.ADD_TO_JD_W_GUI );
+            handleBtnClick( ADD_TO_JD_W_GUI );
         }
     };
     public static final EventHandler<ActionEvent> CREATE_HTML = new EventHandler<ActionEvent>() {
         @Override
         public void handle( ActionEvent event ) {
-            handleBtnClick( Exec.VIEW_PAGE_MAIN );
+            handleBtnClick( VIEW_PAGE_MAIN );
         }
     };
     public static final EventHandler<ActionEvent> EXIT_GUI = new EventHandler<ActionEvent>() {
         @Override
         public void handle( ActionEvent event ) {
-            handleBtnClick( Exec.DO_NOTHING );
+            handleBtnClick( DO_NOTHING );
         }
     };
 

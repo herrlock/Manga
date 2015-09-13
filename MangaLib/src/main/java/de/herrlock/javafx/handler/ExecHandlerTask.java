@@ -1,4 +1,4 @@
-package de.herrlock.manga.util;
+package de.herrlock.javafx.handler;
 
 import javax.swing.JOptionPane;
 
@@ -8,9 +8,17 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 
+/**
+ * The bridge between an {@link Exec} and a {@link Task} @author Herrlock
+ */
 public class ExecHandlerTask extends Task<Void> {
     private final Exec exec;
 
+    /**
+     * A new Task that will execute the given Exec
+     * 
+     * @param exec the {@link Exec} to execute
+     */
     public ExecHandlerTask( Exec exec ) {
         this.exec = exec;
         setOnFailed( new ExceptionHandler() );
