@@ -110,6 +110,7 @@ public abstract class MDownloader {
             downloadChapter( key, urlMap );
             LogWindow.setProgress( ++progress );
         }
+        logger.info( "Finished successful" );
     }
 
     /**
