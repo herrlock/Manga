@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration packages="de.herrlock.manga.ui.log">
 	<Properties>
-		<Property name="patternLayout">%d{HH:mm:ss.SSS} [%t] %-5level %logger{1.}.%M - %m%n</Property>
+		<Property name="patternLayout">%d{HH:mm:ss.SSS} [%t] %-5p %c{1.}.%M - %m%n</Property>
 	</Properties>
 	<Appenders>
 		<JTextAreaAppender />
