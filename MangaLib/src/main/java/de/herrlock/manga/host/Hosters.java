@@ -27,7 +27,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * 
  * @author HerrLock
  */
-public abstract class Hosters {
+public final class Hosters {
     private static final Logger logger = LogManager.getLogger();
 
     private static final List<Hoster> hosters = new ArrayList<>( Arrays.asList( new Hoster( MangaPanda.class) {
@@ -125,4 +125,7 @@ public abstract class Hosters {
         return Collections.unmodifiableList( hosterCopy );
     }
 
+    private Hosters() {
+        // avoid instantiation
+    }
 }
