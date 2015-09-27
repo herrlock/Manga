@@ -7,6 +7,9 @@ import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Scanner;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
@@ -20,6 +23,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  */
 @Deprecated
 public final class ConsoleDownloader extends MDownloader {
+    private static final Logger logger = LogManager.getLogger();
 
     private final Scanner sc;
 

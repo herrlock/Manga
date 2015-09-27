@@ -14,6 +14,8 @@ import java.util.Properties;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.downloader.pmc.EntryList;
@@ -25,6 +27,7 @@ import de.herrlock.manga.util.configuration.Configuration;
 import de.herrlock.manga.util.configuration.JDConfiguration;
 
 public class JDExport extends MDownloader {
+    private static final Logger logger = LogManager.getLogger();
 
     final File jdfwFolder;
     final File path = this.clc.getPath();

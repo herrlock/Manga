@@ -23,10 +23,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * @author HerrLock
  */
 public abstract class MDownloader {
-    /**
-     * the logger for this class and its subclasses
-     */
-    protected static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * contains the {@link ChapterListContainer}

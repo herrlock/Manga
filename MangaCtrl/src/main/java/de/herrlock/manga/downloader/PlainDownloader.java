@@ -7,6 +7,9 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
@@ -16,6 +19,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * @author HerrLock
  */
 public final class PlainDownloader extends MDownloader {
+    private static final Logger logger = LogManager.getLogger();
 
     public static void main( String... args ) {
         logger.entry();
