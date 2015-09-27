@@ -48,7 +48,7 @@ public abstract class Hosters {
     } ) );
 
     static {
-        // TODO register additional hoster
+        // TODO check if this works, write JUnit-tests
         List<String> classes = new ArrayList<>();
         try {
             List<String> allLines = Files.readAllLines( Paths.get( ".", "additionalHoster.txt" ), StandardCharsets.UTF_8 );

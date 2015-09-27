@@ -43,7 +43,7 @@ public class EntryList<K, V> implements Iterable<SimpleImmutableEntry<K, V>> {
     }
 
     /**
-     * Creates a new empty EntryList as a copy of the given Collection of Entries
+     * Creates a new EntryList as a copy of the given Collection of Entries
      * 
      * @param c
      *            the collection to copy the elements from
@@ -55,7 +55,7 @@ public class EntryList<K, V> implements Iterable<SimpleImmutableEntry<K, V>> {
     }
 
     /**
-     * Creates a new empty EntryList as a copy of the given EntryList
+     * Creates a new EntryList as a copy of the given EntryList
      * 
      * @param entryList
      *            the entryList to copy the elements from

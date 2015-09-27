@@ -17,6 +17,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import de.herrlock.manga.downloader.pmc.EntryList;
+import de.herrlock.manga.downloader.pmc.ImmutableEntryList;
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Utils;
@@ -101,7 +102,8 @@ public abstract class ChapterList extends ArrayList<Chapter> {
     public abstract URL imgLink( URL url ) throws IOException;
 
     /**
-     * returns a (hopefully soon immutable) {@link EntryList} of all page-URLs
+     * returns an immutable {@link EntryList} of all page-URLs. calls {@link #_getAllPageURLs(URL)} and warps the result in an
+     * {@link ImmutableEntryList}
      * 
      * @param url
      *            the url to one chapter
@@ -110,8 +112,8 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      *             in case an IOException occurs
      */
     public EntryList<Integer, URL> getAllPageURLs( URL url ) throws IOException {
-        // TODO: make immutable
-        return _getAllPageURLs( url );
+        EntryList<Integer, URL> entryList = _getAllPageURLs( url );
+        return new ImmutableEntryList<>( entryList );
     }
 
     /**
