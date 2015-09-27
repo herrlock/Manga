@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
@@ -27,6 +29,8 @@ import org.jsoup.parser.Tag;
  * @author HerrLock
  */
 public class ViewPage {
+    private static final Logger logger = LogManager.getLogger();
+
     private final File folder;
     private final Document document;
     private final int maxImgs;
@@ -55,12 +59,14 @@ public class ViewPage {
      *            the folder where to create the ViewPages
      */
     public ViewPage( File folder ) {
-        System.out.println( "create files in folder " + folder );
+        logger.info( "create files in folder " + folder );
         this.folder = folder;
-        this.document = new Document( "" );
         this.maxImgs = maxImgs();
-        this.document.appendChild( createHead() );
-        this.document.appendChild( createBody() );
+        this.document = Document.createShell( "" );
+        Element head = this.document.select( "head" ).first();
+        this.document.appendChild( createHeadChildren( head ) );
+        Element body = this.document.select( "body" ).first();
+        this.document.appendChild( createBodyChildren( body ) );
     }
 
     /**
@@ -76,9 +82,8 @@ public class ViewPage {
         return mangarawname.replace( '_', ' ' );
     }
 
-    private Element createHead() {
-        System.out.println( "createHead" );
-        Element head = new Element( Tag.valueOf( "head" ), "" );
+    private Element createHeadChildren( Element head ) {
+        logger.info( "createHead" );
         head.appendElement( "title" ).text( mangaName() );
         head.appendElement( "meta" ).attr( "charset", "utf-8" );
         head.appendElement( "link" ).attr( "rel", "shortcut icon" ).attr( "href", "favicon.ico" );
@@ -109,9 +114,8 @@ public class ViewPage {
         return head;
     }
 
-    private Element createBody() {
-        System.out.println( "createBody" );
-        Element body = new Element( Tag.valueOf( "body" ), "" );
+    private Element createBodyChildren( Element body ) {
+        logger.info( "createBody" );
         body.attr( "onload", "init()" );
         body.appendChild( leftDiv() );
         body.appendChild( rightDiv() );
@@ -147,6 +151,7 @@ public class ViewPage {
         }
         return lDiv;
     }
+
     private static Element wrapperDiv( Entry<Integer, List<String>> e, boolean addHidelink ) {
         Element wrapperDiv = new Element( Tag.valueOf( "div" ), "" );
         Integer blockId = e.getKey();
