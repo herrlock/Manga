@@ -1,6 +1,7 @@
 package de.herrlock.manga.host;
 
 import java.io.PrintStream;
+import java.util.Collection;
 
 /**
  * @author HerrLock
@@ -12,7 +13,7 @@ public final class PrintAllHoster {
 
     public static void printHoster( PrintStream out ) {
         out.println( "availabile hoster" );
-        Hoster[] values = ProvidedHoster.sortedValues();
+        Collection<Hoster> values = Hosters.sortedValues();
         for ( Hoster h : values ) {
             out.println( h );
         }

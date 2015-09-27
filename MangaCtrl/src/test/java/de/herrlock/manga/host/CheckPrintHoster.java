@@ -3,6 +3,7 @@ package de.herrlock.manga.host;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Collection;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class CheckPrintHoster {
         try ( ByteArrayOutputStream baos = new ByteArrayOutputStream() ) {
             try ( PrintStream ps = new PrintStream( baos, true, UTF_8 ) ) {
                 ps.println( "availabile hoster" );
-                Hoster[] values = ProvidedHoster.sortedValues();
+                Collection<Hoster> values = Hosters.sortedValues();
                 for ( Hoster h : values ) {
                     ps.println( h );
                 }

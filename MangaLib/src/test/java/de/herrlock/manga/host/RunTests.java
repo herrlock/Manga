@@ -28,17 +28,18 @@ public class RunTests {
      */
     @Test
     public void checkHoster() throws IOException {
-        Collection<Class<? extends ChapterList>> classes = getClasses( "de.herrlock.manga.host" );
+        Collection<Class<? extends ChapterList>> classes = getClasses( "de.herrlock.manga.host.impl" );
         Set<String> classnames = new HashSet<>( classes.size() );
         for ( Class<? extends ChapterList> c : classes ) {
             classnames.add( c.getSimpleName().toLowerCase( Locale.GERMAN ) );
         }
-        ProvidedHoster[] hoster = ProvidedHoster.values();
-        Set<String> hosternames = new HashSet<>( hoster.length );
-        for ( ProvidedHoster h : hoster ) {
-            hosternames.add( h.name().toLowerCase( Locale.GERMAN ) );
+        List<Hoster> hoster = Hosters.sortedValues();
+        Set<String> hosternames = new HashSet<>( hoster.size() );
+        for ( Hoster h : hoster ) {
+            hosternames.add( h.getName().toLowerCase( Locale.GERMAN ) );
         }
 
+        Assert.assertEquals( classnames, hosternames );
         Assert.assertTrue( classnames.equals( hosternames ) && hosternames.equals( classnames ) );
     }
 

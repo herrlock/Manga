@@ -23,7 +23,8 @@ import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
- * A class the consists of multiple Chapters
+ * A class the consists of multiple Chapters<br>
+ * Implementations require the annotation {@link Details}
  * 
  * @author HerrLock
  */
@@ -36,7 +37,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
     protected final DownloadConfiguration conf;
 
     /**
-     * creates an instance of {@linkplain ChapterList}, gets the right {@linkplain Hoster} from the {@linkplain URL} in the given
+     * creates an instance of {@linkplain ChapterList}, gets the right {@linkplain Details} from the {@linkplain URL} in the given
      * {@link DownloadConfiguration}
      * 
      * @param conf
@@ -48,7 +49,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
     public static ChapterList getInstance( DownloadConfiguration conf ) throws IOException {
         logger.entry();
         URL url = conf.getUrl();
-        Hoster h = ProvidedHoster.getHostByURL( url );
+        Hoster h = Hosters.getHostByURL( url );
         if ( h == null ) {
             throw new InitializeException( url + " could not be resolved to a registered host." );
         }
@@ -158,9 +159,15 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @author HerrLock
      */
     public static class Chapter {
-        final String number;
+        private final String number;
         private final URL chapterUrl;
 
+        /**
+         * @param number
+         *            tha Chapter's number. can contain alphanumerical characters
+         * @param url
+         *            the url of a page (generally the first) of the chapter
+         */
         Chapter( String number, URL url ) {
             this.number = number;
             this.chapterUrl = url;

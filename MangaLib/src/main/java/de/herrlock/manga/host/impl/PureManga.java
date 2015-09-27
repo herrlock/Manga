@@ -1,4 +1,4 @@
-package de.herrlock.manga.host;
+package de.herrlock.manga.host.impl;
 
 import java.io.IOException;
 import java.net.URL;
@@ -9,9 +9,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import de.herrlock.manga.downloader.pmc.EntryList;
+import de.herrlock.manga.host.ChapterList;
+import de.herrlock.manga.host.Details;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
-final class PureManga extends ChapterList {
+@Details( name = "PureManga", baseUrl = "http://www.pure-manga.org/" )
+public final class PureManga extends ChapterList {
     private static final long serialVersionUID = 1L;
 
     private final String name;

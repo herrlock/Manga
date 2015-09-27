@@ -15,7 +15,9 @@ MangaCtrl/downloader.txt
 MangaCtrl/download/
 MangaCtrl/log/
 MangaCtrl/folderwatch/
+MangaCtrl/additionalHoster.txt
 # MangaLib
 MangaLib/src/main/resources/de/herrlock/manga/http/background.jpg
 MangaLib/src/main/resources/de/herrlock/manga/http/jquery.js
 MangaLib/log/
+MangaLib/additionalHoster.txt
