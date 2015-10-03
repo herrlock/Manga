@@ -24,7 +24,7 @@ import de.herrlock.manga.host.impl.PureManga;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
- * all defined Hoster
+ * A Utility-class containing the predefined {@link Hoster} as well as those loaded at runtime
  * 
  * @author HerrLock
  */
@@ -132,14 +132,33 @@ public final class Hosters {
         return null;
     }
 
+    /**
+     * returns an {@linkplain Collections#unmodifiableList(List) unmodifiable List} containing the registered {@link Hoster}
+     * 
+     * @return the registered Hoster
+     */
     public static List<Hoster> values() {
         return Collections.unmodifiableList( new ArrayList<>( hosters ) );
     }
 
+    /**
+     * returns a sorted, {@linkplain Collections#unmodifiableList(List) unmodifiable List} containing the registered
+     * {@link Hoster}. The {@link Comparator} used for sorting is {@link Hosters#NAME_COMPARATOR}
+     * 
+     * @return the registered Hoster
+     */
     public static List<Hoster> sortedValues() {
         return sortedValues( NAME_COMPARATOR );
     }
 
+    /**
+     * returns a sorted, {@linkplain Collections#unmodifiableList(List) unmodifiable List} containing the registered
+     * {@link Hoster}.
+     * 
+     * @param comparator
+     *            the comparator to sort with
+     * @return the registered Hoster
+     */
     public static List<Hoster> sortedValues( Comparator<Hoster> comparator ) {
         ArrayList<Hoster> hosterCopy = new ArrayList<>( hosters );
         Collections.sort( hosterCopy, comparator );

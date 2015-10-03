@@ -25,10 +25,20 @@ public abstract class Hoster {
 
     public abstract ChapterList getChapterList( DownloadConfiguration conf ) throws IOException;
 
+    /**
+     * getter for the Hoster's name
+     * 
+     * @return the Hoster's name
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * getter for the Hoster's url
+     * 
+     * @return the Hoster's url
+     */
     public URL getBaseUrl() {
         return this.baseUrl;
     }
