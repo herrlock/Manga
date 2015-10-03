@@ -28,12 +28,12 @@ public class Hoster {
      *            The class must be annotated with {@link Details}
      */
     public Hoster( Class<? extends ChapterList> baseClass ) {
-        this.baseClass = baseClass;
+        this.baseClass = Objects.requireNonNull( baseClass );
         Details hosterDetails = Objects.requireNonNull( baseClass.getAnnotation( Details.class ),
-            "Implementations of ChapterList require a name and a URL provided by the annotation @Hoster" );
-        this.name = hosterDetails.name();
+            "Implementations of ChapterList require a name and a baseUrl provided by the annotation @Details" );
+        this.name = Objects.requireNonNull( hosterDetails.name() );
         try {
-            this.baseUrl = new URL( hosterDetails.baseUrl() );
+            this.baseUrl = new URL( Objects.requireNonNull( hosterDetails.baseUrl() ) );
         } catch ( MalformedURLException ex ) {
             throw new IllegalStateException( ex );
         }
