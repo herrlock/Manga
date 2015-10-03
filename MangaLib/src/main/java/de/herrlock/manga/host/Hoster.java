@@ -65,7 +65,7 @@ public class Hoster {
         } catch ( IllegalArgumentException ex ) {
             throw new RuntimeException( "The called constructor does not take one DownloadConfiguration as parameter", ex );
         } catch ( InvocationTargetException ex ) {
-            throw new RuntimeException( "The called constructor threw an exception", ex.getCause() );
+            throw new RuntimeException( "The called constructor threw an exception", ex );
         }
     }
 
