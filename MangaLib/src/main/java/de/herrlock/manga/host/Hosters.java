@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
@@ -46,6 +47,26 @@ public final class Hosters {
             return new PureManga( conf );
         }
     } ) );
+
+    /**
+     * A {@link Comparator} to compare two {@link Hoster} according to their name. Uses {@link String#compareTo(String)}
+     */
+    public static final Comparator<Hoster> NAME_COMPARATOR = new Comparator<Hoster>() {
+        /**
+         * compares the hoster by their name
+         * 
+         * @param h1
+         *            the first Hoster
+         * @param h2
+         *            the second Hoster
+         */
+        @Override
+        public int compare( Hoster h1, Hoster h2 ) {
+            String h1LowerName = h1.getName().toLowerCase( Locale.GERMAN );
+            String h2LowerName = h2.getName().toLowerCase( Locale.GERMAN );
+            return h1LowerName.compareTo( h2LowerName );
+        }
+    };
 
     static {
         // TODO check if this works, write JUnit-tests
@@ -116,7 +137,7 @@ public final class Hosters {
     }
 
     public static List<Hoster> sortedValues() {
-        return sortedValues( Hoster.NAME_COMPARATOR );
+        return sortedValues( NAME_COMPARATOR );
     }
 
     public static List<Hoster> sortedValues( Comparator<Hoster> comparator ) {
