@@ -1,7 +1,6 @@
 package de.herrlock.manga.host;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -9,8 +8,10 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -31,7 +32,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 public final class Hosters {
     private static final Logger logger = LogManager.getLogger();
 
-    private static final List<Hoster> hosters = new ArrayList<>( Arrays.asList( new Hoster( MangaPanda.class) {
+    private static final Collection<Hoster> hosters = new HashSet<>( Arrays.asList( new Hoster( MangaPanda.class) {
         @Override
         public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
             return new MangaPanda( conf );
@@ -83,28 +84,35 @@ public final class Hosters {
             try {
                 Class<?> c = Class.forName( s );
                 if ( ChapterList.class.isAssignableFrom( c ) ) {
-                    Class<? extends ChapterList> cl = c.asSubclass( ChapterList.class );
-                    try {
-                        final Constructor<? extends ChapterList> constructor = cl.getConstructor( DownloadConfiguration.class );
-                        hosters.add( new Hoster( cl) {
-                            @Override
-                            public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
-                                try {
-                                    return constructor.newInstance( conf );
-                                } catch ( ReflectiveOperationException ex ) {
-                                    throw new RuntimeException( ex );
-                                }
-                            }
-                        } );
-                    } catch ( NoSuchMethodException ex ) {
-                        logger.warn( "The class {} does not contain a constructor acepting a DownloadConfiguration", c );
-                    }
-
+                    registerHoster( c.asSubclass( ChapterList.class ) );
+                } else {
+                    logger.warn( "Class {} is no subclass of ChapterList", c );
                 }
             } catch ( ClassNotFoundException ex ) {
                 logger.warn( "Could not find class {}", s );
             }
         }
+    }
+
+    /**
+     * adds a {@link Hoster} to the global pool
+     * 
+     * @param hoster
+     *            the Hoster to add
+     */
+    public static void registerHoster( Hoster hoster ) {
+        hosters.add( hoster );
+    }
+
+    /**
+     * adds a {@link Hoster} to the global pool
+     * 
+     * @param c
+     *            the class to create a Hoster with
+     * @see Hoster#Hoster(Class)
+     */
+    public static void registerHoster( Class<? extends ChapterList> c ) {
+        registerHoster( new Hoster( c ) );
     }
 
     /**
