@@ -159,6 +159,9 @@ public abstract class Configuration {
         return new File( fwPath );
     }
 
+    @Override
+    public abstract String toString();
+
     /**
      * Default-constuctor fo subclasses
      */

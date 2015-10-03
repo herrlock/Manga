@@ -1,6 +1,7 @@
 package de.herrlock.manga.util.configuration;
 
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -87,5 +88,11 @@ public class DownloadConfiguration extends Configuration {
      */
     public int getTimeout() {
         return this.timeout;
+    }
+
+    @Override
+    public String toString() {
+        return MessageFormat.format( "URL: {0}, Pattern: {1}, Proxy: {2}, Timeout: {2}", this.url, this.pattern, this.proxy,
+            this.timeout );
     }
 }
