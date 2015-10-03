@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 import de.herrlock.manga.host.impl.MangaFox;
 import de.herrlock.manga.host.impl.MangaPanda;
 import de.herrlock.manga.host.impl.PureManga;
-import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
  * A Utility-class containing the predefined {@link Hoster} as well as those loaded at runtime
@@ -32,22 +31,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 public final class Hosters {
     private static final Logger logger = LogManager.getLogger();
 
-    private static final Collection<Hoster> hosters = new HashSet<>( Arrays.asList( new Hoster( MangaPanda.class) {
-        @Override
-        public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
-            return new MangaPanda( conf );
-        }
-    }, new Hoster( MangaFox.class) {
-        @Override
-        public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
-            return new MangaFox( conf );
-        }
-    }, new Hoster( PureManga.class) {
-        @Override
-        public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
-            return new PureManga( conf );
-        }
-    } ) );
+    private static final Collection<Hoster> hosters = new HashSet<>();
 
     /**
      * A {@link Comparator} to compare two {@link Hoster} according to their name. Uses {@link String#compareTo(String)}
@@ -70,6 +54,10 @@ public final class Hosters {
     };
 
     static {
+        for ( Class<? extends ChapterList> c : Arrays.asList( MangaPanda.class, MangaFox.class, PureManga.class ) ) {
+            registerHoster( c );
+        }
+
         // TODO check if this works, write JUnit-tests
         List<String> classes = new ArrayList<>();
         try {
