@@ -14,7 +14,7 @@ import de.herrlock.javafx.scene.SceneContainer;
 
 public final class Ctrl extends AbstractApplication {
 
-    public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ctrl" );
+    public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.Ctrl" );
 
     public static void main( String... args ) {
         Application.launch( args );
