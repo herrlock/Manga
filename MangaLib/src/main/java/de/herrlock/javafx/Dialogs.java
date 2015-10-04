@@ -22,7 +22,7 @@ import javafx.stage.StageStyle;
  * http://stackoverflow.com/a/12718117/3680684
  */
 @SuppressWarnings( "javadoc" )
-public class Dialogs {
+public final class Dialogs {
 
     public enum Response {
         NO, YES, CANCEL
@@ -118,6 +118,10 @@ public class Dialogs {
         msg.getChildren().addAll( icon, message );
         vb.getChildren().addAll( msg, bp );
         dial.showDialog();
+    }
+
+    private Dialogs() {
+        // not used
     }
 
 }
