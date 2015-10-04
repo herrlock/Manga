@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import javax.swing.Icon;
-
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 
@@ -35,7 +33,7 @@ public abstract class SceneContainer {
     }
 
     /**
-     * A {@link List} of {@link Icon}s to show. Can be Overridden to define own Icons; defaults to an empty List
+     * A {@link List} of {@link Image}s to show. Can be Overridden to define own Icons; defaults to an empty List
      * 
      * @return the icons to use
      */
