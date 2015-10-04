@@ -24,7 +24,7 @@ import javafx.stage.StageStyle;
 @SuppressWarnings( "javadoc" )
 public final class Dialogs {
 
-    public enum Response {
+    public static enum Response {
         NO, YES, CANCEL
     }
 
@@ -61,7 +61,7 @@ public final class Dialogs {
     public static Response showConfirmDialog( Stage owner, String message, String title ) {
         VBox vb = new VBox();
         Scene scene = new Scene( vb );
-        final Dialog dial = new Dialog( title, owner, scene, "res/Confirm.png" );
+        final Dialog dial = new Dialog( title, owner, scene, "dialog-confirm.png" );
         vb.setPadding( new Insets( 10 ) );
         vb.setSpacing( 10 );
         Button yesButton = new Button( "Yes" );
@@ -97,10 +97,11 @@ public final class Dialogs {
     public static void showMessageDialog( Stage owner, String message, String title ) {
         showMessageDialog( owner, new Message( message ), title );
     }
+
     public static void showMessageDialog( Stage owner, Node message, String title ) {
         VBox vb = new VBox();
         Scene scene = new Scene( vb );
-        final Dialog dial = new Dialog( title, owner, scene, "res/Info.png" );
+        final Dialog dial = new Dialog( title, owner, scene, "dialog-information.png" );
         vb.setPadding( new Insets( 10 ) );
         vb.setSpacing( 10 );
         Button okButton = new Button( "OK" );
