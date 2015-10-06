@@ -99,9 +99,29 @@ public final class Dialogs {
     }
 
     public static void showMessageDialog( Stage owner, Node message, String title ) {
+        showDialog( owner, message, title, "dialog-information.png" );
+    }
+
+    public static void showWarningDialog( Stage owner, String message, String title ) {
+        showWarningDialog( owner, new Message( message ), title );
+    }
+
+    public static void showWarningDialog( Stage owner, Node message, String title ) {
+        showDialog( owner, message, title, "dialog-warning.png" );
+    }
+
+    public static void showErrorDialog( Stage owner, String message, String title ) {
+        showErrorDialog( owner, new Message( message ), title );
+    }
+
+    public static void showErrorDialog( Stage owner, Node message, String title ) {
+        showDialog( owner, message, title, "dialog-error.png" );
+    }
+
+    public static void showDialog( Stage owner, Node message, String title, String iconFile ) {
         VBox vb = new VBox();
         Scene scene = new Scene( vb );
-        final Dialog dial = new Dialog( title, owner, scene, "dialog-information.png" );
+        final Dialog dial = new Dialog( title, owner, scene, iconFile );
         vb.setPadding( new Insets( 10 ) );
         vb.setSpacing( 10 );
         Button okButton = new Button( "OK" );
