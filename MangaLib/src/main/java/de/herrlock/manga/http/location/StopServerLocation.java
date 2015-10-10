@@ -10,7 +10,7 @@ import de.herrlock.manga.http.response.Response;
  * 
  * @author Herrlock
  */
-public class StopServerLocation extends Location {
+public final class StopServerLocation extends Location {
 
     /**
      * Create a new StopServerLocation

@@ -5,7 +5,7 @@ package de.herrlock.manga.exceptions;
  * 
  * @author HerrLock
  */
-public class InitializeException extends RuntimeException {
+public final class InitializeException extends RuntimeException {
 
     /**
      * A new InitializeException without detailed message or cause

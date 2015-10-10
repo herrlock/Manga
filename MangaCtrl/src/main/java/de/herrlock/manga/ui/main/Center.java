@@ -1,14 +1,14 @@
 package de.herrlock.manga.ui.main;
 
+import de.herrlock.javafx.scene.NodeContainer;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
-import de.herrlock.javafx.scene.NodeContainer;
 
-class Center extends NodeContainer {
+final class Center extends NodeContainer {
     @Override
     protected Node createNode() {
         final GridPane gridPane = new GridPane();
@@ -28,8 +28,7 @@ class Center extends NodeContainer {
             "url", "pattern", "proxyaddress", "jdhome"
         };
         String[] prompttexts = {
-            "http://www.example.org/manga/manganame", "1-10;15;17", "http://www.example.org:8080",
-            "C:/Program Files/JDownloader/"
+            "http://www.example.org/manga/manganame", "1-10;15;17", "http://www.example.org:8080", "C:/Program Files/JDownloader/"
         };
         StringProperty[] props = {
             MDGuiController.urlProperty, MDGuiController.patternProperty, MDGuiController.proxyProperty,
@@ -54,7 +53,7 @@ class Center extends NodeContainer {
         return gridPane;
     }
 
-    private static class XLabel extends Label {
+    private static final class XLabel extends Label {
         private static final String lblPre = "center.label.";
 
         public XLabel( String i18nKey ) {
@@ -64,7 +63,7 @@ class Center extends NodeContainer {
         }
     }
 
-    private static class XTextField extends TextField {
+    private static final class XTextField extends TextField {
         private static final String txtPre = "center.textfield.";
 
         public XTextField( String i18nKey, String prompttext, StringProperty prop ) {

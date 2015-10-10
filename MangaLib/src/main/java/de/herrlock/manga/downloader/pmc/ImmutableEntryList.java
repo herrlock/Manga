@@ -12,7 +12,7 @@ import java.util.Comparator;
  * @param <V>
  *            the type of the value
  */
-public class ImmutableEntryList<K, V> extends EntryList<K, V> {
+public final class ImmutableEntryList<K, V> extends EntryList<K, V> {
 
     /**
      * @param c

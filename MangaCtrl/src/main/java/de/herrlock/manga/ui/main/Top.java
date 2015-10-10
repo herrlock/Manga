@@ -1,13 +1,13 @@
 package de.herrlock.manga.ui.main;
 
+import de.herrlock.javafx.scene.NodeContainer;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import de.herrlock.javafx.scene.NodeContainer;
 
-class Top extends NodeContainer {
+final class Top extends NodeContainer {
     @Override
     protected Node createNode() {
         // TODO: decide title

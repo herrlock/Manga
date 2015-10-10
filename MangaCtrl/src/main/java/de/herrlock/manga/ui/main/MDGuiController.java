@@ -24,7 +24,7 @@ import javafx.scene.control.TextField;
 /**
  * @author HerrLock
  */
-public class MDGuiController {
+public final class MDGuiController {
     public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.ui" );
 
     static final StringProperty urlProperty = new SimpleStringProperty();

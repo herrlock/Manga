@@ -28,7 +28,7 @@ import org.jsoup.parser.Tag;
  * 
  * @author HerrLock
  */
-public class ViewPage {
+public final class ViewPage {
     private static final Logger logger = LogManager.getLogger();
 
     private final File folder;
@@ -255,7 +255,7 @@ public class ViewPage {
     }
 }
 
-class Const {
+final class Const {
     /**
      * a {@linkplain FileFilter} that filters directories.<br>
      * {@linkplain FileFilter#accept(File)} returns true, if {@linkplain File#isDirectory()} is {@code true}

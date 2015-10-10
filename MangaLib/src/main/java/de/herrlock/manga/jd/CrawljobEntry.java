@@ -7,7 +7,7 @@ import java.net.URL;
  * 
  * @author HerrLock
  */
-class CrawljobEntry {
+final class CrawljobEntry {
     private final String filename;
     private final String url;
 

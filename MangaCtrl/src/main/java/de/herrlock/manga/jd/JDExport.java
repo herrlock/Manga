@@ -26,7 +26,7 @@ import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.Configuration;
 import de.herrlock.manga.util.configuration.JDConfiguration;
 
-public class JDExport extends MDownloader {
+public final class JDExport extends MDownloader {
     private static final Logger logger = LogManager.getLogger();
 
     final File jdfwFolder;
@@ -83,7 +83,7 @@ public class JDExport extends MDownloader {
         }
     }
 
-    private class CrawljobFile {
+    private final class CrawljobFile {
         final Crawljob c;
 
         public CrawljobFile( String chapter, EntryList<Integer, URL> entrySet ) {
@@ -102,7 +102,7 @@ public class JDExport extends MDownloader {
             logger.info( "print string -> {}", outFile );
         }
 
-        private class CrawljobFileEntryAdder implements Callable<Void> {
+        private final class CrawljobFileEntryAdder implements Callable<Void> {
             private final Entry<Integer, URL> e;
 
             public CrawljobFileEntryAdder( Entry<Integer, URL> e ) {

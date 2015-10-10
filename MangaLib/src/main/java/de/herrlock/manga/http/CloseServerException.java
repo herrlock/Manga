@@ -8,7 +8,7 @@ import de.herrlock.manga.http.location.StopServerLocation;
  * @author HerrLock
  */
 // TODO replace with something that is a little nicer
-public class CloseServerException extends RuntimeException {
+public final class CloseServerException extends RuntimeException {
     /**
      * Create a {@link CloseServerException}
      */

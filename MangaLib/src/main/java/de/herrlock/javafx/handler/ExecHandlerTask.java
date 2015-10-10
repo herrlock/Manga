@@ -9,7 +9,7 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 
 /**
- * The bridge between an {@link Exec} and a {@link Task}
+ * The bridge between an {@link Exec} and a {@link Task}. Can be used or extended
  * 
  * @author Herrlock
  */
@@ -43,7 +43,7 @@ public class ExecHandlerTask extends Task<Void> {
         return null;
     }
 
-    class ExceptionHandler implements EventHandler<WorkerStateEvent> {
+    final class ExceptionHandler implements EventHandler<WorkerStateEvent> {
         @Override
         public void handle( WorkerStateEvent t ) {
             Throwable exception = ExecHandlerTask.this.getException();

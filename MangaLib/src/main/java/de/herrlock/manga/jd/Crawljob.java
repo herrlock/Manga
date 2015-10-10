@@ -10,7 +10,7 @@ import java.util.List;
  * 
  * @author HerrLock
  */
-public class Crawljob {
+public final class Crawljob {
 
     private final File folder;
     private final String packagenumber;

@@ -3,14 +3,14 @@ package de.herrlock.manga.ui.main;
 import java.util.Arrays;
 import java.util.Collection;
 
+import de.herrlock.javafx.AbstractApplication;
+import de.herrlock.javafx.scene.SceneContainer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import de.herrlock.javafx.AbstractApplication;
-import de.herrlock.javafx.scene.SceneContainer;
 
-public class MDGui extends AbstractApplication {
+public final class MDGui extends AbstractApplication {
 
     public static void main( String... args ) {
         Application.launch( args );
@@ -23,7 +23,7 @@ public class MDGui extends AbstractApplication {
     }
 }
 
-class MDGuiStage extends SceneContainer {
+final class MDGuiStage extends SceneContainer {
 
     public MDGuiStage() {
         BorderPane parent = new BorderPane();

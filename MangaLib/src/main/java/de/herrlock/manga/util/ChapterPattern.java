@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author HerrLock
  */
-public class ChapterPattern {
+public final class ChapterPattern {
     private static final Logger logger = LogManager.getLogger();
     /**
      * the regex for the patterns<br>
@@ -107,7 +107,7 @@ public class ChapterPattern {
         return this.fallback;
     }
 
-    static class Interval {
+    static final class Interval {
         private final BigDecimal intervalStart;
         private final BigDecimal intervalEnd;
 

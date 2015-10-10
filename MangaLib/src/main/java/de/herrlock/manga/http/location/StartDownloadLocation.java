@@ -16,7 +16,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * 
  * @author HerrLock
  */
-public class StartDownloadLocation extends Location {
+public final class StartDownloadLocation extends Location {
 
     /**
      * Create a new StartDownloadLocation

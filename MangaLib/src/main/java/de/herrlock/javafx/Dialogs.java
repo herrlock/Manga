@@ -30,7 +30,7 @@ public final class Dialogs {
 
     private static ImageView icon = new ImageView();
 
-    static class Dialog extends Stage {
+    static final class Dialog extends Stage {
 
         private Response selectedButton = Response.CANCEL;
 
@@ -59,7 +59,7 @@ public final class Dialogs {
         }
     }
 
-    static class Message extends Text {
+    static final class Message extends Text {
         public Message( String msg ) {
             super( msg );
             setWrappingWidth( 250 );

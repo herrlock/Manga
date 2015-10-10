@@ -15,7 +15,7 @@ import de.herrlock.manga.http.response.TextResponse;
  * 
  * @author HerrLock
  */
-public class JQueryLocation extends Location {
+public final class JQueryLocation extends Location {
 
     /**
      * Create a new JQueryLocation

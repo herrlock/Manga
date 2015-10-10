@@ -16,7 +16,7 @@ import de.herrlock.manga.http.response.Response;
  * 
  * @author HerrLock
  */
-public class IndexHtmlLocation extends Location {
+public final class IndexHtmlLocation extends Location {
 
     /**
      * Create a new IndexHtmlLocation

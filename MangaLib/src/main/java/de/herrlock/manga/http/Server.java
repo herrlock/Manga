@@ -28,7 +28,7 @@ import de.herrlock.manga.ui.log.LogWindow;
 /**
  * @author HerrLock
  */
-public class Server extends ServerSocket implements Runnable {
+public final class Server extends ServerSocket implements Runnable {
 
     private static final Logger logger = LogManager.getLogger();
 

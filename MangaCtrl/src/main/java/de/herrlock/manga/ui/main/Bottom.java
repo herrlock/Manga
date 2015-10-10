@@ -1,12 +1,12 @@
 package de.herrlock.manga.ui.main;
 
+import de.herrlock.javafx.scene.NodeContainer;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import de.herrlock.javafx.scene.NodeContainer;
 
-class Bottom extends NodeContainer {
+final class Bottom extends NodeContainer {
     @Override
     protected Node createNode() {
         String btnPre = "bottom.buttons.";

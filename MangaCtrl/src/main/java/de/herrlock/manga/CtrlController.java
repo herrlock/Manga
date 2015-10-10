@@ -12,7 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 
-public class CtrlController {
+public final class CtrlController {
 
     @FXML
     public Text runningText, bottomText;
@@ -69,7 +69,7 @@ public class CtrlController {
         thread.start();
     }
 
-    class ExecCtrlHandlerTask extends ExecHandlerTask {
+    final class ExecCtrlHandlerTask extends ExecHandlerTask {
         public ExecCtrlHandlerTask( Exec exec ) {
             super( exec );
         }

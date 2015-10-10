@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-class Right extends NodeContainer {
+final class Right extends NodeContainer {
     @Override
     protected Node createNode() {
         Text title = new Text( MDGuiController.i18n.getString( "right.title" ) );

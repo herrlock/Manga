@@ -10,7 +10,8 @@ import java.util.Objects;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
- * a class that has the purpose of creating {@linkplain ChapterList}s
+ * A class that has the purpose of creating {@linkplain ChapterList}s. Can be extended to provide an alternative implementation of
+ * {@link #getChapterList(DownloadConfiguration)}
  * 
  * @author HerrLock
  */

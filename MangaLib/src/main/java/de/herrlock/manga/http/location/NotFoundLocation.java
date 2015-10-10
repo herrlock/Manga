@@ -13,7 +13,7 @@ import de.herrlock.manga.http.response.Response;
  * 
  * @author HerrLock
  */
-public class NotFoundLocation extends Location {
+public final class NotFoundLocation extends Location {
 
     /**
      * Create a new NotFoundLocation

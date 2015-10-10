@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import de.herrlock.javafx.AbstractApplication;
+import de.herrlock.javafx.scene.SceneContainer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import de.herrlock.javafx.AbstractApplication;
-import de.herrlock.javafx.scene.SceneContainer;
 
 public final class Ctrl extends AbstractApplication {
 
@@ -26,7 +26,7 @@ public final class Ctrl extends AbstractApplication {
         super.start( stage );
     }
 
-    static class CtrlScene extends SceneContainer {
+    static final class CtrlScene extends SceneContainer {
         CtrlScene() {
             try {
                 URL location = CtrlScene.class.getResource( "CtrlScene.xml" );

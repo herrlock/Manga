@@ -5,7 +5,7 @@ package de.herrlock.manga.http;
  * 
  * @author HerrLock
  */
-public class ServerException extends RuntimeException {
+public final class ServerException extends RuntimeException {
     /**
      * A default ServerException without message or cause
      */

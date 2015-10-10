@@ -16,7 +16,7 @@ import de.herrlock.manga.http.response.Response;
  * 
  * @author HerrLock
  */
-public class BackgroundImageLocation extends Location {
+public final class BackgroundImageLocation extends Location {
 
     /**
      * Create a new BackgroundImageLocation
