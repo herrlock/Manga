@@ -28,11 +28,11 @@ public final class Dialogs {
         NO, YES, CANCEL
     }
 
-    private static Response buttonSelected = Response.CANCEL;
-
     private static ImageView icon = new ImageView();
 
     static class Dialog extends Stage {
+
+        private Response selectedButton = Response.CANCEL;
 
         public Dialog( String title, Stage owner, Scene scene, String iconFile ) {
             setTitle( title );
@@ -49,6 +49,14 @@ public final class Dialogs {
             centerOnScreen();
             showAndWait();
         }
+
+        public Response getSelectedButton() {
+            return this.selectedButton;
+        }
+
+        public void setSelectedButton( Response selectedButton ) {
+            this.selectedButton = selectedButton;
+        }
     }
 
     static class Message extends Text {
@@ -58,7 +66,30 @@ public final class Dialogs {
         }
     }
 
-    public static Response showConfirmDialog( Stage owner, String message, String title ) {
+    public static void showDialog( Stage owner, Node message, String title, String iconFile ) {
+        VBox vb = new VBox();
+        Scene scene = new Scene( vb );
+        final Dialog dial = new Dialog( title, owner, scene, iconFile );
+        vb.setPadding( new Insets( 10 ) );
+        vb.setSpacing( 10 );
+        Button okButton = new Button( "OK" );
+        okButton.setAlignment( Pos.CENTER );
+        okButton.setOnAction( new EventHandler<ActionEvent>() {
+            @Override
+            public void handle( ActionEvent e ) {
+                dial.close();
+            }
+        } );
+        BorderPane bp = new BorderPane();
+        bp.setCenter( okButton );
+        HBox msg = new HBox();
+        msg.setSpacing( 5 );
+        msg.getChildren().addAll( icon, message );
+        vb.getChildren().addAll( msg, bp );
+        dial.showDialog();
+    }
+
+    public static Response showConfirmDialog( Stage owner, Node message, String title ) {
         VBox vb = new VBox();
         Scene scene = new Scene( vb );
         final Dialog dial = new Dialog( title, owner, scene, "dialog-confirm.png" );
@@ -69,7 +100,7 @@ public final class Dialogs {
             @Override
             public void handle( ActionEvent e ) {
                 dial.close();
-                buttonSelected = Response.YES;
+                dial.setSelectedButton( Response.YES );
             }
         } );
         Button noButton = new Button( "No" );
@@ -77,7 +108,7 @@ public final class Dialogs {
             @Override
             public void handle( ActionEvent e ) {
                 dial.close();
-                buttonSelected = Response.NO;
+                dial.setSelectedButton( Response.NO );
             }
         } );
         BorderPane bp = new BorderPane();
@@ -88,10 +119,14 @@ public final class Dialogs {
         bp.setCenter( buttons );
         HBox msg = new HBox();
         msg.setSpacing( 5 );
-        msg.getChildren().addAll( icon, new Message( message ) );
+        msg.getChildren().addAll( icon, message );
         vb.getChildren().addAll( msg, bp );
         dial.showDialog();
-        return buttonSelected;
+        return dial.getSelectedButton();
+    }
+
+    public static Response showConfirmDialog( Stage owner, String message, String title ) {
+        return showConfirmDialog( owner, new Message( message ), title );
     }
 
     public static void showMessageDialog( Stage owner, String message, String title ) {
@@ -116,29 +151,6 @@ public final class Dialogs {
 
     public static void showErrorDialog( Stage owner, Node message, String title ) {
         showDialog( owner, message, title, "dialog-error.png" );
-    }
-
-    public static void showDialog( Stage owner, Node message, String title, String iconFile ) {
-        VBox vb = new VBox();
-        Scene scene = new Scene( vb );
-        final Dialog dial = new Dialog( title, owner, scene, iconFile );
-        vb.setPadding( new Insets( 10 ) );
-        vb.setSpacing( 10 );
-        Button okButton = new Button( "OK" );
-        okButton.setAlignment( Pos.CENTER );
-        okButton.setOnAction( new EventHandler<ActionEvent>() {
-            @Override
-            public void handle( ActionEvent e ) {
-                dial.close();
-            }
-        } );
-        BorderPane bp = new BorderPane();
-        bp.setCenter( okButton );
-        HBox msg = new HBox();
-        msg.setSpacing( 5 );
-        msg.getChildren().addAll( icon, message );
-        vb.getChildren().addAll( msg, bp );
-        dial.showDialog();
     }
 
     private Dialogs() {
