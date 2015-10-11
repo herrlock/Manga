@@ -11,17 +11,17 @@ final class Bottom extends NodeContainer {
     protected Node createNode() {
         String btnPre = "bottom.buttons.";
 
-        Button btnDownload = new Button( MDGuiController.i18n.getString( btnPre + "download" ) );
+        Button btnDownload = new Button( MDGui.i18n.getString( btnPre + "download" ) );
         btnDownload.setOnAction( MDGuiController.START_DOWNLOAD );
         btnDownload.setDefaultButton( true );
 
-        Button btnJDExport = new Button( MDGuiController.i18n.getString( btnPre + "jdexport" ) );
+        Button btnJDExport = new Button( MDGui.i18n.getString( btnPre + "jdexport" ) );
         btnJDExport.setOnAction( MDGuiController.EXPORT_TO_JD );
 
-        Button btnHTML = new Button( MDGuiController.i18n.getString( btnPre + "html" ) );
+        Button btnHTML = new Button( MDGui.i18n.getString( btnPre + "html" ) );
         btnHTML.setOnAction( MDGuiController.CREATE_HTML );
 
-        Button btnExit = new Button( MDGuiController.i18n.getString( btnPre + "exit" ) );
+        Button btnExit = new Button( MDGui.i18n.getString( btnPre + "exit" ) );
         btnExit.setOnAction( MDGuiController.EXIT_GUI );
         btnExit.setCancelButton( true );
 

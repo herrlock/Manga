@@ -7,7 +7,6 @@ import static de.herrlock.manga.util.Execs.VIEW_PAGE_MAIN;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 import de.herrlock.javafx.handler.Exec;
 import de.herrlock.javafx.handler.ExecHandlerTask;
@@ -25,8 +24,6 @@ import javafx.scene.control.TextField;
  * @author HerrLock
  */
 public final class MDGuiController {
-    public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.ui" );
-
     static final StringProperty urlProperty = new SimpleStringProperty();
     static final StringProperty patternProperty = new SimpleStringProperty();
     static final StringProperty proxyProperty = new SimpleStringProperty();

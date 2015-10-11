@@ -57,7 +57,7 @@ final class Center extends NodeContainer {
         private static final String lblPre = "center.label.";
 
         public XLabel( String i18nKey ) {
-            String i18nValue = MDGuiController.i18n.getString( lblPre + i18nKey );
+            String i18nValue = MDGui.i18n.getString( lblPre + i18nKey );
             setText( i18nValue );
             setTooltip( new Tooltip( i18nValue ) );
         }
@@ -67,7 +67,7 @@ final class Center extends NodeContainer {
         private static final String txtPre = "center.textfield.";
 
         public XTextField( String i18nKey, String prompttext, StringProperty prop ) {
-            String i18nValue = MDGuiController.i18n.getString( txtPre + i18nKey );
+            String i18nValue = MDGui.i18n.getString( txtPre + i18nKey );
             setTooltip( new Tooltip( i18nValue ) );
             setPromptText( prompttext );
             prop.bind( textProperty() );

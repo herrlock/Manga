@@ -11,7 +11,7 @@ final class Top extends NodeContainer {
     @Override
     protected Node createNode() {
         // TODO: decide title
-        Text text = new Text( MDGuiController.i18n.getString( "top.title" ) );
+        Text text = new Text( MDGui.i18n.getString( "top.title" ) );
         text.getStyleClass().add( CCN.TEXT );
         text.setFont( new Font( 30 ) );
 
