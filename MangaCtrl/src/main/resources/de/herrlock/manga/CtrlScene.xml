@@ -29,9 +29,9 @@
 				</padding>
 				<Button fx:id="btnShowHosts" text="%button.text.showHosts" onAction="#showHosts" onMouseEntered="#showTextHosts"
 					onMouseExited="#clearText" />
-				<Button fx:id="btnAddToJD" text="%button.text.addToJD" onAction="#exportToJD" onMouseEntered="#showTextJD"
+				<Button fx:id="btnAddToJD" text="%button.text.addToJD" onAction="#exportToJd" onMouseEntered="#showTextJD"
 					onMouseExited="#clearText" />
-				<Button fx:id="btnCreateHTML" text="%button.text.createHTML" onAction="#createHTML" onMouseEntered="#showTextHTML"
+				<Button fx:id="btnCreateHTML" text="%button.text.createHTML" onAction="#createHtml" onMouseEntered="#showTextHTML"
 					onMouseExited="#clearText" />
 			</HBox>
 		</VBox>

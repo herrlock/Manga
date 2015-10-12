@@ -51,10 +51,10 @@ public final class CtrlController {
     public void showHosts() {
         handleBtnClick( PRINT_ALL_HOSTER );
     }
-    public void exportToJD() {
+    public void exportToJd() {
         handleBtnClick( ADD_TO_JD_W_FILE );
     }
-    public void createHTML() {
+    public void createHtml() {
         handleBtnClick( VIEW_PAGE_MAIN );
     }
     public void handleBtnClick( Exec exec ) {
