@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="de.herrlock.manga.ui.main.MDGuiController">
+	<top>
+		<StackPane styleClass="bp-top" alignment="TOP_CENTER">
+			<Text styleClass="text" text="%top.title">
+				<font>
+					<Font size="30" />
+				</font>
+			</Text>
+		</StackPane>
+	</top>
+	<right>
+		<ScrollPane fx:id="rightScrollPane" styleClass="bp-right">
+			<VBox fx:id="rightVBox">
+				<Text styleClass="text" text="%right.title">
+					<font>
+						<Font size="20" />
+					</font>
+				</Text>
+				<GridPane fx:id="rightGridPane" styleClass="gridpane, padding8">
+					<!-- filled in the controller -->
+				</GridPane>
+			</VBox>
+		</ScrollPane>
+	</right>
+	<center>
+		<GridPane styleClass="gridpane, padding16, bp-center">
+			<Label prefWidth="200" visible="false">
+				<GridPane.columnIndex>0</GridPane.columnIndex>
+				<GridPane.rowIndex>0</GridPane.rowIndex>
+			</Label>
+			<TextField prefColumnCount="50" visible="false">
+				<GridPane.columnIndex>1</GridPane.columnIndex>
+				<GridPane.rowIndex>0</GridPane.rowIndex>
+			</TextField>
+			<Label text="%center.label.url">
+				<tooltip>
+					<Tooltip text="%center.label.url"></Tooltip>
+				</tooltip>
+				<GridPane.columnIndex>0</GridPane.columnIndex>
+				<GridPane.rowIndex>1</GridPane.rowIndex>
+			</Label>
+			<TextField promptText="http://www.example.org/manga/manganame" text="${controller.url}">
+				<tooltip>
+					<Tooltip text="%center.textfield.url"></Tooltip>
+				</tooltip>
+				<GridPane.columnIndex>1</GridPane.columnIndex>
+				<GridPane.rowIndex>1</GridPane.rowIndex>
+			</TextField>
+			<Label text="%center.label.pattern">
+				<tooltip>
+					<Tooltip text="%center.label.pattern"></Tooltip>
+				</tooltip>
+				<GridPane.columnIndex>0</GridPane.columnIndex>
+				<GridPane.rowIndex>2</GridPane.rowIndex>
+			</Label>
+			<TextField promptText="1-10;15;17" text="${controller.pattern}">
+				<tooltip>
+					<Tooltip text="%center.textfield.pattern"></Tooltip>
+				</tooltip>
+				<GridPane.columnIndex>1</GridPane.columnIndex>
+				<GridPane.rowIndex>2</GridPane.rowIndex>
+			</TextField>
+			<Label text="%center.label.proxyaddress">
+				<tooltip>
+					<Tooltip text="%center.label.proxyaddress"></Tooltip>
+				</tooltip>
+				<GridPane.columnIndex>0</GridPane.columnIndex>
+				<GridPane.rowIndex>3</GridPane.rowIndex>
+			</Label>
+			<TextField promptText="http://www.example.org:8080" text="${controller.proxy}">
+				<tooltip>
+					<Tooltip text="%center.textfield.proxyaddress"></Tooltip>
+				</tooltip>
+				<GridPane.columnIndex>1</GridPane.columnIndex>
+				<GridPane.rowIndex>3</GridPane.rowIndex>
+			</TextField>
+			<Label text="%center.label.jdhome">
+				<tooltip>
+					<Tooltip text="%center.label.jdhome"></Tooltip>
+				</tooltip>
+				<GridPane.columnIndex>0</GridPane.columnIndex>
+				<GridPane.rowIndex>4</GridPane.rowIndex>
+			</Label>
+			<TextField promptText="C:/Program Files/JDownloader/" text="${controller.jdhome}">
+				<tooltip>
+					<Tooltip text="%center.textfield.jdhome"></Tooltip>
+				</tooltip>
+				<GridPane.columnIndex>1</GridPane.columnIndex>
+				<GridPane.rowIndex>4</GridPane.rowIndex>
+			</TextField>
+			<Label visible="false">
+				<GridPane.columnIndex>0</GridPane.columnIndex>
+				<GridPane.rowIndex>5</GridPane.rowIndex>
+			</Label>
+			<TextField visible="false">
+				<GridPane.columnIndex>1</GridPane.columnIndex>
+				<GridPane.rowIndex>5</GridPane.rowIndex>
+			</TextField>
+		</GridPane>
+	</center>
+	<bottom>
+		<AnchorPane styleClass="bp-bottom">
+			<HBox styleClass="padding8" spacing="8">
+				<AnchorPane.bottomAnchor>0.0</AnchorPane.bottomAnchor>
+				<AnchorPane.rightAnchor>0.0</AnchorPane.rightAnchor>
+				<Button text="%bottom.buttons.download" onAction="#startDownload" defaultButton="true" />
+				<Button text="%bottom.buttons.jdexport" onAction="#exportToJd" />
+				<Button text="%bottom.buttons.html" onAction="#createHtml" />
+				<Button text="%bottom.buttons.exit" onAction="#exitGui" cancelButton="true" />
+			</HBox>
+		</AnchorPane>
+	</bottom>
+</BorderPane>

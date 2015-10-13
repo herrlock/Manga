@@ -2,7 +2,6 @@ package de.herrlock.manga.util;
 
 import de.herrlock.javafx.handler.Exec;
 import de.herrlock.manga.downloader.DialogDownloader;
-import de.herrlock.manga.downloader.GUIDownloader;
 import de.herrlock.manga.downloader.PlainDownloader;
 import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
@@ -21,22 +20,10 @@ public enum Execs implements Exec {
             PlainDownloader.execute();
         }
     },
-    GUI_DOWNLOADER() {
-        @Override
-        public void execute() {
-            GUIDownloader.execute();
-        }
-    },
     ADD_TO_JD_W_FILE() {
         @Override
         public void execute() {
             JDExport.executeGetFileProperties();
-        }
-    },
-    ADD_TO_JD_W_GUI() {
-        @Override
-        public void execute() {
-            JDExport.executeGetGuiProperties();
         }
     },
     VIEW_PAGE_MAIN() {

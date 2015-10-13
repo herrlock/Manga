@@ -21,30 +21,18 @@
 	-fx-padding: 16px;
 }
 
-.magenta {
-	-fx-background-color: #f9f;
-}
-
-.red {
+.bp-top {
 	-fx-background-color: #f99;
 }
 
-.yellow {
+.bp-right {
 	-fx-background-color: #ff9;
 }
 
-.green {
-	-fx-background-color: #9f9;
-}
-
-.cyan {
-	-fx-background-color: #9ff;
-}
-
-.blue {
-	-fx-background-color: #99f;
-}
-
-.grey {
+.bp-center {
 	-fx-background-color: #ccc;
+}
+
+.bp-bottom {
+	-fx-background-color: #9f9;
 }

@@ -7,30 +7,28 @@ import javax.swing.JOptionPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.herrlock.manga.ui.main.MDGuiController;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
- * A Downloader-Implementation that gets its Configuration from the GUI.
+ * A Downloader-Implementation that gets its Configuration from any external source.
  * 
  * @author HerrLock
  */
-public final class GUIDownloader extends MDownloader {
+public final class ExtDownloader extends MDownloader {
     private static final Logger logger = LogManager.getLogger();
 
-    public static void main( String... args ) {
+    public static void execute( Properties p ) {
         logger.entry();
-        execute();
-    }
-
-    public static void execute() {
-        logger.entry();
-        Properties p = MDGuiController.getProperties();
         DownloadConfiguration conf = DownloadConfiguration.create( p );
-        new GUIDownloader( conf ).run();
+        new ExtDownloader( conf ).run();
     }
 
-    private GUIDownloader( DownloadConfiguration p ) {
+    public static void execute( DownloadConfiguration conf ) {
+        logger.entry();
+        new ExtDownloader( conf ).run();
+    }
+
+    private ExtDownloader( DownloadConfiguration p ) {
         super( p );
     }
 

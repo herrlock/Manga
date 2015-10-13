@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Logger;
 import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.exceptions.InitializeException;
-import de.herrlock.manga.ui.main.MDGuiController;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.Configuration;
@@ -44,12 +43,7 @@ public final class JDExport extends MDownloader {
         execute( p );
     }
 
-    public static void executeGetGuiProperties() {
-        Properties p = MDGuiController.getProperties();
-        execute( p );
-    }
-
-    private static void execute( Properties p ) {
+    public static void execute( Properties p ) {
         logger.entry();
         String jdhome = p.getProperty( Configuration.JDFW );
         if ( jdhome == null || jdhome.trim().isEmpty() ) {
