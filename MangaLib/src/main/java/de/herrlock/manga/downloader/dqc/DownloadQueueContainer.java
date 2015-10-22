@@ -152,9 +152,9 @@ public final class DownloadQueueContainer {
                 URL imageURL = DownloadQueueContainer.this.getImageLink( this.p.getUrl() );
                 File outputFile = this.p.getTargetFile();
                 LogWindow.setChapterProgressPlusOne();
-                logger.debug( "start reading image " + imageURL );
+                logger.debug( "start reading image {}", imageURL );
                 Utils.getDataAndExecuteResponseHandler( imageURL, DownloadQueueContainer.this.conf, this.handler );
-                logger.debug( "saved image to " + outputFile );
+                logger.debug( "saved image to {}", outputFile );
                 LogWindow.setChapterProgressPlusOne();
             } catch ( SocketException | SocketTimeoutException ex ) {
                 DownloadQueueContainer.this.add( this.p );

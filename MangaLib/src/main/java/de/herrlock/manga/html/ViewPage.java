@@ -59,7 +59,7 @@ public final class ViewPage {
      *            the folder where to create the ViewPages
      */
     public ViewPage( File folder ) {
-        logger.info( "create files in folder " + folder );
+        logger.info( "create files in folder {}", folder );
         this.folder = folder;
         this.maxImgs = maxImgs();
         this.document = Document.createShell( "" );
