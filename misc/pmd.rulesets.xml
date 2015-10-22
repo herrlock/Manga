@@ -30,41 +30,41 @@
 	</rule>
 
 	<!-- not so important -->
+	<rule ref="rulesets/java/finalizers.xml">
+		<priority>4</priority>
+	</rule>
 	<rule ref="rulesets/java/imports.xml">
 		<priority>5</priority>
 	</rule>
 	<rule ref="rulesets/java/junit.xml">
 		<priority>3</priority>
+		<exclude name="JUnitTestContainsTooManyAsserts" />
 	</rule>
-	<!-- <rule ref="rulesets/java/logging-java.xml"> -->
-	<!-- <priority>2</priority> -->
-	<!-- </rule> -->
-	<!-- <rule ref="rulesets/java/optimizations.xml"> -->
-	<!-- <priority>2</priority> -->
-	<!-- </rule> -->
-	<!-- <rule ref="rulesets/java/strictexception.xml"> -->
-	<!-- <priority>2</priority> -->
-	<!-- </rule> -->
-	<!-- <rule ref="rulesets/java/strings.xml"> -->
-	<!-- <priority>2</priority> -->
-	<!-- </rule> -->
+	<rule ref="rulesets/java/logging-java.xml">
+		<priority>4</priority>
+	</rule>
+	<rule ref="rulesets/java/optimizations.xml">
+		<priority>4</priority>
+	</rule>
+	<rule ref="rulesets/java/strictexception.xml">
+		<priority>4</priority>
+	</rule>
+	<rule ref="rulesets/java/strings.xml">
+		<priority>4</priority>
+	</rule>
 
+	<!-- configure with the right parameters, exclude unnecessary tests -->
 	<!-- <rule ref="rulesets/java/comments.xml"> -->
-	<!-- <priority>2</priority> -->
+	<!-- <priority>4</priority> -->
 	<!-- </rule> -->
 	<!-- <rule ref="rulesets/java/naming.xml"> -->
-	<!-- <priority>2</priority> -->
+	<!-- <priority>4</priority> -->
 	<!-- </rule> -->
-
-
 	<!-- <rule ref="rulesets/java/codesize.xml"> -->
-	<!-- <priority>2</priority> -->
+	<!-- <priority>4</priority> -->
 	<!-- </rule> -->
 	<!-- <rule ref="rulesets/java/controversial.xml"> -->
-	<!-- <priority>2</priority> -->
-	<!-- </rule> -->
-	<!-- <rule ref="rulesets/java/finalizers.xml"> -->
-	<!-- <priority>2</priority> -->
+	<!-- <priority>4</priority> -->
 	<!-- </rule> -->
 
 	<!-- priority-level documentation -->
@@ -74,7 +74,7 @@
 	<!-- 4. Change optional. Behavior is not likely to be buggy, but more just flies in the face of standards/style/good taste. -->
 	<!-- 5. Change highly optional. Nice to have, such as a consistent naming policy for package/class/fields... -->
 
-	<!-- examples left for later -->
+	<!-- example configuration, properties and excluding -->
 	<!-- Now we'll customize a rule's property value -->
 	<!-- <rule ref="rulesets/java/codesize.xml/CyclomaticComplexity"> -->
 	<!-- <properties> -->
