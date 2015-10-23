@@ -1,24 +1,59 @@
 
-allprojects {
+// general setup
+allprojects { project ->
 	apply plugin: 'eclipse'
 	
 	group 'de.herrlock'
 	version '1.4.0-BETA-SNAPSHOT'
+	
+	apply plugin: 'java'
+	apply plugin: 'findbugs'
+	apply plugin: 'pmd'
+	apply plugin: 'maven-publish'
+	
+	sourceCompatibility = '1.7'
+	
+	dependencies {
+		testCompile 'junit:junit:4.12'
+	}
+	
+	jar.manifest {
+		attributes 'Built-With' : GradleVersion.current(),
+			'Created-By' : "${System.properties.'java.runtime.version'} (${System.properties.'java.vm.vendor'})"
+	}
+	
+	findbugs {
+		effort = 'max'
+		reportLevel = 'low'
+	}
+	tasks.withType(FindBugs) {
+	    reports {
+	        xml.enabled = false
+	        html.enabled = true
+	    }
+	}
+	
+	pmd {
+		ignoreFailures = true
+		ruleSetFiles = files("${rootProject.projectDir}/misc/pmd.rulesets.xml")
+	}
+	
+	eclipse.project {
+		buildCommand 'edu.umd.cs.findbugs.plugin.eclipse.findbugsBuilder'
+	}
+	
+	repositories {
+		mavenCentral()
+	}
 }
 
-apply from: 'subprojects.gradle'
-
-task clean (type: Delete, group: 'build', description: 'Deletes the build directory. (R)') {
-	delete 'build/'
-}
-
-def temp = 'build/temp/'
+// build-helper
+def temp = mkdir("${rootProject.buildDir}/disttemp/")
 
 task createLibs (type: Copy, description: 'Create jar from subprojects and copies them into the lib-folder') {
-	into temp + 'lib'
+	into new File(temp, 'lib')
     subprojects.each { s -> 
-		dependsOn s.jar
-		dependsOn s.check
+		dependsOn s.build
 		from s.jar
 		from s.configurations.runtime
 	}
@@ -35,24 +70,33 @@ task copyDist (type: Copy, description: 'Copy content of \"src/dist\" to the tem
 }
 
 task compileRun (description: 'Compile run.cs and copy the exe into the build-folder') {
-    def folder = 'src/main/cs'
+    def csfolder = 'src/main/cs'
     def filename = 'Run.exe'
-    def exefile = new File(folder, filename)
-    def target = mkdir('build/temp/')
+    def exefile = new File(csfolder, filename)
     doLast {
-        exec {
-            workingDir folder
-            commandLine 'cmd', '/c', 'csc', '/t:winexe', "/out:${filename}", '/nologo', 'run.cs'
+    	try {
+	        exec {
+	            workingDir csfolder
+	            commandLine 'cmd', '/c', 'csc', '/t:winexe', "/out:${filename}", '/nologo', 'run.cs'
+	        }
+	        copy {
+	            from exefile
+	            into temp
+	        }
+	        delete exefile
+        } catch(org.gradle.process.internal.ExecException ex) {
+			logger.warn 'run.cs could not be compiled to run.exe, csc missing on path'
         }
-        copy {
-            from exefile
-            into target
-        }
-        delete exefile
     }
 }
 
-task dist (type: Zip, group: 'build', description: 'Creates a distribution in a zip-file', dependsOn: [createLibs, copyOther, copyDist, compileRun]) {
+task copyLauncher(type: Copy, dependsOn: build, description: 'Copies the launcher to the root folder') {
+	from tasks.jar.outputs.files
+	into temp
+}
+
+//distribution-task
+task dist (type: Zip, group: 'build', dependsOn: [createLibs, copyOther, copyDist, compileRun, copyLauncher], description: 'Creates a distribution in a zip-file') {
     destinationDir = file('build')
     baseName = project.name
     version = project.version
@@ -61,3 +105,18 @@ task dist (type: Zip, group: 'build', description: 'Creates a distribution in a 
     from temp
 }
 
+
+// project-configuration
+dependencies {
+	subprojects.each {
+		compile it
+	}
+	compile 'commons-cli:commons-cli:1.3.1'
+}
+
+jar {
+	manifest {
+		attributes 'Main-Class' : 'de.herrlock.manga.Main',
+			'Class-Path' : project.configurations.runtime.collect{ file -> "lib/${file.name}" }.join(',')
+	}
+}
