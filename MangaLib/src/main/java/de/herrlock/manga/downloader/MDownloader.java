@@ -13,6 +13,7 @@ import de.herrlock.manga.downloader.dqc.DownloadQueueContainer;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.downloader.pmc.PictureMapContainer;
 import de.herrlock.manga.exceptions.InitializeException;
+import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.ui.log.LogWindow;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
@@ -45,12 +46,12 @@ public abstract class MDownloader {
      * @param conf
      *            the Configuration to use
      */
-    public MDownloader( DownloadConfiguration conf ) {
+    public MDownloader( final DownloadConfiguration conf ) {
         logger.entry();
         logger.info( conf.getUrl().toExternalForm() );
         try {
             this.clc = new ChapterListContainer( conf );
-        } catch ( IOException ex ) {
+        } catch ( final IOException ex ) {
             throw new InitializeException( ex );
         }
         this.pmc = new PictureMapContainer( this.clc );
@@ -120,7 +121,7 @@ public abstract class MDownloader {
      *            a map containing the URLs for the pictures
      * @see DownloadQueueContainer#downloadPages()
      */
-    private void downloadChapter( String key, EntryList<Integer, URL> entries ) {
+    private void downloadChapter( final String key, final EntryList<Integer, URL> entries ) {
         logger.entry( key );
         logger.info( "Download chapter {} ({} pages)", key, entries.size() );
         File chapterFolder = new File( this.clc.getPath(), key );
@@ -130,7 +131,7 @@ public abstract class MDownloader {
             // start download
             this.dqc.downloadPages();
         } else {
-            throw new RuntimeException( chapterFolder + " does not exists and could not be created" );
+            throw new MyException( chapterFolder + " does not exists and could not be created" );
         }
         logger.info( "finished chapter {}", key );
     }

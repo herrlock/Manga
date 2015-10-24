@@ -26,10 +26,10 @@ public final class BackgroundImageLocation extends Location {
     }
 
     @Override
-    public Response handleXHR( URL url ) {
+    public Response handleXHR( final URL url ) {
         try {
             return new ImageResponse( Image.getRandom().getStream() );
-        } catch ( IOException ex ) {
+        } catch ( final IOException ex ) {
             throw new ServerException( ex );
         }
     }
@@ -40,7 +40,7 @@ public final class BackgroundImageLocation extends Location {
         private static final Random RANDOM = new Random( new Date().getTime() );
         private final String filename;
 
-        private Image( String filename ) {
+        private Image( final String filename ) {
             this.filename = filename;
         }
 

@@ -18,6 +18,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -88,7 +89,7 @@ public final class Utils {
      *             thrown by {@link CloseableHttpClient#execute(org.apache.http.client.methods.HttpUriRequest)}
      */
     public static <T> T getDataAndExecuteResponseHandler( final URL url, final DownloadConfiguration conf,
-        ResponseHandler<T> handler ) throws IOException, ClientProtocolException {
+        final ResponseHandler<T> handler ) throws IOException, ClientProtocolException {
         final HttpGet httpGet = createHttpGet( url, conf );
         return executeHttpGet( httpGet, handler );
     }
@@ -113,8 +114,8 @@ public final class Utils {
             for ( Thread t : threads ) {
                 t.join();
             }
-        } catch ( InterruptedException ex ) {
-            throw new RuntimeException( ex );
+        } catch ( final InterruptedException ex ) {
+            throw new MyException( ex );
         }
     }
 
@@ -128,8 +129,8 @@ public final class Utils {
     public static <T> List<Future<T>> callCallables( final Collection<? extends Callable<T>> callables ) {
         try {
             return THREAD_POOL.invokeAll( callables );
-        } catch ( InterruptedException ex ) {
-            throw new RuntimeException( ex );
+        } catch ( final InterruptedException ex ) {
+            throw new MyException( ex );
         }
     }
 
@@ -156,12 +157,12 @@ public final class Utils {
          * @param threadFactory
          *            the {@link ThreadFactory} to use
          */
-        public DaemonThreadFactory( ThreadFactory threadFactory ) {
+        public DaemonThreadFactory( final ThreadFactory threadFactory ) {
             this.threadFactory = threadFactory;
         }
 
         @Override
-        public Thread newThread( Runnable r ) {
+        public Thread newThread( final Runnable r ) {
             Thread t = this.threadFactory.newThread( r );
             t.setDaemon( true );
             return t;

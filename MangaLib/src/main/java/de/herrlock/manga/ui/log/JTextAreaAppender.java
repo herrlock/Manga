@@ -26,7 +26,7 @@ public final class JTextAreaAppender extends AbstractAppender {
     }
 
     @Override
-    public void append( LogEvent event ) {
+    public void append( final LogEvent event ) {
         String formattedMessage = event.getMessage().getFormattedMessage();
         LogWindow.addMessage( formattedMessage );
     }

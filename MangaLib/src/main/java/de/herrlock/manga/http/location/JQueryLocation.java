@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.http.Server;
 import de.herrlock.manga.http.response.Response;
 import de.herrlock.manga.http.response.TextResponse;
@@ -25,7 +26,7 @@ public final class JQueryLocation extends Location {
     }
 
     @Override
-    public Response handleXHR( URL url ) {
+    public Response handleXHR( final URL url ) {
         TextResponse response = new TextResponse();
 
         try ( BufferedReader reader = new BufferedReader( new InputStreamReader(
@@ -37,8 +38,8 @@ public final class JQueryLocation extends Location {
             }
             response.setText( sb.toString() );
             response.setCode( 200 );
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+        } catch ( final IOException ex ) {
+            throw new MyException( ex );
         }
         return response;
     }

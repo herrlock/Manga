@@ -18,12 +18,12 @@ public class ServerExceptionResponse extends DocumentResponse {
      * @param ex
      *            the cause of this Response
      */
-    public ServerExceptionResponse( Exception ex ) {
+    public ServerExceptionResponse( final Exception ex ) {
         super.setDocument( createDocument( ex ) );
         super.setCode( 500 );
     }
 
-    private Document createDocument( Exception ex ) {
+    private Document createDocument( final Exception ex ) {
         Document doc = Document.createShell( "http://localhost" );
         doc.appendElement( "head" ).appendElement( "title" ).text( "Internal Error" );
         Element div = doc.appendElement( "body" ).appendElement( "div" );

@@ -27,7 +27,7 @@ public class DownloadConfiguration extends Configuration {
      *            the {@link Properties} where to get the values from
      * @return a new {@link DownloadConfiguration}
      */
-    public static DownloadConfiguration create( Properties p ) {
+    public static DownloadConfiguration create( final Properties p ) {
         URL url = _createUrl( p );
         HttpHost proxy = _createProxy( p );
         ChapterPattern pattern = _createPattern( p );
@@ -47,7 +47,7 @@ public class DownloadConfiguration extends Configuration {
      * @param timeout
      *            the timeout for the http-requests. The dafult-value is used if negative.
      */
-    public DownloadConfiguration( URL url, HttpHost proxy, ChapterPattern pattern, int timeout ) {
+    public DownloadConfiguration( final URL url, final HttpHost proxy, final ChapterPattern pattern, final int timeout ) {
         this.url = Objects.requireNonNull( url, "A URL is required for downloading" );
         this.proxy = proxy;
         this.pattern = pattern == null ? new ChapterPattern( "" ) : pattern;

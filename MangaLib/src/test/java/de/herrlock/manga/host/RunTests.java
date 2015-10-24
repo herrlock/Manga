@@ -78,7 +78,7 @@ public class RunTests {
                     if ( ChapterList.class.equals( c.getSuperclass() ) ) {
                         classes.add( c.asSubclass( ChapterList.class ) );
                     }
-                } catch ( ClassNotFoundException ex ) {
+                } catch ( final ClassNotFoundException ex ) {
                     throw new RuntimeException( ex );
                 }
             }

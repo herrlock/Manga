@@ -19,7 +19,7 @@ public final class PureManga extends ChapterList {
 
     private final String name;
 
-    public PureManga( DownloadConfiguration conf ) throws IOException {
+    public PureManga( final DownloadConfiguration conf ) throws IOException {
         super( conf );
         Document document = getDocument( conf.getUrl() );
 
@@ -45,13 +45,13 @@ public final class PureManga extends ChapterList {
     }
 
     @Override
-    public URL imgLink( URL url ) throws IOException {
+    public URL imgLink( final URL url ) throws IOException {
         String src = getDocument( url ).select( "#page>.inner>a>img" ).first().attr( "src" );
         return new URL( url, src );
     }
 
     @Override
-    protected EntryList<Integer, URL> _getAllPageURLs( URL url ) throws IOException {
+    protected EntryList<Integer, URL> _getAllPageURLs( final URL url ) throws IOException {
         EntryList<Integer, URL> result = new EntryList<>();
         Elements li = getDocument( url ).select( ".dropdown_right>ul>li" );
         for ( Element e : li ) {

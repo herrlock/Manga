@@ -17,7 +17,7 @@ import de.herrlock.manga.util.ChapterPattern;
 public class JDConfiguration extends DownloadConfiguration {
     private final File folderwatch;
 
-    public static JDConfiguration create( Properties p ) {
+    public static JDConfiguration create( final Properties p ) {
         URL url = _createUrl( p );
         HttpHost proxy = _createProxy( p );
         ChapterPattern pattern = _createPattern( p );
@@ -40,7 +40,8 @@ public class JDConfiguration extends DownloadConfiguration {
      * @param folderwatch
      *            the {@link File} pointing to the folderwatch-folder from the local JDownloader-installation
      */
-    public JDConfiguration( URL url, HttpHost proxy, ChapterPattern pattern, int timeout, File folderwatch ) {
+    public JDConfiguration( final URL url, final HttpHost proxy, final ChapterPattern pattern, final int timeout,
+        final File folderwatch ) {
         super( url, proxy, pattern, timeout );
         this.folderwatch = Objects.requireNonNull( folderwatch, "The folderwatch-folder must not be null" );
     }

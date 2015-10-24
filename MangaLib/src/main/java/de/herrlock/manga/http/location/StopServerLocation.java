@@ -20,7 +20,7 @@ public final class StopServerLocation extends Location {
     }
 
     @Override
-    public Response handleXHR( URL url ) {
+    public Response handleXHR( final URL url ) {
         throw new CloseServerException();
     }
 }

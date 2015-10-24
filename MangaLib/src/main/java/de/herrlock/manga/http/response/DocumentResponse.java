@@ -25,7 +25,7 @@ public class DocumentResponse extends Response {
      * @param document
      *            the response-document
      */
-    public DocumentResponse( Document document ) {
+    public DocumentResponse( final Document document ) {
         this( -1, document );
     }
 
@@ -35,7 +35,7 @@ public class DocumentResponse extends Response {
      * @param code
      *            the response-code
      */
-    public DocumentResponse( int code ) {
+    public DocumentResponse( final int code ) {
         this( code, null );
     }
 
@@ -47,7 +47,7 @@ public class DocumentResponse extends Response {
      * @param document
      *            the response-document
      */
-    public DocumentResponse( int code, Document document ) {
+    public DocumentResponse( final int code, final Document document ) {
         super( code );
         setDocument( document );
     }
@@ -59,7 +59,7 @@ public class DocumentResponse extends Response {
      *            the new doc
      * @return {@code this} to enable method-chaining
      */
-    public DocumentResponse setDocument( Document doc ) {
+    public DocumentResponse setDocument( final Document doc ) {
         this.document = doc;
         return this;
     }

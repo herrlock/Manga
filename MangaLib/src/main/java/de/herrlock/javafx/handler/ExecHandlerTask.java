@@ -3,6 +3,7 @@ package de.herrlock.javafx.handler;
 import javax.swing.JOptionPane;
 
 import de.herrlock.manga.exceptions.InitializeException;
+import de.herrlock.manga.exceptions.MyException;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -22,7 +23,7 @@ public class ExecHandlerTask extends Task<Void> {
      * @param exec
      *            the {@link Exec} to execute
      */
-    public ExecHandlerTask( Exec exec ) {
+    public ExecHandlerTask( final Exec exec ) {
         this.exec = exec;
         setOnFailed( new ExceptionHandler() );
     }
@@ -32,7 +33,7 @@ public class ExecHandlerTask extends Task<Void> {
         boolean exit = true;
         try {
             this.exec.execute();
-        } catch ( InitializeException ex ) {
+        } catch ( final InitializeException ex ) {
             exit = false;
             JOptionPane.showMessageDialog( null, ex.getMessage() );
         } finally {
@@ -45,9 +46,9 @@ public class ExecHandlerTask extends Task<Void> {
 
     final class ExceptionHandler implements EventHandler<WorkerStateEvent> {
         @Override
-        public void handle( WorkerStateEvent t ) {
+        public void handle( final WorkerStateEvent t ) {
             Throwable exception = ExecHandlerTask.this.getException();
-            throw exception instanceof RuntimeException ? ( RuntimeException ) exception : new RuntimeException( exception );
+            throw exception instanceof RuntimeException ? ( RuntimeException ) exception : new MyException( exception );
         }
     }
 }

@@ -23,7 +23,7 @@ public final class NotFoundLocation extends Location {
     }
 
     @Override
-    public Response handleXHR( URL url ) {
+    public Response handleXHR( final URL url ) {
         Document doc = Document.createShell( "http://localhost" );
         Element head = doc.select( "head" ).first();
         head.appendElement( "title" ).text( "Not Found (404)" );

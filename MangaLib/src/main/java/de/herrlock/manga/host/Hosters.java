@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.host.impl.MangaFox;
 import de.herrlock.manga.host.impl.MangaPanda;
 import de.herrlock.manga.host.impl.PureManga;
@@ -46,7 +47,7 @@ public final class Hosters {
          *            the second Hoster
          */
         @Override
-        public int compare( Hoster h1, Hoster h2 ) {
+        public int compare( final Hoster h1, final Hoster h2 ) {
             String h1LowerName = h1.getName().toLowerCase( Locale.GERMAN );
             String h2LowerName = h2.getName().toLowerCase( Locale.GERMAN );
             return h1LowerName.compareTo( h2LowerName );
@@ -63,10 +64,10 @@ public final class Hosters {
         try {
             List<String> allLines = Files.readAllLines( Paths.get( ".", "additionalHoster.txt" ), StandardCharsets.UTF_8 );
             classes.addAll( allLines );
-        } catch ( NoSuchFileException ex ) {
-            logger.warn( "additionalHoster.txt not found, ignoring" );
-        } catch ( IOException ex ) {
-            throw new RuntimeException( "could not load additionalHoster.txt", ex );
+        } catch ( final NoSuchFileException ex ) {
+            logger.info( "additionalHoster.txt not found, ignoring" );
+        } catch ( final IOException ex ) {
+            throw new MyException( "could not load additionalHoster.txt", ex );
         }
         for ( String s : classes ) {
             try {
@@ -76,7 +77,7 @@ public final class Hosters {
                 } else {
                     logger.warn( "Class {} is no subclass of ChapterList", c );
                 }
-            } catch ( ClassNotFoundException ex ) {
+            } catch ( final ClassNotFoundException ex ) {
                 logger.warn( "Could not find class {}", s );
             }
         }
@@ -88,7 +89,7 @@ public final class Hosters {
      * @param hoster
      *            the Hoster to add
      */
-    public static void registerHoster( Hoster hoster ) {
+    public static void registerHoster( final Hoster hoster ) {
         hosters.add( hoster );
     }
 
@@ -99,7 +100,7 @@ public final class Hosters {
      *            the class to create a Hoster with
      * @see Hoster#Hoster(Class)
      */
-    public static void registerHoster( Class<? extends ChapterList> c ) {
+    public static void registerHoster( final Class<? extends ChapterList> c ) {
         registerHoster( new Hoster( c ) );
     }
 
@@ -110,7 +111,7 @@ public final class Hosters {
      *            the URL to check the Hoster against
      * @return the Hoster that has the given URL; when none is found {@code null}
      */
-    public static Hoster getHostByURL( URL url ) {
+    public static Hoster getHostByURL( final URL url ) {
         Pattern www = Pattern.compile( "www\\..+" );
         String givenUrlHost = url.getHost();
         if ( www.matcher( givenUrlHost ).matches() ) {
@@ -155,7 +156,7 @@ public final class Hosters {
      *            the comparator to sort with
      * @return the registered Hoster
      */
-    public static List<Hoster> sortedValues( Comparator<Hoster> comparator ) {
+    public static List<Hoster> sortedValues( final Comparator<Hoster> comparator ) {
         ArrayList<Hoster> hosterCopy = new ArrayList<>( hosters );
         Collections.sort( hosterCopy, comparator );
         return Collections.unmodifiableList( hosterCopy );

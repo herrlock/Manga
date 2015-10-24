@@ -19,7 +19,7 @@ public final class MangaFox extends ChapterList {
 
     private final String name;
 
-    public MangaFox( DownloadConfiguration conf ) throws IOException {
+    public MangaFox( final DownloadConfiguration conf ) throws IOException {
         super( conf );
         Document document = getDocument( conf.getUrl() );
 
@@ -49,13 +49,13 @@ public final class MangaFox extends ChapterList {
     }
 
     @Override
-    public URL imgLink( URL url ) throws IOException {
+    public URL imgLink( final URL url ) throws IOException {
         String src = getDocument( url ).getElementById( "image" ).attr( "src" );
         return new URL( url, src );
     }
 
     @Override
-    protected EntryList<Integer, URL> _getAllPageURLs( URL url ) throws IOException {
+    protected EntryList<Integer, URL> _getAllPageURLs( final URL url ) throws IOException {
         EntryList<Integer, URL> result = new EntryList<>();
         Elements pages = getDocument( url ).select( "select.m" ).first().getElementsByTag( "option" );
         Element last = pages.last();

@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 
+import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -28,14 +29,14 @@ public class Hoster {
      *            the subclass of ChapterList to create instances from with {@linkplain #getChapterList(DownloadConfiguration)}.
      *            The class must be annotated with {@link Details}
      */
-    public Hoster( Class<? extends ChapterList> baseClass ) {
+    public Hoster( final Class<? extends ChapterList> baseClass ) {
         this.baseClass = Objects.requireNonNull( baseClass );
         Details hosterDetails = Objects.requireNonNull( baseClass.getAnnotation( Details.class ),
             "Implementations of ChapterList require a name and a baseUrl provided by the annotation @Details" );
         this.name = Objects.requireNonNull( hosterDetails.name() );
         try {
             this.baseUrl = new URL( Objects.requireNonNull( hosterDetails.baseUrl() ) );
-        } catch ( MalformedURLException ex ) {
+        } catch ( final MalformedURLException ex ) {
             throw new IllegalStateException( ex );
         }
     }
@@ -52,21 +53,21 @@ public class Hoster {
      *             may be thrown by the called ChapterList's constructor (not required though)
      */
     @SuppressWarnings( "unused" )
-    public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
+    public ChapterList getChapterList( final DownloadConfiguration conf ) throws IOException {
         try {
             Constructor<? extends ChapterList> constructor = this.baseClass.getConstructor( DownloadConfiguration.class );
             return constructor.newInstance( conf );
-        } catch ( NoSuchMethodException ex ) {
+        } catch ( final NoSuchMethodException ex ) {
             throw new IllegalStateException(
                 "The called implementation of ChapterList must contain a constructor accepting a DownloadConfiguration", ex );
-        } catch ( InstantiationException ex ) {
+        } catch ( final InstantiationException ex ) {
             throw new IllegalStateException( "The called class is abstract", ex );
-        } catch ( IllegalAccessException ex ) {
-            throw new RuntimeException( "The called constructor is not accessible", ex );
-        } catch ( IllegalArgumentException ex ) {
-            throw new RuntimeException( "The called constructor does not take one DownloadConfiguration as parameter", ex );
-        } catch ( InvocationTargetException ex ) {
-            throw new RuntimeException( "The called constructor threw an exception", ex );
+        } catch ( final IllegalAccessException ex ) {
+            throw new MyException( "The called constructor is not accessible", ex );
+        } catch ( final IllegalArgumentException ex ) {
+            throw new MyException( "The called constructor does not take one DownloadConfiguration as parameter", ex );
+        } catch ( final InvocationTargetException ex ) {
+            throw new MyException( "The called constructor threw an exception", ex );
         }
     }
 

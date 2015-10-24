@@ -23,7 +23,7 @@ final class Page {
      * @param pageNumber
      *            the number of the page, sets the filename (with optional prepended '0')
      */
-    public Page( URL pageUrl, File chapterFolder, int pageNumber ) {
+    public Page( final URL pageUrl, final File chapterFolder, final int pageNumber ) {
         this.pageUrl = pageUrl;
         String _nr = ( pageNumber > 9 ? "" : "0" ) + pageNumber;
         this.targetFile = new File( chapterFolder, _nr + ".jpg" );

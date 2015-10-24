@@ -24,7 +24,7 @@ public class TextResponse extends Response {
      * @param text
      *            the response-text
      */
-    public TextResponse( String text ) {
+    public TextResponse( final String text ) {
         this( -1, text );
     }
 
@@ -34,7 +34,7 @@ public class TextResponse extends Response {
      * @param code
      *            the response-code
      */
-    public TextResponse( int code ) {
+    public TextResponse( final int code ) {
         this( code, "" );
     }
 
@@ -46,7 +46,7 @@ public class TextResponse extends Response {
      * @param text
      *            the response-text
      */
-    public TextResponse( int code, String text ) {
+    public TextResponse( final int code, final String text ) {
         super( code );
         setText( text );
     }
@@ -57,7 +57,7 @@ public class TextResponse extends Response {
      * @param text
      *            the new text
      */
-    public void setText( String text ) {
+    public void setText( final String text ) {
         this.text = text;
     }
 

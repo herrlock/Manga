@@ -1,6 +1,7 @@
 package de.herrlock.manga.jd;
 
 import java.net.URL;
+import java.text.MessageFormat;
 
 /**
  * A class representing a single download (url => filename)
@@ -19,7 +20,7 @@ final class CrawljobEntry {
      * @param url
      *            the {@link URL} to download the image from
      */
-    public CrawljobEntry( String filename, String url ) {
+    public CrawljobEntry( final String filename, final String url ) {
         this.filename = filename;
         this.url = url;
     }
@@ -30,13 +31,6 @@ final class CrawljobEntry {
      * @return string for the current CrawljobEntry-object
      */
     public String export() {
-        StringBuilder sb = new StringBuilder();
-        sb.append( "text=" );
-        sb.append( this.url );
-        sb.append( System.lineSeparator() );
-        sb.append( "filename=" );
-        sb.append( this.filename );
-        sb.append( ".jpg" );
-        return sb.toString();
+        return MessageFormat.format( "text={0}{1}filename={2}", this.url, System.lineSeparator(), this.filename );
     }
 }

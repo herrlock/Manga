@@ -20,7 +20,7 @@ public abstract class Location {
      *            the path from where to request data, must represent the path-part from a {@link URL}
      * @see URL#getPath()
      */
-    public Location( String path ) {
+    public Location( final String path ) {
         this.path = path;
     }
 
@@ -31,7 +31,7 @@ public abstract class Location {
      *            the requested {@link URL}
      * @return the Response created
      */
-    public abstract Response handleXHR( URL url );
+    public abstract Response handleXHR( final URL url );
 
     /**
      * Getter for the Location's path

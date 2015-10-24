@@ -25,7 +25,7 @@ public class ImageResponse extends Response {
      * @throws IOException
      *             thrown by {@link IOUtils#copy(InputStream, java.io.OutputStream)}
      */
-    public ImageResponse( InputStream imageStream ) throws IOException {
+    public ImageResponse( final InputStream imageStream ) throws IOException {
         super( 200 );
         try {
             if ( imageStream == null ) {
@@ -47,7 +47,7 @@ public class ImageResponse extends Response {
      * @param out
      *            a {@link ByteArrayOutputStream} that contains the image-data
      */
-    public ImageResponse( ByteArrayOutputStream out ) {
+    public ImageResponse( final ByteArrayOutputStream out ) {
         super( 200 );
         this.bytes = out.toByteArray();
     }

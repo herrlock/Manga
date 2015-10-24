@@ -47,7 +47,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @throws IOException
      *             thrown by {@link Hoster#getChapterList(DownloadConfiguration)}
      */
-    public static ChapterList getInstance( DownloadConfiguration conf ) throws IOException {
+    public static ChapterList getInstance( final DownloadConfiguration conf ) throws IOException {
         logger.entry();
         URL url = conf.getUrl();
         Hoster h = Hosters.getHostByURL( url );
@@ -64,7 +64,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @param conf
      *            the {@link DownloadConfiguration} to use
      */
-    protected ChapterList( DownloadConfiguration conf ) {
+    protected ChapterList( final DownloadConfiguration conf ) {
         this.conf = conf;
     }
 
@@ -77,7 +77,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @param chapterUrl
      *            the chapter's URL
      */
-    protected void addChapter( String number, URL chapterUrl ) {
+    protected void addChapter( final String number, final URL chapterUrl ) {
         if ( this.conf.getPattern().contains( number ) ) {
             super.add( new Chapter( number, chapterUrl ) );
         }
@@ -99,7 +99,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @throws IOException
      *             in case an IOException occurs
      */
-    public abstract URL imgLink( URL url ) throws IOException;
+    public abstract URL imgLink( final URL url ) throws IOException;
 
     /**
      * returns an immutable {@link EntryList} of all page-URLs. calls {@link #_getAllPageURLs(URL)} and warps the result in an
@@ -111,7 +111,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @throws IOException
      *             in case an IOException occurs
      */
-    public EntryList<Integer, URL> getAllPageURLs( URL url ) throws IOException {
+    public EntryList<Integer, URL> getAllPageURLs( final URL url ) throws IOException {
         EntryList<Integer, URL> entryList = _getAllPageURLs( url );
         return new ImmutableEntryList<>( entryList );
     }
@@ -125,7 +125,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @throws IOException
      *             in case an IOException occurs
      */
-    protected abstract EntryList<Integer, URL> _getAllPageURLs( URL url ) throws IOException;
+    protected abstract EntryList<Integer, URL> _getAllPageURLs( final URL url ) throws IOException;
 
     /**
      * fetches data from the given URL and parses it to a {@link Document}
@@ -145,7 +145,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      */
     public static final ResponseHandler<Document> TO_DOCUMENT_HANDLER = new ResponseHandler<Document>() {
         @Override
-        public Document handleResponse( HttpResponse response ) throws ClientProtocolException, IOException {
+        public Document handleResponse( final HttpResponse response ) throws ClientProtocolException, IOException {
             HttpEntity entity = response.getEntity();
             try {
                 return Jsoup.parse( EntityUtils.toString( entity, StandardCharsets.UTF_8 ) );
@@ -170,7 +170,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
          * @param url
          *            the url of a page (generally the first) of the chapter
          */
-        Chapter( String number, URL url ) {
+        Chapter( final String number, final URL url ) {
             this.number = number;
             this.chapterUrl = url;
         }

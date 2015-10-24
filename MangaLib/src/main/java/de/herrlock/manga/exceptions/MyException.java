@@ -1,51 +1,52 @@
 package de.herrlock.manga.exceptions;
 
 /**
- * an exception that indicates that sth. happened while initializing the download, so the application can stay opened.
+ * an exception
  * 
  * @author HerrLock
  */
-public final class InitializeException extends RuntimeException {
+public final class MyException extends RuntimeException {
+    // TODO: rename this Exception
 
     /**
-     * A new InitializeException without detailed message or cause
+     * A new MyException without detailed message or cause
      * 
      * @deprecated should not be used since there will be no detail-message
      */
     @Deprecated
-    public InitializeException() {
+    public MyException() {
         super();
     }
 
     /**
-     * A new InitializeException with a detailed message
+     * A new MyException with a detailed message
      * 
      * @param message
      *            a detailmessage why this exception occurred
      */
-    public InitializeException( final String message ) {
+    public MyException( final String message ) {
         super( message );
     }
 
     /**
-     * A new InitializeException with a cause
+     * A new MyException with a cause
      * 
      * @param cause
      *            the cause of this exception
      */
-    public InitializeException( final Throwable cause ) {
+    public MyException( final Throwable cause ) {
         super( cause );
     }
 
     /**
-     * A new InitializeException with a detailed message and cause
+     * A new MyException with a detailed message and cause
      * 
      * @param message
      *            a detailmessage why this exception occurred
      * @param cause
      *            the cause of this exception
      */
-    public InitializeException( final String message, final Throwable cause ) {
+    public MyException( final String message, final Throwable cause ) {
         super( message, cause );
     }
 

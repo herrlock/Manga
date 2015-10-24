@@ -19,7 +19,7 @@ public final class ServerException extends RuntimeException {
      * @param message
      *            a detail-message to provide further information
      */
-    public ServerException( String message ) {
+    public ServerException( final String message ) {
         super( message );
     }
 
@@ -29,7 +29,7 @@ public final class ServerException extends RuntimeException {
      * @param cause
      *            an Exception that caused this Exception
      */
-    public ServerException( Exception cause ) {
+    public ServerException( final Exception cause ) {
         super( cause );
     }
 
@@ -41,7 +41,7 @@ public final class ServerException extends RuntimeException {
      * @param cause
      *            an Exception that caused this Exception
      */
-    public ServerException( String message, Exception cause ) {
+    public ServerException( final String message, final Exception cause ) {
         super( message, cause );
     }
 

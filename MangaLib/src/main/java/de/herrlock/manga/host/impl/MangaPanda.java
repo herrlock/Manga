@@ -18,7 +18,7 @@ public final class MangaPanda extends ChapterList {
 
     private final String name;
 
-    public MangaPanda( DownloadConfiguration conf ) throws IOException {
+    public MangaPanda( final DownloadConfiguration conf ) throws IOException {
         super( conf );
         Document document = getDocument( conf.getUrl() );
 
@@ -45,13 +45,13 @@ public final class MangaPanda extends ChapterList {
     }
 
     @Override
-    public URL imgLink( URL url ) throws IOException {
+    public URL imgLink( final URL url ) throws IOException {
         String src = getDocument( url ).getElementById( "img" ).attr( "src" );
         return new URL( url, src );
     }
 
     @Override
-    protected EntryList<Integer, URL> _getAllPageURLs( URL url ) throws IOException {
+    protected EntryList<Integer, URL> _getAllPageURLs( final URL url ) throws IOException {
         EntryList<Integer, URL> result = new EntryList<>();
         Elements pages = getDocument( url ).select( "#pageMenu>option" );
         for ( Element e : pages ) {

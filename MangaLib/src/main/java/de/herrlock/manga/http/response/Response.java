@@ -1,5 +1,6 @@
 package de.herrlock.manga.http.response;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +29,7 @@ public abstract class Response {
      * @param code
      *            the http-responsecode to set
      */
-    public Response( int code ) {
+    public Response( final int code ) {
         this.code = code;
     }
 
@@ -39,7 +40,7 @@ public abstract class Response {
      *            the new code to set
      * @return {@code this} to enable method-chaining
      */
-    public Response setCode( int code ) {
+    public Response setCode( final int code ) {
         this.code = code;
         return this;
     }
@@ -53,7 +54,7 @@ public abstract class Response {
      *            the pair's value
      * @return {@code this} to enable method-chaining
      */
-    public Response setHeader( String key, String value ) {
+    public Response setHeader( final String key, final String value ) {
         this.header.put( key, value );
         return this;
     }
@@ -74,18 +75,15 @@ public abstract class Response {
      * @return a string-representation of the current Response-headers
      */
     public String createHTTPHeader() {
-        StringBuilder sb = new StringBuilder();
-        sb.append( "HTTP/1.1 " );
-        sb.append( this.code );
-        sb.append( "\nContent-Type: " );
-        sb.append( this.header.containsKey( "Content-Type" ) ? this.header.get( "Content-Type" ) : getContentType() );
-        sb.append( "\nDate: " );
-        sb.append( this.header.containsKey( "Date" ) ? this.header.get( "Date" ) : new Date().toString() );
+        StringBuilder sb = new StringBuilder()//
+            .append( "HTTP/1.1 " )//
+            .append( this.code )//
+            .append( "\nContent-Type: " )//
+            .append( this.header.containsKey( "Content-Type" ) ? this.header.get( "Content-Type" ) : getContentType() )//
+            .append( "\nDate: " )//
+            .append( this.header.containsKey( "Date" ) ? this.header.get( "Date" ) : new Date().toString() );
         for ( Entry<String, String> entry : this.header.entrySet() ) {
-            sb.append( "\n" );
-            sb.append( entry.getKey() );
-            sb.append( ": " );
-            sb.append( entry.getValue() );
+            sb.append( MessageFormat.format( "\n{0}: {1}", entry.getKey(), entry.getValue() ) );
         }
 
         sb.append( "\n\n" );

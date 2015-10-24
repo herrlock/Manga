@@ -56,7 +56,7 @@ public abstract class Configuration {
      * @throws InitializeException
      *             in case the URL is not availabile or malformed
      */
-    protected static URL _createUrl( Properties p ) throws InitializeException {
+    protected static URL _createUrl( final Properties p ) throws InitializeException {
         logger.entry();
         // get url
         URL url;
@@ -66,7 +66,7 @@ public abstract class Configuration {
                 throw new InitializeException( "url is not filled but required" );
             }
             url = new URL( urlString );
-        } catch ( MalformedURLException ex ) {
+        } catch ( final MalformedURLException ex ) {
             logger.error( "", ex );
             throw new InitializeException( "url is malformed", ex );
         }
@@ -83,23 +83,25 @@ public abstract class Configuration {
      * @throws InitializeException
      *             in case the given url is malformed or cannot be resolved
      */
-    protected static HttpHost _createProxy( Properties p ) throws InitializeException {
+    protected static HttpHost _createProxy( final Properties p ) throws InitializeException {
         logger.entry();
         // get proxy
         try {
             String urlString = p.getProperty( PROXY );
             if ( urlString != null && !"".equals( urlString ) ) {
-                if ( !urlString.startsWith( "http://" ) ) {
-                    urlString = "http://" + urlString;
+                final URL proxyUrl;
+                if ( urlString.startsWith( "http://" ) ) {
+                    proxyUrl = new URL( urlString );
+                } else {
+                    proxyUrl = new URL( "http://" + urlString );
                 }
-                URL proxyUrl = new URL( urlString );
                 String proxyHost = proxyUrl.getHost();
                 int proxyPort = proxyUrl.getPort();
                 InetAddress proxyAddress = InetAddress.getByName( proxyHost );
                 logger.debug( "Proxy: {}:{}", proxyHost, proxyPort );
                 return new HttpHost( proxyAddress, proxyPort );
             }
-        } catch ( MalformedURLException | UnknownHostException ex ) {
+        } catch ( final MalformedURLException | UnknownHostException ex ) {
             logger.error( "", ex );
             throw new InitializeException( "proxy-url is malformed or not recognized.", ex );
         }
@@ -114,7 +116,7 @@ public abstract class Configuration {
      *            the {@link Properties} where to search for a pattern
      * @return a {@link ChapterPattern} containing the containing the chosen Chaptern
      */
-    protected static ChapterPattern _createPattern( Properties p ) {
+    protected static ChapterPattern _createPattern( final Properties p ) {
         logger.entry();
         String patternString = p.getProperty( PATTERN );
         logger.debug( "ChapterPattern: {}", patternString );
@@ -129,7 +131,7 @@ public abstract class Configuration {
      * @return an {@code int} containing the timeout, either the parsed value from the {@link Properties} or the default-value
      *         from {@link #TIMEOUT_DEFAULT} ({@value #TIMEOUT_DEFAULT})
      */
-    protected static int _createTimeout( Properties p ) {
+    protected static int _createTimeout( final Properties p ) {
         logger.entry();
         String timeoutString = p.getProperty( TIMEOUT );
         if ( timeoutString == null || timeoutString.trim().equals( "" ) ) {
@@ -149,7 +151,7 @@ public abstract class Configuration {
      * @throws InitializeException
      *             in case the required property cannot be found
      */
-    protected static File _createFolderwatch( Properties p ) throws InitializeException {
+    protected static File _createFolderwatch( final Properties p ) throws InitializeException {
         logger.entry();
         String fwPath = p.getProperty( JDFW );
         if ( fwPath == null || fwPath.trim().equals( "" ) ) {

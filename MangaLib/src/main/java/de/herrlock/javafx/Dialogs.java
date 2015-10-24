@@ -21,7 +21,6 @@ import javafx.stage.StageStyle;
  * 
  * http://stackoverflow.com/a/12718117/3680684
  */
-@SuppressWarnings( "javadoc" )
 public final class Dialogs {
 
     public static enum Response {
@@ -34,7 +33,7 @@ public final class Dialogs {
 
         private Response selectedButton = Response.CANCEL;
 
-        public Dialog( String title, Stage owner, Scene scene, String iconFile ) {
+        public Dialog( final String title, final Stage owner, final Scene scene, final String iconFile ) {
             setTitle( title );
             initStyle( StageStyle.UTILITY );
             initModality( Modality.APPLICATION_MODAL );
@@ -54,19 +53,19 @@ public final class Dialogs {
             return this.selectedButton;
         }
 
-        public void setSelectedButton( Response selectedButton ) {
+        public void setSelectedButton( final Response selectedButton ) {
             this.selectedButton = selectedButton;
         }
     }
 
     static final class Message extends Text {
-        public Message( String msg ) {
+        public Message( final String msg ) {
             super( msg );
             setWrappingWidth( 250 );
         }
     }
 
-    public static void showDialog( Stage owner, Node message, String title, String iconFile ) {
+    public static void showDialog( final Stage owner, final Node message, final String title, final String iconFile ) {
         VBox vb = new VBox();
         Scene scene = new Scene( vb );
         final Dialog dial = new Dialog( title, owner, scene, iconFile );
@@ -76,7 +75,7 @@ public final class Dialogs {
         okButton.setAlignment( Pos.CENTER );
         okButton.setOnAction( new EventHandler<ActionEvent>() {
             @Override
-            public void handle( ActionEvent e ) {
+            public void handle( final ActionEvent e ) {
                 dial.close();
             }
         } );
@@ -89,7 +88,7 @@ public final class Dialogs {
         dial.showDialog();
     }
 
-    public static Response showConfirmDialog( Stage owner, Node message, String title ) {
+    public static Response showConfirmDialog( final Stage owner, final Node message, final String title ) {
         VBox vb = new VBox();
         Scene scene = new Scene( vb );
         final Dialog dial = new Dialog( title, owner, scene, "dialog-confirm.png" );
@@ -98,7 +97,7 @@ public final class Dialogs {
         Button yesButton = new Button( "Yes" );
         yesButton.setOnAction( new EventHandler<ActionEvent>() {
             @Override
-            public void handle( ActionEvent e ) {
+            public void handle( final ActionEvent e ) {
                 dial.close();
                 dial.setSelectedButton( Response.YES );
             }
@@ -106,7 +105,7 @@ public final class Dialogs {
         Button noButton = new Button( "No" );
         noButton.setOnAction( new EventHandler<ActionEvent>() {
             @Override
-            public void handle( ActionEvent e ) {
+            public void handle( final ActionEvent e ) {
                 dial.close();
                 dial.setSelectedButton( Response.NO );
             }
@@ -125,31 +124,31 @@ public final class Dialogs {
         return dial.getSelectedButton();
     }
 
-    public static Response showConfirmDialog( Stage owner, String message, String title ) {
+    public static Response showConfirmDialog( final Stage owner, final String message, final String title ) {
         return showConfirmDialog( owner, new Message( message ), title );
     }
 
-    public static void showMessageDialog( Stage owner, String message, String title ) {
+    public static void showMessageDialog( final Stage owner, final String message, final String title ) {
         showMessageDialog( owner, new Message( message ), title );
     }
 
-    public static void showMessageDialog( Stage owner, Node message, String title ) {
+    public static void showMessageDialog( final Stage owner, final Node message, final String title ) {
         showDialog( owner, message, title, "dialog-information.png" );
     }
 
-    public static void showWarningDialog( Stage owner, String message, String title ) {
+    public static void showWarningDialog( final Stage owner, final String message, final String title ) {
         showWarningDialog( owner, new Message( message ), title );
     }
 
-    public static void showWarningDialog( Stage owner, Node message, String title ) {
+    public static void showWarningDialog( final Stage owner, final Node message, final String title ) {
         showDialog( owner, message, title, "dialog-warning.png" );
     }
 
-    public static void showErrorDialog( Stage owner, String message, String title ) {
+    public static void showErrorDialog( final Stage owner, final String message, final String title ) {
         showErrorDialog( owner, new Message( message ), title );
     }
 
-    public static void showErrorDialog( Stage owner, Node message, String title ) {
+    public static void showErrorDialog( final Stage owner, final Node message, final String title ) {
         showDialog( owner, message, title, "dialog-error.png" );
     }
 

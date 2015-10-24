@@ -38,7 +38,7 @@ public class EntryList<K, V> implements Iterable<SimpleImmutableEntry<K, V>> {
      * 
      * @see ArrayList#ArrayList(int)
      */
-    public EntryList( int initialCapacity ) {
+    public EntryList( final int initialCapacity ) {
         this.entries = new ArrayList<>( initialCapacity );
     }
 
@@ -50,7 +50,7 @@ public class EntryList<K, V> implements Iterable<SimpleImmutableEntry<K, V>> {
      * 
      * @see ArrayList#ArrayList(Collection)
      */
-    public EntryList( Collection<? extends SimpleImmutableEntry<K, V>> c ) {
+    public EntryList( final Collection<? extends SimpleImmutableEntry<K, V>> c ) {
         this.entries = new ArrayList<>( c );
     }
 
@@ -62,7 +62,7 @@ public class EntryList<K, V> implements Iterable<SimpleImmutableEntry<K, V>> {
      * 
      * @see ArrayList#ArrayList(Collection)
      */
-    public EntryList( EntryList<K, V> entryList ) {
+    public EntryList( final EntryList<K, V> entryList ) {
         this( entryList.entries );
     }
 
@@ -74,7 +74,7 @@ public class EntryList<K, V> implements Iterable<SimpleImmutableEntry<K, V>> {
      * @param value
      *            the value of the new entry
      */
-    public void addEntry( K key, V value ) {
+    public void addEntry( final K key, final V value ) {
         this.entries.add( new SimpleImmutableEntry<>( key, value ) );
     }
 
@@ -92,7 +92,7 @@ public class EntryList<K, V> implements Iterable<SimpleImmutableEntry<K, V>> {
      * @param c
      *            the {@link Comparator} to use
      */
-    public void sort( Comparator<? super SimpleImmutableEntry<K, V>> c ) {
+    public void sort( final Comparator<? super SimpleImmutableEntry<K, V>> c ) {
         Collections.sort( this.entries, c );
     }
 
@@ -115,7 +115,7 @@ public class EntryList<K, V> implements Iterable<SimpleImmutableEntry<K, V>> {
     public Comparator<SimpleImmutableEntry<String, ?>> getStringComparator( final Comparator<String> comparator ) {
         return new Comparator<SimpleImmutableEntry<String, ?>>() {
             @Override
-            public int compare( SimpleImmutableEntry<String, ?> o1, SimpleImmutableEntry<String, ?> o2 ) {
+            public int compare( final SimpleImmutableEntry<String, ?> o1, final SimpleImmutableEntry<String, ?> o2 ) {
                 return comparator.compare( o1.getKey(), o2.getKey() );
             }
         };

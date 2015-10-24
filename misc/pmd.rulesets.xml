@@ -45,12 +45,14 @@
 	</rule>
 	<rule ref="rulesets/java/optimizations.xml">
 		<priority>4</priority>
+		<exclude name="LocalVariableCouldBeFinal" />
 	</rule>
 	<rule ref="rulesets/java/strictexception.xml">
 		<priority>4</priority>
 	</rule>
 	<rule ref="rulesets/java/strings.xml">
 		<priority>4</priority>
+		<exclude name="AvoidDuplicateLiterals" />
 	</rule>
 
 	<!-- configure with the right parameters, exclude unnecessary tests -->

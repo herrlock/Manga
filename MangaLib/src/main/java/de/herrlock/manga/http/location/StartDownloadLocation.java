@@ -6,6 +6,7 @@ import java.net.URLDecoder;
 import java.util.Properties;
 
 import de.herrlock.manga.downloader.MDownloader;
+import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.http.ServerException;
 import de.herrlock.manga.http.response.Response;
 import de.herrlock.manga.http.response.TextResponse;
@@ -26,7 +27,7 @@ public final class StartDownloadLocation extends Location {
     }
 
     @Override
-    public Response handleXHR( URL requestUrl ) {
+    public Response handleXHR( final URL requestUrl ) {
         String queryString = requestUrl.getQuery();
         if ( queryString == null ) {
             throw new ServerException( "queryString is null" );
@@ -41,8 +42,8 @@ public final class StartDownloadLocation extends Location {
             }
             try {
                 value = URLDecoder.decode( value, "UTF-8" );
-            } catch ( UnsupportedEncodingException ex ) {
-                throw new RuntimeException( ex );
+            } catch ( final UnsupportedEncodingException ex ) {
+                throw new MyException( ex );
             }
             p.setProperty( paramArr[0], value );
         }
@@ -60,7 +61,7 @@ public final class StartDownloadLocation extends Location {
     private static final class SimpleDownloaderThread extends Thread {
         private final DownloadConfiguration conf;
 
-        SimpleDownloaderThread( DownloadConfiguration conf ) {
+        SimpleDownloaderThread( final DownloadConfiguration conf ) {
             this.conf = conf;
         }
 
@@ -71,7 +72,7 @@ public final class StartDownloadLocation extends Location {
     }
 
     private static final class SimpleDownloader extends MDownloader {
-        SimpleDownloader( DownloadConfiguration conf ) {
+        SimpleDownloader( final DownloadConfiguration conf ) {
             super( conf );
         }
 

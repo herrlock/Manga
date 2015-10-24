@@ -63,7 +63,7 @@ public final class ChapterPattern {
      * @param pattern
      *            the pattern to analyze, in case of {@code null} or an empty string an empty collection is used
      */
-    public ChapterPattern( String pattern ) {
+    public ChapterPattern( final String pattern ) {
         logger.entry( pattern );
         Set<Interval> result = new HashSet<>();
         // accept only if valid
@@ -96,7 +96,7 @@ public final class ChapterPattern {
      *            the number of the Chapter to check
      * @return true, if any Interval contains the given Chapter's number
      */
-    public boolean contains( String s ) {
+    public boolean contains( final String s ) {
         // check if any Interval contains the chapter
         for ( Interval i : this.elements ) {
             if ( i.contains( s ) ) {
@@ -115,7 +115,7 @@ public final class ChapterPattern {
          * @param chapter
          *            the start and end of the Interval
          */
-        public Interval( String chapter ) {
+        public Interval( final String chapter ) {
             this( chapter, chapter );
         }
 
@@ -125,19 +125,19 @@ public final class ChapterPattern {
          * @param intervalEnd
          *            the end of the Interval
          */
-        public Interval( String intervalStart, String intervalEnd ) {
+        public Interval( final String intervalStart, final String intervalEnd ) {
             this.intervalStart = new BigDecimal( intervalStart );
             this.intervalEnd = new BigDecimal( intervalEnd );
         }
 
-        public boolean contains( String s ) {
+        public boolean contains( final String s ) {
             if ( s == null ) {
                 return false;
             }
             return contains( new BigDecimal( s ) );
         }
 
-        public boolean contains( BigDecimal d ) {
+        public boolean contains( final BigDecimal d ) {
             if ( d == null ) {
                 return false;
             }

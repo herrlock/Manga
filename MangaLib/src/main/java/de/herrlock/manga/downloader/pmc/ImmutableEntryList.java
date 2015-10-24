@@ -18,7 +18,7 @@ public final class ImmutableEntryList<K, V> extends EntryList<K, V> {
      * @param c
      *            the collection to copy the values from
      */
-    public ImmutableEntryList( Collection<? extends SimpleImmutableEntry<K, V>> c ) {
+    public ImmutableEntryList( final Collection<? extends SimpleImmutableEntry<K, V>> c ) {
         super( c );
     }
 
@@ -26,7 +26,7 @@ public final class ImmutableEntryList<K, V> extends EntryList<K, V> {
      * @param e
      *            the EntryList to copy the values from
      */
-    public ImmutableEntryList( EntryList<K, V> e ) {
+    public ImmutableEntryList( final EntryList<K, V> e ) {
         super( e );
     }
 
@@ -34,15 +34,15 @@ public final class ImmutableEntryList<K, V> extends EntryList<K, V> {
      * {@link UnsupportedOperationException}
      */
     @Override
-    public void addEntry( K key, V value ) {
-        throw new UnsupportedOperationException();
+    public void addEntry( final K key, final V value ) {
+        throw new UnsupportedOperationException( "adding an entry to an immutable list is prohibited" );
     }
 
     /**
      * {@link UnsupportedOperationException}
      */
     @Override
-    public void sort( Comparator<? super SimpleImmutableEntry<K, V>> c ) {
-        throw new UnsupportedOperationException();
+    public void sort( final Comparator<? super SimpleImmutableEntry<K, V>> c ) {
+        throw new UnsupportedOperationException( "sorting an immutable list is prohibited" );
     }
 }

@@ -28,7 +28,7 @@ public abstract class SceneContainer {
      * @param scene
      *            the Scene to set
      */
-    protected void setScene( Scene scene ) {
+    protected void setScene( final Scene scene ) {
         this.scene = scene;
     }
 

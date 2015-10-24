@@ -18,6 +18,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.http.location.Location;
 import de.herrlock.manga.http.location.NotFoundLocation;
 import de.herrlock.manga.http.response.Response;
@@ -54,7 +55,7 @@ public final class Server extends ServerSocket implements Runnable {
      * @throws IOException
      *             thrown by {@link ServerSocket#ServerSocket(int)}
      */
-    public Server( int port ) throws IOException {
+    public Server( final int port ) throws IOException {
         super( port );
     }
 
@@ -81,10 +82,10 @@ public final class Server extends ServerSocket implements Runnable {
                     }
                 }
             }
-        } catch ( SocketException ex ) {
+        } catch ( final SocketException ex ) {
             logger.info( "stopping server" );
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+        } catch ( final IOException ex ) {
+            throw new MyException( ex );
         } finally {
             logger.info( "server stopped" );
         }
@@ -99,12 +100,12 @@ public final class Server extends ServerSocket implements Runnable {
                 new OutputStreamWriter( s.getOutputStream(), StandardCharsets.UTF_8 ) ) ) {
                 writer.write( "GET /stopServer HTTP/1.1" );
             }
-        } catch ( IOException ex ) {
+        } catch ( final IOException ex ) {
             throw new ServerException( ex );
         }
     }
 
-    private Response handleXHR( URL url ) {
+    private Response handleXHR( final URL url ) {
         String path = url.getPath();
         logger.debug( "Path: {}", path );
         String query = url.getQuery();
@@ -119,10 +120,10 @@ public final class Server extends ServerSocket implements Runnable {
         }
         try {
             return loc.handleXHR( url );
-        } catch ( ServerException ex ) {
+        } catch ( final ServerException ex ) {
             logger.error( ex );
             return new ServerExceptionResponse( ex );
-        } catch ( CloseServerException ex ) {
+        } catch ( final CloseServerException ex ) {
             logger.info( "stopping Server" );
             this.active = false;
             LogWindow.dispose();
@@ -138,7 +139,7 @@ public final class Server extends ServerSocket implements Runnable {
      * @throws IllegalArgumentException
      *             in case the path is already registered
      */
-    public void registerLocation( Location loc ) throws IllegalArgumentException {
+    public void registerLocation( final Location loc ) throws IllegalArgumentException {
         logger.debug( "register \"/{}\"", loc.getPath() );
         String path = "/" + loc.getPath();
         if ( this.locations.containsKey( path ) ) {

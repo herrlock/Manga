@@ -37,7 +37,7 @@ public final class ChapterListContainer {
      *             thrown by {@link ChapterList#getInstance(DownloadConfiguration)}
      * @see ChapterList#getInstance(DownloadConfiguration)
      */
-    public ChapterListContainer( DownloadConfiguration conf ) throws IOException {
+    public ChapterListContainer( final DownloadConfiguration conf ) throws IOException {
         this.chapterlist = ChapterList.getInstance( conf );
         String mangaName = this.chapterlist.getMangaName().toLowerCase( Locale.ENGLISH ).replace( ' ', '_' );
         String timestamp = new SimpleDateFormat( "YYMMddHHmmss", Locale.GERMAN ).format( new Date() );
@@ -83,7 +83,7 @@ public final class ChapterListContainer {
      *             thrown by {@link ChapterList#imgLink(URL)}
      * @see ChapterList#imgLink(URL)
      */
-    public URL getImageLink( URL pageUrl ) throws IOException {
+    public URL getImageLink( final URL pageUrl ) throws IOException {
         return this.chapterlist.imgLink( pageUrl );
     }
 
@@ -95,7 +95,7 @@ public final class ChapterListContainer {
      * @throws IOException
      *             thrown by {@link ChapterList#getAllPageURLs(URL)}
      */
-    public EntryList<Integer, URL> getAllPageURLs( Chapter chapter ) throws IOException {
+    public EntryList<Integer, URL> getAllPageURLs( final Chapter chapter ) throws IOException {
         return this.chapterlist.getAllPageURLs( chapter.getChapterUrl() );
     }
 }

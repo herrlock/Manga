@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,6 +24,8 @@ import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
+
+import de.herrlock.manga.exceptions.MyException;
 
 /**
  * 
@@ -41,14 +44,14 @@ public final class ViewPage {
      * @param folder
      *            the folder to save the created files into
      */
-    public static void execute( File folder ) {
+    public static void execute( final File folder ) {
         Document doc = new ViewPage( folder ).getDocument();
         Path p = new File( folder, "index.html" ).toPath();
         try ( BufferedWriter writer = Files.newBufferedWriter( p, StandardCharsets.UTF_8 ) ) {
             writer.write( "<!DOCTYPE HTML>\n" );
             writer.write( doc.toString() );
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+        } catch ( final IOException ex ) {
+            throw new MyException( ex );
         }
     }
 
@@ -58,7 +61,7 @@ public final class ViewPage {
      * @param folder
      *            the folder where to create the ViewPages
      */
-    public ViewPage( File folder ) {
+    public ViewPage( final File folder ) {
         logger.info( "create files in folder {}", folder );
         this.folder = folder;
         this.maxImgs = maxImgs();
@@ -82,7 +85,7 @@ public final class ViewPage {
         return mangarawname.replace( '_', ' ' );
     }
 
-    private Element createHeadChildren( Element head ) {
+    private Element createHeadChildren( final Element head ) {
         logger.info( "createHead" );
         head.appendElement( "title" ).text( mangaName() );
         head.appendElement( "meta" ).attr( "charset", "utf-8" );
@@ -94,15 +97,17 @@ public final class ViewPage {
         File maxFile = Collections.max( files, Const.numericFilenameComparator );
         int max = Integer.parseInt( maxFile.getName() );
 
-        StringBuilder mangaObject = new StringBuilder();
-        mangaObject.append( "var manga={chapter: " );
-        mangaObject.append( max );
-        mangaObject.append( ",max_pages: " );
-        mangaObject.append( this.maxImgs );
-        mangaObject.append( ",chapterblock: " );
-        mangaObject.append( ( max - max % 10 ) / 10 );
-        mangaObject.append( "};" );
-        head.appendElement( "script" ).text( mangaObject.toString() );
+        // StringBuilder mangaObject = new StringBuilder()//
+        // .append( "var manga={chapter: " )//
+        // .append( max )//
+        // .append( ",max_pages: " )//
+        // .append( this.maxImgs )//
+        // .append( ",chapterblock: " )//
+        // .append( ( max - max % 10 ) / 10 )//
+        // .append( "};" );
+        String mangaObject = MessageFormat.format( "var manga = '{\n\tchapter: {0},\n\tmax_pages: {1},\n\tchapterblock: {2}\n'};",
+            max, this.maxImgs, ( max - max % 10 ) / 10 );
+        head.appendElement( "script" ).text( mangaObject );
 
         String[] js = {
             "jquery-2.1.3.min.js", "onkeydown.js", "main.js"
@@ -114,7 +119,7 @@ public final class ViewPage {
         return head;
     }
 
-    private Element createBodyChildren( Element body ) {
+    private Element createBodyChildren( final Element body ) {
         logger.info( "createBody" );
         body.attr( "onload", "init()" );
         body.appendChild( leftDiv() );
@@ -152,7 +157,7 @@ public final class ViewPage {
         return lDiv;
     }
 
-    private static Element wrapperDiv( Entry<Integer, List<String>> e, boolean addHidelink ) {
+    private static Element wrapperDiv( final Entry<Integer, List<String>> e, final boolean addHidelink ) {
         Element wrapperDiv = new Element( Tag.valueOf( "div" ), "" );
         Integer blockId = e.getKey();
         if ( addHidelink ) {
@@ -167,7 +172,7 @@ public final class ViewPage {
         return wrapperDiv;
     }
 
-    private static Element hidelink( int blockId ) {
+    private static Element hidelink( final int blockId ) {
         int step = 10;
         int blockName = step * ( blockId + 1 );
 
@@ -179,15 +184,15 @@ public final class ViewPage {
         a.attr( "title", "Zeige Kapitel " + ( blockName - step + 1 ) + " bis " + blockName );
 
         a.appendElement( "span" ).attr( "id", "arrow" + blockId ).text( " hereComesAnArrow! " );
-        a.appendElement( "span" ).text( "" + blockName );
+        a.appendElement( "span" ).text( Integer.toString( blockName ) );
         return a;
     }
 
-    private static Element whitelink( Object chp ) {
+    private static Element whitelink( final Object chp ) {
         return whitelink( "", chp, "" );
     }
 
-    private static Element whitelink( String pretext, Object chp, String posttext ) {
+    private static Element whitelink( final String pretext, final Object chp, final String posttext ) {
         String chpText = String.valueOf( chp );
         Element a = new Element( Tag.valueOf( "a" ), "" );
         a.attr( "class", "whitelink" );
@@ -231,16 +236,16 @@ public final class ViewPage {
         return maxPages;
     }
 
-    private void copyFile( String filename ) {
+    private void copyFile( final String filename ) {
         try ( InputStream resource = ViewPage.class.getResourceAsStream( filename ) ) {
             File toFile = new File( this.folder, filename );
             FileUtils.copyInputStreamToFile( resource, toFile );
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+        } catch ( final IOException ex ) {
+            throw new MyException( ex );
         }
     }
 
-    private List<File> getSortedChapters( Comparator<File> comp ) {
+    private List<File> getSortedChapters( final Comparator<File> comp ) {
         List<File> list = getChapters();
         Collections.sort( list, comp );
         return list;
@@ -262,7 +267,7 @@ final class Const {
      */
     static final FileFilter isDirectoryFilter = new FileFilter() {
         @Override
-        public boolean accept( File pathname ) {
+        public boolean accept( final File pathname ) {
             return pathname.isDirectory();
         }
     };
@@ -274,14 +279,14 @@ final class Const {
      */
     static final Comparator<File> numericFilenameComparator = new Comparator<File>() {
         @Override
-        public int compare( File o1, File o2 ) {
+        public int compare( final File o1, final File o2 ) {
             String name1 = o1.getName();
             String name2 = o2.getName();
             try {
                 int i1 = Integer.parseInt( name1 );
                 int i2 = Integer.parseInt( name2 );
                 return Integer.compare( i1, i2 );
-            } catch ( NumberFormatException ex ) {
+            } catch ( final NumberFormatException ex ) {
                 double d1 = Double.parseDouble( name1 );
                 double d2 = Double.parseDouble( name2 );
                 return Double.compare( d1, d2 );
@@ -294,7 +299,7 @@ final class Const {
      */
     static final Comparator<Entry<Integer, ?>> integerEntryComparator = new Comparator<Map.Entry<Integer, ?>>() {
         @Override
-        public int compare( Entry<Integer, ?> o1, Entry<Integer, ?> o2 ) {
+        public int compare( final Entry<Integer, ?> o1, final Entry<Integer, ?> o2 ) {
             return o1.getKey().compareTo( o2.getKey() );
         }
     };
