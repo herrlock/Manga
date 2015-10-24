@@ -31,6 +31,6 @@ final class CrawljobEntry {
      * @return string for the current CrawljobEntry-object
      */
     public String export() {
-        return MessageFormat.format( "text={0}{1}filename={2}", this.url, System.lineSeparator(), this.filename );
+        return MessageFormat.format( "text={0}{1}filename={2}.jpg", this.url, System.lineSeparator(), this.filename );
     }
 }
