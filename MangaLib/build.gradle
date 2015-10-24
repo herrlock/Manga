@@ -1,22 +1,29 @@
 
 dependencies {
+	// utilities
+	compile 'com.google.guava:guava:18.0'
+	// IO
 	compile 'org.jsoup:jsoup:1.8.3'
 	compile 'commons-io:commons-io:2.4'
 	compile 'org.apache.httpcomponents:httpclient:4.5'
+	// logging
 	compile 'org.apache.logging.log4j:log4j-api:2.3'
 	compile 'org.apache.logging.log4j:log4j-core:2.3'
 	compile 'org.apache.logging.log4j:log4j-jcl:2.3'
+	// javafx
 	compile files(System.properties.'java.home' + '/lib/jfxrt.jar')
 	compile files(new File(rootProject.projectDir, 'lib/jmetro.jar'))
 }
 
 eclipse.classpath.file.withXml {
-	it.asNode().children().each { entry -> 
+	it.asNode().children().any { entry -> 
 		if((entry.'@path').contains('jfxrt')) {
 			Node attributes = new Node(entry, 'attributes')
 			Node attribute = new Node(attributes, 'attribute')
 			attribute.'@name' = 'javadoc_location'
 			attribute.'@value' = 'http://docs.oracle.com/javafx/2/api/'
+			return true;
 		}
+		return false;
 	}
 }
