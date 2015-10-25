@@ -53,7 +53,7 @@ def temp = mkdir("${rootProject.buildDir}/disttemp/")
 task createLibs (type: Copy, description: 'Create jar from subprojects and copies them into the lib-folder') {
 	into new File(temp, 'lib')
     subprojects.each { s -> 
-		dependsOn s.build
+		dependsOn s.jar
 		from s.jar
 		from s.configurations.runtime
 	}
@@ -90,7 +90,7 @@ task compileRun (description: 'Compile run.cs and copy the exe into the build-fo
     }
 }
 
-task copyLauncher(type: Copy, dependsOn: build, description: 'Copies the launcher to the root folder') {
+task copyLauncher(type: Copy, dependsOn: jar, description: 'Copies the launcher to the root folder') {
 	from tasks.jar.outputs.files
 	into temp
 }
