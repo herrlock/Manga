@@ -115,8 +115,9 @@ dependencies {
 }
 
 jar {
+	archiveName = 'MangaLauncher.jar'
 	manifest {
 		attributes 'Main-Class' : 'de.herrlock.manga.Main',
-			'Class-Path' : project.configurations.runtime.collect{ file -> "lib/${file.name}" }.join(',')
+			'Class-Path' : project.configurations.runtime.collect{ file -> "lib/${file.name}" }.join(' ')
 	}
 }
