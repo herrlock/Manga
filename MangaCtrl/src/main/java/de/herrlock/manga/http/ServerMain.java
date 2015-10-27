@@ -6,6 +6,7 @@ import java.net.SocketException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.http.location.BackgroundImageLocation;
 import de.herrlock.manga.http.location.IndexHtmlLocation;
 import de.herrlock.manga.http.location.JQueryLocation;
@@ -21,7 +22,7 @@ public final class ServerMain {
     private final Server server;
     private Thread serverThread;
 
-    public static void main( String... args ) {
+    public static void main( final String... args ) {
         logger.entry();
         ServerMain srvMain = new ServerMain();
         srvMain.startServer();
@@ -31,12 +32,12 @@ public final class ServerMain {
         this( 1905 );
     }
 
-    public ServerMain( int port ) {
+    public ServerMain( final int port ) {
         try {
             this.server = new Server( port );
             this.addDefaultLocations();
         } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+            throw new MyException( ex );
         }
     }
 
@@ -62,7 +63,7 @@ public final class ServerMain {
             this.serverThread = null;
             logger.info( "stopped server" );
         } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+            throw new MyException( ex );
         }
     }
 

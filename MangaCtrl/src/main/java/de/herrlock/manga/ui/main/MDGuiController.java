@@ -68,11 +68,11 @@ public final class MDGuiController {
         handleBtnClick( DO_NOTHING );
     }
 
-    public void handleBtnClick( Exec exec ) {
+    public void handleBtnClick( final Exec exec ) {
         new Thread( new ExecHandlerTask( exec ) ).start();
     }
 
-    public void setUrl( String url ) {
+    public void setUrl( final String url ) {
         this.url.set( url );
     }
 
@@ -84,7 +84,7 @@ public final class MDGuiController {
         return this.url;
     }
 
-    public void setPattern( String pattern ) {
+    public void setPattern( final String pattern ) {
         this.pattern.set( pattern );
     }
 
@@ -96,7 +96,7 @@ public final class MDGuiController {
         return this.pattern;
     }
 
-    public void setPropxy( String proxy ) {
+    public void setPropxy( final String proxy ) {
         this.proxy.set( proxy );
     }
 
@@ -108,7 +108,7 @@ public final class MDGuiController {
         return this.proxy;
     }
 
-    public void setJdhome( String jdhome ) {
+    public void setJdhome( final String jdhome ) {
         this.jdhome.set( jdhome );
     }
 
@@ -162,12 +162,12 @@ final class EmptyListener implements ChangeListener<String> {
     public static final String ISEMPTY = "isEmpty";
     private final TextField textField;
 
-    public EmptyListener( TextField textField ) {
+    public EmptyListener( final TextField textField ) {
         this.textField = textField;
     }
 
     @Override
-    public void changed( ObservableValue<? extends String> obsValue, String string1, String string2 ) {
+    public void changed( final ObservableValue<? extends String> obsValue, final String string1, final String string2 ) {
         List<String> classes = this.textField.getStyleClass();
         if ( string2.trim().isEmpty() ) {
             classes.add( ISEMPTY );

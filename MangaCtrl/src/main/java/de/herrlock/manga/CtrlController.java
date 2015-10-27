@@ -38,7 +38,7 @@ public final class CtrlController {
     public void showTextHTML() {
         setBottomText( "button.tooltip.createHTML" );
     }
-    private void setBottomText( String i18nKey ) {
+    private void setBottomText( final String i18nKey ) {
         CtrlController.this.bottomText.setText( Ctrl.i18n.getString( i18nKey ) );
     }
 
@@ -57,7 +57,7 @@ public final class CtrlController {
     public void createHtml() {
         handleBtnClick( VIEW_PAGE_MAIN );
     }
-    public void handleBtnClick( Exec exec ) {
+    public void handleBtnClick( final Exec exec ) {
         this.btnStartDDL.setOnAction( null );
         this.btnStartPDL.setOnAction( null );
         this.btnShowHosts.setOnAction( null );
@@ -70,7 +70,7 @@ public final class CtrlController {
     }
 
     final class ExecCtrlHandlerTask extends ExecHandlerTask {
-        public ExecCtrlHandlerTask( Exec exec ) {
+        public ExecCtrlHandlerTask( final Exec exec ) {
             super( exec );
         }
 

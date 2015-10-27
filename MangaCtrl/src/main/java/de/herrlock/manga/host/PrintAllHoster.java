@@ -17,7 +17,7 @@ public final class PrintAllHoster {
         printHoster();
     }
 
-    public static void printHoster( PrintStream out ) {
+    public static void printHoster( final PrintStream out ) {
         out.println( "availabile hoster" );
         Collection<Hoster> values = Hosters.sortedValues();
         for ( Hoster h : values ) {

@@ -99,12 +99,12 @@ public final class Utils {
      * 
      * @param threads
      *            the {@link Thread}s to start and wait for
-     * @throws RuntimeException
+     * @throws MyException
      *             in case of an {@link InterruptedException}
      * @deprecated use {@link #callCallables(Collection)} instead
      */
     @Deprecated
-    public static void startAndWaitForThreads( final Collection<? extends Thread> threads ) {
+    public static void startAndWaitForThreads( final Collection<? extends Thread> threads ) throws MyException {
         // start all threads
         for ( Thread t : threads ) {
             t.start();

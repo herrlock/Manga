@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import de.herrlock.javafx.AbstractApplication;
 import de.herrlock.javafx.scene.SceneContainer;
+import de.herrlock.manga.exceptions.MyException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,12 +17,12 @@ public final class Ctrl extends AbstractApplication {
 
     public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.Ctrl" );
 
-    public static void main( String... args ) {
+    public static void main( final String... args ) {
         Application.launch( args );
     }
 
     @Override
-    public void start( Stage stage ) {
+    public void start( final Stage stage ) {
         setScene( new CtrlScene() );
         super.start( stage );
     }
@@ -33,7 +34,7 @@ public final class Ctrl extends AbstractApplication {
                 Parent root = FXMLLoader.load( location, i18n );
                 setScene( new Scene( root ) );
             } catch ( IOException ex ) {
-                throw new RuntimeException( ex );
+                throw new MyException( ex );
             }
         }
 

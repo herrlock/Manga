@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
  * @author HerrLock
  */
 public final class StartWithDesktop {
-    public static void main( String... args ) throws IOException, URISyntaxException {
+    public static void main( final String... args ) throws IOException, URISyntaxException {
         ServerMain.main( args );
         if ( Desktop.isDesktopSupported() ) {
             Desktop.getDesktop().browse( new URI( "http://localhost:1905" ) );

@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import de.herrlock.javafx.AbstractApplication;
 import de.herrlock.javafx.scene.SceneContainer;
+import de.herrlock.manga.exceptions.MyException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,12 +18,12 @@ import javafx.stage.Stage;
 public final class MDGui extends AbstractApplication {
     public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.ui" );
 
-    public static void main( String... args ) {
+    public static void main( final String... args ) {
         Application.launch( args );
     }
 
     @Override
-    public void start( Stage stage ) {
+    public void start( final Stage stage ) {
         this.setScene( new MDGuiStage() );
         super.start( stage );
     }
@@ -34,7 +35,7 @@ public final class MDGui extends AbstractApplication {
                 Parent root = FXMLLoader.load( location, i18n );
                 setScene( new Scene( root ) );
             } catch ( IOException ex ) {
-                throw new RuntimeException( ex );
+                throw new MyException( ex );
             }
         }
 

@@ -14,7 +14,7 @@ public final class ViewPageMain {
 
     private static final Logger logger = LogManager.getLogger();
 
-    public static void main( String... args ) {
+    public static void main( final String... args ) {
         logger.entry();
         execute();
     }
@@ -35,7 +35,7 @@ public final class ViewPageMain {
      * @param folder
      *            the mangafolder to create a viewer for (has the format {@code <manganame>_<timestamp>})
      */
-    public static void execute( File folder ) {
+    public static void execute( final File folder ) {
         ViewPage.execute( folder );
     }
 

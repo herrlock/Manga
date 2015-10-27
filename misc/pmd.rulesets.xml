@@ -45,6 +45,7 @@
 	</rule>
 	<rule ref="rulesets/java/optimizations.xml">
 		<priority>4</priority>
+		<exclude name="AvoidInstantiatingObjectsInLoops" />
 		<exclude name="LocalVariableCouldBeFinal" />
 	</rule>
 	<rule ref="rulesets/java/strictexception.xml">
