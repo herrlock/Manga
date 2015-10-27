@@ -44,7 +44,7 @@ public class TestPage {
      * @param expString
      *            the expected filename
      */
-    public TestPage( int pageNumber, String expString ) {
+    public TestPage( final int pageNumber, final String expString ) {
         this.pageNumber = pageNumber;
         this.expString = expString;
     }

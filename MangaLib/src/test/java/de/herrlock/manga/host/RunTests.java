@@ -15,6 +15,8 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.herrlock.manga.exceptions.MyException;
+
 /**
  * @author HerrLock
  */
@@ -46,7 +48,7 @@ public class RunTests {
     /**
      * from http://stackoverflow.com/a/862130/3680684
      */
-    private static Collection<Class<? extends ChapterList>> getClasses( String packageName ) throws IOException {
+    private static Collection<Class<? extends ChapterList>> getClasses( final String packageName ) throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace( '.', '/' );
         Enumeration<URL> resources = classLoader.getResources( path );
@@ -58,7 +60,7 @@ public class RunTests {
 
         final FilenameFilter IS_CLASS_FILE_FILTER = new FilenameFilter() {
             @Override
-            public boolean accept( File dir, String name ) {
+            public boolean accept( final File dir, final String name ) {
                 return name.endsWith( ".class" );
             }
         };
@@ -79,7 +81,7 @@ public class RunTests {
                         classes.add( c.asSubclass( ChapterList.class ) );
                     }
                 } catch ( final ClassNotFoundException ex ) {
-                    throw new RuntimeException( ex );
+                    throw new MyException( ex );
                 }
             }
         }

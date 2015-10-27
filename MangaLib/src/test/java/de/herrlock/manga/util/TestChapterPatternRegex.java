@@ -26,7 +26,7 @@ public class TestChapterPatternRegex {
      * @param expected
      *            if the value to check is expected to be valid
      */
-    public TestChapterPatternRegex( String toCheck, boolean expected ) {
+    public TestChapterPatternRegex( final String toCheck, final boolean expected ) {
         this.toCheck = toCheck;
         this.expected = expected;
     }
