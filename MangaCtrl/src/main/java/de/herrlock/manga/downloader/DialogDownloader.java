@@ -10,8 +10,13 @@ import javax.swing.JOptionPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.herrlock.javafx.NoWindowApplication;
+import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.CtrlUtils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 /**
  * Initializes the download and starts it after confirming the number of pictures and an estimated whole size of the images with a
@@ -38,26 +43,34 @@ public final class DialogDownloader extends MDownloader {
      */
     private static final int avgSize = 177;
 
-    public static void main( String... args ) {
-        logger.entry();
-        execute();
-    }
+    public static class DialogDownloaderApplication extends NoWindowApplication {
 
-    public static void execute() {
-        logger.entry();
-        Properties p = new Properties();
-        // load properties
-        try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
-            p.load( fIn );
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+        public static void launch( final String... args ) {
+            Application.launch( args );
         }
-        // properties loaded successful
-        DownloadConfiguration conf = DownloadConfiguration.create( p );
-        new DialogDownloader( conf ).run();
+
+        @Override
+        public void start( final Stage stage ) {
+            logger.entry();
+            Properties p = new Properties();
+            // load properties
+            try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
+                p.load( fIn );
+            } catch ( IOException ex ) {
+                throw new MyException( ex );
+            }
+            // properties loaded successful
+            DownloadConfiguration conf = DownloadConfiguration.create( p );
+            new DialogDownloader( conf ).run();
+        }
     }
 
-    private DialogDownloader( DownloadConfiguration conf ) {
+    public static void main( final String... args ) {
+        logger.entry();
+        DialogDownloaderApplication.launch( args );
+    }
+
+    public DialogDownloader( final DownloadConfiguration conf ) {
         super( conf );
     }
 
@@ -68,8 +81,8 @@ public final class DialogDownloader extends MDownloader {
             if ( goon() ) {
                 downloadAll();
             }
-        } catch ( RuntimeException ex ) {
-            JOptionPane.showMessageDialog( null, ex.getStackTrace(), ex.getMessage(), JOptionPane.ERROR_MESSAGE );
+        } catch ( Exception ex ) {
+            CtrlUtils.showErrorDialog( ex );
             throw ex;
         }
     }

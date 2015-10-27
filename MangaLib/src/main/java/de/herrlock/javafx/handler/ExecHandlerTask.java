@@ -1,7 +1,6 @@
 package de.herrlock.javafx.handler;
 
-import javax.swing.JOptionPane;
-
+import de.herrlock.javafx.Dialogs;
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.exceptions.MyException;
 import javafx.application.Platform;
@@ -35,7 +34,7 @@ public class ExecHandlerTask extends Task<Void> {
             this.exec.execute();
         } catch ( final InitializeException ex ) {
             exit = false;
-            JOptionPane.showMessageDialog( null, ex.getMessage() );
+            Dialogs.showMessageDialog( null, ex.getMessage(), ex.getMessage() );
         } finally {
             if ( exit ) {
                 Platform.exit();

@@ -11,13 +11,13 @@ public enum Execs implements Exec {
     DIALOG_DOWNLOADER() {
         @Override
         public void execute() {
-            DialogDownloader.execute();
+            DialogDownloader.main();
         }
     },
     PLAIN_DOWNLOADER() {
         @Override
         public void execute() {
-            PlainDownloader.execute();
+            PlainDownloader.main();
         }
     },
     ADD_TO_JD_W_FILE() {

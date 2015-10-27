@@ -2,11 +2,12 @@ package de.herrlock.manga.downloader;
 
 import java.util.Properties;
 
-import javax.swing.JOptionPane;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.herrlock.javafx.Dialogs;
+import de.herrlock.javafx.Dialogs.Response;
+import de.herrlock.manga.util.CtrlUtils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -17,18 +18,18 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 public final class ExtDownloader extends MDownloader {
     private static final Logger logger = LogManager.getLogger();
 
-    public static void execute( Properties p ) {
+    public static void execute( final Properties p ) {
         logger.entry();
         DownloadConfiguration conf = DownloadConfiguration.create( p );
         new ExtDownloader( conf ).run();
     }
 
-    public static void execute( DownloadConfiguration conf ) {
+    public static void execute( final DownloadConfiguration conf ) {
         logger.entry();
         new ExtDownloader( conf ).run();
     }
 
-    private ExtDownloader( DownloadConfiguration p ) {
+    public ExtDownloader( final DownloadConfiguration p ) {
         super( p );
     }
 
@@ -39,16 +40,15 @@ public final class ExtDownloader extends MDownloader {
             if ( goon() ) {
                 downloadAll();
             }
-        } catch ( RuntimeException ex ) {
-            JOptionPane.showMessageDialog( null, ex.getStackTrace(), ex.getMessage(), JOptionPane.ERROR_MESSAGE );
+        } catch ( Exception ex ) {
+            CtrlUtils.showErrorDialog( ex );
             throw ex;
         }
     }
 
     private boolean goon() {
         String message = "number of pictures: " + getPMCSize();
-        int chosen = JOptionPane.showConfirmDialog( null, message, "go on?", JOptionPane.YES_NO_OPTION,
-            JOptionPane.INFORMATION_MESSAGE );
-        return chosen == JOptionPane.YES_OPTION;
+        Response chosen = Dialogs.showConfirmDialog( null, message, "go on?" );
+        return chosen == Response.YES;
     }
 }

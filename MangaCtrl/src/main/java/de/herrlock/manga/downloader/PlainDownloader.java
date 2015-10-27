@@ -5,13 +5,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import javax.swing.JOptionPane;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.herrlock.javafx.NoWindowApplication;
+import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.CtrlUtils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 /**
  * Simply starts the download without any confirmation,
@@ -21,27 +24,35 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 public final class PlainDownloader extends MDownloader {
     private static final Logger logger = LogManager.getLogger();
 
-    public static void main( String... args ) {
-        logger.entry();
-        execute();
-    }
+    public static class PlainDownloaderApplication extends NoWindowApplication {
 
-    public static void execute() {
-        logger.entry();
-        Properties p = new Properties();
-        // load properties
-        try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
-            p.load( fIn );
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+        public static void launch( final String... args ) {
+            Application.launch( args );
         }
-        // properties loaded successful
-        DownloadConfiguration conf = DownloadConfiguration.create( p );
-        PlainDownloader dlImpl = new PlainDownloader( conf );
-        dlImpl.run();
+
+        @Override
+        public void start( final Stage stage ) {
+            logger.entry();
+            Properties p = new Properties();
+            // load properties
+            try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
+                p.load( fIn );
+            } catch ( IOException ex ) {
+                throw new MyException( ex );
+            }
+            // properties loaded successful
+            DownloadConfiguration conf = DownloadConfiguration.create( p );
+            PlainDownloader dlImpl = new PlainDownloader( conf );
+            dlImpl.run();
+        }
     }
 
-    private PlainDownloader( DownloadConfiguration conf ) {
+    public static void main( final String... args ) {
+        logger.entry();
+        PlainDownloaderApplication.launch( args );
+    }
+
+    public PlainDownloader( final DownloadConfiguration conf ) {
         super( conf );
     }
 
@@ -50,8 +61,8 @@ public final class PlainDownloader extends MDownloader {
         logger.entry();
         try {
             downloadAll();
-        } catch ( RuntimeException ex ) {
-            JOptionPane.showMessageDialog( null, ex.getStackTrace(), ex.getMessage(), JOptionPane.ERROR_MESSAGE );
+        } catch ( Exception ex ) {
+            CtrlUtils.showErrorDialog( ex );
             throw ex;
         }
     }

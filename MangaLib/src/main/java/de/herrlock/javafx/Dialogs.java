@@ -61,7 +61,7 @@ public final class Dialogs {
     static final class Message extends Text {
         public Message( final String msg ) {
             super( msg );
-            setWrappingWidth( 250 );
+            setWrappingWidth( 500 );
         }
     }
 
