@@ -97,9 +97,10 @@ public abstract class Configuration {
                 }
                 String proxyHost = proxyUrl.getHost();
                 int proxyPort = proxyUrl.getPort();
+                String scheme = proxyUrl.getProtocol();
                 InetAddress proxyAddress = InetAddress.getByName( proxyHost );
                 logger.debug( "Proxy: {}:{}", proxyHost, proxyPort );
-                return new HttpHost( proxyAddress, proxyPort );
+                return new HttpHost( proxyAddress, proxyPort, scheme );
             }
         } catch ( final MalformedURLException | UnknownHostException ex ) {
             logger.error( "", ex );
@@ -140,6 +141,7 @@ public abstract class Configuration {
         }
         logger.debug( "Timeout: {}", timeoutString );
         return Integer.parseInt( timeoutString );
+        // TODO: maybe catch NumberFormatException?
     }
 
     /**
