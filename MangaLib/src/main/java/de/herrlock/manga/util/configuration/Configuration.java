@@ -90,7 +90,7 @@ public abstract class Configuration {
             String urlString = p.getProperty( PROXY );
             if ( urlString != null && !"".equals( urlString ) ) {
                 final URL proxyUrl;
-                if ( urlString.startsWith( "http://" ) ) {
+                if ( urlString.startsWith( "http://" ) || urlString.startsWith( "https://" ) ) {
                     proxyUrl = new URL( urlString );
                 } else {
                     proxyUrl = new URL( "http://" + urlString );
