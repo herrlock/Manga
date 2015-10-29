@@ -41,6 +41,18 @@ allprojects { project ->
 	eclipse.project {
 		buildCommand 'edu.umd.cs.findbugs.plugin.eclipse.findbugsBuilder'
 	}
+	eclipse.classpath {
+        file.withXml {
+            it.asNode().children().find { entry -> 
+            	(entry.'@path').contains('jfxrt') 
+            }.each { entry ->
+                Node attributes = new Node(entry, 'attributes')
+                Node attribute = new Node(attributes, 'attribute')
+                attribute.'@name' = 'javadoc_location'
+                attribute.'@value' = 'http://docs.oracle.com/javafx/2/api/'
+            }
+        }
+	}
 	
 	repositories {
 		mavenCentral()

@@ -14,16 +14,3 @@ dependencies {
 	compile files(System.properties.'java.home' + '/lib/jfxrt.jar')
 	compile files(new File(rootProject.projectDir, 'lib/jmetro.jar'))
 }
-
-eclipse.classpath.file.withXml {
-	it.asNode().children().any { entry -> 
-		if((entry.'@path').contains('jfxrt')) {
-			Node attributes = new Node(entry, 'attributes')
-			Node attribute = new Node(attributes, 'attribute')
-			attribute.'@name' = 'javadoc_location'
-			attribute.'@value' = 'http://docs.oracle.com/javafx/2/api/'
-			return true;
-		}
-		return false;
-	}
-}
