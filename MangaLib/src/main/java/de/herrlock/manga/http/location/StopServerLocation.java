@@ -16,11 +16,11 @@ public final class StopServerLocation extends Location {
      * Create a new StopServerLocation
      */
     public StopServerLocation() {
-        super( "stopServer" );
+        super( "/stopServer" );
     }
 
     @Override
-    public Response handleXHR( final URL url ) {
+    protected Response handleXHR( final URL url ) {
         throw new CloseServerException();
     }
 }

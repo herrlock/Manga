@@ -1,14 +1,12 @@
 package de.herrlock.manga.http.location;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.Random;
 
 import de.herrlock.manga.http.Server;
-import de.herrlock.manga.http.ServerException;
-import de.herrlock.manga.http.response.ImageResponse;
+import de.herrlock.manga.http.response.InputStreamResponse;
 import de.herrlock.manga.http.response.Response;
 
 /**
@@ -22,16 +20,12 @@ public final class BackgroundImageLocation extends Location {
      * Create a new BackgroundImageLocation
      */
     public BackgroundImageLocation() {
-        super( "background.jpg" );
+        super( "/background.jpg" );
     }
 
     @Override
-    public Response handleXHR( final URL url ) {
-        try {
-            return new ImageResponse( Image.getRandom().getStream() );
-        } catch ( final IOException ex ) {
-            throw new ServerException( ex );
-        }
+    protected Response handleXHR( final URL url ) {
+        return new InputStreamResponse( Image.getRandom().getStream(), "image" );
     }
 
     static enum Image {

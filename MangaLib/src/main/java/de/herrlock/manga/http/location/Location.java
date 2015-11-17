@@ -1,16 +1,26 @@
 package de.herrlock.manga.http.location;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
-import de.herrlock.manga.http.Server;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.RequestLine;
+import org.apache.http.protocol.HttpContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import de.herrlock.manga.http.HttpRequestHandlerWrapper;
 import de.herrlock.manga.http.response.Response;
+import de.herrlock.manga.http.response.ServerExceptionResponse;
 
 /**
- * A base-class for Locations that can be registered at a {@link Server}
+ * A base-class for Locations that can be registered at a {@link de.herrlock.manga.http.Server}
  * 
  * @author HerrLock
  */
-public abstract class Location {
+public abstract class Location extends HttpRequestHandlerWrapper {
+    private static final Logger logger = LogManager.getLogger();
     private final String path;
 
     /**
@@ -21,6 +31,7 @@ public abstract class Location {
      * @see URL#getPath()
      */
     public Location( final String path ) {
+        super( path );
         this.path = path;
     }
 
@@ -31,7 +42,7 @@ public abstract class Location {
      *            the requested {@link URL}
      * @return the Response created
      */
-    public abstract Response handleXHR( final URL url );
+    protected abstract Response handleXHR( final URL url );
 
     /**
      * Getter for the Location's path
@@ -40,5 +51,27 @@ public abstract class Location {
      */
     public String getPath() {
         return this.path;
+    }
+
+    @Override
+    public void handle( final HttpRequest request, final HttpResponse response, final HttpContext context ) {
+        logger.debug( "handler; request: {}", request );
+        Response res;
+        try {
+            RequestLine requestLine = request.getRequestLine();
+            String protocol = requestLine.getProtocolVersion().getProtocol();
+            String host = request.getFirstHeader( "Host" ).getValue();
+            URL urlContext = new URL( protocol + "://" + host );
+            String uri = requestLine.getUri();
+            URL url = new URL( urlContext, uri );
+            res = handleXHR( url );
+        } catch ( MalformedURLException ex ) {
+            res = new ServerExceptionResponse( ex );
+        }
+        logger.debug( "handler; response: {}", response );
+        response.setStatusLine( res.getStatusLine() );
+        response.setHeaders( res.getAllHeaders() );
+        response.setEntity( res.getEntity() );
+        logger.debug( "handler; response: {}", response );
     }
 }

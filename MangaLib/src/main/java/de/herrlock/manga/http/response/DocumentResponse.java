@@ -1,7 +1,7 @@
 package de.herrlock.manga.http.response;
 
-import java.nio.charset.StandardCharsets;
-
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.jsoup.nodes.Document;
 
 /**
@@ -10,68 +10,17 @@ import org.jsoup.nodes.Document;
  * @author HerrLock
  */
 public class DocumentResponse extends Response {
-    private Document document;
 
     /**
-     * Creates an empty DocumentResponse
-     */
-    public DocumentResponse() {
-        this( null );
-    }
-
-    /**
-     * Creates a TextResponse with dummy-code {@code -1} and the given Document
-     * 
-     * @param document
-     *            the response-document
-     */
-    public DocumentResponse( final Document document ) {
-        this( -1, document );
-    }
-
-    /**
-     * Creates a TextResponse with the given response-core and no document
-     * 
-     * @param code
-     *            the response-code
-     */
-    public DocumentResponse( final int code ) {
-        this( code, null );
-    }
-
-    /**
-     * Creates a TextResponse with the given response-core and the given document
+     * Creates a DocumentResponse with the given response-code and the given document
      * 
      * @param code
      *            the response-code
      * @param document
      *            the response-document
      */
-    public DocumentResponse( final int code, final Document document ) {
-        super( code );
-        setDocument( document );
-    }
-
-    /**
-     * replaces the current response-document with a new one
-     * 
-     * @param doc
-     *            the new doc
-     * @return {@code this} to enable method-chaining
-     */
-    public DocumentResponse setDocument( final Document doc ) {
-        this.document = doc;
-        return this;
-    }
-
-    @Override
-    public byte[] getData() {
-        return this.document.toString().getBytes( StandardCharsets.UTF_8 );
-    }
-
-    @Override
-    protected String getContentType() {
-        return "text/html";
+    public DocumentResponse( final int httpStatus, final Document document ) {
+        super( httpStatus, new StringEntity( document.toString(), ContentType.TEXT_HTML ) );
     }
 
 }

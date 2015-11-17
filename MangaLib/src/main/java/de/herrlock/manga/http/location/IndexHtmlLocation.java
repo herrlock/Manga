@@ -1,15 +1,12 @@
 package de.herrlock.manga.http.location;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import org.apache.http.entity.ContentType;
 
-import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.http.Server;
-import de.herrlock.manga.http.response.DocumentResponse;
+import de.herrlock.manga.http.response.InputStreamResponse;
 import de.herrlock.manga.http.response.Response;
 
 /**
@@ -23,20 +20,13 @@ public final class IndexHtmlLocation extends Location {
      * Create a new IndexHtmlLocation
      */
     public IndexHtmlLocation() {
-        super( "" );
+        super( "/" );
     }
 
     @Override
-    public Response handleXHR( final URL url ) {
-        DocumentResponse response = new DocumentResponse();
-        try ( InputStream indexhtml = Server.class.getResourceAsStream( "index.html" ) ) {
-            Document document = Jsoup.parse( indexhtml, null, "http://localhost" );
-            response.setCode( 200 );
-            response.setDocument( document );
-        } catch ( final IOException ex ) {
-            throw new MyException( ex );
-        }
-        return response;
+    protected Response handleXHR( final URL url ) {
+        InputStream indexhtml = Server.class.getResourceAsStream( "index.html" );
+        return new InputStreamResponse( indexhtml, ContentType.TEXT_HTML );
     }
 
 }

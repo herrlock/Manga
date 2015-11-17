@@ -2,6 +2,9 @@ package de.herrlock.manga.http.response;
 
 import java.nio.charset.StandardCharsets;
 
+import org.apache.http.HttpStatus;
+import org.apache.http.entity.StringEntity;
+
 /**
  * A {@link Response} that results in plain text
  * 
@@ -9,66 +12,16 @@ import java.nio.charset.StandardCharsets;
  */
 public class TextResponse extends Response {
 
-    private String text;
-
     /**
-     * Creates an empty TextResponse
-     */
-    public TextResponse() {
-        this( "" );
-    }
-
-    /**
-     * Creates a TextResponse with dummy-code {@code -1} and the given text
+     * Creates a new TextResponse with the given status and text
      * 
+     * @param httpStatus
+     *            the http-response-code (see {@linkplain HttpStatus} for constants)
      * @param text
      *            the response-text
      */
-    public TextResponse( final String text ) {
-        this( -1, text );
-    }
-
-    /**
-     * Creates a TextResponse with the given response-core and no text
-     * 
-     * @param code
-     *            the response-code
-     */
-    public TextResponse( final int code ) {
-        this( code, "" );
-    }
-
-    /**
-     * Creates a TextResponse with the given response-core and the given text
-     * 
-     * @param code
-     *            the response-code
-     * @param text
-     *            the response-text
-     */
-    public TextResponse( final int code, final String text ) {
-        super( code );
-        setText( text );
-    }
-
-    /**
-     * replaces the current response-text with a new one
-     * 
-     * @param text
-     *            the new text
-     */
-    public void setText( final String text ) {
-        this.text = text;
-    }
-
-    @Override
-    public byte[] getData() {
-        return this.text.getBytes( StandardCharsets.UTF_8 );
-    }
-
-    @Override
-    protected String getContentType() {
-        return "text";
+    public TextResponse( final int httpStatus, final String text ) {
+        super( httpStatus, new StringEntity( text, StandardCharsets.UTF_8 ) );
     }
 
 }

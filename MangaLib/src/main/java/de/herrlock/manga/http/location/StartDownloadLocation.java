@@ -23,12 +23,12 @@ public final class StartDownloadLocation extends Location {
      * Create a new StartDownloadLocation
      */
     public StartDownloadLocation() {
-        super( "start" );
+        super( "/start" );
     }
 
     @Override
-    public Response handleXHR( final URL requestUrl ) {
-        String queryString = requestUrl.getQuery();
+    protected Response handleXHR( final URL url ) {
+        String queryString = url.getQuery();
         if ( queryString == null ) {
             throw new ServerException( "queryString is null" );
         }
@@ -53,7 +53,7 @@ public final class StartDownloadLocation extends Location {
         Thread t = new SimpleDownloaderThread( conf );
         t.start();
 
-        TextResponse res = new TextResponse( 301 );
+        Response res = new TextResponse( 301, "" );
         res.setHeader( "Location", "/" );
         return res;
     }

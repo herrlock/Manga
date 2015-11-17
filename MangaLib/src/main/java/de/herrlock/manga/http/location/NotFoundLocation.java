@@ -19,12 +19,12 @@ public final class NotFoundLocation extends Location {
      * Create a new NotFoundLocation
      */
     public NotFoundLocation() {
-        super( "404" );
+        super( "/*" );
     }
 
     @Override
-    public Response handleXHR( final URL url ) {
-        Document doc = Document.createShell( "http://localhost" );
+    protected Response handleXHR( final URL url ) {
+        Document doc = Document.createShell( url.toExternalForm() );
         Element head = doc.select( "head" ).first();
         head.appendElement( "title" ).text( "Not Found (404)" );
 
