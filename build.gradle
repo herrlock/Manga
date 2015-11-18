@@ -47,7 +47,6 @@ allprojects { project ->
             def jfxrt = it.asNode().children().find{ entry ->
             	return entry['@path'].contains('jfxrt') 
             }
-        	println jfxrt
             Node attributes = new Node(jfxrt, 'attributes')
             Node attribute = new Node(attributes, 'attribute')
             attribute.'@name' = 'javadoc_location'
