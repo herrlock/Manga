@@ -1,10 +1,16 @@
 package de.herrlock.javafx;
 
+import java.util.concurrent.ExecutionException;
+
+import de.herrlock.manga.exceptions.MyException;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -24,7 +30,7 @@ import javafx.stage.StageStyle;
 public final class Dialogs {
 
     public static enum Response {
-        NO, YES, CANCEL
+        NO, YES, CANCEL, OK;
     }
 
     private static ImageView icon = new ImageView();
@@ -33,20 +39,20 @@ public final class Dialogs {
 
         private Response selectedButton = Response.CANCEL;
 
-        public Dialog( final String title, final Stage owner, final Scene scene, final String iconFile ) {
+        private Dialog( final String title, final Stage owner, final Parent parent, final String iconFile ) {
             setTitle( title );
             initStyle( StageStyle.UTILITY );
             initModality( Modality.APPLICATION_MODAL );
             initOwner( owner );
             setResizable( false );
-            setScene( scene );
+            setScene( new Scene( parent ) );
             icon.setImage( new Image( getClass().getResourceAsStream( iconFile ) ) );
         }
 
         public void showDialog() {
-            sizeToScene();
-            centerOnScreen();
-            showAndWait();
+            super.sizeToScene();
+            super.centerOnScreen();
+            super.showAndWait();
         }
 
         public Response getSelectedButton() {
@@ -65,51 +71,74 @@ public final class Dialogs {
         }
     }
 
-    public static void showDialog( final Stage owner, final Node message, final String title, final String iconFile ) {
-        VBox vb = new VBox();
-        Scene scene = new Scene( vb );
-        final Dialog dial = new Dialog( title, owner, scene, iconFile );
+    private static Dialog _createDialog( final String title, final Stage owner, final Parent parent, final String iconFile ) {
+        final Task<Dialog> task = new Task<Dialog>() {
+            @Override
+            protected Dialog call() throws Exception {
+                return new Dialog( title, owner, parent, iconFile );
+            }
+        };
+        Platform.runLater( task );
+        try {
+            return task.get();
+        } catch ( final InterruptedException | ExecutionException ex ) {
+            throw new MyException( ex );
+        }
+    }
+
+    private static Response _showDialog( final Dialog dialog ) {
+        Task<Response> task = new Task<Response>() {
+            @Override
+            protected Response call() throws Exception {
+                dialog.showDialog();
+                return dialog.getSelectedButton();
+            }
+        };
+        Platform.runLater( task );
+        try {
+            return task.get();
+        } catch ( InterruptedException | ExecutionException ex ) {
+            throw new MyException( ex );
+        }
+    }
+
+    /**
+     * 
+     * @param owner
+     * @param message
+     * @param title
+     * @param iconFile
+     * @return always returns {@link Response#OK}
+     */
+    public static Response showDialog( final Stage owner, final Node message, final String title, final String iconFile ) {
+        final VBox vb = new VBox();
         vb.setPadding( new Insets( 10 ) );
         vb.setSpacing( 10 );
-        Button okButton = new Button( "OK" );
+        final Button okButton = new Button( "OK" );
         okButton.setAlignment( Pos.CENTER );
-        okButton.setOnAction( new EventHandler<ActionEvent>() {
-            @Override
-            public void handle( final ActionEvent e ) {
-                dial.close();
-            }
-        } );
-        BorderPane bp = new BorderPane();
+        final BorderPane bp = new BorderPane();
         bp.setCenter( okButton );
-        HBox msg = new HBox();
+        final HBox msg = new HBox();
         msg.setSpacing( 5 );
         msg.getChildren().addAll( icon, message );
         vb.getChildren().addAll( msg, bp );
-        dial.showDialog();
+        final Dialog dialog = _createDialog( title, owner, vb, iconFile );
+        okButton.setOnAction( new EventHandler<ActionEvent>() {
+            @Override
+            public void handle( final ActionEvent e ) {
+                dialog.setSelectedButton( Response.OK );
+                dialog.close();
+            }
+        } );
+        return _showDialog( dialog );
     }
 
     public static Response showConfirmDialog( final Stage owner, final Node message, final String title ) {
-        VBox vb = new VBox();
-        Scene scene = new Scene( vb );
-        final Dialog dial = new Dialog( title, owner, scene, "dialog-confirm.png" );
+        final VBox vb = new VBox();
         vb.setPadding( new Insets( 10 ) );
         vb.setSpacing( 10 );
-        Button yesButton = new Button( "Yes" );
-        yesButton.setOnAction( new EventHandler<ActionEvent>() {
-            @Override
-            public void handle( final ActionEvent e ) {
-                dial.close();
-                dial.setSelectedButton( Response.YES );
-            }
-        } );
-        Button noButton = new Button( "No" );
-        noButton.setOnAction( new EventHandler<ActionEvent>() {
-            @Override
-            public void handle( final ActionEvent e ) {
-                dial.close();
-                dial.setSelectedButton( Response.NO );
-            }
-        } );
+        final Button yesButton = new Button( "Yes" );
+        final Button noButton = new Button( "No" );
         BorderPane bp = new BorderPane();
         HBox buttons = new HBox();
         buttons.setAlignment( Pos.CENTER );
@@ -120,8 +149,22 @@ public final class Dialogs {
         msg.setSpacing( 5 );
         msg.getChildren().addAll( icon, message );
         vb.getChildren().addAll( msg, bp );
-        dial.showDialog();
-        return dial.getSelectedButton();
+        final Dialog dialog = _createDialog( title, owner, vb, "dialog-confirm.png" );
+        yesButton.setOnAction( new EventHandler<ActionEvent>() {
+            @Override
+            public void handle( final ActionEvent e ) {
+                dialog.setSelectedButton( Response.YES );
+                dialog.close();
+            }
+        } );
+        noButton.setOnAction( new EventHandler<ActionEvent>() {
+            @Override
+            public void handle( final ActionEvent e ) {
+                dialog.setSelectedButton( Response.NO );
+                dialog.close();
+            }
+        } );
+        return _showDialog( dialog );
     }
 
     public static Response showConfirmDialog( final Stage owner, final String message, final String title ) {
