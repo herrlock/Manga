@@ -14,7 +14,6 @@ import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.downloader.pmc.PictureMapContainer;
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.exceptions.MyException;
-import de.herrlock.manga.ui.log.LogWindow;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
@@ -99,14 +98,11 @@ public abstract class MDownloader {
         logger.entry();
         EntryList<String, EntryList<Integer, URL>> entries = this.pmc.getEntries();
         entries.sort( entries.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
-        LogWindow.setProgress( 0 );
-        LogWindow.setProgressMax( entries.size() );
         int progress = 0;
         for ( Entry<String, EntryList<Integer, URL>> entry : entries ) {
             EntryList<Integer, URL> urlMap = entry.getValue();
             String key = entry.getKey();
             downloadChapter( key, urlMap );
-            LogWindow.setProgress( ++progress );
         }
         logger.info( "Finished successful" );
     }
