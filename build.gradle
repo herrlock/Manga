@@ -3,7 +3,7 @@
 allprojects { project ->
 	apply plugin: 'eclipse'
 	
-	group 'de.herrlock'
+	group 'de.herrlock.manga'
 	version '1.4.0-BETA-SNAPSHOT'
 	
 	apply plugin: 'java'
