@@ -15,6 +15,7 @@ import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.herrlock.manga.downloader.ConsoleDownloader;
 import de.herrlock.manga.util.ChapterPattern;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import javafx.application.Application;
@@ -93,8 +94,9 @@ public final class Main {
         ChapterPattern pattern = cl.hasOption( "pattern" ) ? new ChapterPattern( cl.getOptionValue( "pattern" ) ) : null;
         DownloadConfiguration conf = new DownloadConfiguration( true, url, proxy, pattern, 0 );
         logger.info( conf );
-        // ConsoleDownloader dl = new ConsoleDownloader( conf, cl.hasOption( 'i' ) );
-        // dl.run();
+        boolean interactive = cl.hasOption( 'i' );
+        ConsoleDownloader dl = new ConsoleDownloader( conf, interactive );
+        dl.run();
     }
 
     private static void startGuiDownloader( String... args ) {
