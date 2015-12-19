@@ -8,7 +8,6 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
@@ -21,6 +20,8 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.google.common.collect.ImmutableList;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.downloader.pmc.EntryList;
@@ -97,7 +98,7 @@ public final class DownloadQueueContainer {
      */
     public void downloadPages() {
         logger.entry();
-        List<Page> pages = Collections.unmodifiableList( new ArrayList<>( this.dlQueue ) );
+        List<Page> pages = ImmutableList.copyOf( this.dlQueue );
         this.dlQueue.clear();
         // download pictures from the ChapterListContainer
         List<DownloadThread> callables = new ArrayList<>( pages.size() );
