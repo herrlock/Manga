@@ -112,7 +112,7 @@ public class EntryList<K, V> implements Iterable<SimpleImmutableEntry<K, V>> {
      *            the base-comparator
      * @return a new comparator
      */
-    public Comparator<SimpleImmutableEntry<String, ?>> getStringComparator( final Comparator<String> comparator ) {
+    public static Comparator<SimpleImmutableEntry<String, ?>> getStringComparator( final Comparator<String> comparator ) {
         return new Comparator<SimpleImmutableEntry<String, ?>>() {
             @Override
             public int compare( final SimpleImmutableEntry<String, ?> o1, final SimpleImmutableEntry<String, ?> o2 ) {

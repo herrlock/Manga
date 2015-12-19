@@ -97,8 +97,7 @@ public abstract class MDownloader {
     protected void downloadAll() {
         logger.entry();
         EntryList<String, EntryList<Integer, URL>> entries = this.pmc.getEntries();
-        entries.sort( entries.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
-        int progress = 0;
+        entries.sort( EntryList.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
         for ( Entry<String, EntryList<Integer, URL>> entry : entries ) {
             EntryList<Integer, URL> urlMap = entry.getValue();
             String key = entry.getKey();
