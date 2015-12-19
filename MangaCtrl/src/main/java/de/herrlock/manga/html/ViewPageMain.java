@@ -11,13 +11,7 @@ import org.apache.logging.log4j.Logger;
  * @author HerrLock
  */
 public final class ViewPageMain {
-
     private static final Logger logger = LogManager.getLogger();
-
-    public static void main( final String... args ) {
-        logger.entry();
-        execute();
-    }
 
     public static void execute() {
         String input = JOptionPane.showInputDialog( "Input the folder where the chapters are." );
