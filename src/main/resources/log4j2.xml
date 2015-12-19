@@ -18,8 +18,7 @@
 		<Logger name="org.apache.http" level="info" additivity="false">
 			<AppenderRef ref="ApacheLogger" />
 		</Logger>
-		<Root level="all">
-			<AppenderRef ref="JTextArea" />
+		<Root level="info">
 			<AppenderRef ref="ConsoleTrace" />
 			<AppenderRef ref="FileTrace" />
 		</Root>
