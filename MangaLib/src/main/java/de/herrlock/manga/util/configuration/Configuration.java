@@ -46,6 +46,18 @@ public abstract class Configuration {
      * the name of the property for setting the proxy-url
      */
     public static final String PROXY = "proxy";
+    /**
+     * the name of the property for the setting "headless"
+     */
+    public static final String HEADLESS = "headless";
+
+    protected static boolean _getIsHeadless( final Properties p ) {
+        logger.entry();
+        String property = p.getProperty( HEADLESS );
+        boolean headless = property.matches( "" );
+        logger.debug( "headless: {}", headless );
+        return headless;
+    }
 
     /**
      * creates a {@link URL} from the property {@value #URL} in the given Properties
@@ -163,13 +175,35 @@ public abstract class Configuration {
         return new File( fwPath );
     }
 
+    private final boolean isHeadless;
+
     @Override
     public abstract String toString();
 
     /**
-     * Default-constuctor fo subclasses
+     * Default-constuctor for subclasses. Calls the constructor {@link Configuration#Configuration(boolean)} with the value
+     * {@code false}
      */
     protected Configuration() {
-        // not used directly
+        this( false );
+    }
+
+    /**
+     * Constructur with the headless-property
+     * 
+     * @param isHeadless
+     *            if the downloader runs in cli-mode (false) or with a type of gui (true)
+     */
+    protected Configuration( boolean isHeadless ) {
+        this.isHeadless = isHeadless;
+    }
+
+    /**
+     * getter for isHeadless
+     * 
+     * @return
+     */
+    public final boolean isHeadless() {
+        return this.isHeadless;
     }
 }
