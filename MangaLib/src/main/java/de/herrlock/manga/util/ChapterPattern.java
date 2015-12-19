@@ -107,6 +107,11 @@ public final class ChapterPattern {
         return this.fallback;
     }
 
+    @Override
+    public String toString() {
+        return String.valueOf( this.elements );
+    }
+
     static final class Interval {
         private final BigDecimal intervalStart;
         private final BigDecimal intervalEnd;
