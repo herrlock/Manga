@@ -80,7 +80,7 @@ public final class Main {
         pw.println();
 
         final String appCommand = "java -jar MangaLauncher.jar";
-        helpFormatter.printHelp( pw, 100, appCommand, null, OPTIONS, 0, 4, null, true );
+        helpFormatter.printHelp( pw, 100, appCommand, null, OPTIONS, 4, 2, null, true );
 
         logger.info( stringWriter );
     }
