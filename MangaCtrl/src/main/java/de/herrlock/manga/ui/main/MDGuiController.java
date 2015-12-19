@@ -8,12 +8,13 @@ import java.util.Properties;
 
 import de.herrlock.javafx.handler.Exec;
 import de.herrlock.javafx.handler.ExecHandlerTask;
-import de.herrlock.manga.downloader.ExtDownloader;
+import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.host.Hoster;
 import de.herrlock.manga.host.Hosters;
 import de.herrlock.manga.jd.JDExport;
 import de.herrlock.manga.util.configuration.Configuration;
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -45,7 +46,13 @@ public final class MDGuiController {
             @Override
             public void execute() {
                 Properties p = getProperties();
-                ExtDownloader.execute( p );
+                DownloadConfiguration conf = DownloadConfiguration.create( p );
+                new MDownloader( conf) {
+                    @Override
+                    protected void run() {
+                        downloadAll( );
+                    }
+                }.run();
             }
         } );
     }
