@@ -3,6 +3,8 @@ package de.herrlock.manga.downloader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +17,8 @@ import de.herrlock.manga.downloader.pmc.PictureMapContainer;
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.ProgressListener;
+import de.herrlock.manga.util.Progressable;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -22,7 +26,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * 
  * @author HerrLock
  */
-public abstract class MDownloader {
+public abstract class MDownloader implements Progressable {
     private static final Logger logger = LogManager.getLogger();
 
     /**
@@ -37,6 +41,18 @@ public abstract class MDownloader {
      * contains the current queue of downloads
      */
     protected final DownloadQueueContainer dqc;
+    /**
+     * contains the progress-listeners
+     */
+    private final List<ProgressListener> progressListeners = new ArrayList<>();
+    /**
+     * contains the current progress
+     */
+    private int progress = 0;
+    /**
+     * contains the maximal progress
+     */
+    private int maxProgress;
 
     /**
      * creates a new Downloader. this constructor initializes the ChapterListContainer, the PictureMapContainer and the
@@ -54,6 +70,7 @@ public abstract class MDownloader {
             throw new InitializeException( ex );
         }
         this.pmc = new PictureMapContainer( this.clc );
+        setMaxProgress( this.pmc.getSize() );
         this.dqc = new DownloadQueueContainer( this.clc, conf );
     }
 
@@ -98,10 +115,18 @@ public abstract class MDownloader {
         logger.entry();
         EntryList<String, EntryList<Integer, URL>> entries = this.pmc.getEntries();
         entries.sort( EntryList.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
+        this.progress = 0;
         for ( Entry<String, EntryList<Integer, URL>> entry : entries ) {
             EntryList<Integer, URL> urlMap = entry.getValue();
             String key = entry.getKey();
             downloadChapter( key, urlMap );
+
+            // increment progress and notify listeners
+            int oldProgress = this.progress;
+            setProgress( this.progress + entry.getValue().size() );
+            for ( ProgressListener listener : this.progressListeners ) {
+                listener.progress( oldProgress, this.progress, this.maxProgress );
+            }
         }
         logger.info( "Finished successful" );
     }
@@ -131,4 +156,33 @@ public abstract class MDownloader {
         logger.info( "finished chapter {}", key );
     }
 
+    @Override
+    public void setProgress( final int progress ) {
+        this.progress = progress;
+    }
+
+    @Override
+    public int getProgress() {
+        return this.progress;
+    }
+
+    @Override
+    public void setMaxProgress( final int maxProgress ) {
+        this.maxProgress = maxProgress;
+    }
+
+    @Override
+    public int getMaxProgress() {
+        return this.maxProgress;
+    }
+
+    @Override
+    public void addProgressListener( final ProgressListener listener ) {
+        this.progressListeners.add( listener );
+    }
+
+    @Override
+    public void removeProgressListener( final ProgressListener listener ) {
+        this.progressListeners.remove( listener );
+    }
 }
