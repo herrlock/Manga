@@ -5,53 +5,37 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import javax.swing.JOptionPane;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.herrlock.javafx.NoWindowApplication;
+import de.herrlock.javafx.Dialogs;
+import de.herrlock.javafx.Dialogs.Response;
 import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.CtrlUtils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
-import javafx.application.Application;
-import javafx.stage.Stage;
 
 /**
  * Initializes the download and starts it after confirming the number of pictures and an estimated whole size of the images with a
- * {@link JOptionPane}
+ * dialog created in {@link Dialogs}
  * 
  * @author Herrlock
  */
 public final class DialogDownloader extends MDownloader {
     private static final Logger logger = LogManager.getLogger();
 
-    public static class DialogDownloaderApplication extends NoWindowApplication {
-
-        public static void launch( final String... args ) {
-            Application.launch( args );
-        }
-
-        @Override
-        public void start( final Stage stage ) {
-            logger.entry();
-            Properties p = new Properties();
-            // load properties
-            try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
-                p.load( fIn );
-            } catch ( IOException ex ) {
-                throw new MyException( ex );
-            }
-            // properties loaded successful
-            DownloadConfiguration conf = DownloadConfiguration.create( p );
-            new DialogDownloader( conf ).run();
-        }
-    }
-
-    public static void main( final String... args ) {
+    public static void execute() {
         logger.entry();
-        DialogDownloaderApplication.launch( args );
+        Properties p = new Properties();
+        // load properties
+        try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
+            p.load( fIn );
+        } catch ( IOException ex ) {
+            throw new MyException( ex );
+        }
+        // properties loaded successful
+        DownloadConfiguration conf = DownloadConfiguration.create( p );
+        new DialogDownloader( conf ).run();
     }
 
     public DialogDownloader( final DownloadConfiguration conf ) {
@@ -76,9 +60,8 @@ public final class DialogDownloader extends MDownloader {
         int noOfPictures = getPMCSize();
         int estimatedSize = noOfPictures * Constants.AVG_SIZE / 1000;
         String message = "Number of pictures: " + noOfPictures + "\n" + "Estimated entire size: " + estimatedSize + " MB";
-        int clicked = JOptionPane.showConfirmDialog( null, message, title, JOptionPane.YES_NO_OPTION,
-            JOptionPane.INFORMATION_MESSAGE );
-        return clicked == JOptionPane.OK_OPTION;
+        Response response = Dialogs.showConfirmDialog( null, message, title );
+        return response == Response.YES;
     }
 
 }
