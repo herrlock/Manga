@@ -78,9 +78,9 @@ allprojects { project ->
 // build-helper
 def temp = mkdir("${rootProject.buildDir}/disttemp/")
 
-task createLibs (type: Copy, description: 'Create jar from subprojects and copies them into the lib-folder') {
+task createLibs (type: Copy, description: 'Create jar from all projects and copies them and their dependencies into the lib-folder') {
 	into new File(temp, 'lib')
-	subprojects.each { s -> 
+	allprojects.each { s -> 
 		dependsOn s.jar
 		from s.jar
 		from s.configurations.runtime
