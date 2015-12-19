@@ -39,7 +39,7 @@ public final class CtrlController {
         setBottomText( "button.tooltip.createHTML" );
     }
     private void setBottomText( final String i18nKey ) {
-        CtrlController.this.bottomText.setText( Ctrl.i18n.getString( i18nKey ) );
+        this.bottomText.setText( Ctrl.i18n.getString( i18nKey ) );
     }
 
     public void startDDownload() {
