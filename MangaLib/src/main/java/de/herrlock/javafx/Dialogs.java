@@ -31,15 +31,36 @@ import javafx.stage.StageStyle;
  */
 public final class Dialogs {
 
+    /**
+     * possible Responses for the dialogs
+     */
+    @SuppressWarnings( "javadoc" )
     public static enum Response {
-        NO, YES, CANCEL, OK;
+        YES, NO, CANCEL, OK;
     }
 
+    /**
+     * A JavaFX-styled Dialog
+     */
     static final class Dialog extends Stage {
 
         private Response selectedButton = Response.CANCEL;
 
-        public Dialog( final String title, final Stage owner, final Node message, final Parent buttons, final String iconFile ) {
+        /**
+         * Create a new Dialog-instance.
+         * 
+         * @param title
+         *            The title for the headerbar.
+         * @param owner
+         *            The owner to position the Dialog retative to. Can be null.
+         * @param message
+         *            The content for the right side of the dialog.
+         * @param buttons
+         *            A container containing the Buttons to show.
+         * @param iconFile
+         *            The path to the icon-file to show. Loaded by {@link Class#getResourceAsStream(String)}.
+         */
+        public Dialog( final Stage owner, final String title, final Node message, final Parent buttons, final String iconFile ) {
             setTitle( title );
             initStyle( StageStyle.UTILITY );
             initModality( Modality.APPLICATION_MODAL );
@@ -62,40 +83,78 @@ public final class Dialogs {
             setScene( new Scene( vbox ) );
         }
 
+        /**
+         * Makes the dialog visible.
+         */
         public void showDialog() {
             super.sizeToScene();
             super.centerOnScreen();
             super.showAndWait();
         }
 
+        /**
+         * getter for the currently selected button
+         * 
+         * @return the selected button
+         */
         public Response getSelectedButton() {
             return this.selectedButton;
         }
 
+        /**
+         * setter for the selected button
+         * 
+         * @param selectedButton
+         *            the Response indicating the selected button
+         */
         public void setSelectedButton( final Response selectedButton ) {
             this.selectedButton = selectedButton;
         }
     }
 
+    /**
+     * A simple {@link Text} with a preset {@link Text#getWrappingWidth() wrappingWidth} of 500
+     */
     static final class Message extends Text {
+        /**
+         * Creates a new Message with the given String as content
+         * 
+         * @param msg
+         *            The String to show in this Text
+         */
         public Message( final String msg ) {
             super( msg );
             setWrappingWidth( 500 );
         }
     }
 
+    /**
+     * A runnable that can close a {@link Dialog} on the JavaFX-Application-Thread with its method {@link DialogHider#execute()}
+     */
     public static class DialogHider implements Runnable {
         private final Dialog dialog;
 
+        /**
+         * Creates a new DialogHider with the given Dialog
+         * 
+         * @param dialog
+         *            the Dialog to close
+         */
         public DialogHider( Dialog dialog ) {
             this.dialog = dialog;
         }
 
+        /**
+         * Calls {@link Dialog#close()}
+         */
         @Override
         public void run() {
             this.dialog.close();
         }
 
+        /**
+         * Runs this Runnable on the JavaFX-Application-Thread
+         */
         public void execute() {
             Platform.runLater( this );
         }
@@ -106,7 +165,7 @@ public final class Dialogs {
         final Task<Dialog> task = new Task<Dialog>() {
             @Override
             protected Dialog call() {
-                return new Dialog( title, owner, parent, buttons, iconFile );
+                return new Dialog( owner, title, parent, buttons, iconFile );
             }
         };
         Platform.runLater( task );
@@ -134,11 +193,16 @@ public final class Dialogs {
     }
 
     /**
+     * Show a Dialog with the given parameters.
      * 
      * @param owner
+     *            The parent-element for the Dialog. Can be {@code null}.
      * @param message
+     *            The Node to show as message.
      * @param title
+     *            The title for the dialog.
      * @param iconFile
+     *            The path to the icon to show.
      * @return always returns {@link Response#OK}
      */
     public static Response showDialog( final Stage owner, final Node message, final String title, final String iconFile ) {
@@ -157,6 +221,19 @@ public final class Dialogs {
         return _showDialog( dialog );
     }
 
+    /**
+     * Show a Dialog that indicates a loading-process.
+     * 
+     * @param owner
+     *            The parent-element for the Dialog. Can be {@code null}.
+     * @param message
+     *            The Node to show as message.
+     * @param title
+     *            The title for the dialog.
+     * @param iconFile
+     *            The path to the icon to show.
+     * @return A DialogHider to close the Dialog on the JavaFX-Application-Thread.
+     */
     public static DialogHider showLoadingDialog( final Stage owner, final Node message, final String title,
         final String iconFile ) {
         final Dialog dialog = _createDialog( title, owner, message, new VBox(), iconFile );
@@ -165,19 +242,65 @@ public final class Dialogs {
         return new DialogHider( dialog );
     }
 
+    /**
+     * Show a Dialog that indicates a loading-process.
+     * 
+     * @param owner
+     *            The parent-element for the Dialog. Can be {@code null}.
+     * @param message
+     *            The String to show as message.
+     * @param title
+     *            The title for the dialog.
+     * @param iconFile
+     *            The path to the icon to show.
+     * @return A DialogHider to close the Dialog on the JavaFX-Application-Thread.
+     */
     public static DialogHider showLoadingDialog( final Stage owner, final String message, final String title,
         final String iconFile ) {
         return showLoadingDialog( owner, new Message( message ), title, iconFile );
     }
 
+    /**
+     * Show a Dialog that indicates a loading-process.
+     * 
+     * @param owner
+     *            The parent-element for the Dialog. Can be {@code null}.
+     * @param message
+     *            The Node to show as message.
+     * @param title
+     *            The title for the dialog.
+     * @return A DialogHider to close the Dialog on the JavaFX-Application-Thread.
+     */
     public static DialogHider showLoadingDialog( final Stage owner, final Node message, final String title ) {
         return showLoadingDialog( owner, message, title, "glumanda.gif" );
     }
 
+    /**
+     * Show a Dialog that indicates a loading-process.
+     * 
+     * @param owner
+     *            The parent-element for the Dialog. Can be {@code null}.
+     * @param message
+     *            The String to show as message.
+     * @param title
+     *            The title for the dialog.
+     * @return A DialogHider to close the Dialog on the JavaFX-Application-Thread.
+     */
     public static DialogHider showLoadingDialog( final Stage owner, final String message, final String title ) {
         return showLoadingDialog( owner, new Message( message ), title );
     }
 
+    /**
+     * Show a Dialog to request the user to click a button.
+     * 
+     * @param owner
+     *            The parent-element for the Dialog. Can be {@code null}.
+     * @param message
+     *            The Node to show as message.
+     * @param title
+     *            The title for the dialog.
+     * @return The {@link Response} of the confirm-dialog.
+     */
     public static Response showConfirmDialog( final Stage owner, final Node message, final String title ) {
         final Button yesButton = new Button( "Yes" );
         final Button noButton = new Button( "No" );
@@ -202,30 +325,101 @@ public final class Dialogs {
         return _showDialog( dialog );
     }
 
+    /**
+     * Show a Dialog to request the user to click a button.
+     * 
+     * @param owner
+     *            The parent-element for the Dialog. Can be {@code null}.
+     * @param message
+     *            The String to show as message.
+     * @param title
+     *            The title for the dialog.
+     * @return The {@link Response} of the confirm-dialog.
+     */
     public static Response showConfirmDialog( final Stage owner, final String message, final String title ) {
         return showConfirmDialog( owner, new Message( message ), title );
     }
 
+    /**
+     * Show a Dialog with a Message and an information-icon.
+     * 
+     * @param owner
+     *            The parent-element for the Dialog. Can be {@code null}.
+     * @param message
+     *            The String to show as message.
+     * @param title
+     *            The title for the dialog.
+     */
     public static void showMessageDialog( final Stage owner, final String message, final String title ) {
         showMessageDialog( owner, new Message( message ), title );
     }
 
+    /**
+     * Show a Dialog with a Message and an information-icon.
+     * 
+     * @param owner
+     *            The parent-element for the Dialog. Can be {@code null}.
+     * @param message
+     *            The Node to show as message.
+     * @param title
+     *            The title for the dialog.
+     */
     public static void showMessageDialog( final Stage owner, final Node message, final String title ) {
         showDialog( owner, message, title, "dialog-information.png" );
     }
 
+    /**
+     * Show a Dialog with a Message and a warning-icon.
+     * 
+     * @param owner
+     *            The parent-element for the Dialog. Can be {@code null}.
+     * @param message
+     *            The String to show as message.
+     * @param title
+     *            The title for the dialog.
+     */
     public static void showWarningDialog( final Stage owner, final String message, final String title ) {
         showWarningDialog( owner, new Message( message ), title );
     }
 
+    /**
+     * Show a Dialog with a Message and a warning-icon.
+     * 
+     * @param owner
+     *            The parent-element for the Dialog. Can be {@code null}.
+     * @param message
+     *            The Node to show as message.
+     * @param title
+     *            The title for the dialog.
+     */
     public static void showWarningDialog( final Stage owner, final Node message, final String title ) {
         showDialog( owner, message, title, "dialog-warning.png" );
     }
 
+    /**
+     * Show a Dialog with a Message and an error-icon.
+     * 
+     * @param owner
+     *            The parent-element for the Dialog. Can be {@code null}.
+     * @param message
+     *            The String to show as message.
+     * @param title
+     *            The title for the dialog.
+     */
     public static void showErrorDialog( final Stage owner, final String message, final String title ) {
         showErrorDialog( owner, new Message( message ), title );
     }
 
+    /**
+     * Show a Dialog with a Message and an error-icon.
+     * 
+     * @param owner
+     *            The parent-element for the Dialog. Can be {@code null}.
+     * @param message
+     *            The Node to show as message.
+     * @param title
+     *            The title for the dialog.
+     */
     public static void showErrorDialog( final Stage owner, final Node message, final String title ) {
         showDialog( owner, message, title, "dialog-error.png" );
     }

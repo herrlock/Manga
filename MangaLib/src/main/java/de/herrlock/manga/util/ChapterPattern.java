@@ -117,11 +117,11 @@ public final class ChapterPattern {
         private final BigDecimal intervalEnd;
 
         /**
-         * @param chapter
+         * @param intervalStartAndEnd
          *            the start and end of the Interval
          */
-        public Interval( final String chapter ) {
-            this( chapter, chapter );
+        public Interval( final String intervalStartAndEnd ) {
+            this( intervalStartAndEnd, intervalStartAndEnd );
         }
 
         /**
@@ -135,6 +135,13 @@ public final class ChapterPattern {
             this.intervalEnd = new BigDecimal( intervalEnd );
         }
 
+        /**
+         * checks if this interval contains the given number
+         * 
+         * @param s
+         *            the String to check. Passed to {@link BigDecimal#BigDecimal(String)} with only null-check
+         * @return false if the parameter is {@code null}, the result of {@link #contains(BigDecimal)} otherwise
+         */
         public boolean contains( final String s ) {
             if ( s == null ) {
                 return false;
@@ -142,6 +149,14 @@ public final class ChapterPattern {
             return contains( new BigDecimal( s ) );
         }
 
+        /**
+         * checks if this interval contains the given number. A number is considered to be contained if it is bigger or equal to
+         * the start of this Interval and smaller or equal to the end of this Interval
+         * 
+         * @param d
+         *            the BigDecimal to check
+         * @return false if the parameter is {@code null} or not in this interval
+         */
         public boolean contains( final BigDecimal d ) {
             if ( d == null ) {
                 return false;

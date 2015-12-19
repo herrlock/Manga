@@ -8,7 +8,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.ClientProtocolException;
@@ -17,6 +16,8 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import de.herrlock.manga.exceptions.MyException;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
@@ -28,7 +29,8 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  */
 public final class Utils {
 
-    private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20, new DaemonThreadFactory() );
+    private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20,
+        new ThreadFactoryBuilder().setDaemon( true ).build() );
     private static final CloseableHttpClient CLIENT = HttpClients.createDefault();
 
     /**
@@ -122,6 +124,8 @@ public final class Utils {
     /**
      * Invokes all given Callables
      * 
+     * @param <T>
+     *            The generic type of the given callables, the generic type of the Future-objects in the result
      * @param callables
      *            the {@link Callable}s to execute
      * @return the result of {@link ExecutorService#invokeAll(Collection)}
@@ -136,36 +140,5 @@ public final class Utils {
 
     private Utils() {
         // not called
-    }
-
-    /**
-     * creates new Threads with the given ThreadFactory and marks them as daemon-threads
-     * 
-     * @author HerrLock
-     */
-    private static final class DaemonThreadFactory implements ThreadFactory {
-        private final ThreadFactory threadFactory;
-
-        /**
-         * uses {@link Executors#defaultThreadFactory()} as {@link ThreadFactory}
-         */
-        public DaemonThreadFactory() {
-            this( Executors.defaultThreadFactory() );
-        }
-
-        /**
-         * @param threadFactory
-         *            the {@link ThreadFactory} to use
-         */
-        public DaemonThreadFactory( final ThreadFactory threadFactory ) {
-            this.threadFactory = threadFactory;
-        }
-
-        @Override
-        public Thread newThread( final Runnable r ) {
-            Thread t = this.threadFactory.newThread( r );
-            t.setDaemon( true );
-            return t;
-        }
     }
 }

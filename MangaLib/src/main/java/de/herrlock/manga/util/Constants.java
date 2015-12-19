@@ -49,6 +49,9 @@ public final class Constants {
      */
     public static final short AVG_SIZE = 177;
 
+    /**
+     * unused constructor to avoid instantiation
+     */
     private Constants() {
         // not called
     }
