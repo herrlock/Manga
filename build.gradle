@@ -28,10 +28,10 @@ allprojects { project ->
 		reportLevel = 'low'
 	}
 	tasks.withType(FindBugs) {
-	    reports {
-	        xml.enabled = false
-	        html.enabled = true
-	    }
+		reports {
+			xml.enabled = false
+			html.enabled = true
+		}
 	}
 	
 	pmd {
@@ -43,31 +43,31 @@ allprojects { project ->
 		buildCommand 'edu.umd.cs.findbugs.plugin.eclipse.findbugsBuilder'
 	}
 	eclipse.classpath {
-        file.withXml {
-            def jfxrt = it.asNode().children().find{ entry ->
-            	return entry['@path'].contains('jfxrt') 
-            }
-            Node attributes = new Node(jfxrt, 'attributes')
-            Node attribute = new Node(attributes, 'attribute')
-            attribute.'@name' = 'javadoc_location'
-            attribute.'@value' = 'http://docs.oracle.com/javafx/2/api/'
-        }
+		file.withXml {
+			def jfxrt = it.asNode().children().find{ entry ->
+				return entry['@path'].contains('jfxrt') 
+			}
+			Node attributes = new Node(jfxrt, 'attributes')
+			Node attribute = new Node(attributes, 'attribute')
+			attribute.'@name' = 'javadoc_location'
+			attribute.'@value' = 'http://docs.oracle.com/javafx/2/api/'
+		}
 	}
 	
 	task sourceJar(type: Jar) {
-	    from sourceSets.main.allJava
+		from sourceSets.main.allJava
 	}
 	
 	publishing {
-	    publications {
-	        mavenJava(MavenPublication) {
-	            from components.java
+		publications {
+			mavenJava(MavenPublication) {
+				from components.java
 	
-	            artifact sourceJar {
-	                classifier 'sources'
-	            }
-	        }
-	    }
+				artifact sourceJar {
+					classifier 'sources'
+				}
+			}
+		}
 	}
 	
 	repositories {
@@ -80,7 +80,7 @@ def temp = mkdir("${rootProject.buildDir}/disttemp/")
 
 task createLibs (type: Copy, description: 'Create jar from subprojects and copies them into the lib-folder') {
 	into new File(temp, 'lib')
-    subprojects.each { s -> 
+	subprojects.each { s -> 
 		dependsOn s.jar
 		from s.jar
 		from s.configurations.runtime
@@ -98,24 +98,24 @@ task copyDist (type: Copy, description: 'Copy content of \"src/dist\" to the tem
 }
 
 task compileRun (description: 'Compile run.cs and copy the exe into the build-folder') {
-    def csfolder = 'src/main/cs'
-    def filename = 'Run.exe'
-    def exefile = new File(csfolder, filename)
-    doLast {
-    	try {
-	        exec {
-	            workingDir csfolder
-	            commandLine 'cmd', '/c', 'csc', '/t:winexe', "/out:${filename}", '/nologo', 'run.cs'
-	        }
-	        copy {
-	            from exefile
-	            into temp
-	        }
-	        delete exefile
-        } catch(org.gradle.process.internal.ExecException ex) {
+	def csfolder = 'src/main/cs'
+	def filename = 'Run.exe'
+	def exefile = new File(csfolder, filename)
+	doLast {
+		try {
+			exec {
+				workingDir csfolder
+				commandLine 'cmd', '/c', 'csc', '/t:winexe', "/out:${filename}", '/nologo', 'run.cs'
+			}
+			copy {
+				from exefile
+				into temp
+			}
+			delete exefile
+		} catch(org.gradle.process.internal.ExecException ex) {
 			logger.warn 'run.cs could not be compiled to run.exe, csc missing on path'
-        }
-    }
+		}
+	}
 }
 
 task copyLauncher(type: Copy, dependsOn: jar, description: 'Copies the launcher to the root folder') {
@@ -125,12 +125,12 @@ task copyLauncher(type: Copy, dependsOn: jar, description: 'Copies the launcher 
 
 //distribution-task
 task dist (type: Zip, group: 'build', dependsOn: [createLibs, copyOther, copyDist, compileRun, copyLauncher], description: 'Creates a distribution in a zip-file') {
-    destinationDir = file('build')
-    baseName = project.name
-    version = project.version
-    
-    into baseName + '-' + version
-    from temp
+	destinationDir = file('build')
+	baseName = project.name
+	version = project.version
+	
+	into baseName + '-' + version
+	from temp
 }
 
 
