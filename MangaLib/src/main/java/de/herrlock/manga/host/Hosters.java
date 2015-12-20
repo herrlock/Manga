@@ -1,13 +1,16 @@
 package de.herrlock.manga.host;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,6 +21,10 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.impl.MangaFox;
@@ -33,6 +40,8 @@ public final class Hosters {
     private static final Logger logger = LogManager.getLogger();
 
     private static final Collection<Hoster> hosters = new HashSet<>();
+    private static final List<Class<? extends ChapterList>> defaultHosters = ImmutableList.of( MangaPanda.class, MangaFox.class,
+        PureManga.class );
 
     /**
      * A {@link Comparator} to compare two {@link Hoster} according to their name. Uses {@link String#compareTo(String)}
@@ -55,31 +64,81 @@ public final class Hosters {
     };
 
     static {
-        for ( Class<? extends ChapterList> c : Arrays.asList( MangaPanda.class, MangaFox.class, PureManga.class ) ) {
+        for ( Class<? extends ChapterList> c : defaultHosters ) {
             registerHoster( c );
         }
 
         // TODO check if this works, write JUnit-tests
-        List<String> classes = new ArrayList<>();
-        try {
-            List<String> allLines = Files.readAllLines( Paths.get( ".", "additionalHoster.txt" ), StandardCharsets.UTF_8 );
-            classes.addAll( allLines );
-        } catch ( final NoSuchFileException ex ) {
-            logger.info( "additionalHoster.txt not found, ignoring" );
-        } catch ( final IOException ex ) {
-            throw new MDRuntimeException( "could not load additionalHoster.txt", ex );
-        }
-        for ( String s : classes ) {
+
+        Path additionalHostersPath = Paths.get( ".", "additionalHoster.txt" );
+        if ( Files.exists( additionalHostersPath ) ) {
             try {
-                Class<?> c = Class.forName( s );
-                if ( ChapterList.class.isAssignableFrom( c ) ) {
-                    registerHoster( c.asSubclass( ChapterList.class ) );
-                } else {
-                    logger.warn( "Class {} is no subclass of ChapterList", c );
-                }
-            } catch ( final ClassNotFoundException ex ) {
-                logger.warn( "Could not find class {}", s );
+                List<String> allLines = Files.readAllLines( additionalHostersPath, StandardCharsets.UTF_8 );
+                loadAdditionalHosters( allLines );
+            } catch ( final NoSuchFileException ex ) {
+                logger.info( "additionalHoster.txt not found, ignoring" );
+            } catch ( final IOException ex ) {
+                throw new MDRuntimeException( "could not load additionalHoster.txt", ex );
             }
+        }
+    }
+
+    private static void loadAdditionalHosters( final List<String> lines ) {
+        logger.entry( lines );
+        List<URL> resourcePaths = loadResourcePaths( lines );
+
+        URL[] resourcePathArray = resourcePaths.toArray( new URL[resourcePaths.size()] );
+        try ( URLClassLoader currentClassLoader = new URLClassLoader( resourcePathArray, Hosters.class.getClassLoader() ) ) {
+
+            for ( String line : lines ) {
+                if ( !line.trim().isEmpty() && ( !line.startsWith( "[" ) || !line.endsWith( "]" ) ) ) {
+                    loadExtraClass( currentClassLoader, line );
+                }
+            }
+        } catch ( IOException ex ) {
+            throw new MDRuntimeException( ex );
+        }
+    }
+
+    private static List<URL> loadResourcePaths( final List<String> lines ) {
+        List<URL> resourcePaths = new ArrayList<>();
+        try {
+            resourcePaths.add( new File( "lib/MangaExt.jar" ).toURI().toURL() );
+            final Predicate<String> isBracketLine = new Predicate<String>() {
+                @Override
+                public boolean apply( final String input ) {
+                    return input != null && input.startsWith( "[" ) && input.endsWith( "]" );
+                }
+            };
+            Iterable<String> linesWithResources = Iterables.filter( lines, isBracketLine );
+            for ( String line : linesWithResources ) {
+                String filename = line.substring( 1, line.length() - 1 );
+                File nextFile = new File( filename );
+                URL nextFileURL = nextFile.toURI().toURL();
+                resourcePaths.add( nextFileURL );
+            }
+        } catch ( MalformedURLException ex ) {
+            throw new MDRuntimeException( ex );
+        }
+        return resourcePaths;
+    }
+
+    private static void loadExtraClass( URLClassLoader currentClassLoader, String line ) {
+        try {
+            Class<?> c = Class.forName( line, false, currentClassLoader );
+            if ( ChapterList.class.isAssignableFrom( c ) ) {
+                Class<? extends ChapterList> asSubclass = c.asSubclass( ChapterList.class );
+                boolean added = registerHoster( asSubclass );
+                if ( added ) {
+                    logger.info( "Class {} registered", c );
+                } else {
+                    logger.info( "Class {} already registered", c );
+                }
+            } else {
+                logger.warn( "Class {} is no subclass of ChapterList", c );
+            }
+        } catch ( final ClassNotFoundException ex ) {
+            logger.warn( "Could not find class {}", line );
         }
     }
 
@@ -88,9 +147,11 @@ public final class Hosters {
      * 
      * @param hoster
      *            the Hoster to add
+     * @return if the Hoster was actually added
+     * @see java.util.Collection#add(Object)
      */
-    public static void registerHoster( final Hoster hoster ) {
-        hosters.add( hoster );
+    public static boolean registerHoster( final Hoster hoster ) {
+        return hosters.add( hoster );
     }
 
     /**
@@ -100,8 +161,8 @@ public final class Hosters {
      *            the class to create a Hoster with
      * @see Hoster#Hoster(Class)
      */
-    public static void registerHoster( final Class<? extends ChapterList> c ) {
-        registerHoster( new Hoster( c ) );
+    public static boolean registerHoster( final Class<? extends ChapterList> c ) {
+        return registerHoster( new Hoster( c ) );
     }
 
     /**
