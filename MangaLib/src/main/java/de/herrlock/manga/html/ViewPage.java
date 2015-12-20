@@ -67,9 +67,9 @@ public final class ViewPage {
         this.maxImgs = maxImgs();
         this.document = Document.createShell( "" );
         Element head = this.document.select( "head" ).first();
-        this.document.appendChild( createHeadChildren( head ) );
+        createHeadChildren( head );
         Element body = this.document.select( "body" ).first();
-        this.document.appendChild( createBodyChildren( body ) );
+        createBodyChildren( body );
     }
 
     /**
@@ -105,8 +105,9 @@ public final class ViewPage {
         // .append( ",chapterblock: " )//
         // .append( ( max - max % 10 ) / 10 )//
         // .append( "};" );
-        String mangaObject = MessageFormat.format( "var manga = '{\n\tchapter: {0},\n\tmax_pages: {1},\n\tchapterblock: {2}\n'};",
-            max, this.maxImgs, ( max - max % 10 ) / 10 );
+        String mangaObject = MessageFormat.format(
+            "var manga = '{'\n\tchapter: {0},\n\tmax_pages: {1},\n\tchapterblock: {2}\n'}';", max, this.maxImgs,
+            ( max - max % 10 ) / 10 );
         head.appendElement( "script" ).text( mangaObject );
 
         String[] js = {
