@@ -88,11 +88,11 @@ public final class Hosters {
         List<URL> resourcePaths = loadResourcePaths( lines );
 
         URL[] resourcePathArray = resourcePaths.toArray( new URL[resourcePaths.size()] );
-        try ( URLClassLoader currentClassLoader = new URLClassLoader( resourcePathArray, Hosters.class.getClassLoader() ) ) {
+        try ( URLClassLoader classLoader = new URLClassLoader( resourcePathArray, Hosters.class.getClassLoader() ) ) {
 
             for ( String line : lines ) {
-                if ( !line.trim().isEmpty() && ( !line.startsWith( "[" ) || !line.endsWith( "]" ) ) ) {
-                    loadExtraClass( currentClassLoader, line );
+                if ( !line.trim().isEmpty() && ( line.charAt( 0 ) != '[' || line.charAt( line.length() ) != ']' ) ) {
+                    loadExtraClass( classLoader, line );
                 }
             }
         } catch ( IOException ex ) {
@@ -123,9 +123,9 @@ public final class Hosters {
         return resourcePaths;
     }
 
-    private static void loadExtraClass( URLClassLoader currentClassLoader, String line ) {
+    private static void loadExtraClass( final URLClassLoader classLoader, final String line ) {
         try {
-            Class<?> c = Class.forName( line, false, currentClassLoader );
+            Class<?> c = Class.forName( line, false, classLoader );
             if ( ChapterList.class.isAssignableFrom( c ) ) {
                 Class<? extends ChapterList> asSubclass = c.asSubclass( ChapterList.class );
                 boolean added = registerHoster( asSubclass );

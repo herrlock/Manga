@@ -90,14 +90,14 @@ public class Hoster implements Comparable<Hoster> {
     }
 
     @Override
-    public int compareTo( Hoster other ) {
+    public int compareTo( final Hoster other ) {
         String thisBaseClassName = this.baseClass.getName();
         String otherBaseClassName = other.baseClass.getName();
         return thisBaseClassName.compareTo( otherBaseClassName );
     }
 
     @Override
-    public boolean equals( Object other ) {
+    public boolean equals( final Object other ) {
         return other != null && other instanceof Hoster && this.compareTo( ( Hoster ) other ) == 0;
     }
 
