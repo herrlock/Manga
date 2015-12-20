@@ -16,7 +16,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * 
  * @author HerrLock
  */
-public class Hoster {
+public class Hoster implements Comparable<Hoster> {
 
     private final Class<? extends ChapterList> baseClass;
     private final String name;
@@ -89,4 +89,20 @@ public class Hoster {
         return this.baseUrl;
     }
 
+    @Override
+    public int compareTo( Hoster other ) {
+        String thisBaseClassName = this.baseClass.getName();
+        String otherBaseClassName = other.baseClass.getName();
+        return thisBaseClassName.compareTo( otherBaseClassName );
+    }
+
+    @Override
+    public boolean equals( Object other ) {
+        return other != null && other instanceof Hoster && this.compareTo( ( Hoster ) other ) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.baseClass.getName().hashCode();
+    }
 }
