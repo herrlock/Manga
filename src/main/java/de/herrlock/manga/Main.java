@@ -2,6 +2,7 @@ package de.herrlock.manga;
 
 import static de.herrlock.manga.MyOptions.OPTIONS;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
@@ -11,11 +12,14 @@ import java.util.Arrays;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.ParseException;
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.downloader.ConsoleDownloader;
+import de.herrlock.manga.exceptions.MDRuntimeException;
+import de.herrlock.manga.http.Server;
 import de.herrlock.manga.util.ChapterPattern;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import javafx.application.Application;
@@ -28,9 +32,10 @@ public final class Main {
 
     /**
      * @param args
+     * @throws ParseException
      * @throws MalformedURLException
      */
-    public static void main( String... args ) throws Exception {
+    public static void main( final String... args ) throws ParseException, MalformedURLException {
         CommandLine cl = new DefaultParser().parse( OPTIONS, args );
         logger.debug( Arrays.toString( cl.getOptions() ) );
         if ( cl.getOptions().length == 0 ) {
@@ -48,7 +53,7 @@ public final class Main {
 
         } else if ( cl.hasOption( "dialog" ) ) {
             logger.trace( "Commandline has \"dialog\", start Dialog-Downloader" );
-            // startDialogDownloader( cl );
+            // startDialogDownloader( args );
 
         } else if ( cl.hasOption( "gui" ) ) {
             logger.trace( "Commandline has \"gui\", launch GUI" );
@@ -56,11 +61,11 @@ public final class Main {
 
         } else if ( cl.hasOption( "viewpage" ) ) {
             logger.trace( "Commandline has \"viewpage\", start creating html-resources" );
-            // startCliDownloader( cl );
+            // startViewpageCreator( args );
 
         } else if ( cl.hasOption( "server" ) ) {
             logger.trace( "Commandline has \"server\", start Server" );
-            // startCliDownloader( cl );
+            startServer();
 
         } else {
             logger.trace( "else, don't know what to do" );
@@ -91,7 +96,7 @@ public final class Main {
         logger.info( stringWriter );
     }
 
-    private static void startCliDownloader( CommandLine cl ) throws MalformedURLException {
+    private static void startCliDownloader( final CommandLine cl ) throws MalformedURLException {
         logger.entry( cl );
 
         URL url = new URL( cl.getOptionValue( "url" ) );
@@ -104,9 +109,24 @@ public final class Main {
         dl.run();
     }
 
-    private static void startGuiDownloader( String... args ) {
+    private static void startGuiDownloader( final String... args ) {
         logger.entry();
         Application.launch( Ctrl.class, args );
     }
 
+    private static void startServer() {
+        logger.entry();
+        try {
+            Server.startDefaultServer();
+        } catch ( IOException ex ) {
+            throw new MDRuntimeException( ex );
+        }
+    }
+
+    /**
+     * private constructor to avoid instantiation
+     */
+    private Main() {
+        // not used
+    }
 }

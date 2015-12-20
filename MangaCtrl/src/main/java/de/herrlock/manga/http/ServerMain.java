@@ -20,11 +20,7 @@ public final class ServerMain {
     }
 
     public ServerMain() {
-        this( 1905 );
-    }
-
-    public ServerMain( final int port ) {
-        this.server = new DefaultServer( port );
+        this.server = Server.createDefault();
     }
 
     public void startServer() {
