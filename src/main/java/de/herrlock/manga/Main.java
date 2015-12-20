@@ -1,5 +1,7 @@
 package de.herrlock.manga;
 
+import static de.herrlock.manga.MyOptions.OPTIONS;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
@@ -9,8 +11,6 @@ import java.util.Arrays;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,32 +26,6 @@ import javafx.application.Application;
 public final class Main {
     private static final Logger logger = LogManager.getLogger();
 
-    private static final Options OPTIONS = new Options()//
-        .addOption( Option.builder( "u" )//
-            .longOpt( "url" )//
-            .hasArg()//
-            .desc( "The URL to download from" )//
-            .build() )//
-        .addOption( Option.builder( "p" )//
-            .longOpt( "pattern" )//
-            .hasArg()//
-            .desc( "The pattern to use" )//
-            .build() )//
-        .addOption( Option.builder( "x" )//
-            .longOpt( "proxy" )//
-            .hasArg()//
-            .desc( "The Proxy to use (protocol://url:port)" )//
-            .build() )//
-        .addOption( Option.builder( "i" )//
-            .longOpt( "interactive" )//
-            .desc( "May ask something from STDIN" )//
-            .build() )//
-        .addOption( Option.builder( "h" )//
-            .longOpt( "help" )//
-            .desc( "Show the help" )//
-            .build() )//
-            ;
-
     /**
      * @param args
      * @throws MalformedURLException
@@ -59,15 +33,37 @@ public final class Main {
     public static void main( String... args ) throws Exception {
         CommandLine cl = new DefaultParser().parse( OPTIONS, args );
         logger.debug( Arrays.toString( cl.getOptions() ) );
-        if ( cl.hasOption( 'h' ) ) {
+        if ( cl.getOptions().length == 0 ) {
+            // empty arguments
+            logger.trace( "empty args, start GUI" );
+            startGuiDownloader( args );
+
+        } else if ( cl.hasOption( 'h' ) ) {
             logger.trace( "Commandline has 'h', show help" );
             printHelp();
-        } else if ( cl.hasOption( 'u' ) ) {
-            logger.trace( "Commandline has 'u', start CLI-Downloader" );
+
+        } else if ( cl.hasOption( "console" ) ) {
+            logger.trace( "Commandline has \"console\", start CLI-Downloader" );
             startCliDownloader( cl );
-        } else {
-            logger.trace( "else, start GUI" );
+
+        } else if ( cl.hasOption( "dialog" ) ) {
+            logger.trace( "Commandline has \"dialog\", start Dialog-Downloader" );
+            // startDialogDownloader( cl );
+
+        } else if ( cl.hasOption( "gui" ) ) {
+            logger.trace( "Commandline has \"gui\", launch GUI" );
             startGuiDownloader( args );
+
+        } else if ( cl.hasOption( "viewpage" ) ) {
+            logger.trace( "Commandline has \"viewpage\", start creating html-resources" );
+            // startCliDownloader( cl );
+
+        } else if ( cl.hasOption( "server" ) ) {
+            logger.trace( "Commandline has \"server\", start Server" );
+            // startCliDownloader( cl );
+
+        } else {
+            logger.trace( "else, don't know what to do" );
         }
     }
 
@@ -80,8 +76,17 @@ public final class Main {
 
         pw.println();
 
-        final String appCommand = "java -jar MangaLauncher.jar";
-        helpFormatter.printHelp( pw, 100, appCommand, null, OPTIONS, 4, 2, null, true );
+        final String cmdLineSyntax = "java -jar MangaLauncher.jar";
+        final String header = "";
+        final String footer = "";
+        final int width = 100;
+        int leftPad = HelpFormatter.DEFAULT_LEFT_PAD;
+        int descPad = HelpFormatter.DEFAULT_DESC_PAD;
+
+        helpFormatter.printUsage( pw, width, cmdLineSyntax, OPTIONS );
+        helpFormatter.printWrapped( pw, width, header );
+        helpFormatter.printOptions( pw, width, OPTIONS, leftPad, descPad );
+        helpFormatter.printWrapped( pw, width, footer );
 
         logger.info( stringWriter );
     }
