@@ -48,7 +48,7 @@ public abstract class MDownloader implements Progressable {
     /**
      * contains the current progress
      */
-    private int progress = 0;
+    private int progress;
     /**
      * contains the maximal progress
      */

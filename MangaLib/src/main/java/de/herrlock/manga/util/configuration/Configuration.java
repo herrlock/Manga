@@ -51,6 +51,8 @@ public abstract class Configuration {
      */
     public static final String HEADLESS = "headless";
 
+    private final boolean isHeadless;
+
     protected static boolean _getIsHeadless( final Properties p ) {
         logger.entry();
         String property = p.getProperty( HEADLESS );
@@ -175,8 +177,6 @@ public abstract class Configuration {
         return new File( fwPath );
     }
 
-    private final boolean isHeadless;
-
     @Override
     public abstract String toString();
 
@@ -194,7 +194,7 @@ public abstract class Configuration {
      * @param isHeadless
      *            if the downloader runs in cli-mode (false) or with a type of gui (true)
      */
-    protected Configuration( boolean isHeadless ) {
+    protected Configuration( final boolean isHeadless ) {
         this.isHeadless = isHeadless;
     }
 

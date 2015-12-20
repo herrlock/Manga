@@ -140,7 +140,7 @@ public final class Dialogs {
          * @param dialog
          *            the Dialog to close
          */
-        public DialogHider( Dialog dialog ) {
+        public DialogHider( final Dialog dialog ) {
             this.dialog = dialog;
         }
 
