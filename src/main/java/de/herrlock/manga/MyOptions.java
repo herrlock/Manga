@@ -8,7 +8,7 @@ public final class MyOptions {
 
     private static final Option CONSOLE_TYPE_OPTION = Option.builder()//
         .longOpt( "console" )//
-        .desc( "(default) start the console-downloader" )//
+        .desc( "start the console-downloader" )//
         .build();
     private static final Option DIALOG_TYPE_OPTION = Option.builder()//
         .longOpt( "dialog" )//
