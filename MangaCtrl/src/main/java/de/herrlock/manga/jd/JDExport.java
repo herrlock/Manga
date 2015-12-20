@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.exceptions.InitializeException;
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.Configuration;
@@ -39,7 +39,7 @@ public final class JDExport extends MDownloader {
                 p.load( fIn );
             }
         } catch ( IOException ex ) {
-            throw new MyException( ex );
+            throw new MDRuntimeException( ex );
         }
         execute( p );
     }
@@ -58,7 +58,7 @@ public final class JDExport extends MDownloader {
         super( conf );
         this.jdfwFolder = conf.getFolderwatch();
         if ( !( this.jdfwFolder.exists() || this.jdfwFolder.mkdir() ) ) {
-            throw new MyException( this.jdfwFolder + " does not exist and could not be created" );
+            throw new MDRuntimeException( this.jdfwFolder + " does not exist and could not be created" );
         }
     }
 
@@ -74,7 +74,7 @@ public final class JDExport extends MDownloader {
                 new CrawljobFile( entry.getKey(), entry.getValue() ).write();
             }
         } catch ( IOException ex ) {
-            throw new MyException( ex );
+            throw new MDRuntimeException( ex );
         }
     }
 
@@ -118,7 +118,7 @@ public final class JDExport extends MDownloader {
                 } catch ( SocketTimeoutException ex ) {
                     return getImageLink();
                 } catch ( IOException ex ) {
-                    throw new MyException( ex );
+                    throw new MDRuntimeException( ex );
                 }
             }
         }

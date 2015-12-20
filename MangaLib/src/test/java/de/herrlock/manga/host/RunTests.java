@@ -15,7 +15,7 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 
 /**
  * @author HerrLock
@@ -81,7 +81,7 @@ public class RunTests {
                         classes.add( c.asSubclass( ChapterList.class ) );
                     }
                 } catch ( final ClassNotFoundException ex ) {
-                    throw new MyException( ex );
+                    throw new MDRuntimeException( ex );
                 }
             }
         }

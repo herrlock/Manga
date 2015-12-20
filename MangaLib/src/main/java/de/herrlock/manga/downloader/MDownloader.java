@@ -15,7 +15,7 @@ import de.herrlock.manga.downloader.dqc.DownloadQueueContainer;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.downloader.pmc.PictureMapContainer;
 import de.herrlock.manga.exceptions.InitializeException;
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.ProgressListener;
 import de.herrlock.manga.util.Progressable;
@@ -151,7 +151,7 @@ public abstract class MDownloader implements Progressable {
             // start download
             this.dqc.downloadPages();
         } else {
-            throw new MyException( chapterFolder + " does not exists and could not be created" );
+            throw new MDRuntimeException( chapterFolder + " does not exists and could not be created" );
         }
         logger.info( "finished chapter {}", key );
     }

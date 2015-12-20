@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -74,7 +74,7 @@ public final class Dialogs {
                     topContent.getChildren().add( imageView );
                 }
             } catch ( IOException ex ) {
-                throw new MyException( ex );
+                throw new MDRuntimeException( ex );
             }
             topContent.getChildren().add( message );
             final VBox vbox = new VBox( 10 );
@@ -172,7 +172,7 @@ public final class Dialogs {
         try {
             return task.get();
         } catch ( final InterruptedException | ExecutionException ex ) {
-            throw new MyException( ex );
+            throw new MDRuntimeException( ex );
         }
     }
 
@@ -188,7 +188,7 @@ public final class Dialogs {
         try {
             return task.get();
         } catch ( InterruptedException | ExecutionException ex ) {
-            throw new MyException( ex );
+            throw new MDRuntimeException( ex );
         }
     }
 

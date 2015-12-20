@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.downloader.pmc.EntryList;
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
@@ -160,7 +160,7 @@ public final class DownloadQueueContainer {
                     logger.info( "HTTP-Status 503 ({}), trying again", this.p.getUrl() );
                     DownloadQueueContainer.this.add( this.p );
                 } else {
-                    throw new MyException( ex );
+                    throw new MDRuntimeException( ex );
                 }
             }
             return null;

@@ -3,7 +3,7 @@ package de.herrlock.manga.http;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 
 /**
  * @author HerrLock
@@ -32,7 +32,7 @@ public final class ServerMain {
         try {
             this.server.start();
         } catch ( Exception ex ) {
-            throw new MyException( ex );
+            throw new MDRuntimeException( ex );
         }
     }
 

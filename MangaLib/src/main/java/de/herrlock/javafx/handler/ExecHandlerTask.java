@@ -2,7 +2,7 @@ package de.herrlock.javafx.handler;
 
 import de.herrlock.javafx.Dialogs;
 import de.herrlock.manga.exceptions.InitializeException;
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -47,7 +47,7 @@ public class ExecHandlerTask extends Task<Void> {
         @Override
         public void handle( final WorkerStateEvent t ) {
             Throwable exception = ExecHandlerTask.this.getException();
-            throw exception instanceof RuntimeException ? ( RuntimeException ) exception : new MyException( exception );
+            throw exception instanceof RuntimeException ? ( RuntimeException ) exception : new MDRuntimeException( exception );
         }
     }
 }

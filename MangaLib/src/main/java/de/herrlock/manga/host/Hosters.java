@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.impl.MangaFox;
 import de.herrlock.manga.host.impl.MangaPanda;
 import de.herrlock.manga.host.impl.PureManga;
@@ -67,7 +67,7 @@ public final class Hosters {
         } catch ( final NoSuchFileException ex ) {
             logger.info( "additionalHoster.txt not found, ignoring" );
         } catch ( final IOException ex ) {
-            throw new MyException( "could not load additionalHoster.txt", ex );
+            throw new MDRuntimeException( "could not load additionalHoster.txt", ex );
         }
         for ( String s : classes ) {
             try {

@@ -8,7 +8,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.CtrlUtils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
@@ -28,7 +28,7 @@ public final class PlainDownloader extends MDownloader {
         try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
             p.load( fIn );
         } catch ( IOException ex ) {
-            throw new MyException( ex );
+            throw new MDRuntimeException( ex );
         }
         // properties loaded successful
         DownloadConfiguration conf = DownloadConfiguration.create( p );

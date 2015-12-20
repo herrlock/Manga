@@ -6,7 +6,7 @@ import java.net.URLDecoder;
 import java.util.Properties;
 
 import de.herrlock.manga.downloader.MDownloader;
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.http.ServerException;
 import de.herrlock.manga.http.response.Response;
 import de.herrlock.manga.http.response.TextResponse;
@@ -43,7 +43,7 @@ public final class StartDownloadLocation extends Location {
             try {
                 value = URLDecoder.decode( value, "UTF-8" );
             } catch ( final UnsupportedEncodingException ex ) {
-                throw new MyException( ex );
+                throw new MDRuntimeException( ex );
             }
             p.setProperty( paramArr[0], value );
         }

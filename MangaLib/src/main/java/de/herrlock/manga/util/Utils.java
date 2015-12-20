@@ -19,7 +19,7 @@ import org.apache.http.impl.client.HttpClients;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -101,12 +101,12 @@ public final class Utils {
      * 
      * @param threads
      *            the {@link Thread}s to start and wait for
-     * @throws MyException
+     * @throws MDRuntimeException
      *             in case of an {@link InterruptedException}
      * @deprecated use {@link #callCallables(Collection)} instead
      */
     @Deprecated
-    public static void startAndWaitForThreads( final Collection<? extends Thread> threads ) throws MyException {
+    public static void startAndWaitForThreads( final Collection<? extends Thread> threads ) {
         // start all threads
         for ( Thread t : threads ) {
             t.start();
@@ -117,7 +117,7 @@ public final class Utils {
                 t.join();
             }
         } catch ( final InterruptedException ex ) {
-            throw new MyException( ex );
+            throw new MDRuntimeException( ex );
         }
     }
 
@@ -134,7 +134,7 @@ public final class Utils {
         try {
             return THREAD_POOL.invokeAll( callables );
         } catch ( final InterruptedException ex ) {
-            throw new MyException( ex );
+            throw new MDRuntimeException( ex );
         }
     }
 

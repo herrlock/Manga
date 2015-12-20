@@ -7,7 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -63,11 +63,11 @@ public class Hoster {
         } catch ( final InstantiationException ex ) {
             throw new IllegalStateException( "The called class is abstract", ex );
         } catch ( final IllegalAccessException ex ) {
-            throw new MyException( "The called constructor is not accessible", ex );
+            throw new MDRuntimeException( "The called constructor is not accessible", ex );
         } catch ( final IllegalArgumentException ex ) {
-            throw new MyException( "The called constructor does not take one DownloadConfiguration as parameter", ex );
+            throw new MDRuntimeException( "The called constructor does not take one DownloadConfiguration as parameter", ex );
         } catch ( final InvocationTargetException ex ) {
-            throw new MyException( "The called constructor threw an exception", ex );
+            throw new MDRuntimeException( "The called constructor threw an exception", ex );
         }
     }
 

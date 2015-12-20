@@ -25,7 +25,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 
 /**
  * 
@@ -51,7 +51,7 @@ public final class ViewPage {
             writer.write( "<!DOCTYPE HTML>\n" );
             writer.write( doc.toString() );
         } catch ( final IOException ex ) {
-            throw new MyException( ex );
+            throw new MDRuntimeException( ex );
         }
     }
 
@@ -242,7 +242,7 @@ public final class ViewPage {
             File toFile = new File( this.folder, filename );
             FileUtils.copyInputStreamToFile( resource, toFile );
         } catch ( final IOException ex ) {
-            throw new MyException( ex );
+            throw new MDRuntimeException( ex );
         }
     }
 

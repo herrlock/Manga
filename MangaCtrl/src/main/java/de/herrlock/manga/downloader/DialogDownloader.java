@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.herrlock.javafx.Dialogs;
 import de.herrlock.javafx.Dialogs.Response;
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.CtrlUtils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
@@ -31,7 +31,7 @@ public final class DialogDownloader extends MDownloader {
         try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
             p.load( fIn );
         } catch ( IOException ex ) {
-            throw new MyException( ex );
+            throw new MDRuntimeException( ex );
         }
         // properties loaded successful
         DownloadConfiguration conf = DownloadConfiguration.create( p );

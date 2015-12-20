@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 
 import de.herrlock.javafx.AbstractApplication;
 import de.herrlock.javafx.scene.SceneContainer;
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,7 +35,7 @@ public final class MDGui extends AbstractApplication {
                 Parent root = FXMLLoader.load( location, i18n );
                 setScene( new Scene( root ) );
             } catch ( IOException ex ) {
-                throw new MyException( ex );
+                throw new MDRuntimeException( ex );
             }
         }
 

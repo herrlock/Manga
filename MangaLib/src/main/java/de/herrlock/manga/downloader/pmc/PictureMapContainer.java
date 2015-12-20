@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
-import de.herrlock.manga.exceptions.MyException;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Utils;
 
@@ -115,7 +115,7 @@ public final class PictureMapContainer {
                     logger.info( "HTTP-Status 503 (chapter {}), trying again", this.chapter.getNumber() );
                     allPages = getMap();
                 } else {
-                    throw new MyException( ioex );
+                    throw new MDRuntimeException( ioex );
                 }
             }
             return allPages;

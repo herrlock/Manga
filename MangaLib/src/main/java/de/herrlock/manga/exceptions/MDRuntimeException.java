@@ -5,48 +5,47 @@ package de.herrlock.manga.exceptions;
  * 
  * @author HerrLock
  */
-public final class MyException extends RuntimeException {
-    // TODO: rename this Exception
+public final class MDRuntimeException extends RuntimeException {
 
     /**
-     * A new MyException without detailed message or cause
+     * A new MDRuntimeException without detailed message or cause
      * 
      * @deprecated should not be used since there will be no detail-message
      */
     @Deprecated
-    public MyException() {
+    public MDRuntimeException() {
         super();
     }
 
     /**
-     * A new MyException with a detailed message
+     * A new MDRuntimeException with a detailed message
      * 
      * @param message
      *            a detailmessage why this exception occurred
      */
-    public MyException( final String message ) {
+    public MDRuntimeException( final String message ) {
         super( message );
     }
 
     /**
-     * A new MyException with a cause
+     * A new MDRuntimeException with a cause
      * 
      * @param cause
      *            the cause of this exception
      */
-    public MyException( final Throwable cause ) {
+    public MDRuntimeException( final Throwable cause ) {
         super( cause );
     }
 
     /**
-     * A new MyException with a detailed message and cause
+     * A new MDRuntimeException with a detailed message and cause
      * 
      * @param message
      *            a detailmessage why this exception occurred
      * @param cause
      *            the cause of this exception
      */
-    public MyException( final String message, final Throwable cause ) {
+    public MDRuntimeException( final String message, final Throwable cause ) {
         super( message, cause );
     }
 
