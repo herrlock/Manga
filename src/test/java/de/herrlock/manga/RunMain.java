@@ -1,15 +1,18 @@
 package de.herrlock.manga;
 
+/**
+ * A class to start Main.main without having to alter the IDE's run-configuration<br/>
+ * Please do not commit changes to this file
+ * 
+ * @author HerrLock
+ */
 public class RunMain {
-    public static void main( String... args ) throws Exception {
+    public static void main( final String... args ) throws Exception {
+        // enter CLI-arguments as string-array here
         String[] arguments = //
         {
-            // "-h"
             "--help"
         };
-        // {
-        // "-u", "http://mangapanda.com/naruto", "-p", "4-5", "-i"
-        // };
         Main.main( arguments );
     }
 }
