@@ -91,7 +91,7 @@ public final class Hosters {
         try ( URLClassLoader classLoader = new URLClassLoader( resourcePathArray, Hosters.class.getClassLoader() ) ) {
 
             for ( String line : lines ) {
-                if ( !line.trim().isEmpty() && ( line.charAt( 0 ) != '[' || line.charAt( line.length() ) != ']' ) ) {
+                if ( !line.trim().isEmpty() && line.charAt( 0 ) != '[' ) {
                     loadExtraClass( classLoader, line );
                 }
             }
