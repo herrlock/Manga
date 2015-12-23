@@ -47,6 +47,7 @@
 		<priority>4</priority>
 		<exclude name="AvoidInstantiatingObjectsInLoops" />
 		<exclude name="LocalVariableCouldBeFinal" />
+		<exclude name="SimplifyStartsWith" />
 	</rule>
 	<rule ref="rulesets/java/strictexception.xml">
 		<priority>4</priority>
@@ -57,11 +58,9 @@
 	</rule>
 
 	<!-- configure with the right parameters, exclude unnecessary tests -->
-	<!-- <rule ref="rulesets/java/comments.xml"> -->
-	<!-- <priority>4</priority> -->
-	<!-- </rule> -->
 	<!-- <rule ref="rulesets/java/naming.xml"> -->
 	<!-- <priority>4</priority> -->
+	<!-- <exclude name="VariableNamingConventions" /> -->
 	<!-- </rule> -->
 	<!-- <rule ref="rulesets/java/codesize.xml"> -->
 	<!-- <priority>4</priority> -->
