@@ -28,7 +28,6 @@ import org.jsoup.parser.Tag;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 
 /**
- * 
  * @author HerrLock
  */
 public final class ViewPage {
@@ -45,6 +44,7 @@ public final class ViewPage {
      *            the folder to save the created files into
      */
     public static void execute( final File folder ) {
+        logger.trace( folder );
         Document doc = new ViewPage( folder ).getDocument();
         Path p = new File( folder, "index.html" ).toPath();
         try ( BufferedWriter writer = Files.newBufferedWriter( p, StandardCharsets.UTF_8 ) ) {
@@ -61,7 +61,7 @@ public final class ViewPage {
      * @param folder
      *            the folder where to create the ViewPages
      */
-    public ViewPage( final File folder ) {
+    private ViewPage( final File folder ) {
         logger.info( "create files in folder {}", folder );
         this.folder = folder;
         this.maxImgs = maxImgs();
@@ -86,7 +86,7 @@ public final class ViewPage {
     }
 
     private Element createHeadChildren( final Element head ) {
-        logger.info( "createHead" );
+        logger.entry( head );
         head.appendElement( "title" ).text( mangaName() );
         head.appendElement( "meta" ).attr( "charset", "utf-8" );
         head.appendElement( "link" ).attr( "rel", "shortcut icon" ).attr( "href", "favicon.ico" );
@@ -97,17 +97,8 @@ public final class ViewPage {
         File maxFile = Collections.max( files, Const.numericFilenameComparator );
         int max = Integer.parseInt( maxFile.getName() );
 
-        // StringBuilder mangaObject = new StringBuilder()//
-        // .append( "var manga={chapter: " )//
-        // .append( max )//
-        // .append( ",max_pages: " )//
-        // .append( this.maxImgs )//
-        // .append( ",chapterblock: " )//
-        // .append( ( max - max % 10 ) / 10 )//
-        // .append( "};" );
-        String mangaObject = MessageFormat.format(
-            "var manga = '{'\n\tchapter: {0},\n\tmax_pages: {1},\n\tchapterblock: {2}\n'}';", max, this.maxImgs,
-            ( max - max % 10 ) / 10 );
+        String mangaObject = MessageFormat.format( "var manga = '{' chapter: {0}, max_pages: {1}, chapterblock: {2} '}';", max,
+            this.maxImgs, ( max - 1 ) / 10 );
         head.appendElement( "script" ).text( mangaObject );
 
         String[] js = {
@@ -121,8 +112,7 @@ public final class ViewPage {
     }
 
     private Element createBodyChildren( final Element body ) {
-        logger.info( "createBody" );
-        body.attr( "onload", "init()" );
+        logger.entry( body );
         body.appendChild( leftDiv() );
         body.appendChild( rightDiv() );
         return body;
@@ -141,6 +131,7 @@ public final class ViewPage {
                 }
                 blocks.get( blockNr ).add( filename );
             }
+            logger.debug( "Number of blocks: {}", blocks.size() );
         }
         List<Entry<Integer, List<String>>> list = new ArrayList<>( blocks.entrySet() );
         Collections.sort( list, Collections.reverseOrder( Const.integerEntryComparator ) );
@@ -181,7 +172,7 @@ public final class ViewPage {
         a.attr( "class", "hidelink" );
         a.attr( "id", "hidelink" + blockId );
         a.attr( "href", "javascript:void(0)" );
-        a.attr( "onclick", "show(" + blockId + ")" );
+        a.attr( "onclick", "MangaUtils.show(" + blockId + ")" );
         a.attr( "title", "Zeige Kapitel " + ( blockName - step + 1 ) + " bis " + blockName );
 
         a.appendElement( "span" ).attr( "id", "arrow" + blockId ).text( " hereComesAnArrow! " );
@@ -199,7 +190,7 @@ public final class ViewPage {
         a.attr( "class", "whitelink" );
         a.attr( "id", "choose" + chpText );
         a.attr( "href", "javascript:void(0)" );
-        a.attr( "onclick", "choose(" + chpText + ")" );
+        a.attr( "onclick", "MangaUtils.choose(" + chpText + ")" );
         a.attr( "title", "Lade Kapitel " + chpText );
         a.text( pretext + chpText + posttext );
         return a;

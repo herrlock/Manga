@@ -1,26 +1,36 @@
-var inAnimation = false;
-document.onkeydown = function(e) {
-    var active = parseFloat(location.hash.substring(1) || 1);
-    switch (e.keyCode) {
-    case 37: // arrow left
-    case 65: // 'a'
-        choose(active - 1);
-        break;
-    case 39: // arrow right
-    case 68: // 'd'
-        choose(active + 1);
-        break;
+(function() {
+    var inAnimation = false;
 
-    case 87: // 'w'
-    case 83: // 's'
+    var scrollOn = function(d) {
         if (!inAnimation) {
             inAnimation = true;
             $('html,body').animate({
-                scrollTop : document.documentElement.scrollTop + ((e.keyCode == 87) ? -50 : 50)
+                scrollTop : document.documentElement.scrollTop + d
             }, 100, function() {
                 inAnimation = false;
             });
         }
-        break;
-    }
-};
+    };
+
+    document.onkeydown = function(e) {
+        var active = parseFloat(location.hash.substring(1) || 1);
+        switch (e.keyCode) {
+        case 37: // arrow left
+        case 65: // 'a'
+            MangaUtils.choose(active - 1);
+            break;
+        case 39: // arrow right
+        case 68: // 'd'
+            MangaUtils.choose(active + 1);
+            break;
+        case 87: // 'w'
+            scrollOn(-50);
+            break;
+        case 83: // 's'
+            scrollOn(50);
+            break;
+        default:
+            break;
+        }
+    };
+}());
