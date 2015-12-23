@@ -1,7 +1,5 @@
 package de.herrlock.manga;
 
-import static de.herrlock.manga.MyOptions.OPTIONS;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -12,10 +10,13 @@ import java.util.Arrays;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.http.HttpHost;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import de.herrlock.manga.downloader.ConsoleDownloader;
 import de.herrlock.manga.exceptions.MDRuntimeException;
@@ -36,34 +37,44 @@ public final class Main {
      * @throws MalformedURLException
      */
     public static void main( final String... args ) throws ParseException, MalformedURLException {
-        CommandLine cl = new DefaultParser().parse( OPTIONS, args );
-        logger.debug( Arrays.toString( cl.getOptions() ) );
-        if ( cl.getOptions().length == 0 ) {
+        CommandLine commandline = new DefaultParser().parse( MyOptions.getOptions(), args );
+        logger.debug( Arrays.toString( commandline.getOptions() ) );
+
+        // optional alter loglevel-configuration
+        if ( commandline.hasOption( "log" ) ) {
+            String optionValue = commandline.getOptionValue( "log" );
+            Level level = Level.toLevel( optionValue, Level.INFO );
+            logger.log( Level.ALL, "setting log-level to {}", level );
+            Configurator.setAllLevels( LogManager.ROOT_LOGGER_NAME, level );
+        }
+
+        // start running
+        if ( commandline.getOptions().length == 0 ) {
             // empty arguments
             logger.trace( "empty args, start GUI" );
-            startGuiDownloader( args );
+            startGuiDownloader();
 
-        } else if ( cl.hasOption( 'h' ) ) {
+        } else if ( commandline.hasOption( 'h' ) ) {
             logger.trace( "Commandline has 'h', show help" );
             printHelp();
 
-        } else if ( cl.hasOption( "console" ) ) {
+        } else if ( commandline.hasOption( "console" ) ) {
             logger.trace( "Commandline has \"console\", start CLI-Downloader" );
-            startCliDownloader( cl );
+            startCliDownloader( commandline );
 
-        } else if ( cl.hasOption( "dialog" ) ) {
+        } else if ( commandline.hasOption( "dialog" ) ) {
             logger.trace( "Commandline has \"dialog\", start Dialog-Downloader" );
-            // startDialogDownloader( args );
+            startDialogDownloader();
 
-        } else if ( cl.hasOption( "gui" ) ) {
+        } else if ( commandline.hasOption( "gui" ) ) {
             logger.trace( "Commandline has \"gui\", launch GUI" );
-            startGuiDownloader( args );
+            startGuiDownloader();
 
-        } else if ( cl.hasOption( "viewpage" ) ) {
+        } else if ( commandline.hasOption( "viewpage" ) ) {
             logger.trace( "Commandline has \"viewpage\", start creating html-resources" );
-            // startViewpageCreator( args );
+            startViewpageCreator();
 
-        } else if ( cl.hasOption( "server" ) ) {
+        } else if ( commandline.hasOption( "server" ) ) {
             logger.trace( "Commandline has \"server\", start Server" );
             startServer();
 
@@ -75,11 +86,12 @@ public final class Main {
     private static void printHelp() {
         logger.entry();
 
-        HelpFormatter helpFormatter = new HelpFormatter();
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter pw = new PrintWriter( stringWriter );
+        final HelpFormatter helpFormatter = new HelpFormatter();
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter printwriter = new PrintWriter( stringWriter );
+        final Options options = MyOptions.getOptions();
 
-        pw.println();
+        printwriter.println();
 
         final String cmdLineSyntax = "java -jar MangaLauncher.jar";
         final String header = "";
@@ -88,30 +100,43 @@ public final class Main {
         int leftPad = HelpFormatter.DEFAULT_LEFT_PAD;
         int descPad = HelpFormatter.DEFAULT_DESC_PAD;
 
-        helpFormatter.printUsage( pw, width, cmdLineSyntax, OPTIONS );
-        helpFormatter.printWrapped( pw, width, header );
-        helpFormatter.printOptions( pw, width, OPTIONS, leftPad, descPad );
-        helpFormatter.printWrapped( pw, width, footer );
+        helpFormatter.printUsage( printwriter, width, cmdLineSyntax, options );
+        helpFormatter.printWrapped( printwriter, width, header );
+        helpFormatter.printOptions( printwriter, width, options, leftPad, descPad );
+        helpFormatter.printWrapped( printwriter, width, footer );
 
         logger.info( stringWriter );
     }
 
-    private static void startCliDownloader( final CommandLine cl ) throws MalformedURLException {
-        logger.entry( cl );
-
-        URL url = new URL( cl.getOptionValue( "url" ) );
-        HttpHost proxy = cl.hasOption( "proxy" ) ? new HttpHost( cl.getOptionValue( "proxy" ) ) : null;
-        ChapterPattern pattern = cl.hasOption( "pattern" ) ? new ChapterPattern( cl.getOptionValue( "pattern" ) ) : null;
-        DownloadConfiguration conf = new DownloadConfiguration( true, url, proxy, pattern, 0 );
-        logger.info( conf );
-        boolean interactive = cl.hasOption( 'i' );
-        ConsoleDownloader dl = new ConsoleDownloader( conf, interactive );
-        dl.run();
+    private static void startDialogDownloader() {
+        logger.entry();
+        logger.error( "not yet implemented" );
     }
 
-    private static void startGuiDownloader( final String... args ) {
+    private static void startCliDownloader( final CommandLine commandline ) throws MalformedURLException {
+        logger.entry( commandline );
+
+        URL url = new URL( commandline.getOptionValue( "url" ) );
+        HttpHost proxy = commandline.hasOption( "proxy" ) ? new HttpHost( commandline.getOptionValue( "proxy" ) ) : null;
+        ChapterPattern pattern = commandline.hasOption( "pattern" )
+            ? new ChapterPattern( commandline.getOptionValue( "pattern" ) )
+            : null;
+        DownloadConfiguration conf = new DownloadConfiguration( true, url, proxy, pattern, 0 );
+        logger.info( conf );
+        boolean interactive = commandline.hasOption( 'i' );
+        ConsoleDownloader downloader = new ConsoleDownloader( conf, interactive );
+        downloader.run();
+    }
+
+    private static void startGuiDownloader() {
         logger.entry();
-        Application.launch( Ctrl.class, args );
+        Application.launch( Ctrl.class );
+    }
+
+    private static void startViewpageCreator() {
+        logger.entry();
+        logger.error( "not yet implemented" );
+
     }
 
     private static void startServer() {
