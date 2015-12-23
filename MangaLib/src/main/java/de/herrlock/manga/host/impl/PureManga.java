@@ -13,6 +13,7 @@ import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.Details;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
+@SuppressWarnings( "javadoc" )
 @Details( name = "PureManga", baseUrl = "http://www.pure-manga.org/" )
 public final class PureManga extends ChapterList {
     private static final long serialVersionUID = 1L;

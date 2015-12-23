@@ -52,7 +52,6 @@ public class Hoster implements Comparable<Hoster> {
      * @throws IOException
      *             may be thrown by the called ChapterList's constructor (not required though)
      */
-    @SuppressWarnings( "unused" )
     public ChapterList getChapterList( final DownloadConfiguration conf ) throws IOException {
         try {
             Constructor<? extends ChapterList> constructor = this.baseClass.getConstructor( DownloadConfiguration.class );

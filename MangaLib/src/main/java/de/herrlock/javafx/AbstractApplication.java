@@ -11,6 +11,11 @@ import javafx.stage.Stage;
 public abstract class AbstractApplication extends Application {
     private SceneContainer container;
 
+    /**
+     * Start the application. Requires a previous called {@linkplain #setScene(SceneContainer)} to get the
+     * {@linkplain SceneContainer#getTitle() title}, the {@linkplain SceneContainer#getIcons() icons}, the
+     * {@linkplain SceneContainer#getStylesheets() stylesheets} and the {@linkplain SceneContainer#getScene() actual scene} from
+     */
     @Override
     public void start( final Stage stage ) {
         if ( this.container == null ) {

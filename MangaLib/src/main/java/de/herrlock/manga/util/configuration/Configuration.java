@@ -53,6 +53,13 @@ public abstract class Configuration {
 
     private final boolean isHeadless;
 
+    /**
+     * creates a boolean from the property {@value #HEADLESS} in the given Properties
+     * 
+     * @param p
+     *            the {@link Properties} where to search for the headless-property
+     * @return the property headless as bollean
+     */
     protected static boolean _getIsHeadless( final Properties p ) {
         logger.entry();
         String property = p.getProperty( HEADLESS );
@@ -66,7 +73,7 @@ public abstract class Configuration {
      * 
      * @param p
      *            the {@link Properties} where to search for an url
-     * @return the reated URL
+     * @return the created URL
      * @throws InitializeException
      *             in case the URL is not availabile or malformed
      */
@@ -201,7 +208,7 @@ public abstract class Configuration {
     /**
      * getter for isHeadless
      * 
-     * @return
+     * @return isHeadless
      */
     public final boolean isHeadless() {
         return this.isHeadless;

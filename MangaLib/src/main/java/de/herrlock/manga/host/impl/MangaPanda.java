@@ -12,6 +12,7 @@ import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.Details;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
+@SuppressWarnings( "javadoc" )
 @Details( name = "Mangapanda", baseUrl = "http://www.mangapanda.com/" )
 public final class MangaPanda extends ChapterList {
     private static final long serialVersionUID = 1L;

@@ -16,7 +16,7 @@ public class Response extends BasicHttpResponse {
     /**
      * Creates a Response with given response-code and the given entity
      * 
-     * @param code
+     * @param httpStatus
      *            the http-responsecode to set
      * @param entity
      *            the entity to set as the Response's content

@@ -159,6 +159,7 @@ public final class Hosters {
      * 
      * @param c
      *            the class to create a Hoster with
+     * @return if the Hoster was actually added
      * @see Hoster#Hoster(Class)
      */
     public static boolean registerHoster( final Class<? extends ChapterList> c ) {

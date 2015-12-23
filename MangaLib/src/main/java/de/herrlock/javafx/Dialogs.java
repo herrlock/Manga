@@ -129,7 +129,7 @@ public final class Dialogs {
     }
 
     /**
-     * A runnable that can close a {@link Dialog} on the JavaFX-Application-Thread with its method {@link DialogHider#execute()}
+     * A runnable that can close a Dialog on the JavaFX-Application-Thread with its method {@link DialogHider#execute()}
      */
     public static class DialogHider implements Runnable {
         private final Dialog dialog;
@@ -145,7 +145,7 @@ public final class Dialogs {
         }
 
         /**
-         * Calls {@link Dialog#close()}
+         * Calls the close-method from a Dialog
          */
         @Override
         public void run() {

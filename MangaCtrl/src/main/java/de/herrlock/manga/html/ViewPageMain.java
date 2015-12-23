@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
  * @author HerrLock
  */
 public final class ViewPageMain {
+    @SuppressWarnings( "unused" )
     private static final Logger logger = LogManager.getLogger();
 
     public static void execute() {

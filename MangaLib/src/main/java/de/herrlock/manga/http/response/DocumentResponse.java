@@ -14,8 +14,8 @@ public class DocumentResponse extends Response {
     /**
      * Creates a DocumentResponse with the given response-code and the given document
      * 
-     * @param code
-     *            the response-code
+     * @param httpStatus
+     *            the http-statuscode
      * @param document
      *            the response-document
      */

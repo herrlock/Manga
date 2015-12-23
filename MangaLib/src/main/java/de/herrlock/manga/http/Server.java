@@ -19,6 +19,11 @@ import de.herrlock.manga.http.location.JQueryLocation;
 import de.herrlock.manga.http.location.NotFoundLocation;
 import de.herrlock.manga.http.location.StartDownloadLocation;
 
+/**
+ * A simple Http-Server using the {@link ServerBootstrap} and {@link HttpServer} from the apache-httpcomponents
+ * 
+ * @author HerrLock
+ */
 public class Server {
 
     private static final Logger logger = LogManager.getLogger();
@@ -42,28 +47,60 @@ public class Server {
 
     private final HttpServer httpServer;
 
+    /**
+     * calls {@linkplain Server#createDefault()} followed by {@linkplain Server#start()}
+     * 
+     * @throws IOException
+     *             from {@link Server#start()}
+     */
     public static void startDefaultServer() throws IOException {
         createDefault().start();
     }
 
+    /**
+     * Creates a new {@link Server} and adds the basic needed Locations to it.
+     * 
+     * @return the just created Server
+     */
     public static Server createDefault() {
         return new Server( new IndexHtmlLocation(), new JQueryLocation(), new BackgroundImageLocation(),
             new StartDownloadLocation(), new NotFoundLocation() );
     }
 
+    /**
+     * Creates a new Server at the port 1905 with the given {@linkplain HttpRequestHandlerWrapper}s
+     * 
+     * @param handlerWrapper
+     *            the handlers to register
+     */
     public Server( final HttpRequestHandlerWrapper... handlerWrapper ) {
         this( 1905, handlerWrapper );
     }
 
+    /**
+     * Creates a new Server at the given port with the given {@linkplain HttpRequestHandlerWrapper}s
+     * 
+     * @param port
+     *            the port to listen to
+     * @param handlerWrapper
+     *            the handlers to register
+     */
     public Server( final int port, final HttpRequestHandlerWrapper... handlerWrapper ) {
-        ServerBootstrap serverBootstrap = ServerBootstrap.bootstrap().setListenerPort( port );
-        serverBootstrap.addInterceptorFirst( this.STOP_SERVER_INTERCEPTOR );
+        ServerBootstrap serverBootstrap = ServerBootstrap.bootstrap()//
+            .setListenerPort( port )//
+            .addInterceptorFirst( this.STOP_SERVER_INTERCEPTOR );
         for ( HttpRequestHandlerWrapper handler : handlerWrapper ) {
             serverBootstrap.registerHandler( handler.getPattern(), handler );
         }
         this.httpServer = serverBootstrap.create();
     }
 
+    /**
+     * Checks if the server is running by getting {@link HttpServer#getInetAddress()}. If the result is not null the server still
+     * runs.
+     * 
+     * @return if the server is running
+     */
     public boolean running() {
         return this.httpServer.getInetAddress() != null;
     }
