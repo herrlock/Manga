@@ -37,7 +37,7 @@ public abstract class Configuration {
     /**
      * the default value of the timeout
      */
-    public static final short TIMEOUT_DEFAULT = 5_000;
+    public static final int TIMEOUT_DEFAULT = 5_000;
     /**
      * the path to JDownloader's folderwatch-folder
      */

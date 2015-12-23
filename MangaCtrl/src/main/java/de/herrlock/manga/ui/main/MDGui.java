@@ -16,7 +16,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public final class MDGui extends AbstractApplication {
-    public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.ui" );
+    public static final ResourceBundle I18N = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.ui" );
 
     public static void main( final String... args ) {
         Application.launch( args );
@@ -32,7 +32,7 @@ public final class MDGui extends AbstractApplication {
         MDGuiStage() {
             try {
                 URL location = MDGui.class.getResource( "MDGuiScene.xml" );
-                Parent root = FXMLLoader.load( location, i18n );
+                Parent root = FXMLLoader.load( location, I18N );
                 setScene( new Scene( root ) );
             } catch ( IOException ex ) {
                 throw new MDRuntimeException( ex );

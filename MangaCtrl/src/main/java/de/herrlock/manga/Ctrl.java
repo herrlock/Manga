@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 
 public final class Ctrl extends AbstractApplication {
 
-    public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.Ctrl" );
+    public static final ResourceBundle I18N = ResourceBundle.getBundle( "de.herrlock.manga.Ctrl" );
 
     public static void main( final String... args ) {
         Application.launch( args );
@@ -31,7 +31,7 @@ public final class Ctrl extends AbstractApplication {
         CtrlScene() {
             try {
                 URL location = CtrlScene.class.getResource( "CtrlScene.xml" );
-                Parent root = FXMLLoader.load( location, i18n );
+                Parent root = FXMLLoader.load( location, I18N );
                 setScene( new Scene( root ) );
             } catch ( IOException ex ) {
                 throw new MDRuntimeException( ex );
@@ -40,7 +40,7 @@ public final class Ctrl extends AbstractApplication {
 
         @Override
         public String getTitle() {
-            return i18n.getString( "scene.title" );
+            return I18N.getString( "scene.title" );
         }
     }
 }

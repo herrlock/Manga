@@ -47,7 +47,7 @@ public final class Constants {
      * <dd>230.6 kB</dd>
      * </dl>
      */
-    public static final short AVG_SIZE = 177;
+    public static final int AVG_SIZE = 177;
 
     /**
      * unused constructor to avoid instantiation
