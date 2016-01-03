@@ -17,7 +17,7 @@ public final class Crawljob {
     private final List<CrawljobEntry> entries = Collections.synchronizedList( new ArrayList<CrawljobEntry>() );
 
     /**
-     * creates a crealjob-file to fil with entries
+     * creates a crawljob-file to fill with entries
      * 
      * @param folder
      *            the folder where to download the images to (relative path, eg. "./manganame_timestamp/01")
