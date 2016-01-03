@@ -2,7 +2,3 @@
 dependencies {
     compile project(':MangaLib')
 }
-
-task cleanDL(type: Delete) {
-	delete file('download').listFiles()
-}
