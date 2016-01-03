@@ -37,7 +37,8 @@ public final class Main {
      * @throws MalformedURLException
      */
     public static void main( final String... args ) throws ParseException, MalformedURLException {
-        CommandLine commandline = new DefaultParser().parse( MyOptions.getOptions(), args );
+        final Options options = new MyOptions().getOptions();
+        CommandLine commandline = new DefaultParser().parse( options, args );
         logger.debug( Arrays.toString( commandline.getOptions() ) );
 
         // optional alter loglevel-configuration
@@ -89,7 +90,7 @@ public final class Main {
         final HelpFormatter helpFormatter = new HelpFormatter();
         final StringWriter stringWriter = new StringWriter();
         final PrintWriter printwriter = new PrintWriter( stringWriter );
-        final Options options = MyOptions.getOptions();
+        final Options options = new MyOptions().getOptions();
 
         printwriter.println();
 
