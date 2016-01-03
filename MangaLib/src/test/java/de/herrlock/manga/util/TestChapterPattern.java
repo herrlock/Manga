@@ -1,5 +1,6 @@
 package de.herrlock.manga.util;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -85,7 +86,7 @@ public class TestChapterPattern {
         declaredField.setAccessible( true );
         @SuppressWarnings( "unchecked" )
         Collection<Interval> c = ( Collection<Interval> ) declaredField.get( cp );
-        assertTrue( "an CP with null as arguments must not create elements", c.isEmpty() );
+        assertTrue( "a ChapterPattern with null as arguments must not create elements", c.isEmpty() );
     }
 
     /**
@@ -102,6 +103,21 @@ public class TestChapterPattern {
         @SuppressWarnings( "unchecked" )
         Collection<Interval> c = ( Collection<Interval> ) declaredField.get( cp );
         assertTrue( "an invalid CP must not create elements", c.isEmpty() );
+    }
+
+    /**
+     * Test the toString-method
+     * 
+     * @throws ReflectiveOperationException
+     */
+    @Test
+    public void testToString() throws ReflectiveOperationException {
+        ChapterPattern cp = new ChapterPattern( "10;" );
+        Field declaredField = cp.getClass().getDeclaredField( "elements" );
+        declaredField.setAccessible( true );
+        @SuppressWarnings( "unchecked" )
+        Collection<Interval> c = ( Collection<Interval> ) declaredField.get( cp );
+        assertEquals( c.toString(), cp.toString() );
     }
 
     /**
