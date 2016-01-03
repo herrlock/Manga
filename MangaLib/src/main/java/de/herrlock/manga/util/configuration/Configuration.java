@@ -62,8 +62,8 @@ public abstract class Configuration {
      */
     protected static boolean _getIsHeadless( final Properties p ) {
         logger.entry();
-        String property = p.getProperty( HEADLESS );
-        boolean headless = property.matches( "" );
+        String property = p.getProperty( HEADLESS, "false" );
+        boolean headless = property.matches( "true" );
         logger.debug( "headless: {}", headless );
         return headless;
     }
