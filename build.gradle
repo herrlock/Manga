@@ -9,6 +9,7 @@ allprojects { project ->
 	apply plugin: 'java'
 	apply plugin: 'findbugs'
 	apply plugin: 'pmd'
+	apply plugin: 'jacoco'
 	apply plugin: 'maven-publish'
 	apply plugin: 'project-report'
 	apply plugin: 'build-dashboard'
