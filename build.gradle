@@ -22,7 +22,8 @@ allprojects { project ->
 	
 	jar.manifest {
 		attributes 'Built-With' : GradleVersion.current(),
-			'Created-By' : "${System.properties.'java.runtime.version'} (${System.properties.'java.vm.vendor'})"
+			'Created-By' : "${System.properties.'java.runtime.version'} (${System.properties.'java.vm.vendor'})",
+			'info'
 	}
 	
 	findbugs {
@@ -148,6 +149,9 @@ jar {
 	archiveName = 'MangaLauncher.jar'
 	manifest {
 		attributes 'Main-Class' : 'de.herrlock.manga.Main',
-			'Class-Path' : project.configurations.runtime.collect{ file -> "lib/${file.name}" }.join(' ')
+			'Class-Path' : project.configurations.runtime
+				.collect{ file -> "lib/${file.name}" }
+				.sort{ it.toLowerCase() }
+				.join(' ')
 	}
 }
