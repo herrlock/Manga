@@ -21,7 +21,6 @@ import de.herrlock.manga.http.response.ServerExceptionResponse;
  */
 public abstract class Location extends HttpRequestHandlerWrapper {
     private static final Logger logger = LogManager.getLogger();
-    private final String path;
 
     /**
      * Create a new Location
@@ -32,7 +31,6 @@ public abstract class Location extends HttpRequestHandlerWrapper {
      */
     public Location( final String path ) {
         super( path );
-        this.path = path;
     }
 
     /**
@@ -43,15 +41,6 @@ public abstract class Location extends HttpRequestHandlerWrapper {
      * @return the Response created
      */
     protected abstract Response handleXHR( final URL url );
-
-    /**
-     * Getter for the Location's path
-     * 
-     * @return the path this Location is registered with
-     */
-    public String getPath() {
-        return this.path;
-    }
 
     @Override
     public void handle( final HttpRequest request, final HttpResponse response, final HttpContext context ) {
