@@ -2,7 +2,6 @@ package de.herrlock.manga.http.location;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Date;
 import java.util.Random;
 
 import de.herrlock.manga.http.Server;
@@ -31,7 +30,7 @@ public final class BackgroundImageLocation extends Location {
     static enum Image {
         NAUSICAA( "nausicaa.jpg" ), ONEPIECE( "onepiece.jpg" );
 
-        private static final Random RANDOM = new Random( new Date().getTime() );
+        private static final Random RANDOM = new Random();
         private final String filename;
 
         private Image( final String filename ) {
