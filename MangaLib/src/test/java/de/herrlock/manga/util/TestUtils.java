@@ -105,30 +105,33 @@ public class TestUtils {
     private static final class SetStringHttpRequestHandler implements HttpRequestHandler {
         private final String stringtoSet;
 
-        private SetStringHttpRequestHandler( String stringToSet ) {
+        public SetStringHttpRequestHandler( final String stringToSet ) {
             this.stringtoSet = stringToSet;
         }
+
         @Override
-        public void handle( HttpRequest request, HttpResponse response, HttpContext context ) throws HttpException, IOException {
+        public void handle( final HttpRequest request, final HttpResponse response, final HttpContext context )
+            throws HttpException, IOException {
             response.setEntity( new StringEntity( this.stringtoSet ) );
         }
     }
 
-    private static final class ResponseEqualsStringResponseHandler implements ResponseHandler<Boolean> {
+    static final class ResponseEqualsStringResponseHandler implements ResponseHandler<Boolean> {
         private final String stringToTest;
 
-        private ResponseEqualsStringResponseHandler( String stringToTest ) {
+        public ResponseEqualsStringResponseHandler( final String stringToTest ) {
             this.stringToTest = stringToTest;
         }
+
         @Override
-        public Boolean handleResponse( HttpResponse response ) throws ClientProtocolException, IOException {
+        public Boolean handleResponse( final HttpResponse response ) throws ClientProtocolException, IOException {
             String readString = EntityUtils.toString( response.getEntity() );
             return this.stringToTest.equals( readString );
         }
     }
 
     private static final class BoolRunnable implements Runnable {
-        private boolean ran = false;
+        private boolean ran;
 
         @Override
         public void run() {
@@ -138,7 +141,7 @@ public class TestUtils {
 
     private static final class BoolCallable implements Callable<Boolean> {
         @Override
-        public Boolean call() throws Exception {
+        public Boolean call() {
             return Boolean.TRUE;
         }
     }
@@ -149,7 +152,7 @@ public class TestUtils {
     private static final class SleepingRunnable implements Runnable, Callable<Void> {
         private final int time;
 
-        public SleepingRunnable( int time ) {
+        public SleepingRunnable( final int time ) {
             this.time = time < 0 ? 10_000 : time;
         }
 
@@ -163,7 +166,7 @@ public class TestUtils {
         }
 
         @Override
-        public Void call() throws Exception {
+        public Void call() {
             this.run();
             return null;
         }
@@ -175,7 +178,7 @@ public class TestUtils {
     private static final class InterruptingRunnable implements Runnable, Callable<Void> {
         private final Thread toInterrupt;
 
-        public InterruptingRunnable( Thread toInterrupt ) {
+        public InterruptingRunnable( final Thread toInterrupt ) {
             this.toInterrupt = toInterrupt;
         }
 
@@ -185,7 +188,7 @@ public class TestUtils {
         }
 
         @Override
-        public Void call() throws Exception {
+        public Void call() {
             this.run();
             return null;
         }
