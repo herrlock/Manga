@@ -79,25 +79,23 @@ allprojects { project ->
 	}
 }
 
-// build-helper
+// folder to store the content of the final zip-file
 def temp = mkdir("${rootProject.buildDir}/disttemp/")
 
-task createLibs (type: Copy, description: 'Create jar from all projects and copies them and their dependencies into the lib-folder') {
+task createLibs (type: Copy, description: 'Create jar from subprojects and copies them and all project\'s dependencies into the lib-folder') {
 	into new File(temp, 'lib')
-	allprojects.each { s -> 
+	subprojects.each { s -> 
 		dependsOn s.jar
 		from s.jar
 		from s.configurations.runtime
 	}
+    from rootProject.configurations.runtime
 }
 
-task copyOther (type: Copy, description: 'Copy other resources to the temp-folder') {
-	from 'LICENSE'
-	into temp
-}
-
-task copyDist (type: Copy, description: 'Copy content of \"src/dist\" to the temp-folder') {
+task copyDistAndMisc (type: Copy, description: 'Copy content of \"src/dist\" and other files to the temp-folder') {
 	from 'src/dist'
+	from 'LICENSE'
+    // from ...
 	into temp
 }
 
@@ -109,7 +107,8 @@ task compileRun (description: 'Compile run.cs and copy the exe into the build-fo
 		try {
 			exec {
 				workingDir csfolder
-				commandLine 'cmd', '/c', 'csc', '/t:winexe', "/out:${filename}", '/nologo', 'run.cs'
+                executable 'cmd'
+                args '/c', 'csc', '/t:winexe', "/out:${filename}", '/nologo', 'run.cs'
 			}
 			copy {
 				from exefile
@@ -117,7 +116,7 @@ task compileRun (description: 'Compile run.cs and copy the exe into the build-fo
 			}
 			delete exefile
 		} catch(org.gradle.process.internal.ExecException ex) {
-			logger.warn 'run.cs could not be compiled to run.exe, csc missing on path'
+			logger.warn 'run.cs could not be compiled to ${filename}, csc missing on path'
 		}
 	}
 }
@@ -127,8 +126,8 @@ task copyLauncher(type: Copy, dependsOn: jar, description: 'Copies the launcher 
 	into temp
 }
 
-//distribution-task
-task dist (type: Zip, group: 'build', dependsOn: [createLibs, copyOther, copyDist, compileRun, copyLauncher], description: 'Creates a distribution in a zip-file') {
+// distribution-task
+task dist (type: Zip, group: 'build', dependsOn: [createLibs, copyDistAndMisc, compileRun, copyLauncher], description: 'Creates a distribution in a zip-file') {
 	destinationDir = file('build')
 	baseName = project.name
 	version = project.version
