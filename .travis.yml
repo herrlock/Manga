@@ -1,0 +1,6 @@
+language: java
+script: ./gradlew clean buid
+jdk:
+  - oraclejdk7
+  - openjdk7
+  - oraclejdk8
