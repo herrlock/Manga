@@ -1,3 +1,17 @@
+// buildscript-dependencies
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.ajoberstar:grgit:1.4.0'
+    }
+}
+ext {
+    grgit = org.ajoberstar.grgit.Grgit.open()
+    githead = grgit.head()
+    gitbranch = grgit.branch.getCurrent()
+}
 
 // general setup
 allprojects { project ->
@@ -24,7 +38,11 @@ allprojects { project ->
 	jar.manifest {
 		attributes 'Built-With' : GradleVersion.current(),
 			'Created-By' : "${System.properties.'java.runtime.version'} (${System.properties.'java.vm.vendor'})",
-			'info'
+			'Info'
+        attributes 'Branch' : gitbranch.getName(),
+            'Date' : githead.getDate(),
+            'Commit' : githead.id,
+            'Git'
 	}
 	
 	findbugs {
