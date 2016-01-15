@@ -1,6 +1,7 @@
 package de.herrlock.manga.jd;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,7 +12,7 @@ import org.junit.Test;
 public class TestCrawljob {
 
     @Test
-    public void test1() {
+    public void test1() throws IOException {
         Crawljob crawljob = new Crawljob( new File( "" ), "42" );
         crawljob.addCrawljobEntry( "filename", "url" );
         String ls = System.lineSeparator();
@@ -23,7 +24,8 @@ public class TestCrawljob {
             .append( ls )//
             .append( "filename=filename.jpg" )//
             .append( ls )//
-            .append( "downloadFolder=C:\\Users\\Jan\\workspace\\Manga\\MangaLib" )//
+            .append( "downloadFolder=" )//
+            .append( new File( "." ).getCanonicalPath() )//
             .append( ls )//
             .append( "packageName=42" )//
             .append( ls )//
