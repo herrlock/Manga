@@ -117,35 +117,13 @@ task copyDistAndMisc (type: Copy, description: 'Copy content of \"src/dist\" and
 	into temp
 }
 
-task compileRun (description: 'Compile run.cs and copy the exe into the build-folder') {
-	def csfolder = 'src/main/cs'
-	def filename = 'Run.exe'
-	def exefile = new File(csfolder, filename)
-	doLast {
-		try {
-			exec {
-				workingDir csfolder
-                executable 'cmd'
-                args '/c', 'csc', '/t:winexe', "/out:${filename}", '/nologo', 'run.cs'
-			}
-			copy {
-				from exefile
-				into temp
-			}
-			delete exefile
-		} catch(org.gradle.process.internal.ExecException ex) {
-			logger.warn 'run.cs could not be compiled to ${filename}, csc missing on path'
-		}
-	}
-}
-
 task copyLauncher(type: Copy, dependsOn: jar, description: 'Copies the launcher to the root folder') {
 	from tasks.jar.outputs.files
 	into temp
 }
 
 // distribution-task
-task dist (type: Zip, group: 'build', dependsOn: [createLibs, copyDistAndMisc, compileRun, copyLauncher], description: 'Creates a distribution in a zip-file') {
+task dist (type: Zip, group: 'build', dependsOn: [createLibs, copyDistAndMisc, copyLauncher], description: 'Creates a distribution in a zip-file') {
 	destinationDir = file('build')
 	baseName = project.name
 	version = project.version
