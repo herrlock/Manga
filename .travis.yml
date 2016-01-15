@@ -1,6 +1,5 @@
 
 language: java
-script: ./gradlew clean classes jar assemble test check build projectReport buildDashboard dist
 
 jdk:
   - oraclejdk7
