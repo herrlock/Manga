@@ -4,8 +4,6 @@ script: ./gradlew clean classes jar assemble test check build projectReport buil
 
 jdk:
   - oraclejdk7
-  - openjdk7
-  - oraclejdk8
 
 before_install:
  - chmod +x gradlew
