@@ -36,7 +36,8 @@ allprojects { project ->
 	}
 	
 	jar.manifest {
-		attributes 'Built-With' : GradleVersion.current(),
+		attributes 'Built-At' : new Date(),
+			'Built-With' : GradleVersion.current(),
 			'Created-By' : "${System.properties.'java.runtime.version'} (${System.properties.'java.vm.vendor'})",
 			'Info'
         attributes 'Branch' : gitbranch.getName(),
