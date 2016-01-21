@@ -55,8 +55,8 @@ public final class Main {
             logger.trace( "empty args, start GUI" );
             startGuiDownloader();
 
-        } else if ( commandline.hasOption( 'h' ) ) {
-            logger.trace( "Commandline has 'h', show help" );
+        } else if ( commandline.hasOption( "help" ) ) {
+            logger.trace( "Commandline has \"help\", show help" );
             printHelp();
 
         } else if ( commandline.hasOption( "console" ) ) {
