@@ -69,6 +69,7 @@ public final class MyOptions {
         .longOpt( "log" )//
         .hasArg()//
         .argName( "level" )//
+        .desc( "Loglevel to use. Allowed values: OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL" )//
         .build();
 
     private final Options options;
