@@ -15,7 +15,7 @@
 		</Console>
 	</Appenders>
 	<Loggers>
-		<Logger name="org.apache.http" level="info" additivity="false">
+		<Logger name="org.apache.http" level="error" additivity="false">
 			<AppenderRef ref="ApacheLogger" />
 		</Logger>
 		<Root level="info">

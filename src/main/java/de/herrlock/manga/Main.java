@@ -46,7 +46,7 @@ public final class Main {
             String optionValue = commandline.getOptionValue( "log" );
             Level level = Level.toLevel( optionValue, Level.INFO );
             logger.log( Level.ALL, "setting log-level to {}", level );
-            Configurator.setAllLevels( LogManager.ROOT_LOGGER_NAME, level );
+            Configurator.setRootLevel( level );
         }
 
         // start running
