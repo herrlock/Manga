@@ -75,8 +75,6 @@ public final class MyOptions {
     private final Options options;
 
     public MyOptions() {
-        this.typeOptionGroup.setRequired( true );
-
         this.options = new Options()//
             .addOptionGroup( this.typeOptionGroup )//
             .addOption( this.urlOption )//
