@@ -28,7 +28,7 @@ public class Server {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private final HttpRequestInterceptor STOP_SERVER_INTERCEPTOR = new HttpRequestInterceptor() {
+    private final HttpRequestInterceptor stopServerInterceptor = new HttpRequestInterceptor() {
         @Override
         public void process( final HttpRequest request, final HttpContext context ) throws HttpException, IOException {
             RequestLine requestLine = request.getRequestLine();
@@ -88,7 +88,7 @@ public class Server {
     public Server( final int port, final HttpRequestHandlerWrapper... handlerWrapper ) {
         ServerBootstrap serverBootstrap = ServerBootstrap.bootstrap()//
             .setListenerPort( port )//
-            .addInterceptorFirst( this.STOP_SERVER_INTERCEPTOR );
+            .addInterceptorFirst( this.stopServerInterceptor );
         for ( HttpRequestHandlerWrapper handler : handlerWrapper ) {
             serverBootstrap.registerHandler( handler.getPattern(), handler );
         }
@@ -117,6 +117,7 @@ public class Server {
         }
         logger.info( "starting server" );
         this.httpServer.start();
+        logger.info( "server started, listening at port {}", this.httpServer.getLocalPort() );
         Runtime.getRuntime().addShutdownHook( this.serverShutdownThread );
     }
 
