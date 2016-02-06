@@ -13,6 +13,8 @@ ext {
     gitbranch = grgit.branch.getCurrent()
 }
 
+apply plugin: 'java-library-distribution'
+
 // general setup
 allprojects { project ->
 	apply plugin: 'eclipse'
@@ -98,41 +100,9 @@ allprojects { project ->
 	}
 }
 
-// folder to store the content of the final zip-file
-def temp = mkdir("${rootProject.buildDir}/disttemp/")
-
-task createLibs (type: Copy, description: 'Create jar from subprojects and copies them and all project\'s dependencies into the lib-folder') {
-	into new File(temp, 'lib')
-	subprojects.each { s -> 
-		dependsOn s.jar
-		from s.jar
-		from s.configurations.runtime
-	}
-    from rootProject.configurations.runtime
+task dist(dependsOn: [distZip, distTar], group: 'Distribution', description: 'Run distZip and distTar') {
+    // does nothing itself
 }
-
-task copyDistAndMisc (type: Copy, description: 'Copy content of \"src/dist\" and other files to the temp-folder') {
-	from 'src/dist'
-	from 'LICENSE'
-    // from ...
-	into temp
-}
-
-task copyLauncher(type: Copy, dependsOn: jar, description: 'Copies the launcher to the root folder') {
-	from tasks.jar.outputs.files
-	into temp
-}
-
-// distribution-task
-task dist (type: Zip, group: 'build', dependsOn: [createLibs, copyDistAndMisc, copyLauncher], description: 'Creates a distribution in a zip-file') {
-	destinationDir = file('build')
-	baseName = project.name
-	version = project.version
-	
-	into baseName + '-' + version
-	from temp
-}
-
 
 // project-configuration
 dependencies {
@@ -151,4 +121,18 @@ jar {
 				.sort{ it.toLowerCase() }
 				.join(' ')
 	}
+}
+
+distributions {
+    main {
+        baseName = project.name
+        version = project.version
+        contents {
+            from { 'LICENSE' }
+        }
+    }
+}
+
+tasks.withType(Tar) {
+    compression = Compression.GZIP
 }
