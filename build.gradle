@@ -13,7 +13,7 @@ ext {
     gitbranch = grgit.branch.getCurrent()
 }
 
-apply plugin: 'java-library-distribution'
+apply plugin: 'distribution'
 
 // general setup
 allprojects { project ->
@@ -106,14 +106,12 @@ task dist(dependsOn: [distZip, distTar], group: 'Distribution', description: 'Ru
 
 // project-configuration
 dependencies {
-	subprojects.each {
-		compile it
-	}
+	compile project(':MangaLib')
+	compile project(':MangaCtrl')
 	compile 'commons-cli:commons-cli:1.3.1'
 }
 
 jar {
-	archiveName = 'MangaLauncher.jar'
 	manifest {
 		attributes 'Main-Class' : 'de.herrlock.manga.Main',
 			'Class-Path' : project.configurations.runtime
@@ -128,7 +126,13 @@ distributions {
         baseName = project.name
         version = project.version
         contents {
-            from { 'LICENSE' }
+            from 'LICENSE'
+            from (jar.outputs) {
+            	rename '.+', 'MangaLauncher.jar'
+            }
+            into('lib') {
+            	from configurations.runtime
+            }
         }
     }
 }
