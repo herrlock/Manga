@@ -18,13 +18,14 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import javafx.application.Application;
 
 /**
  * A class that searches for the jfxrt-jar and adds it to the System-Classloder's resources. <br/>
  * Source: {@link "http://stackoverflow.com/a/60766/3680684"}
  */
-public class ClassPathHack {
+public final class ClassPathHack {
     private static final Logger logger = LogManager.getLogger();
 
     public static void validateJfxrtLoaded() throws IOException {
@@ -40,7 +41,7 @@ public class ClassPathHack {
             }, true );
             Iterators.tryFind( iterator, new Predicate<File>() {
                 @Override
-                public boolean apply( File input ) {
+                public boolean apply( final File input ) {
                     return input != null && input.getName().equals( "jfxrt.jar" );
                 }
             } );
@@ -72,11 +73,14 @@ public class ClassPathHack {
                         u
                     } );
                 } catch ( IllegalArgumentException | ReflectiveOperationException | SecurityException e ) {
-                    throw new RuntimeException( e );
+                    throw new MDRuntimeException( e );
                 }
                 return null;
             }
         } );
+    }
 
+    private ClassPathHack() {
+        // not used
     }
 }
