@@ -13,6 +13,13 @@ public class RunMain {
         {
             "--help"
         };
+        // {
+        // "--console", //
+        // "--log", "debug", //
+        // "-u", "http://mangapanda.com/naruto", //
+        // "-p", "8;13;18-22", //
+        // "-x", "kunde.proxy.itelligence.de", //
+        // };
         Main.main( arguments );
     }
 }

@@ -34,53 +34,63 @@ public final class Main {
     /**
      * @param args
      * @throws ParseException
-     * @throws MalformedURLException
      */
-    public static void main( final String... args ) throws ParseException, MalformedURLException {
-        final Options options = new MyOptions().getOptions();
-        CommandLine commandline = new DefaultParser().parse( options, args );
-        logger.debug( Arrays.toString( commandline.getOptions() ) );
+    public static void main( final String... args ) throws ParseException {
+        try {
+            final Options options = new MyOptions().getOptions();
+            CommandLine commandline = new DefaultParser().parse( options, args );
+            logger.debug( Arrays.toString( commandline.getOptions() ) );
 
-        // optional alter loglevel-configuration
-        if ( commandline.hasOption( "log" ) ) {
-            String optionValue = commandline.getOptionValue( "log" );
-            Level level = Level.toLevel( optionValue, Level.INFO );
-            logger.log( Level.ALL, "setting log-level to {}", level );
-            Configurator.setRootLevel( level );
-        }
+            try {
+                ClassPathHack.validateJfxrtLoaded();
+            } catch ( IOException ex ) {
+                logger.error( "Could not add jfxrt.jar to the classpath" );
+            }
 
-        // start running
-        if ( commandline.getOptions().length == 0 ) {
-            // empty arguments
-            logger.trace( "empty args, start GUI" );
-            startGuiDownloader();
+            // optional alter loglevel-configuration
+            if ( commandline.hasOption( "log" ) ) {
+                String optionValue = commandline.getOptionValue( "log" );
+                Level level = Level.toLevel( optionValue, Level.INFO );
+                logger.log( Level.ALL, "setting log-level to {}", level );
+                Configurator.setRootLevel( level );
+            }
 
-        } else if ( commandline.hasOption( "help" ) ) {
-            logger.trace( "Commandline has \"help\", show help" );
+            // start running
+            if ( commandline.getOptions().length == 0 ) {
+                // empty arguments
+                logger.trace( "empty args, start GUI" );
+                startGuiDownloader();
+
+            } else if ( commandline.hasOption( "help" ) ) {
+                logger.trace( "Commandline has \"help\", show help" );
+                printHelp();
+
+            } else if ( commandline.hasOption( "console" ) ) {
+                logger.trace( "Commandline has \"console\", start CLI-Downloader" );
+                startCliDownloader( commandline );
+
+            } else if ( commandline.hasOption( "dialog" ) ) {
+                logger.trace( "Commandline has \"dialog\", start Dialog-Downloader" );
+                startDialogDownloader();
+
+            } else if ( commandline.hasOption( "gui" ) ) {
+                logger.trace( "Commandline has \"gui\", launch GUI" );
+                startGuiDownloader();
+
+            } else if ( commandline.hasOption( "viewpage" ) ) {
+                logger.trace( "Commandline has \"viewpage\", start creating html-resources" );
+                startViewpageCreator();
+
+            } else if ( commandline.hasOption( "server" ) ) {
+                logger.trace( "Commandline has \"server\", start Server" );
+                startServer();
+
+            } else {
+                logger.trace( "else, don't know what to do" );
+            }
+        } catch ( ParseException ex ) {
+            logger.warn( ex.getMessage(), ex );
             printHelp();
-
-        } else if ( commandline.hasOption( "console" ) ) {
-            logger.trace( "Commandline has \"console\", start CLI-Downloader" );
-            startCliDownloader( commandline );
-
-        } else if ( commandline.hasOption( "dialog" ) ) {
-            logger.trace( "Commandline has \"dialog\", start Dialog-Downloader" );
-            startDialogDownloader();
-
-        } else if ( commandline.hasOption( "gui" ) ) {
-            logger.trace( "Commandline has \"gui\", launch GUI" );
-            startGuiDownloader();
-
-        } else if ( commandline.hasOption( "viewpage" ) ) {
-            logger.trace( "Commandline has \"viewpage\", start creating html-resources" );
-            startViewpageCreator();
-
-        } else if ( commandline.hasOption( "server" ) ) {
-            logger.trace( "Commandline has \"server\", start Server" );
-            startServer();
-
-        } else {
-            logger.trace( "else, don't know what to do" );
         }
     }
 
@@ -114,19 +124,23 @@ public final class Main {
         logger.error( "not yet implemented" );
     }
 
-    private static void startCliDownloader( final CommandLine commandline ) throws MalformedURLException {
+    private static void startCliDownloader( final CommandLine commandline ) {
         logger.entry( commandline );
 
-        URL url = new URL( commandline.getOptionValue( "url" ) );
-        HttpHost proxy = commandline.hasOption( "proxy" ) ? new HttpHost( commandline.getOptionValue( "proxy" ) ) : null;
-        ChapterPattern pattern = commandline.hasOption( "pattern" )
-            ? new ChapterPattern( commandline.getOptionValue( "pattern" ) )
-            : null;
-        DownloadConfiguration conf = new DownloadConfiguration( true, url, proxy, pattern, 0 );
-        logger.info( conf );
-        boolean interactive = commandline.hasOption( 'i' );
-        ConsoleDownloader downloader = new ConsoleDownloader( conf, interactive );
-        downloader.run();
+        try {
+            URL url = new URL( commandline.getOptionValue( "url" ) );
+            HttpHost proxy = commandline.hasOption( "proxy" ) ? new HttpHost( commandline.getOptionValue( "proxy" ) ) : null;
+            ChapterPattern pattern = commandline.hasOption( "pattern" )
+                ? new ChapterPattern( commandline.getOptionValue( "pattern" ) )
+                : null;
+            DownloadConfiguration conf = new DownloadConfiguration( true, url, proxy, pattern, 0 );
+            logger.info( conf );
+            boolean interactive = commandline.hasOption( 'i' );
+            ConsoleDownloader downloader = new ConsoleDownloader( conf, interactive );
+            downloader.run();
+        } catch ( MalformedURLException ex ) {
+            throw new MDRuntimeException( ex );
+        }
     }
 
     private static void startGuiDownloader() {

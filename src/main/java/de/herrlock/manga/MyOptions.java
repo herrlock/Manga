@@ -43,7 +43,7 @@ public final class MyOptions {
         .addOption( this.viewpageTypeOption )//
         .addOption( this.serverTypeOption )//
         .addOption( this.helpOption )//
-        ;
+    ;
 
     private final Option urlOption = Option.builder( "u" )//
         .longOpt( "url" )//
@@ -82,7 +82,7 @@ public final class MyOptions {
             .addOption( this.proxyOption )//
             .addOption( this.interactiveOption )//
             .addOption( this.logLevelOption )//
-            ;
+        ;
     }
 
     /**
