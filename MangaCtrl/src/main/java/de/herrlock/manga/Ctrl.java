@@ -2,6 +2,8 @@ package de.herrlock.manga;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.ResourceBundle;
 
 import de.herrlock.javafx.AbstractApplication;
@@ -41,6 +43,11 @@ public final class Ctrl extends AbstractApplication {
         @Override
         public String getTitle() {
             return I18N.getString( "scene.title" );
+        }
+
+        @Override
+        public Collection<String> getStylesheets() {
+            return Arrays.asList( "/JMetroLightTheme.css" );
         }
     }
 }
