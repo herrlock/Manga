@@ -138,6 +138,7 @@ distributions {
             }
             into('lib') {
             	from configurations.runtime
+            	exclude 'jfxrt.jar'
             }
         }
     }
