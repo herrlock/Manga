@@ -11,6 +11,8 @@ dependencies {
 	compile 'org.apache.logging.log4j:log4j-core:2.5'
 	runtime 'org.apache.logging.log4j:log4j-jcl:2.5'
 	// javafx
-	compile files(System.properties.'java.home' + '/lib/jfxrt.jar')
+	if(JavaVersion.current() == JavaVersion.VERSION_1_7) {
+		compile files(System.properties.'java.home' + '/lib/jfxrt.jar')
+	}
 	compile files(new File(rootProject.projectDir, 'lib/jmetro.jar'))
 }
