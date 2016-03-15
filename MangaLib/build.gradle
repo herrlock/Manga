@@ -1,4 +1,4 @@
-
+logger.info ' >> MangaLib'
 dependencies {
 	// utilities
 	compile 'com.google.guava:guava:19.0'
