@@ -81,16 +81,22 @@ allprojects { project ->
 	
 	task sourceJar(type: Jar) {
 		from sourceSets.main.allJava
+		classifier 'sources'
 	}
+	assemble.dependsOn sourceJar
+	
+	task javadocJar(type: Jar, dependsOn: javadoc) {
+		from tasks.javadoc.outputs
+		classifier 'javadoc'
+	}
+	assemble.dependsOn javadocJar
 	
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
 				from components.java
-	
-				artifact sourceJar {
-					classifier 'sources'
-				}
+				artifact sourceJar
+				artifact javadocJar
 			}
 		}
 	}
