@@ -22,8 +22,8 @@ import de.herrlock.manga.exceptions.MDRuntimeException;
 import javafx.application.Application;
 
 /**
- * A class that searches for the jfxrt-jar and adds it to the System-Classloder's resources. <br/>
- * Source: {@link "http://stackoverflow.com/a/60766/3680684"}
+ * A class that searches for the jfxrt-jar and adds it to the System-Classloder's resources. <br>
+ * <a href="http://stackoverflow.com/a/60766/3680684">Source (Stackoverflow)</a>
  */
 public final class ClassPathHack {
     private static final Logger logger = LogManager.getLogger();

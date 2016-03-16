@@ -33,9 +33,9 @@ public final class Main {
 
     /**
      * @param args
-     * @throws ParseException
+     *            the options passed from the commandline
      */
-    public static void main( final String... args ) throws ParseException {
+    public static void main( final String... args ) {
         try {
             final Options options = new MyOptions().getOptions();
             CommandLine commandline = new DefaultParser().parse( options, args );

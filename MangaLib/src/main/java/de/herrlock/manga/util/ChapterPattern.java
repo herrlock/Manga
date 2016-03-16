@@ -37,28 +37,18 @@ public final class ChapterPattern {
      * a valid pattern consists of the chapter-numbers seperated by semicolon, or an interval of chapters, defined by the first
      * chapter, a hyphen and the last chapter<br>
      * eg:
-     * <table>
-     * <tr>
-     * <th>pattern</th>
-     * <th>matched chapters</th>
-     * </tr>
-     * <tr>
-     * <td>42</td>
-     * <td>chapter 42</td>
-     * </tr>
-     * <tr>
-     * <td>42;45</td>
-     * <td>chapters 42 and 45</td>
-     * </tr>
-     * <tr>
-     * <td>42-46</td>
-     * <td>chapters 42 to 46 (42, 43, 44, 45, 46)</td>
-     * </tr>
-     * <tr>
-     * <td>42-46;50-52</td>
-     * <td>chapters 42 to 46 and 50 to 52 (42, 43, 44, 45, 46, 50, 51, 52)</td>
-     * </tr>
-     * </table>
+     * <dl>
+     * <dt>pattern</dt>
+     * <dd>matched chapters</dd>
+     * <dt>42</dt>
+     * <dd>chapter 42</dd>
+     * <dt>42;45</dt>
+     * <dd>chapters 42 and 45</dd>
+     * <dt>42-46</dt>
+     * <dd>chapters 42 to 46 (42, 43, 44, 45, 46)</dd>
+     * <dt>42-46;50-52</dt>
+     * <dd>chapters 42 to 46 and 50 to 52 (42, 43, 44, 45, 46, 50, 51, 52)</dd>
+     * </dl>
      * 
      * @param pattern
      *            the pattern to analyze, in case of {@code null} or an empty string an empty collection is used
