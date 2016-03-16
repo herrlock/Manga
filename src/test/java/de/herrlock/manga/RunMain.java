@@ -10,7 +10,7 @@ import de.herrlock.manga.exceptions.MDRuntimeException;
  * 
  * @author HerrLock
  */
-public class RunMain {
+public final class RunMain {
     public static void main( final String... args ) {
         try {
             // enter CLI-arguments as string-array here
@@ -18,13 +18,6 @@ public class RunMain {
                 {
                     "--help"
                 };
-            // {
-            // "--console", //
-            // "--log", "debug", //
-            // "-u", "http://mangapanda.com/naruto", //
-            // "-p", "8;13;18-22", //
-            // "-x", "kunde.proxy.itelligence.de", //
-            // };
             Main.main( arguments );
         } catch ( ParseException ex ) {
             throw new MDRuntimeException( ex );
