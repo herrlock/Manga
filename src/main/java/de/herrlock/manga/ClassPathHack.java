@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -15,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 
@@ -31,27 +31,31 @@ public final class ClassPathHack {
     public static void validateJfxrtLoaded() throws IOException {
         try {
             Class.forName( "javafx.application.Application" );
-            logger.info( "Loaded class {} at first try", Application.class.getName() );
+            logger.info( "Loaded {} at first try", Application.class );
         } catch ( ClassNotFoundException ex ) {
             logger.info( "Could not find class, trying to add the jar" );
 
-            final Path javaHomePath = Paths.get( System.getProperty( "java.home" ) );
-            Iterator<File> iterator = FileUtils.iterateFiles( javaHomePath.toFile(), new String[] {
+            final File javaHomeFolder = Paths.get( System.getProperty( "java.home" ) ).toFile();
+            Iterator<File> iterator = FileUtils.iterateFiles( javaHomeFolder, new String[] {
                 "jar"
             }, true );
-            Iterators.tryFind( iterator, new Predicate<File>() {
+            Optional<File> jfxrtOptional = Iterators.tryFind( iterator, new Predicate<File>() {
                 @Override
                 public boolean apply( final File input ) {
                     return input != null && input.getName().equals( "jfxrt.jar" );
                 }
             } );
 
-            File jfxrt = new File( System.getProperty( "java.home" ), "lib/jfxrt.jar" );
-            logger.debug( "jfxrt.jar: {}", jfxrt );
-            addURL( jfxrt.toURI().toURL() );
+            if ( jfxrtOptional.isPresent() ) {
+                File jfxrt = jfxrtOptional.get();
+                logger.debug( "jfxrt.jar: {}", jfxrt );
+                addURL( jfxrt.toURI().toURL() );
+            } else {
+                logger.warn( "Cannot add jfxrt.jar, no jar found" );
+            }
             try {
                 Class.forName( "javafx.application.Application" );
-                logger.info( "Loaded class {} after adding the jar", Application.class.getName() );
+                logger.info( "Loaded {} after adding the jar", Application.class );
             } catch ( ClassNotFoundException ex2 ) {
                 logger.error( "Failed to load class (2) => failing" );
             }
