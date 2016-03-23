@@ -16,7 +16,7 @@
 		<Logger name="org.apache.http" level="error" additivity="false">
 			<AppenderRef ref="ApacheLogger" />
 		</Logger>
-		<Root level="all">
+		<Root level="info">
 			<AppenderRef ref="ConsoleTrace" />
 		</Root>
 	</Loggers>
