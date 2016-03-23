@@ -7,6 +7,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 
+import javax.servlet.ServletException;
+
+import org.apache.catalina.LifecycleException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -157,8 +160,8 @@ public final class Main {
     private static void startServer() {
         logger.entry();
         try {
-            Server.startDefaultServer();
-        } catch ( IOException ex ) {
+            new Server().start();
+        } catch ( IOException | LifecycleException | ServletException ex ) {
             throw new MDRuntimeException( ex );
         }
     }

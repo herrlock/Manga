@@ -3,7 +3,7 @@
 <head>
 <title>MangaLoader WebUI</title>
 <meta charset="UTF-8" />
-<script src="jquery.js"></script>
+<script src="jquery-2.2.2.min.js"></script>
 <script>
     function showOnly(c, duration) {
         if (c === "dl" || c == "jd") {
@@ -29,17 +29,17 @@
                 .map((i,elem) => encodeURIComponent(elem.id) + "=" + encodeURIComponent(elem.value))
                 .toArray();
             var query = "?" + queryArr.join("&");
-            var url = "/start" + query;
+            var url = "/j/download/start" + query;
             $.get(url);
         });
         $("#stopServer").click(function() {
-            $.get("stopServer");
+            $.get("server/stop");
         });
     });
 </script>
 <style type="text/css">
 html {
-	background-image: url('background.jpg');
+	background-image: url('j/images/background.jpg');
 	background-repeat: no-repeat;
 	background-position: top center;
 	background-size: 100%;
@@ -99,7 +99,7 @@ p#buttons {
 				<label for="folder">JD-Folder:&nbsp; </label> <input type="text" id="folder" />
 			</div>
 			<div class="dl jd">
-				<label for="chapter">Kapitel:&nbsp; </label> <input type="text" id="pattern" />
+				<label for="pattern">Kapitel:&nbsp; </label> <input type="text" id="pattern" />
 			</div>
 			<p id="buttons">
 				<button type="button" id="submit">absenden</button>
