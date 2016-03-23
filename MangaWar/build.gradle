@@ -1,0 +1,21 @@
+logger.info ' >> MangaWar'
+apply plugin: 'war'
+
+dependencies {
+    providedCompile project(':MangaLib')
+	compile 'org.glassfish.jersey.containers:jersey-container-servlet-core:2.22.2'
+	compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.22.2'
+}
+
+war {
+	archiveName = "${project.name}.war"
+}
+
+task warDev(type: Copy, dependsOn: war) {
+	from tasks.war.outputs
+	into new File(project(':MangaLib').projectDir, 'tomcat.1905/webapps')
+	rename '.+', 'ROOT.war'
+}
+task devWar(dependsOn: warDev) {
+	// nothing itself
+}
