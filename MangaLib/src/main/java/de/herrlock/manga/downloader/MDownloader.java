@@ -62,7 +62,7 @@ public abstract class MDownloader implements Progressable {
      *            the Configuration to use
      */
     public MDownloader( final DownloadConfiguration conf ) {
-        logger.entry();
+        logger.entry( conf );
         logger.info( conf.getUrl().toExternalForm() );
         try {
             this.clc = new ChapterListContainer( conf );
