@@ -2,14 +2,22 @@ logger.info ' >> MangaLib'
 dependencies {
 	// utilities
 	compile 'com.google.guava:guava:19.0'
+	
 	// IO
 	compile 'org.jsoup:jsoup:1.8.3'
 	compile 'commons-io:commons-io:2.4'
 	compile 'org.apache.httpcomponents:httpclient:4.5.1'
+	
 	// logging
 	compile 'org.apache.logging.log4j:log4j-api:2.5'
 	compile 'org.apache.logging.log4j:log4j-core:2.5'
-	runtime 'org.apache.logging.log4j:log4j-jcl:2.5'
+	runtime 'org.apache.logging.log4j:log4j-web:2.5'
+	runtime 'org.apache.logging.log4j:log4j-1.2-api:2.5'
+	
+	// tomcat
+	compile 'org.apache.tomcat.embed:tomcat-embed-core:8.0.32'
+	runtime 'org.apache.tomcat.embed:tomcat-embed-logging-log4j:8.0.32'
+    
 	// javafx
 	if(JavaVersion.current() == JavaVersion.VERSION_1_7) {
 		compile files(System.properties.'java.home' + '/lib/jfxrt.jar')

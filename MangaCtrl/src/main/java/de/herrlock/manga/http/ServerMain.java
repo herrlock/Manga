@@ -1,9 +1,14 @@
 package de.herrlock.manga.http;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+
+import org.apache.catalina.LifecycleException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.herrlock.manga.exceptions.MDRuntimeException;
+import de.herrlock.manga.http.Server;
 
 /**
  * @author HerrLock
@@ -13,26 +18,22 @@ public final class ServerMain {
 
     private final Server server;
 
-    public static void main( final String... args ) {
+    public static void main( final String... args ) throws ServletException, LifecycleException, IOException {
         logger.entry();
         ServerMain srvMain = new ServerMain();
         srvMain.startServer();
     }
 
-    public ServerMain() {
-        this.server = Server.createDefault();
+    public ServerMain() throws ServletException {
+        this.server = new Server();
     }
 
-    public void startServer() {
+    public void startServer() throws LifecycleException, IOException {
         logger.entry();
-        try {
-            this.server.start();
-        } catch ( Exception ex ) {
-            throw new MDRuntimeException( ex );
-        }
+        this.server.start();
     }
 
-    public void stopServer() {
+    public void stopServer() throws LifecycleException {
         logger.entry();
         this.server.stop();
     }
