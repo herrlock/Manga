@@ -141,14 +141,19 @@ distributions {
             into('lib') {
             	from configurations.runtime
             	exclude 'jfxrt.jar'
-            	exclude "MangaWar-*.jar"
             }
-            into('tomcat.1905/webapps') {
-	            from {
-	            	// closure to initialise the resource on demand instead of directly
-	            	project(':MangaWar').war.outputs
-	            }
-            	rename '.+', 'ROOT.war'
+            into('tomcat.1905') {
+	            into('webapps') {
+		            from {
+		            	// closure to initialise the resource on demand instead of directly
+		            	project(':MangaWar').war.outputs
+		            }
+	            	rename '.+', 'ROOT.war'
+            	}
+	            into('temp') {
+	            	from File.createTempFile('temp', '.txt')
+	            	rename '.+', 'temp.txt'
+            	}
             }
         }
     }
