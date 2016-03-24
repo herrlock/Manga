@@ -45,9 +45,10 @@ public final class Main {
             logger.debug( Arrays.toString( commandline.getOptions() ) );
 
             try {
-                ClassPathHack.validateJfxrtLoaded();
-            } catch ( IOException ex ) {
-                logger.error( "Could not add jfxrt.jar to the classpath" );
+                ClassPathHack.makeSureJfxrtLoaded();
+            } catch ( ClassNotFoundException ex ) {
+                logger.error( "Could not find jfxrt.jar on the classpath."
+                    + "This does not have to be fatal as it may be that JavaFX is not needed" );
             }
 
             // optional alter loglevel-configuration
