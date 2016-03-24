@@ -47,7 +47,7 @@ public final class Ctrl extends AbstractApplication {
 
         @Override
         public Collection<String> getStylesheets() {
-            return Arrays.asList( "/JMetroLightTheme.css" );
+            return Arrays.asList( "/JMetroLightTheme.css", "/de/herrlock/javafx/jmetro_light_overrides.css" );
         }
     }
 }

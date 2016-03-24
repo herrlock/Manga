@@ -1,0 +1,15 @@
+/* overrides for the JMetro-design */
+
+.button:default {
+    -fx-text-fill: #000;
+    -fx-background-color: #ccc;
+}
+
+.button:default:hover {
+    -fx-background-color: #d8d8d8;
+}
+
+.button:focused, .button:focused:hover {
+    -fx-text-fill: #fff;
+    -fx-background-color: #004E95;
+}
