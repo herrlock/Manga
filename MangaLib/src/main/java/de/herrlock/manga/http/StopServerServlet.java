@@ -26,7 +26,7 @@ public class StopServerServlet extends HttpServlet {
     /**
      * @param server
      */
-    StopServerServlet( Server server ) {
+    StopServerServlet( final Server server ) {
         this.server = server;
         this.shutdownRunnable = new Runnable() {
             @Override

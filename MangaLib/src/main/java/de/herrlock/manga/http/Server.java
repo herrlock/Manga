@@ -39,8 +39,8 @@ public class Server {
             } else {
                 try {
                     Thread.sleep( 2000 );
-                } catch ( InterruptedException e ) {
-                    e.printStackTrace();
+                } catch ( InterruptedException ex ) {
+                    logger.error( ex );
                 }
             }
         }
