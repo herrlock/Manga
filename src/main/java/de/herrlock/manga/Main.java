@@ -6,6 +6,7 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 
@@ -40,8 +41,7 @@ public final class Main {
      */
     public static void main( final String... args ) {
         try {
-            final Options options = new MyOptions().getOptions();
-            CommandLine commandline = new DefaultParser().parse( options, args );
+            final CommandLine commandline = getCommandlineFromArgs( args );
             logger.debug( Arrays.toString( commandline.getOptions() ) );
 
             try {
@@ -52,49 +52,54 @@ public final class Main {
             }
 
             // optional alter loglevel-configuration
-            if ( commandline.hasOption( "log" ) ) {
-                String optionValue = commandline.getOptionValue( "log" );
-                Level level = Level.toLevel( optionValue, Level.INFO );
-                logger.log( Level.ALL, "setting log-level to {}", level );
-                Configurator.setRootLevel( level );
-            }
+            checkLoggerConfiguration( commandline );
 
             // start running
-            if ( commandline.getOptions().length == 0 ) {
-                // empty arguments
-                logger.trace( "empty args, start GUI" );
-                startGuiDownloader();
-
-            } else if ( commandline.hasOption( "help" ) ) {
-                logger.trace( "Commandline has \"help\", show help" );
-                printHelp();
-
-            } else if ( commandline.hasOption( "console" ) ) {
-                logger.trace( "Commandline has \"console\", start CLI-Downloader" );
-                startCliDownloader( commandline );
-
-            } else if ( commandline.hasOption( "dialog" ) ) {
-                logger.trace( "Commandline has \"dialog\", start Dialog-Downloader" );
-                startDialogDownloader();
-
-            } else if ( commandline.hasOption( "gui" ) ) {
-                logger.trace( "Commandline has \"gui\", launch GUI" );
-                startGuiDownloader();
-
-            } else if ( commandline.hasOption( "viewpage" ) ) {
-                logger.trace( "Commandline has \"viewpage\", start creating html-resources" );
-                startViewpageCreator();
-
-            } else if ( commandline.hasOption( "server" ) ) {
-                logger.trace( "Commandline has \"server\", start Server" );
-                startServer();
-
-            } else {
-                logger.trace( "else, don't know what to do" );
-            }
+            handleCommandline( commandline );
         } catch ( ParseException ex ) {
             logger.warn( ex.getMessage(), ex );
             printHelp();
+        }
+    }
+
+    private static CommandLine getCommandlineFromArgs( final String... args ) throws ParseException {
+        logger.entry( Arrays.toString( args ) );
+        MyOptions myOptions = new MyOptions();
+        Options options = myOptions.getOptions();
+        Properties defaultValues = myOptions.getDefaultValues();
+        return new DefaultParser().parse( options, args, defaultValues );
+    }
+
+    private static void checkLoggerConfiguration( final CommandLine commandline ) {
+        if ( commandline.hasOption( "log" ) ) {
+            String optionValue = commandline.getOptionValue( "log" );
+            Level level = Level.toLevel( optionValue, Level.INFO );
+            Configurator.setRootLevel( level );
+            logger.debug( "set log-level to {}", level );
+        }
+    }
+
+    private static void handleCommandline( final CommandLine commandline ) {
+        if ( commandline.hasOption( "help" ) ) {
+            logger.trace( "Commandline has \"help\", show help" );
+            printHelp();
+        } else if ( commandline.hasOption( "console" ) ) {
+            logger.trace( "Commandline has \"console\", start CLI-Downloader" );
+            startCliDownloader( commandline );
+        } else if ( commandline.hasOption( "dialog" ) ) {
+            logger.trace( "Commandline has \"dialog\", start Dialog-Downloader" );
+            startDialogDownloader();
+        } else if ( commandline.hasOption( "gui" ) ) {
+            logger.trace( "Commandline has \"gui\", launch GUI" );
+            startGuiDownloader();
+        } else if ( commandline.hasOption( "viewpage" ) ) {
+            logger.trace( "Commandline has \"viewpage\", start creating html-resources" );
+            startViewpageCreator();
+        } else if ( commandline.hasOption( "server" ) ) {
+            logger.trace( "Commandline has \"server\", start Server" );
+            startServer();
+        } else {
+            logger.trace( "else, don't know what to do" );
         }
     }
 

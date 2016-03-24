@@ -8,12 +8,12 @@
 1.5:
 - use java.util.concurrent.* package for more complex execution with progress-callbacks
 
-X:
-- average filesize
+1.x:
+- improve average filesize
 - make jd-export faster
 
 later:
-- 
+- take a look at launch4j
 
 ---
 

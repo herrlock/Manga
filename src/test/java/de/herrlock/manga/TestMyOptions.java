@@ -17,7 +17,7 @@ public final class TestMyOptions {
     public void testRequiredOptionCount() {
         MyOptions myOptions = new MyOptions();
         Options options = myOptions.getOptions();
-        Assert.assertEquals( 0, options.getRequiredOptions().size() );
+        Assert.assertEquals( 1, options.getRequiredOptions().size() );
     }
 
 }

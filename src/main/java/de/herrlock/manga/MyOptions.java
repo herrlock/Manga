@@ -1,5 +1,7 @@
 package de.herrlock.manga;
 
+import java.util.Properties;
+
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
@@ -74,7 +76,10 @@ public final class MyOptions {
 
     private final Options options;
 
+    private final Properties defaultValues = new Properties();
+
     public MyOptions() {
+        this.typeOptionGroup.setRequired( true );
         this.options = new Options()//
             .addOptionGroup( this.typeOptionGroup )//
             .addOption( this.urlOption )//
@@ -83,6 +88,7 @@ public final class MyOptions {
             .addOption( this.interactiveOption )//
             .addOption( this.logLevelOption )//
         ;
+        this.defaultValues.setProperty( "gui", "true" );
     }
 
     /**
@@ -90,6 +96,13 @@ public final class MyOptions {
      */
     public Options getOptions() {
         return this.options;
+    }
+
+    /**
+     * @return the Properties containing default-values to add
+     */
+    public Properties getDefaultValues() {
+        return this.defaultValues;
     }
 
 }
