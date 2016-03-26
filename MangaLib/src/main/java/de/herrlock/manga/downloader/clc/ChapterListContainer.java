@@ -5,11 +5,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
 
 import de.herrlock.manga.downloader.pmc.EntryList;
+import de.herrlock.manga.host.Chapter;
 import de.herrlock.manga.host.ChapterList;
-import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
@@ -18,7 +19,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * 
  * @author HerrLock
  */
-public final class ChapterListContainer {
+public final class ChapterListContainer implements Iterable<Chapter> {
     /**
      * the parent-folder to write the pages into. set in the constructor to {@code download/<mangaName>_<timestamp>}
      */
@@ -56,12 +57,13 @@ public final class ChapterListContainer {
     }
 
     /**
-     * returns a copy of this ChapterList's elements
+     * returns an Iterator of this ChapterList's elements
      * 
-     * @return an array containing all chapters
+     * @return an Iterator containing all chapters
      */
-    public Chapter[] getChapters() {
-        return this.chapterlist.toArray( new Chapter[this.chapterlist.size()] );
+    @Override
+    public Iterator<Chapter> iterator() {
+        return this.chapterlist.iterator();
     }
 
     /**

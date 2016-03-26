@@ -17,7 +17,6 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 @AutoService( ChapterList.class )
 @Details( name = "Mangapanda", baseUrl = "http://www.mangapanda.com/" )
 public final class MangaPanda extends ChapterList {
-    private static final long serialVersionUID = 1L;
 
     private final String name;
 

@@ -3,8 +3,11 @@ package de.herrlock.manga.host;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -19,7 +22,6 @@ import org.jsoup.nodes.Document;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.downloader.pmc.ImmutableEntryList;
 import de.herrlock.manga.exceptions.InitializeException;
-import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
@@ -29,13 +31,16 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * 
  * @author HerrLock
  */
-public abstract class ChapterList extends ArrayList<Chapter> {
+public abstract class ChapterList implements Iterable<Chapter> {
     private static final Logger logger = LogManager.getLogger();
 
     /**
      * the {@link DownloadConfiguration}-object to use
      */
     protected final DownloadConfiguration conf;
+
+    private final List<Chapter> list = new ArrayList<>();
+    private final Details details;
 
     /**
      * creates an instance of {@linkplain ChapterList}, gets the right {@linkplain Details} from the {@linkplain URL} in the given
@@ -66,6 +71,11 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      */
     protected ChapterList( final DownloadConfiguration conf ) {
         this.conf = conf;
+        this.details = Objects.requireNonNull( this.getClass().getAnnotation( Details.class ) );
+    }
+
+    public int size() {
+        return this.list.size();
     }
 
     /**
@@ -79,7 +89,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      */
     protected void addChapter( final String number, final URL chapterUrl ) {
         if ( this.conf.getPattern().contains( number ) ) {
-            super.add( new Chapter( number, chapterUrl ) );
+            this.list.add( new Chapter( number, chapterUrl ) );
         }
     }
 
@@ -155,50 +165,13 @@ public abstract class ChapterList extends ArrayList<Chapter> {
         }
     };
 
-    /**
-     * a class to store number and url of a single Chapter
-     * 
-     * @author HerrLock
-     */
-    public static class Chapter {
-        private final String number;
-        private final URL chapterUrl;
-
-        /**
-         * @param number
-         *            tha Chapter's number. can contain alphanumerical characters
-         * @param url
-         *            the url of a page (generally the first) of the chapter
-         */
-        Chapter( final String number, final URL url ) {
-            this.number = number;
-            this.chapterUrl = url;
+    @Override
+    public Iterator<Chapter> iterator() {
+        ArrayList<Chapter> arrayList = new ArrayList<>( this.list );
+        if ( this.details.reversed() ) {
+            Collections.reverse( arrayList );
         }
-
-        /**
-         * Getter for this Chapter's number
-         * 
-         * @return the number of this Chapter. Might be non-numerical, so it is a String.
-         */
-        public final String getNumber() {
-            return this.number;
-        }
-
-        /**
-         * Getter for this Chapter's url
-         * 
-         * @return the {@link URL} of this Chapter. Most times this is the URL of the first page, but the other pages should work
-         *         as well.
-         */
-        public URL getChapterUrl() {
-            return this.chapterUrl;
-        }
-
-        @Override
-        public String toString() {
-            return MessageFormat.format( "{0}: {1}", this.number, this.getChapterUrl() );
-        }
-
+        return arrayList.iterator();
     }
 
 }

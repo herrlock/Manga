@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.exceptions.MDRuntimeException;
-import de.herrlock.manga.host.ChapterList.Chapter;
+import de.herrlock.manga.host.Chapter;
 import de.herrlock.manga.util.Utils;
 
 /**
@@ -42,7 +42,7 @@ public final class PictureMapContainer {
         int clcSize = clc.getSize();
         this.entries = new EntryList<>( clcSize );
         List<PictureMapThread> callables = new ArrayList<>( clcSize );
-        for ( Chapter chapter : clc.getChapters() ) {
+        for ( Chapter chapter : clc ) {
             callables.add( new PictureMapThread( chapter ) );
         }
         Utils.callCallables( callables );

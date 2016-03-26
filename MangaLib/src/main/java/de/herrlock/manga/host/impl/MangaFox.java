@@ -2,7 +2,6 @@ package de.herrlock.manga.host.impl;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,7 +17,6 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 @AutoService( ChapterList.class )
 @Details( name = "Mangafox", baseUrl = "http://www.mangafox.me/", reversed = true )
 public final class MangaFox extends ChapterList {
-    private static final long serialVersionUID = 1L;
 
     private final String name;
 
@@ -43,7 +41,6 @@ public final class MangaFox extends ChapterList {
 
             super.addChapter( number, chapterUrl );
         }
-        Collections.reverse( this );
     }
 
     @Override
