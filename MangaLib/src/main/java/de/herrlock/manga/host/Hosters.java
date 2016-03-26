@@ -23,13 +23,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
-import de.herrlock.manga.host.impl.MangaFox;
-import de.herrlock.manga.host.impl.MangaPanda;
-import de.herrlock.manga.host.impl.PureManga;
+import de.herrlock.manga.util.Lookup;
 
 /**
  * A Utility-class containing the predefined {@link Hoster} as well as those loaded at runtime
@@ -40,8 +37,6 @@ public final class Hosters {
     private static final Logger logger = LogManager.getLogger();
 
     private static final Collection<Hoster> hosters = new HashSet<>();
-    private static final List<Class<? extends ChapterList>> defaultHosters = ImmutableList.of( MangaPanda.class, MangaFox.class,
-        PureManga.class );
 
     /**
      * A {@link Comparator} to compare two {@link Hoster} according to their name. Uses {@link String#compareTo(String)}
@@ -64,7 +59,8 @@ public final class Hosters {
     };
 
     static {
-        for ( Class<? extends ChapterList> c : defaultHosters ) {
+        Collection<? extends Class<ChapterList>> lookupAll = Lookup.lookupAll( ChapterList.class );
+        for ( Class<? extends ChapterList> c : lookupAll ) {
             registerHoster( c );
         }
 
