@@ -25,4 +25,9 @@ public @interface Details {
      * @return the hoster's url
      */
     String baseUrl();
+
+    /**
+     * @return true if the list is reversed (highest chapter first). Defaults to false
+     */
+    boolean reversed() default false;
 }

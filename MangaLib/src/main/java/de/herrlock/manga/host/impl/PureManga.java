@@ -8,13 +8,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.google.auto.service.AutoService;
+
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.Details;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
-@SuppressWarnings( "javadoc" )
-@Details( name = "PureManga", baseUrl = "http://www.pure-manga.org/" )
+@AutoService( ChapterList.class )
+@Details( name = "PureManga", baseUrl = "http://www.pure-manga.org/", reversed = true )
 public final class PureManga extends ChapterList {
     private static final long serialVersionUID = 1L;
 
