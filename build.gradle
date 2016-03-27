@@ -1,16 +1,16 @@
 // buildscript-dependencies
 buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'org.ajoberstar:grgit:1.5.0'
-    }
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath 'org.ajoberstar:grgit:1.5.0'
+	}
 }
 ext {
-    grgit = org.ajoberstar.grgit.Grgit.open()
-    githead = grgit.head()
-    gitbranch = grgit.branch.getCurrent()
+	grgit = org.ajoberstar.grgit.Grgit.open()
+	githead = grgit.head()
+	gitbranch = grgit.branch.getCurrent()
 }
 
 apply plugin: 'distribution'
@@ -52,10 +52,10 @@ allprojects {
 			'Built-With' : GradleVersion.current(),
 			'Created-By' : "${System.properties.'java.runtime.version'} (${System.properties.'java.vm.vendor'})",
 			'Info'
-        attributes 'Branch' : gitbranch.getName(),
-            'Date' : githead.getDate(),
-            'Commit' : githead.id,
-            'Git'
+		attributes 'Branch' : gitbranch.getName(),
+			'Date' : githead.getDate(),
+			'Commit' : githead.id,
+			'Git'
 	}
 	
 	findbugs {
@@ -119,7 +119,7 @@ allprojects {
 }
 
 task dist(dependsOn: [distZip, distTar], group: 'Distribution', description: 'Run distZip and distTar') {
-    // does nothing itself
+	// does nothing itself
 }
 
 // project-configuration
@@ -134,6 +134,7 @@ jar {
 	manifest {
 		attributes 'Main-Class' : 'de.herrlock.manga.Main',
 			'Class-Path' : project.configurations.runtime
+				.plus(file('MangaExt.jar'))
 				.collect{ file -> "lib/${file.name}" }
 				.sort{ it.toLowerCase() }
 				.join(' ')
@@ -141,35 +142,35 @@ jar {
 }
 
 distributions {
-    main {
-        baseName = project.name
-        version = project.version
-        contents {
-            from 'LICENSE'
-            from (jar.outputs) {
-            	rename '.+', 'MangaLauncher.jar'
-            }
-            into('lib') {
-            	from configurations.runtime
-            	exclude 'jfxrt.jar'
-            }
-            into('tomcat.1905') {
-	            into('webapps') {
-		            from {
-		            	// closure to initialise the resource on demand instead of directly
-		            	project(':MangaWar').war.outputs
-		            }
-	            	rename '.+', 'ROOT.war'
-            	}
-	            into('temp') {
-	            	from File.createTempFile('temp', '.txt')
-	            	rename '.+', '.tmp'
-            	}
-            }
-        }
-    }
+	main {
+		baseName = project.name
+		version = project.version
+		contents {
+			from 'LICENSE'
+			from (jar.outputs) {
+				rename '.+', 'MangaLauncher.jar'
+			}
+			into('lib') {
+				from configurations.runtime
+				exclude 'jfxrt.jar'
+			}
+			into('tomcat.1905') {
+				into('webapps') {
+					from {
+						// closure to initialise the resource on demand instead of directly
+						project(':MangaWar').war.outputs
+					}
+					rename '.+', 'ROOT.war'
+				}
+				into('temp') {
+					from File.createTempFile('temp', '.txt')
+					rename '.+', '.tmp'
+				}
+			}
+		}
+	}
 }
 
 tasks.withType(Tar) {
-    compression = Compression.GZIP
+	compression = Compression.GZIP
 }
