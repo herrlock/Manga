@@ -15,15 +15,46 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Works like the {@link java.util.ServiceLoader ServiceLoader} with the difference that this class returns references to the
+ * provided classes instead of the actual objects
+ * 
+ * @author HerrLock
+ * 
+ * @param <T>
+ *            the class to search implementations for
+ */
 public final class Lookup<T> {
     private static final Logger logger = LogManager.getLogger();
 
     private final Class<T> clazz;
     private final Set<Class<T>> allClasses;
 
+    /**
+     * looks up all service-providers for the given class and returns a Collection of the provided classes
+     * 
+     * @param clazz
+     *            the class to look up
+     * @return a Collection of actual implementations for the given class
+     */
     public static <T> Collection<? extends Class<T>> lookupAll( final Class<T> clazz ) {
         Lookup<T> lookup = new Lookup<>( clazz );
-        return lookup.getAllClasses();
+        return lookup.allClasses;
+    }
+
+    /**
+     * looks up all service-providers for the given class and returns the first
+     * 
+     * @param clazz
+     *            the class to look up
+     * @return an actual implementation for the given class
+     */
+    public static <T> Class<T> lookupOne( final Class<T> clazz ) {
+        Collection<? extends Class<T>> lookupAll = lookupAll( clazz );
+        if ( lookupAll != null && lookupAll.size() > 0 ) {
+            return lookupAll.iterator().next();
+        }
+        return null;
     }
 
     private Lookup( final Class<T> clazz ) {
@@ -31,10 +62,6 @@ public final class Lookup<T> {
         List<URL> lookupFiles = lookupFiles();
         Set<String> readFiles = readFiles( lookupFiles );
         this.allClasses = getClasses( readFiles );
-    }
-
-    public Set<Class<T>> getAllClasses() {
-        return this.allClasses;
     }
 
     private List<URL> lookupFiles() {
