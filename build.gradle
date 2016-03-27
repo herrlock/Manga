@@ -16,7 +16,7 @@ ext {
 apply plugin: 'distribution'
 
 // general setup
-allprojects { project ->
+allprojects {
 	apply plugin: 'eclipse'
 	
 	group 'de.herrlock.manga'
@@ -36,6 +36,11 @@ allprojects { project ->
 		// compile-annotations
 		compileOnly 'com.google.code.findbugs:annotations:3.0.1'
 		compileOnly 'com.google.auto.service:auto-service:1.0-rc2'
+		
+		// logging
+		if(!'MangaLog'.equals(project.name)) {
+			compile project(':MangaLog')
+		}
 		
 		// for testing
 		testCompile 'junit:junit:4.12'
@@ -69,18 +74,20 @@ allprojects { project ->
 		ruleSetFiles = files("${rootProject.projectDir}/misc/pmd.rulesets.xml")
 	}
 	
-	eclipse.project {
-		buildCommand 'edu.umd.cs.findbugs.plugin.eclipse.findbugsBuilder'
-	}
-	eclipse.classpath {
-		file.withXml {
-			def jfxrt = it.asNode().children().find{ entry ->
-				return entry['@path'].contains('jfxrt') 
+	eclipse {
+		project {
+			buildCommand 'edu.umd.cs.findbugs.plugin.eclipse.findbugsBuilder'
+		}
+		classpath {
+			file.withXml {
+				def jfxrt = it.asNode().children().find{ entry ->
+					return entry['@path'].contains('jfxrt') 
+				}
+				Node attributes = new Node(jfxrt, 'attributes')
+				Node attribute = new Node(attributes, 'attribute')
+				attribute.'@name' = 'javadoc_location'
+				attribute.'@value' = 'http://docs.oracle.com/javafx/2/api/'
 			}
-			Node attributes = new Node(jfxrt, 'attributes')
-			Node attribute = new Node(attributes, 'attribute')
-			attribute.'@name' = 'javadoc_location'
-			attribute.'@value' = 'http://docs.oracle.com/javafx/2/api/'
 		}
 	}
 	
