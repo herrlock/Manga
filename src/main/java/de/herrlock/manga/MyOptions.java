@@ -1,5 +1,6 @@
 package de.herrlock.manga;
 
+import java.io.File;
 import java.util.Properties;
 
 import org.apache.commons.cli.Option;
@@ -66,6 +67,12 @@ public final class MyOptions {
         .longOpt( "interactive" )//
         .desc( "Interactive mode: request confirmation etc. from STDIN (mode: console)" )//
         .build();
+
+    private final Option folderOption = Option.builder( "f" )//
+        .longOpt( "folder" )//
+        .hasArg()//
+        .type( File.class )//
+        .desc( "The folder to create the files in (mode: viewpage)" )//
         .build();
 
     private final Option logLevelOption = Option.builder( "l" )//
@@ -87,6 +94,7 @@ public final class MyOptions {
             .addOption( this.patternOption )//
             .addOption( this.proxyOption )//
             .addOption( this.interactiveOption )//
+            .addOption( this.folderOption )//
             .addOption( this.logLevelOption )//
         ;
         this.defaultValues.setProperty( "gui", "true" );

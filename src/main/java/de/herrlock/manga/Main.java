@@ -1,5 +1,6 @@
 package de.herrlock.manga;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -24,6 +25,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 import de.herrlock.manga.downloader.ConsoleDownloader;
 import de.herrlock.manga.exceptions.MDRuntimeException;
+import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.http.Server;
 import de.herrlock.manga.util.ChapterPattern;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
@@ -94,7 +96,7 @@ public final class Main {
             startGuiDownloader();
         } else if ( commandline.hasOption( "viewpage" ) ) {
             logger.trace( "Commandline has \"viewpage\", start creating html-resources" );
-            startViewpageCreator();
+            startViewpageCreator( commandline );
         } else if ( commandline.hasOption( "server" ) ) {
             logger.trace( "Commandline has \"server\", start Server" );
             startServer();
@@ -157,10 +159,26 @@ public final class Main {
         Application.launch( Ctrl.class );
     }
 
-    private static void startViewpageCreator() {
-        logger.entry();
-        logger.error( "not yet implemented" );
-
+    private static void startViewpageCreator( final CommandLine commandline ) {
+        logger.entry( commandline );
+        if ( commandline.hasOption( "folder" ) ) {
+            try {
+                File file = ( File ) commandline.getParsedOptionValue( "folder" );
+                if ( file.exists() ) {
+                    if ( file.isDirectory() ) {
+                        ViewPageMain.execute( file );
+                    } else {
+                        logger.error( "The folder \"{}\" must be a folder", file.getAbsolutePath() );
+                    }
+                } else {
+                    logger.error( "The folder \"{}\" does not exist", file.getAbsolutePath() );
+                }
+            } catch ( ParseException ex ) {
+                logger.error( ex );
+            }
+        } else {
+            ViewPageMain.execute();
+        }
     }
 
     private static void startServer() {
