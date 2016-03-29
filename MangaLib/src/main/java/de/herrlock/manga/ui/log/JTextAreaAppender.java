@@ -14,7 +14,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  * 
  * @author HerrLock
  */
-@Plugin( name = "JTextAreaAppender", category = "Core", elementType = "appender" )
+@Plugin( name = "JTextAreaAppender", category = "Manga", elementType = "appender" )
 public final class JTextAreaAppender extends AbstractAppender {
     private static final long serialVersionUID = 1L;
 

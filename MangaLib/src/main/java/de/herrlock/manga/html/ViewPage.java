@@ -62,9 +62,10 @@ public final class ViewPage {
      *            the folder where to create the ViewPages
      */
     private ViewPage( final File folder ) {
-        logger.info( "create files in folder {}", folder );
+        logger.trace( folder );
         this.folder = folder;
         this.maxImgs = maxImgs();
+        logger.debug( "maxImgs: {}", this.maxImgs );
         this.document = Document.createShell( "" );
         Element head = this.document.select( "head" ).first();
         createHeadChildren( head );
@@ -99,6 +100,7 @@ public final class ViewPage {
 
         String mangaObject = MessageFormat.format( "var manga = '{' chapter: {0}, max_pages: {1}, chapterblock: {2} '}';", max,
             this.maxImgs, ( max - 1 ) / 10 );
+        logger.info( "mangaObject: {}", mangaObject );
         head.appendElement( "script" ).text( mangaObject );
 
         String[] js = {
@@ -112,13 +114,14 @@ public final class ViewPage {
     }
 
     private Element createBodyChildren( final Element body ) {
-        logger.entry( body );
+        logger.info( "creating body" );
         body.appendChild( leftDiv() );
         body.appendChild( rightDiv() );
         return body;
     }
 
     private Element leftDiv() {
+        logger.info( "creating left div" );
         Map<Integer, List<String>> blocks = new HashMap<>();
         {
             // init map
@@ -197,6 +200,7 @@ public final class ViewPage {
     }
 
     private Element rightDiv() {
+        logger.info( "creating right div" );
         Element rDiv = new Element( Tag.valueOf( "div" ), "" ).attr( "id", "rightdiv" );
         // pagetitle - current chapternumber
         rDiv.appendElement( "h1" ).attr( "id", "pagetitle" ).text( "If you can read this something BAD happened..." );
@@ -231,6 +235,7 @@ public final class ViewPage {
     private void copyFile( final String filename ) {
         try ( InputStream resource = ViewPage.class.getResourceAsStream( filename ) ) {
             File toFile = new File( this.folder, filename );
+            logger.info( "copy {} to {}", filename, toFile );
             FileUtils.copyInputStreamToFile( resource, toFile );
         } catch ( final IOException ex ) {
             throw new MDRuntimeException( ex );

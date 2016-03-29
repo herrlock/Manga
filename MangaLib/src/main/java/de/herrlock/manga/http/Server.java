@@ -27,7 +27,7 @@ public class Server {
         while ( active ) {
             LifecycleState state = server.tomcat.getConnector().getState();
             boolean connectorStopped = state == LifecycleState.STOPPED;
-            logger.info( "Serverstatus: {}", state );
+            logger.debug( "Serverstatus: {}", state );
             boolean quitBySysin = false;
             if ( System.in.available() > 0 ) {
                 int read = System.in.read();
