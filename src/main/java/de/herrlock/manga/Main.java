@@ -184,7 +184,7 @@ public final class Main {
     private static void startServer() {
         logger.entry();
         try {
-            new Server().start();
+            Server.startServerAndWaitForStop();
         } catch ( IOException | LifecycleException | ServletException ex ) {
             throw new MDRuntimeException( ex );
         }
