@@ -27,7 +27,18 @@ public class ImageServlet {
     }
 
     private static enum Image {
-        NAUSICAA( "nausicaa.jpg" ), ONEPIECE( "onepiece.jpg" );
+        CITS_ROBOT( "cits_robot.jpg" ), //
+        CITS_SAKURA( "cits_sakura.jpg" ), //
+        MG_KODAMA( "mh_kodama.jpg" ), //
+        NARUTO_NARUTOS( "naruto_narutos.jpg" ), //
+        NARUTO_NSX( "naruto_ns.jpg" ), //
+        NAUSICAA( "nausicaa.jpg" ), //
+        ONEPIECE_JOLLYROGER( "onepiece_jollyroger.jpg" ), //
+        ONEPIECE_PIRATES( "onepiece_pirated.jpg" ), //
+        SAKURASOU_SHIINA( "sakurasou_shiina.jpg" ), //
+        SANKAREA( "sankarea.jpg" ), //
+        TKR_MISAKA( "tkr_misaka.jpg" ), //
+        ;
 
         private static final Random RANDOM = new Random();
         private final String filename;
