@@ -14,10 +14,12 @@ import org.apache.catalina.LifecycleException;
  */
 public final class StartWithDesktop {
     public static void main( final String... args ) throws IOException, URISyntaxException, ServletException, LifecycleException {
-        ServerMain.main( args );
+        ServerMain srvMain = new ServerMain();
+        srvMain.start();
         if ( Desktop.isDesktopSupported() ) {
             Desktop.getDesktop().browse( new URI( "http://localhost:1905" ) );
         }
+        srvMain.listenForStop();
     }
 
     private StartWithDesktop() {

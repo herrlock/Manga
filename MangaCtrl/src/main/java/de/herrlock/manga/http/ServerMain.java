@@ -19,19 +19,25 @@ public final class ServerMain {
     public static void main( final String... args ) throws ServletException, LifecycleException, IOException {
         logger.entry();
         ServerMain srvMain = new ServerMain();
-        srvMain.startServer();
+        srvMain.start();
+        srvMain.listenForStop();
     }
 
     public ServerMain() throws ServletException {
         this.server = new Server();
     }
 
-    public void startServer() throws LifecycleException, IOException {
+    public void start() throws LifecycleException, IOException {
         logger.entry();
         this.server.start();
     }
 
-    public void stopServer() throws LifecycleException {
+    public void listenForStop() throws IOException {
+        logger.entry();
+        this.server.listenForStop();
+    }
+
+    public void stop() throws LifecycleException {
         logger.entry();
         this.server.stop();
     }

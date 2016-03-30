@@ -68,11 +68,16 @@ public final class MyOptions {
         .desc( "Interactive mode: request confirmation etc. from STDIN (mode: console)" )//
         .build();
 
-    private final Option folderOption = Option.builder( "f" )//
+    private final Option folderOption = Option.builder()//
         .longOpt( "folder" )//
         .hasArg()//
         .type( File.class )//
         .desc( "The folder to create the files in (mode: viewpage)" )//
+        .build();
+
+    private final Option launchBrowserOption = Option.builder()//
+        .longOpt( "browser" )//
+        .desc( "Start the browser after starting the sevrer (mode: server)" )//
         .build();
 
     private final Option logLevelOption = Option.builder( "l" )//
@@ -95,6 +100,7 @@ public final class MyOptions {
             .addOption( this.proxyOption )//
             .addOption( this.interactiveOption )//
             .addOption( this.folderOption )//
+            .addOption( this.launchBrowserOption )//
             .addOption( this.logLevelOption )//
         ;
         this.defaultValues.setProperty( "gui", "true" );

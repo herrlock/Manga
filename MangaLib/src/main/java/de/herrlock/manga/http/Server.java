@@ -22,29 +22,7 @@ public class Server {
     public static void startServerAndWaitForStop() throws ServletException, LifecycleException, IOException {
         final Server server = new Server();
         server.start();
-
-        boolean active = true;
-        while ( active ) {
-            LifecycleState state = server.tomcat.getConnector().getState();
-            boolean connectorStopped = state == LifecycleState.STOPPED;
-            logger.debug( "Serverstatus: {}", state );
-            boolean quitBySysin = false;
-            if ( System.in.available() > 0 ) {
-                int read = System.in.read();
-                quitBySysin = read == 'q';
-                logger.info( "Read char: {}", ( char ) read );
-            }
-            if ( connectorStopped || quitBySysin ) {
-                active = false;
-            } else {
-                try {
-                    Thread.sleep( 2000 );
-                } catch ( InterruptedException ex ) {
-                    logger.error( ex );
-                }
-            }
-        }
-        logger.info( "Server stopped" );
+        server.listenForStop();
     }
 
     public Server() throws ServletException {
@@ -71,6 +49,31 @@ public class Server {
             logger.error( ioException.getMessage() );
             throw ioException;
         }
+    }
+
+    public void listenForStop() throws IOException {
+        boolean active = true;
+        while ( active ) {
+            LifecycleState state = this.tomcat.getConnector().getState();
+            boolean connectorStopped = state == LifecycleState.STOPPED;
+            logger.debug( "Serverstatus: {}", state );
+            boolean quitBySysin = false;
+            if ( System.in.available() > 0 ) {
+                int read = System.in.read();
+                quitBySysin = read == 'q';
+                logger.info( "Read char: {}", ( char ) read );
+            }
+            if ( connectorStopped || quitBySysin ) {
+                active = false;
+            } else {
+                try {
+                    Thread.sleep( 2000 );
+                } catch ( InterruptedException ex ) {
+                    logger.error( ex );
+                }
+            }
+        }
+        logger.info( "Server stopped" );
     }
 
     public void stop() throws LifecycleException {

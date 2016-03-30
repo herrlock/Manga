@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Properties;
@@ -26,7 +27,8 @@ import org.apache.logging.log4j.core.config.Configurator;
 import de.herrlock.manga.downloader.ConsoleDownloader;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.html.ViewPageMain;
-import de.herrlock.manga.http.Server;
+import de.herrlock.manga.http.ServerMain;
+import de.herrlock.manga.http.StartWithDesktop;
 import de.herrlock.manga.util.ChapterPattern;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import javafx.application.Application;
@@ -99,7 +101,7 @@ public final class Main {
             startViewpageCreator( commandline );
         } else if ( commandline.hasOption( "server" ) ) {
             logger.trace( "Commandline has \"server\", start Server" );
-            startServer();
+            startServer( commandline );
         } else {
             logger.trace( "else, don't know what to do" );
         }
@@ -181,11 +183,15 @@ public final class Main {
         }
     }
 
-    private static void startServer() {
-        logger.entry();
+    private static void startServer( final CommandLine commandline ) {
+        logger.entry( commandline );
         try {
-            Server.startServerAndWaitForStop();
-        } catch ( IOException | LifecycleException | ServletException ex ) {
+            if ( commandline.hasOption( "browser" ) ) {
+                StartWithDesktop.main();
+            } else {
+                ServerMain.main();
+            }
+        } catch ( IOException | LifecycleException | ServletException | URISyntaxException ex ) {
             throw new MDRuntimeException( ex );
         }
     }
