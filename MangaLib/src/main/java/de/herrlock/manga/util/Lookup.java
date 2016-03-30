@@ -35,6 +35,8 @@ public final class Lookup<T> {
      * 
      * @param clazz
      *            the class to look up
+     * @param <T>
+     *            the supertype of the requested classes
      * @return a Collection of actual implementations for the given class
      */
     public static <T> Collection<? extends Class<T>> lookupAll( final Class<T> clazz ) {
@@ -47,6 +49,8 @@ public final class Lookup<T> {
      * 
      * @param clazz
      *            the class to look up
+     * @param <T>
+     *            the supertype of the requested class
      * @return an actual implementation for the given class
      */
     public static <T> Class<T> lookupOne( final Class<T> clazz ) {

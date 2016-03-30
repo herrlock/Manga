@@ -16,10 +16,6 @@ public final class Constants {
      * the default location to save the downloads into
      */
     public static final String TARGET_FOLDER = "./download";
-    /**
-     * the location of the trace-file
-     */
-    public static final String TRACE_FILE = "./log/trace.log";
 
     /**
      * a {@link Comparator} to compare Strings based on their numeric value

@@ -16,7 +16,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * 
  * @author HerrLock
  */
-public class Hoster implements Comparable<Hoster> {
+public final class Hoster implements Comparable<Hoster> {
 
     private final Class<? extends ChapterList> baseClass;
     private final String name;

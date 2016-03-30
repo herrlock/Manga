@@ -17,7 +17,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings( value = {
     "SE_BAD_FIELD_STORE", "SE_BAD_FIELD", "SE_NO_SERIALVERSIONID"
 }, justification = "Don't care about serialization" )
-public class StopServerServlet extends HttpServlet {
+public final class StopServerServlet extends HttpServlet {
     private static final Logger logger = LogManager.getLogger();
 
     private final Server server;

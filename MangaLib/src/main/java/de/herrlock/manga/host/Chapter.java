@@ -8,7 +8,7 @@ import java.text.MessageFormat;
  * 
  * @author HerrLock
  */
-public class Chapter {
+public final class Chapter {
     private final String number;
     private final URL chapterUrl;
 
@@ -28,7 +28,7 @@ public class Chapter {
      * 
      * @return the number of this Chapter. Might be non-numerical, so it is a String.
      */
-    public final String getNumber() {
+    public String getNumber() {
         return this.number;
     }
 

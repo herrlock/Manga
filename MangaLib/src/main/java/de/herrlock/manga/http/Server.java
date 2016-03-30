@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author HerrLock
  */
-public class Server {
+public final class Server {
     private static final Logger logger = LogManager.getLogger();
     private final Tomcat tomcat = new Tomcat();
 
