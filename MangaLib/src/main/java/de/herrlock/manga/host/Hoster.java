@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Objects;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
@@ -103,5 +104,10 @@ public final class Hoster implements Comparable<Hoster> {
     @Override
     public int hashCode() {
         return this.baseClass.getName().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return MessageFormat.format( "Hoster (name: {0}, url: {1})", this.name, this.baseUrl );
     }
 }
