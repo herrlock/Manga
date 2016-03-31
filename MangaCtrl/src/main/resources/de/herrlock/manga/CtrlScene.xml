@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
+<?import java.lang.Integer?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="de.herrlock.manga.CtrlController">
 	<padding>
@@ -13,37 +14,43 @@
 		<Text fx:id="runningText" text="%text.running" visible="false" />
 	</top>
 	<center>
-		<VBox spacing="8">
-			<HBox spacing="8">
-				<padding>
-					<Insets top="8" right="8" left="8" />
-				</padding>
-				<Button fx:id="btnStartPDL" text="%button.text.startPDL" onAction="#startPDownload" onMouseEntered="#showTextPStart"
-					onMouseExited="#clearText" defaultButton="true" />
-				<Button fx:id="btnStartDDL" text="%button.text.startDDL" onAction="#startDDownload" onMouseEntered="#showTextDStart"
-					onMouseExited="#clearText" />
-			</HBox>
-			<HBox spacing="8">
-				<padding>
-					<Insets right="8" left="8" />
-				</padding>
-				<Button fx:id="btnStartServer" text="%button.text.startServer" onAction="#startServer" onMouseEntered="#showTextServerStart"
-					onMouseExited="#clearText" />
-			</HBox>
-			<HBox spacing="8">
-				<padding>
-					<Insets right="8" bottom="8" left="8" />
-				</padding>
-				<Button fx:id="btnShowHosts" text="%button.text.showHosts" onAction="#showHosts" onMouseEntered="#showTextHosts"
-					onMouseExited="#clearText" />
-				<!-- <Button fx:id="btnAddToJD" text="%button.text.addToJD" onAction="#exportToJd" onMouseEntered="#showTextJD"
-					onMouseExited="#clearText" /> -->
-				<Button fx:id="btnCreateHTML" text="%button.text.createHTML" onAction="#createHtml" onMouseEntered="#showTextHTML"
-					onMouseExited="#clearText" />
-			</HBox>
-		</VBox>
+		<TilePane hgap="8" vgap="8" prefColumns="2">
+			<padding>
+				<Insets top="8" bottom="8" />
+			</padding>
+			<Button fx:id="btnStartPDL" text="%button.text.startPDL" onAction="#startPDownload" onMouseEntered="#showTextPStart"
+				onMouseExited="#clearText" defaultButton="true">
+				<maxWidth>
+					<Integer fx:constant="MAX_VALUE" />
+				</maxWidth>
+			</Button>
+			<Button fx:id="btnStartDDL" text="%button.text.startDDL" onAction="#startDDownload" onMouseEntered="#showTextDStart"
+				onMouseExited="#clearText">
+				<maxWidth>
+					<Integer fx:constant="MAX_VALUE" />
+				</maxWidth>
+			</Button>
+			<Button fx:id="btnStartServer" text="%button.text.startServer" onAction="#startServer" onMouseEntered="#showTextServerStart"
+				onMouseExited="#clearText">
+				<maxWidth>
+					<Integer fx:constant="MAX_VALUE" />
+				</maxWidth>
+			</Button>
+			<Button fx:id="btnShowHosts" text="%button.text.showHosts" onAction="#showHosts" onMouseEntered="#showTextHosts"
+				onMouseExited="#clearText">
+				<maxWidth>
+					<Integer fx:constant="MAX_VALUE" />
+				</maxWidth>
+			</Button>
+			<Button fx:id="btnCreateHTML" text="%button.text.createHTML" onAction="#createHtml" onMouseEntered="#showTextHTML"
+				onMouseExited="#clearText">
+				<maxWidth>
+					<Integer fx:constant="MAX_VALUE" />
+				</maxWidth>
+			</Button>
+		</TilePane>
 	</center>
 	<bottom>
-		<Text fx:id="bottomText" text="" />
+		<Text fx:id="bottomText" />
 	</bottom>
 </BorderPane>

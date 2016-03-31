@@ -30,9 +30,6 @@ public final class CtrlController {
     public void showTextHosts() {
         setBottomText( "button.tooltip.showHosts" );
     }
-    public void showTextJD() {
-        setBottomText( "button.tooltip.addToJD" );
-    }
     public void showTextHTML() {
         setBottomText( "button.tooltip.createHTML" );
     }
@@ -51,9 +48,6 @@ public final class CtrlController {
     }
     public void showHosts() {
         handleBtnClick( Execs.PRINT_ALL_HOSTER );
-    }
-    public void exportToJd() {
-        handleBtnClick( Execs.ADD_TO_JD_W_FILE );
     }
     public void createHtml() {
         handleBtnClick( Execs.VIEW_PAGE_MAIN );
