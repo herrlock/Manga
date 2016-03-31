@@ -1,14 +1,8 @@
 package de.herrlock.manga;
 
-import static de.herrlock.manga.util.Execs.ADD_TO_JD_W_FILE;
-import static de.herrlock.manga.util.Execs.DIALOG_DOWNLOADER;
-import static de.herrlock.manga.util.Execs.PLAIN_DOWNLOADER;
-import static de.herrlock.manga.util.Execs.PRINT_ALL_HOSTER;
-import static de.herrlock.manga.util.Execs.START_SERVER;
-import static de.herrlock.manga.util.Execs.VIEW_PAGE_MAIN;
-
 import de.herrlock.javafx.handler.Exec;
 import de.herrlock.javafx.handler.ExecHandlerTask;
+import de.herrlock.manga.util.Execs;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
@@ -47,22 +41,22 @@ public final class CtrlController {
     }
 
     public void startDDownload() {
-        handleBtnClick( DIALOG_DOWNLOADER );
+        handleBtnClick( Execs.DIALOG_DOWNLOADER );
     }
     public void startPDownload() {
-        handleBtnClick( PLAIN_DOWNLOADER );
+        handleBtnClick( Execs.PLAIN_DOWNLOADER );
     }
     public void startServer() {
-        handleBtnClick( START_SERVER, false );
+        handleBtnClick( Execs.START_SERVER, false );
     }
     public void showHosts() {
-        handleBtnClick( PRINT_ALL_HOSTER );
+        handleBtnClick( Execs.PRINT_ALL_HOSTER );
     }
     public void exportToJd() {
-        handleBtnClick( ADD_TO_JD_W_FILE );
+        handleBtnClick( Execs.ADD_TO_JD_W_FILE );
     }
     public void createHtml() {
-        handleBtnClick( VIEW_PAGE_MAIN );
+        handleBtnClick( Execs.VIEW_PAGE_MAIN );
     }
 
     public void handleBtnClick( final Exec exec ) {

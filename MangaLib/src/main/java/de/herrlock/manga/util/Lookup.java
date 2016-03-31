@@ -40,8 +40,7 @@ public final class Lookup<T> {
      * @return a Collection of actual implementations for the given class
      */
     public static <T> Collection<? extends Class<T>> lookupAll( final Class<T> clazz ) {
-        Lookup<T> lookup = new Lookup<>( clazz );
-        return lookup.allClasses;
+        return new Lookup<>( clazz ).allClasses;
     }
 
     /**
@@ -55,7 +54,7 @@ public final class Lookup<T> {
      */
     public static <T> Class<T> lookupOne( final Class<T> clazz ) {
         Collection<? extends Class<T>> lookupAll = lookupAll( clazz );
-        if ( lookupAll != null && lookupAll.size() > 0 ) {
+        if ( lookupAll != null && !lookupAll.isEmpty() ) {
             return lookupAll.iterator().next();
         }
         return null;
