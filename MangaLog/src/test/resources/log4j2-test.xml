@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration packages="de.herrlock.manga.ui.log" status="INFO">
+	<Properties>
+		<Property name="patternLayout">%d{HH:mm:ss.SSS} [%t] %-5level %logger{1.}.%M - %m%n</Property>
+		<Property name="consoleLayout">%logger{1.}.%M - %m%n</Property>
+	</Properties>
+	<Appenders>
+		<Console name="ConsoleAppender" target="SYSTEM_OUT">
+			<PatternLayout pattern="${consoleLayout}" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="org.apache.http" level="INFO" additivity="false">
+			<AppenderRef ref="ConsoleAppender" />
+		</Logger>
+		<Root level="DEBUG">
+			<AppenderRef ref="ConsoleAppender" />
+		</Root>
+	</Loggers>
+
+</Configuration>

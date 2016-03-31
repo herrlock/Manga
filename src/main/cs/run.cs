@@ -6,7 +6,7 @@ namespace MD
 	{
 		static void Main()
 		{
-            ProcessStartInfo startInfo = new ProcessStartInfo("cmd.exe", "/C java -cp \"lib/*\" de.herrlock.manga.Ctrl");
+            ProcessStartInfo startInfo = new ProcessStartInfo("cmd.exe", "/C java -jar MangaLauncher.jar");
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             Process process = new Process();
             process.StartInfo = startInfo;

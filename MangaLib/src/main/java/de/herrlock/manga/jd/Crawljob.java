@@ -10,21 +10,21 @@ import java.util.List;
  * 
  * @author HerrLock
  */
-public class Crawljob {
+public final class Crawljob {
 
     private final File folder;
     private final String packagenumber;
     private final List<CrawljobEntry> entries = Collections.synchronizedList( new ArrayList<CrawljobEntry>() );
 
     /**
-     * creates a crealjob-file to fil with entries
+     * creates a crawljob-file to fill with entries
      * 
      * @param folder
      *            the folder where to download the images to (relative path, eg. "./manganame_timestamp/01")
      * @param packagenumber
      *            name of the JDownloader-package
      */
-    public Crawljob( File folder, String packagenumber ) {
+    public Crawljob( final File folder, final String packagenumber ) {
         this.folder = folder;
         this.packagenumber = packagenumber;
     }
@@ -37,7 +37,7 @@ public class Crawljob {
      * @param url
      *            the resource's URL
      */
-    public void addCrawljobEntry( String filename, String url ) {
+    public void addCrawljobEntry( final String filename, final String url ) {
         synchronized ( this.entries ) {
             this.entries.add( new CrawljobEntry( filename, url ) );
         }
@@ -61,20 +61,20 @@ public class Crawljob {
         String ls = System.lineSeparator();
         StringBuilder sb = new StringBuilder();
         for ( CrawljobEntry c : this.entries ) {
-            sb.append( ls );
-            sb.append( "->NEW ENTRY<-" );
-            sb.append( ls );
-            sb.append( c.export() );
-            sb.append( ls );
-            sb.append( "downloadFolder=" );
-            sb.append( this.folder.getAbsolutePath() );
-            sb.append( ls );
-            sb.append( "packageName=" );
-            sb.append( this.packagenumber );
-            sb.append( ls );
-            sb.append( "addOfflineLink=true" );
-            sb.append( ls );
-            sb.append( ( char ) 0 );
+            sb.append( ls )//
+                .append( "->NEW ENTRY<-" )//
+                .append( ls )//
+                .append( c.export() )//
+                .append( ls )//
+                .append( "downloadFolder=" )//
+                .append( this.folder.getAbsolutePath() )//
+                .append( ls )//
+                .append( "packageName=" )//
+                .append( this.packagenumber )//
+                .append( ls )//
+                .append( "addOfflineLink=true" )//
+                .append( ls )//
+                .append( ( char ) 0 );
         }
         return sb.toString();
     }

@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<ruleset name="Custom ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+	<description>PMD-configuration for the MangaDownloader</description>
+
+	<!-- important, these rules do not "break" anything, I just like it more with them -->
+	<rule ref="rulesets/java/basic.xml">
+		<priority>1</priority>
+	</rule>
+	<rule ref="rulesets/java/braces.xml">
+		<priority>1</priority>
+	</rule>
+	<rule ref="rulesets/java/design.xml">
+		<priority>1</priority>
+	</rule>
+	<rule ref="rulesets/java/empty.xml">
+		<priority>1</priority>
+	</rule>
+	<rule ref="rulesets/java/sunsecure.xml">
+		<priority>1</priority>
+	</rule>
+	<rule ref="rulesets/java/typeresolution.xml">
+		<priority>1</priority>
+	</rule>
+	<rule ref="rulesets/java/unnecessary.xml">
+		<priority>1</priority>
+	</rule>
+	<rule ref="rulesets/java/unusedcode.xml">
+		<priority>1</priority>
+	</rule>
+
+	<!-- not so important -->
+	<rule ref="rulesets/java/finalizers.xml">
+		<priority>4</priority>
+	</rule>
+	<rule ref="rulesets/java/imports.xml">
+		<priority>5</priority>
+	</rule>
+	<rule ref="rulesets/java/junit.xml">
+		<priority>3</priority>
+		<exclude name="JUnitTestContainsTooManyAsserts" />
+	</rule>
+	<rule ref="rulesets/java/logging-java.xml">
+		<priority>4</priority>
+	</rule>
+	<rule ref="rulesets/java/optimizations.xml">
+		<priority>4</priority>
+		<exclude name="AvoidInstantiatingObjectsInLoops" />
+		<exclude name="LocalVariableCouldBeFinal" />
+		<exclude name="SimplifyStartsWith" />
+	</rule>
+	<rule ref="rulesets/java/strictexception.xml">
+		<priority>4</priority>
+	</rule>
+	<rule ref="rulesets/java/strings.xml">
+		<priority>4</priority>
+		<exclude name="AvoidDuplicateLiterals" />
+	</rule>
+
+	<!-- configure with the right parameters, exclude unnecessary tests -->
+	<!-- <rule ref="rulesets/java/naming.xml"> -->
+	<!-- <priority>4</priority> -->
+	<!-- <exclude name="VariableNamingConventions" /> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/codesize.xml"> -->
+	<!-- <priority>4</priority> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/controversial.xml"> -->
+	<!-- <priority>4</priority> -->
+	<!-- </rule> -->
+
+	<!-- priority-level documentation -->
+	<!-- 1. Change absolutely required. Behavior is critically broken/buggy. -->
+	<!-- 2. Change highly recommended. Behavior is quite likely to be broken/buggy. -->
+	<!-- 3. Change recommended. Behavior is confusing, perhaps buggy, and/or against standards/best practices. -->
+	<!-- 4. Change optional. Behavior is not likely to be buggy, but more just flies in the face of standards/style/good taste. -->
+	<!-- 5. Change highly optional. Nice to have, such as a consistent naming policy for package/class/fields... -->
+
+	<!-- example configuration, properties and excluding -->
+	<!-- Now we'll customize a rule's property value -->
+	<!-- <rule ref="rulesets/java/codesize.xml/CyclomaticComplexity"> -->
+	<!-- <properties> -->
+	<!-- <property name="reportLevel" value="5" /> -->
+	<!-- </properties> -->
+	<!-- </rule> -->
+
+	<!-- We want everything from braces.xml except WhileLoopsMustUseBraces -->
+	<!-- <rule ref="rulesets/java/braces.xml"> -->
+	<!-- <exclude name="WhileLoopsMustUseBraces" /> -->
+	<!-- </rule> -->
+
+</ruleset>

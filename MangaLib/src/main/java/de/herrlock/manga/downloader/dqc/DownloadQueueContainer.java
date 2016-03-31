@@ -8,7 +8,6 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
@@ -22,12 +21,19 @@ import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.collect.ImmutableList;
+
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.downloader.pmc.EntryList;
-import de.herrlock.manga.ui.log.LogWindow;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
+/**
+ * A container for a list of downloads
+ * 
+ * @author HerrLock
+ */
 public final class DownloadQueueContainer {
     static final Logger logger = LogManager.getLogger();
 
@@ -35,7 +41,13 @@ public final class DownloadQueueContainer {
     private final ChapterListContainer clc;
     final DownloadConfiguration conf;
 
-    public DownloadQueueContainer( ChapterListContainer clc, DownloadConfiguration conf ) {
+    /**
+     * @param clc
+     *            the container with the list of chapters
+     * @param conf
+     *            the configuration to use
+     */
+    public DownloadQueueContainer( final ChapterListContainer clc, final DownloadConfiguration conf ) {
         this.clc = clc;
         this.conf = conf;
     }
@@ -44,27 +56,37 @@ public final class DownloadQueueContainer {
      * adds a page to thie queue
      * 
      * @param p
-     *            the {@link Page} to add
+     *            the page to add
      */
-    public void add( Page p ) {
+    public void add( final Page p ) {
         this.dlQueue.add( p );
     }
 
     /**
-     * adds a new {@link Page} with the given parameters to the queue
+     * adds a new page with the given parameters to the queue
      * 
-     * @see Page#Page(URL, File, int)
+     * @param pageUrl
+     *            the page's URL
+     * @param chapterFolder
+     *            the folder to store the page in
+     * @param pageNumber
+     *            the number of the page
+     * 
      */
-    public void add( URL pageUrl, File chapterFolder, int pageNumber ) {
+    public void add( final URL pageUrl, final File chapterFolder, final int pageNumber ) {
         this.add( new Page( pageUrl, chapterFolder, pageNumber ) );
     }
 
     /**
      * adds a {@link Collection} of Integer-URL-Pairs to this Container
      * 
-     * @see DownloadQueueContainer#add(URL, File, int)
+     * @param chapterFolder
+     *            the folder to store the pages in
+     * @param entryList
+     *            the list of entries
+     * 
      */
-    public void addEntryList( File chapterFolder, EntryList<Integer, URL> entryList ) {
+    public void addEntryList( final File chapterFolder, final EntryList<Integer, URL> entryList ) {
         for ( Entry<Integer, URL> e : entryList ) {
             this.add( e.getValue(), chapterFolder, e.getKey().intValue() );
         }
@@ -76,22 +98,20 @@ public final class DownloadQueueContainer {
      */
     public void downloadPages() {
         logger.entry();
-        List<Page> pages = Collections.unmodifiableList( new ArrayList<>( this.dlQueue ) );
+        List<Page> pages = ImmutableList.copyOf( this.dlQueue );
         this.dlQueue.clear();
         // download pictures from the ChapterListContainer
         List<DownloadThread> callables = new ArrayList<>( pages.size() );
         for ( Page p : pages ) {
             callables.add( new DownloadThread( p ) );
         }
-        LogWindow.setChapterProgress( 0 );
-        LogWindow.setChapterProgressMax( callables.size() * 3 );
         Utils.callCallables( callables );
         if ( !this.dlQueue.isEmpty() ) {
             downloadPages();
         }
     }
 
-    URL getImageLink( URL pageUrl ) throws IOException {
+    URL getImageLink( final URL pageUrl ) throws IOException {
         return this.clc.getImageLink( pageUrl );
     }
 
@@ -109,7 +129,7 @@ public final class DownloadQueueContainer {
             this.p = p;
             this.handler = new ResponseHandler<Void>() {
                 @Override
-                public Void handleResponse( HttpResponse response ) throws ClientProtocolException, IOException {
+                public Void handleResponse( final HttpResponse response ) throws ClientProtocolException, IOException {
                     HttpEntity entity = response.getEntity();
                     try ( InputStream in = entity.getContent() ) {
                         FileUtils.copyInputStreamToFile( in, p.getTargetFile() );
@@ -127,71 +147,23 @@ public final class DownloadQueueContainer {
         @Override
         public Void call() {
             try {
-                LogWindow.setChapterProgressPlusOne();
                 URL imageURL = DownloadQueueContainer.this.getImageLink( this.p.getUrl() );
                 File outputFile = this.p.getTargetFile();
-                LogWindow.setChapterProgressPlusOne();
-                logger.debug( "start reading image " + imageURL );
+                logger.debug( "start reading image {}", imageURL );
                 Utils.getDataAndExecuteResponseHandler( imageURL, DownloadQueueContainer.this.conf, this.handler );
-                logger.debug( "saved image to " + outputFile );
-                LogWindow.setChapterProgressPlusOne();
-            } catch ( SocketException | SocketTimeoutException ex ) {
+                logger.debug( "saved image to {}", outputFile );
+            } catch ( final SocketException | SocketTimeoutException ex ) {
                 DownloadQueueContainer.this.add( this.p );
-            } catch ( IOException ex ) {
+            } catch ( final IOException ex ) {
                 if ( ex.getMessage().contains( "503" ) ) {
                     // http-statuscode 503
-                    System.out.println( "HTTP-Status 503 (" + this.p.getUrl() + "), trying again" );
+                    logger.info( "HTTP-Status 503 ({}), trying again", this.p.getUrl() );
                     DownloadQueueContainer.this.add( this.p );
                 } else {
-                    throw new RuntimeException( ex );
+                    throw new MDRuntimeException( ex );
                 }
             }
             return null;
-        }
-    }
-
-    public static final class Page {
-        /**
-         * the {@link URL} where to read this page from
-         */
-        private final URL pageUrl;
-        /**
-         * the {@link File} where this page will be saved
-         */
-        private final File targetFile;
-
-        /**
-         * creates a new page
-         * 
-         * @param pageUrl
-         *            the {@link URL} where to read from
-         * @param chapterFolder
-         *            the folder where the page will be stored
-         * @param pageNumber
-         *            the number of the page, sets the filename (with optional prepended '0')
-         */
-        public Page( URL pageUrl, File chapterFolder, int pageNumber ) {
-            this.pageUrl = pageUrl;
-            String _nr = ( pageNumber > 9 ? "" : "0" ) + pageNumber;
-            this.targetFile = new File( chapterFolder, _nr + ".jpg" );
-        }
-
-        /**
-         * getter for this page's {@link URL}
-         * 
-         * @return the {@link URL} of this page
-         */
-        public URL getUrl() {
-            return this.pageUrl;
-        }
-
-        /**
-         * getter for this page's save-location
-         * 
-         * @return the {@link File} where to store this page
-         */
-        public File getTargetFile() {
-            return this.targetFile;
         }
     }
 }

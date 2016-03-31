@@ -3,8 +3,11 @@ package de.herrlock.manga.host;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -17,17 +20,18 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import de.herrlock.manga.downloader.pmc.EntryList;
+import de.herrlock.manga.downloader.pmc.ImmutableEntryList;
 import de.herrlock.manga.exceptions.InitializeException;
-import de.herrlock.manga.host.ChapterList.Chapter;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
- * A class the consists of multiple Chapters
+ * A class the consists of multiple Chapters<br>
+ * Implementations require the annotation {@link Details}
  * 
  * @author HerrLock
  */
-public abstract class ChapterList extends ArrayList<Chapter> {
+public abstract class ChapterList implements Iterable<Chapter> {
     private static final Logger logger = LogManager.getLogger();
 
     /**
@@ -35,8 +39,11 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      */
     protected final DownloadConfiguration conf;
 
+    private final List<Chapter> list = new ArrayList<>();
+    private final Details details;
+
     /**
-     * creates an instance of {@linkplain ChapterList}, gets the right {@linkplain Hoster} from the {@linkplain URL} in the given
+     * creates an instance of {@linkplain ChapterList}, gets the right {@linkplain Details} from the {@linkplain URL} in the given
      * {@link DownloadConfiguration}
      * 
      * @param conf
@@ -45,10 +52,10 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @throws IOException
      *             thrown by {@link Hoster#getChapterList(DownloadConfiguration)}
      */
-    public static ChapterList getInstance( DownloadConfiguration conf ) throws IOException {
+    public static ChapterList getInstance( final DownloadConfiguration conf ) throws IOException {
         logger.entry();
         URL url = conf.getUrl();
-        Hoster h = Hoster.getHostByURL( url );
+        Hoster h = Hosters.getHostByURL( url );
         if ( h == null ) {
             throw new InitializeException( url + " could not be resolved to a registered host." );
         }
@@ -62,8 +69,13 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @param conf
      *            the {@link DownloadConfiguration} to use
      */
-    protected ChapterList( DownloadConfiguration conf ) {
+    protected ChapterList( final DownloadConfiguration conf ) {
         this.conf = conf;
+        this.details = Objects.requireNonNull( this.getClass().getAnnotation( Details.class ) );
+    }
+
+    public int size() {
+        return this.list.size();
     }
 
     /**
@@ -75,9 +87,9 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @param chapterUrl
      *            the chapter's URL
      */
-    protected void addChapter( String number, URL chapterUrl ) {
+    protected void addChapter( final String number, final URL chapterUrl ) {
         if ( this.conf.getPattern().contains( number ) ) {
-            super.add( new Chapter( number, chapterUrl ) );
+            this.list.add( new Chapter( number, chapterUrl ) );
         }
     }
 
@@ -97,10 +109,11 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @throws IOException
      *             in case an IOException occurs
      */
-    public abstract URL imgLink( URL url ) throws IOException;
+    public abstract URL imgLink( final URL url ) throws IOException;
 
     /**
-     * returns a (hopefully soon immutable) {@link EntryList} of all page-URLs
+     * returns an immutable {@link EntryList} of all page-URLs. calls {@link #_getAllPageURLs(URL)} and warps the result in an
+     * {@link ImmutableEntryList}
      * 
      * @param url
      *            the url to one chapter
@@ -108,9 +121,9 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @throws IOException
      *             in case an IOException occurs
      */
-    public EntryList<Integer, URL> getAllPageURLs( URL url ) throws IOException {
-        // TODO: make immutable
-        return _getAllPageURLs( url );
+    public EntryList<Integer, URL> getAllPageURLs( final URL url ) throws IOException {
+        EntryList<Integer, URL> entryList = _getAllPageURLs( url );
+        return new ImmutableEntryList<>( entryList );
     }
 
     /**
@@ -122,7 +135,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      * @throws IOException
      *             in case an IOException occurs
      */
-    protected abstract EntryList<Integer, URL> _getAllPageURLs( URL url ) throws IOException;
+    protected abstract EntryList<Integer, URL> _getAllPageURLs( final URL url ) throws IOException;
 
     /**
      * fetches data from the given URL and parses it to a {@link Document}
@@ -142,7 +155,7 @@ public abstract class ChapterList extends ArrayList<Chapter> {
      */
     public static final ResponseHandler<Document> TO_DOCUMENT_HANDLER = new ResponseHandler<Document>() {
         @Override
-        public Document handleResponse( HttpResponse response ) throws ClientProtocolException, IOException {
+        public Document handleResponse( final HttpResponse response ) throws ClientProtocolException, IOException {
             HttpEntity entity = response.getEntity();
             try {
                 return Jsoup.parse( EntityUtils.toString( entity, StandardCharsets.UTF_8 ) );
@@ -152,44 +165,13 @@ public abstract class ChapterList extends ArrayList<Chapter> {
         }
     };
 
-    /**
-     * a class to store number and url of a single Chapter
-     * 
-     * @author HerrLock
-     */
-    public static class Chapter {
-        final String number;
-        private final URL chapterUrl;
-
-        Chapter( String number, URL url ) {
-            this.number = number;
-            this.chapterUrl = url;
+    @Override
+    public Iterator<Chapter> iterator() {
+        ArrayList<Chapter> arrayList = new ArrayList<>( this.list );
+        if ( this.details.reversed() ) {
+            Collections.reverse( arrayList );
         }
-
-        /**
-         * Getter for this Chapter's number
-         * 
-         * @return the number of this Chapter. Might be non-numerical, so it is a String.
-         */
-        public final String getNumber() {
-            return this.number;
-        }
-
-        /**
-         * Getter for this Chapter's url
-         * 
-         * @return the {@link URL} of this Chapter. Most times this is the URL of the first page, but the other pages should work
-         *         as well.
-         */
-        public URL getChapterUrl() {
-            return this.chapterUrl;
-        }
-
-        @Override
-        public String toString() {
-            return MessageFormat.format( "{0}: {1}", this.number, this.getChapterUrl() );
-        }
-
+        return arrayList.iterator();
     }
 
 }

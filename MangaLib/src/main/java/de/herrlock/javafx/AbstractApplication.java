@@ -9,10 +9,15 @@ import javafx.stage.Stage;
  * @author HerrLock
  */
 public abstract class AbstractApplication extends Application {
-    private SceneContainer container = null;
+    private SceneContainer container;
 
+    /**
+     * Start the application. Requires a previous called {@linkplain #setScene(SceneContainer)} to get the
+     * {@linkplain SceneContainer#getTitle() title}, the {@linkplain SceneContainer#getIcons() icons}, the
+     * {@linkplain SceneContainer#getStylesheets() stylesheets} and the {@linkplain SceneContainer#getScene() actual scene} from
+     */
     @Override
-    public void start( Stage stage ) {
+    public void start( final Stage stage ) {
         if ( this.container == null ) {
             throw new IllegalStateException( "need to initialize AbstractApplication.container before starting this" );
         }
@@ -31,7 +36,7 @@ public abstract class AbstractApplication extends Application {
      * @param container
      *            the {@link SceneContainer} to use
      */
-    public void setScene( SceneContainer container ) {
+    public void setScene( final SceneContainer container ) {
         this.container = container;
     }
 }

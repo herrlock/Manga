@@ -14,17 +14,20 @@ import java.util.Properties;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.exceptions.InitializeException;
-import de.herrlock.manga.ui.main.MDGuiController;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.Configuration;
 import de.herrlock.manga.util.configuration.JDConfiguration;
 
-public class JDExport extends MDownloader {
+public final class JDExport extends MDownloader {
+    private static final Logger logger = LogManager.getLogger();
 
     final File jdfwFolder;
     final File path = this.clc.getPath();
@@ -36,17 +39,12 @@ public class JDExport extends MDownloader {
                 p.load( fIn );
             }
         } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+            throw new MDRuntimeException( ex );
         }
         execute( p );
     }
 
-    public static void executeGetGuiProperties() {
-        Properties p = MDGuiController.getProperties();
-        execute( p );
-    }
-
-    private static void execute( Properties p ) {
+    public static void execute( final Properties p ) {
         logger.entry();
         String jdhome = p.getProperty( Configuration.JDFW );
         if ( jdhome == null || jdhome.trim().isEmpty() ) {
@@ -56,15 +54,15 @@ public class JDExport extends MDownloader {
         new JDExport( conf ).run();
     }
 
-    public JDExport( JDConfiguration conf ) {
+    public JDExport( final JDConfiguration conf ) {
         super( conf );
         this.jdfwFolder = conf.getFolderwatch();
         if ( !( this.jdfwFolder.exists() || this.jdfwFolder.mkdir() ) ) {
-            throw new RuntimeException( this.jdfwFolder + " does not exist and could not be created" );
+            throw new MDRuntimeException( this.jdfwFolder + " does not exist and could not be created" );
         }
     }
 
-    public URL getImageLink( URL pageUrl ) throws IOException {
+    public URL getImageLink( final URL pageUrl ) throws IOException {
         return this.clc.getImageLink( pageUrl );
     }
 
@@ -76,14 +74,14 @@ public class JDExport extends MDownloader {
                 new CrawljobFile( entry.getKey(), entry.getValue() ).write();
             }
         } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+            throw new MDRuntimeException( ex );
         }
     }
 
-    private class CrawljobFile {
+    private final class CrawljobFile {
         final Crawljob c;
 
-        public CrawljobFile( String chapter, EntryList<Integer, URL> entrySet ) {
+        public CrawljobFile( final String chapter, final EntryList<Integer, URL> entrySet ) {
             this.c = new Crawljob( new File( JDExport.this.path, chapter ), chapter );
             List<CrawljobFileEntryAdder> callables = new ArrayList<>( entrySet.size() );
             for ( Entry<Integer, URL> e : entrySet ) {
@@ -99,10 +97,10 @@ public class JDExport extends MDownloader {
             logger.info( "print string -> {}", outFile );
         }
 
-        private class CrawljobFileEntryAdder implements Callable<Void> {
+        private final class CrawljobFileEntryAdder implements Callable<Void> {
             private final Entry<Integer, URL> e;
 
-            public CrawljobFileEntryAdder( Entry<Integer, URL> e ) {
+            public CrawljobFileEntryAdder( final Entry<Integer, URL> e ) {
                 this.e = e;
             }
 
@@ -120,7 +118,7 @@ public class JDExport extends MDownloader {
                 } catch ( SocketTimeoutException ex ) {
                     return getImageLink();
                 } catch ( IOException ex ) {
-                    throw new RuntimeException( ex );
+                    throw new MDRuntimeException( ex );
                 }
             }
         }

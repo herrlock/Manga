@@ -5,22 +5,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import javax.swing.JOptionPane;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import de.herrlock.javafx.Dialogs;
+import de.herrlock.javafx.Dialogs.Response;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.CtrlUtils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
- * Initializes the download and starts it after confirming the number of pictures with a {@link JOptionPane}
+ * Initializes the download and starts it after confirming the number of pictures and an estimated whole size of the images with a
+ * dialog created in {@link Dialogs}
  * 
  * @author Herrlock
  */
 public final class DialogDownloader extends MDownloader {
-
-    public static void main( String... args ) {
-        logger.entry();
-        execute();
-    }
+    private static final Logger logger = LogManager.getLogger();
 
     public static void execute() {
         logger.entry();
@@ -29,14 +31,14 @@ public final class DialogDownloader extends MDownloader {
         try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
             p.load( fIn );
         } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+            throw new MDRuntimeException( ex );
         }
         // properties loaded successful
         DownloadConfiguration conf = DownloadConfiguration.create( p );
         new DialogDownloader( conf ).run();
     }
 
-    private DialogDownloader( DownloadConfiguration conf ) {
+    public DialogDownloader( final DownloadConfiguration conf ) {
         super( conf );
     }
 
@@ -47,18 +49,19 @@ public final class DialogDownloader extends MDownloader {
             if ( goon() ) {
                 downloadAll();
             }
-        } catch ( RuntimeException ex ) {
-            JOptionPane.showMessageDialog( null, ex.getStackTrace(), ex.getMessage(), JOptionPane.ERROR_MESSAGE );
+        } catch ( Exception ex ) {
+            CtrlUtils.showErrorDialog( ex );
             throw ex;
         }
     }
 
     private boolean goon() {
         String title = "go on?";
-        String message = "number of pictures: " + getPMCSize();
-        int clicked = JOptionPane.showConfirmDialog( null, message, title, JOptionPane.YES_NO_OPTION,
-            JOptionPane.INFORMATION_MESSAGE );
-        return clicked == JOptionPane.OK_OPTION;
+        int noOfPictures = getPMCSize();
+        int estimatedSize = noOfPictures * Constants.AVG_SIZE / 1000;
+        String message = "Number of pictures: " + noOfPictures + "\n" + "Estimated entire size: " + estimatedSize + " MB";
+        Response response = Dialogs.showConfirmDialog( null, message, title );
+        return response == Response.YES;
     }
 
 }

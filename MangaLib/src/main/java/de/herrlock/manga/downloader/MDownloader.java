@@ -3,6 +3,8 @@ package de.herrlock.manga.downloader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,16 +15,44 @@ import de.herrlock.manga.downloader.dqc.DownloadQueueContainer;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.downloader.pmc.PictureMapContainer;
 import de.herrlock.manga.exceptions.InitializeException;
-import de.herrlock.manga.ui.log.LogWindow;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.ProgressListener;
+import de.herrlock.manga.util.Progressable;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
-public abstract class MDownloader {
-    protected static final Logger logger = LogManager.getLogger();
+/**
+ * An abstract class to implement downloaders with different behaviour
+ * 
+ * @author HerrLock
+ */
+public abstract class MDownloader implements Progressable {
+    private static final Logger logger = LogManager.getLogger();
 
+    /**
+     * contains the {@link ChapterListContainer}
+     */
     protected final ChapterListContainer clc;
+    /**
+     * contains the links to the actual images
+     */
     protected final PictureMapContainer pmc;
+    /**
+     * contains the current queue of downloads
+     */
     protected final DownloadQueueContainer dqc;
+    /**
+     * contains the progress-listeners
+     */
+    private final List<ProgressListener> progressListeners = new ArrayList<>();
+    /**
+     * contains the current progress
+     */
+    private int progress;
+    /**
+     * contains the maximal progress
+     */
+    private int maxProgress;
 
     /**
      * creates a new Downloader. this constructor initializes the ChapterListContainer, the PictureMapContainer and the
@@ -31,18 +61,22 @@ public abstract class MDownloader {
      * @param conf
      *            the Configuration to use
      */
-    public MDownloader( DownloadConfiguration conf ) {
-        logger.entry();
+    public MDownloader( final DownloadConfiguration conf ) {
+        logger.entry( conf );
         logger.info( conf.getUrl().toExternalForm() );
         try {
             this.clc = new ChapterListContainer( conf );
-        } catch ( IOException ex ) {
+        } catch ( final IOException ex ) {
             throw new InitializeException( ex );
         }
         this.pmc = new PictureMapContainer( this.clc );
+        setMaxProgress( this.pmc.getSize() );
         this.dqc = new DownloadQueueContainer( this.clc, conf );
     }
 
+    /**
+     * An abstract method to implement different conditions to start the download. This method should call {@link #downloadAll()}
+     */
     protected abstract void run();
 
     /**
@@ -66,27 +100,40 @@ public abstract class MDownloader {
     }
 
     /**
-     * downloads everything in the PictureMapContainer<br>
-     * basically calls {@link #downloadChapter(String, EntryList)} for every chapter
+     * @return the folder where the downloaded chapters are stored in
+     * 
+     * @see ChapterListContainer#getPath()
      */
-    public void downloadAll() {
+    public File getTargetFolder() {
+        return this.clc.getPath();
+    }
+
+    /**
+     * downloads everything in the PictureMapContainer
+     */
+    protected void downloadAll() {
         logger.entry();
         EntryList<String, EntryList<Integer, URL>> entries = this.pmc.getEntries();
-        entries.sort( entries.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
-        LogWindow.setProgress( 0 );
-        LogWindow.setProgressMax( entries.size() );
-        int progress = 0;
+        entries.sort( EntryList.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
+        this.progress = 0;
         for ( Entry<String, EntryList<Integer, URL>> entry : entries ) {
             EntryList<Integer, URL> urlMap = entry.getValue();
             String key = entry.getKey();
             downloadChapter( key, urlMap );
-            LogWindow.setProgress( ++progress );
+
+            // increment progress and notify listeners
+            int oldProgress = this.progress;
+            setProgress( this.progress + entry.getValue().size() );
+            for ( ProgressListener listener : this.progressListeners ) {
+                listener.progress( oldProgress, this.progress, this.maxProgress );
+            }
         }
+        logger.info( "Finished successful" );
     }
 
     /**
      * downloads the Chapter with the "name"of {@code key} and the pictures from {@code urlMap}<br>
-     * adds every Chapter th the DownloadQueueContainer and starts the download
+     * adds every Chapter to the DownloadQueueContainer and starts the download
      * 
      * @param key
      *            the name of the chapter (in general it is a number as String)
@@ -94,7 +141,7 @@ public abstract class MDownloader {
      *            a map containing the URLs for the pictures
      * @see DownloadQueueContainer#downloadPages()
      */
-    private void downloadChapter( String key, EntryList<Integer, URL> entries ) {
+    private void downloadChapter( final String key, final EntryList<Integer, URL> entries ) {
         logger.entry( key );
         logger.info( "Download chapter {} ({} pages)", key, entries.size() );
         File chapterFolder = new File( this.clc.getPath(), key );
@@ -104,18 +151,38 @@ public abstract class MDownloader {
             // start download
             this.dqc.downloadPages();
         } else {
-            throw new RuntimeException( chapterFolder + " does not exists and could not be created" );
+            throw new MDRuntimeException( chapterFolder + " does not exists and could not be created" );
         }
         logger.info( "finished chapter {}", key );
     }
 
-    /**
-     * returns the folder where the downloaded chapters are stored in
-     * 
-     * @see ChapterListContainer#getPath()
-     */
-    public File getTargetFolder() {
-        return this.clc.getPath();
+    @Override
+    public void setProgress( final int progress ) {
+        this.progress = progress;
     }
 
+    @Override
+    public int getProgress() {
+        return this.progress;
+    }
+
+    @Override
+    public void setMaxProgress( final int maxProgress ) {
+        this.maxProgress = maxProgress;
+    }
+
+    @Override
+    public int getMaxProgress() {
+        return this.maxProgress;
+    }
+
+    @Override
+    public void addProgressListener( final ProgressListener listener ) {
+        this.progressListeners.add( listener );
+    }
+
+    @Override
+    public void removeProgressListener( final ProgressListener listener ) {
+        this.progressListeners.remove( listener );
+    }
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration packages="de.herrlock.manga.ui.log" status="INFO">
+	<Properties>
+		<Property name="liveLayout">%m%n</Property>
+		<Property name="patternLayout">%d{HH:mm:ss.SSS} [%t] %-5p %c{1.}.%M - %m%n</Property>
+		<Property name="patternDateLayout">%d{yyyy-MM-dd} - ${patternLayout}</Property>
+	</Properties>
+	<Appenders>
+		<RollingRandomAccessFile name="FileTrace" fileName="log/trace.log" filePattern="log/archive/trace-%i.log.gz">
+			<PatternLayout pattern="${patternDateLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="1 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingRandomAccessFile>
+		<RollingRandomAccessFile name="ApacheLogger" fileName="log/apache.log" filePattern="log/archive/apache-%i.log.gz">
+			<PatternLayout pattern="${patternDateLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingRandomAccessFile>
+		<Console name="ConsoleLogger" target="SYSTEM_OUT">
+			<PatternLayout pattern="${liveLayout}" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="org.apache.http" level="DEBUG" additivity="false">
+			<AppenderRef ref="ApacheLogger" />
+		</Logger>
+		<Logger name="org.apache.http.wire" level="INFO" additivity="false">
+			<AppenderRef ref="ApacheLogger" />
+		</Logger>
+		<Logger name="" level="DEBUG">
+			<AppenderRef ref="FileTrace" />
+		</Logger>
+		<Root level="INFO">
+			<AppenderRef ref="ConsoleLogger" />
+			<AppenderRef ref="FileTrace" />
+		</Root>
+	</Loggers>
+
+</Configuration>

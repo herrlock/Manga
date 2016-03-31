@@ -8,7 +8,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.ClientProtocolException;
@@ -18,6 +17,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -27,7 +29,8 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  */
 public final class Utils {
 
-    private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20, new DaemonThreadFactory() );
+    private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20,
+        new ThreadFactoryBuilder().setDaemon( true ).build() );
     private static final CloseableHttpClient CLIENT = HttpClients.createDefault();
 
     /**
@@ -88,7 +91,7 @@ public final class Utils {
      *             thrown by {@link CloseableHttpClient#execute(org.apache.http.client.methods.HttpUriRequest)}
      */
     public static <T> T getDataAndExecuteResponseHandler( final URL url, final DownloadConfiguration conf,
-        ResponseHandler<T> handler ) throws IOException, ClientProtocolException {
+        final ResponseHandler<T> handler ) throws IOException, ClientProtocolException {
         final HttpGet httpGet = createHttpGet( url, conf );
         return executeHttpGet( httpGet, handler );
     }
@@ -98,7 +101,7 @@ public final class Utils {
      * 
      * @param threads
      *            the {@link Thread}s to start and wait for
-     * @throws RuntimeException
+     * @throws MDRuntimeException
      *             in case of an {@link InterruptedException}
      * @deprecated use {@link #callCallables(Collection)} instead
      */
@@ -113,14 +116,16 @@ public final class Utils {
             for ( Thread t : threads ) {
                 t.join();
             }
-        } catch ( InterruptedException ex ) {
-            throw new RuntimeException( ex );
+        } catch ( final InterruptedException ex ) {
+            throw new MDRuntimeException( ex );
         }
     }
 
     /**
      * Invokes all given Callables
      * 
+     * @param <T>
+     *            The generic type of the given callables, the generic type of the Future-objects in the result
      * @param callables
      *            the {@link Callable}s to execute
      * @return the result of {@link ExecutorService#invokeAll(Collection)}
@@ -128,43 +133,12 @@ public final class Utils {
     public static <T> List<Future<T>> callCallables( final Collection<? extends Callable<T>> callables ) {
         try {
             return THREAD_POOL.invokeAll( callables );
-        } catch ( InterruptedException ex ) {
-            throw new RuntimeException( ex );
+        } catch ( final InterruptedException ex ) {
+            throw new MDRuntimeException( ex );
         }
     }
 
     private Utils() {
         // not called
-    }
-
-    /**
-     * creates new Threads with the given ThreadFactory and marks them as daemon-threads
-     * 
-     * @author HerrLock
-     */
-    private static final class DaemonThreadFactory implements ThreadFactory {
-        private final ThreadFactory threadFactory;
-
-        /**
-         * uses {@link Executors#defaultThreadFactory()} as {@link ThreadFactory}
-         */
-        public DaemonThreadFactory() {
-            this( Executors.defaultThreadFactory() );
-        }
-
-        /**
-         * @param threadFactory
-         *            the {@link ThreadFactory} to use
-         */
-        public DaemonThreadFactory( ThreadFactory threadFactory ) {
-            this.threadFactory = threadFactory;
-        }
-
-        @Override
-        public Thread newThread( Runnable r ) {
-            Thread t = this.threadFactory.newThread( r );
-            t.setDaemon( true );
-            return t;
-        }
     }
 }

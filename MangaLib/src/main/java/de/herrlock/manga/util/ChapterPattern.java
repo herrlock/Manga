@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author HerrLock
  */
-public class ChapterPattern {
+public final class ChapterPattern {
     private static final Logger logger = LogManager.getLogger();
     /**
      * the regex for the patterns<br>
@@ -37,40 +37,42 @@ public class ChapterPattern {
      * a valid pattern consists of the chapter-numbers seperated by semicolon, or an interval of chapters, defined by the first
      * chapter, a hyphen and the last chapter<br>
      * eg:
-     * <table>
-     * <tr>
-     * <th>pattern</th>
-     * <th>matched chapters</th>
-     * </tr>
-     * <tr>
-     * <td>42</td>
-     * <td>chapter 42</td>
-     * </tr>
-     * <tr>
-     * <td>42;45</td>
-     * <td>chapters 42 and 45</td>
-     * </tr>
-     * <tr>
-     * <td>42-46</td>
-     * <td>chapters 42 to 46 (42, 43, 44, 45, 46)</td>
-     * </tr>
-     * <tr>
-     * <td>42-46;50-52</td>
-     * <td>chapters 42 to 46 and 50 to 52 (42, 43, 44, 45, 46, 50, 51, 52)</td>
-     * </tr>
-     * </table>
+     * <dl>
+     * <dt>pattern</dt>
+     * <dd>matched chapters</dd>
+     * <dt>42</dt>
+     * <dd>chapter 42</dd>
+     * <dt>42;45</dt>
+     * <dd>chapters 42 and 45</dd>
+     * <dt>42-46</dt>
+     * <dd>chapters 42 to 46 (42, 43, 44, 45, 46)</dd>
+     * <dt>42-46;50-52</dt>
+     * <dd>chapters 42 to 46 and 50 to 52 (42, 43, 44, 45, 46, 50, 51, 52)</dd>
+     * </dl>
      * 
      * @param pattern
      *            the pattern to analyze, in case of {@code null} or an empty string an empty collection is used
      */
-    public ChapterPattern( String pattern ) {
+    public ChapterPattern( final String pattern ) {
         logger.entry( pattern );
         Set<Interval> result = new HashSet<>();
         // accept only if valid
         if ( pattern != null && REGEX.matcher( pattern ).matches() ) {
             // split string at ';'
             for ( String s : pattern.split( ";" ) ) {
-                result.add( new Interval( s.split( "-" ) ) );
+                String[] chapters = s.split( "-" );
+                final Interval toAdd;
+                if ( chapters.length == 1 ) {
+                    // chapters.length == 1
+                    toAdd = new Interval( chapters[0] );
+                } else if ( chapters.length > 1 ) {
+                    // chapters.length >= 2, ignore arguments after the second value
+                    toAdd = new Interval( chapters[0], chapters[1] );
+                } else {
+                    // chapters.length == 0
+                    throw new IllegalArgumentException( "invalid, did not pass any arguments" );
+                }
+                result.add( toAdd );
             }
         }
         this.elements = Collections.unmodifiableCollection( result );
@@ -84,7 +86,7 @@ public class ChapterPattern {
      *            the number of the Chapter to check
      * @return true, if any Interval contains the given Chapter's number
      */
-    public boolean contains( String s ) {
+    public boolean contains( final String s ) {
         // check if any Interval contains the chapter
         for ( Interval i : this.elements ) {
             if ( i.contains( s ) ) {
@@ -95,38 +97,57 @@ public class ChapterPattern {
         return this.fallback;
     }
 
-    static class Interval {
+    @Override
+    public String toString() {
+        return String.valueOf( this.elements );
+    }
+
+    static final class Interval {
         private final BigDecimal intervalStart;
         private final BigDecimal intervalEnd;
 
         /**
-         * @param parts
-         *            the start and end of the Interval as Varargs
-         * @throws IllegalArgumentException
-         *             in case {@code parts.length} is 0
+         * @param intervalStartAndEnd
+         *            the start and end of the Interval
          */
-        public Interval( String... parts ) {
-            if ( parts.length >= 1 ) {
-                this.intervalStart = new BigDecimal( parts[0] );
-                if ( parts.length >= 2 ) {
-                    // multiple arguments, ignore all after the second :)
-                    this.intervalEnd = new BigDecimal( parts[1] );
-                } else {
-                    // one argument, so start and end are the same
-                    this.intervalEnd = new BigDecimal( parts[0] );
-                }
-            } else {
-                // parts.length == 0
-                throw new IllegalArgumentException( "invalid, did not pass any arguments" );
-            }
-
+        public Interval( final String intervalStartAndEnd ) {
+            this( intervalStartAndEnd, intervalStartAndEnd );
         }
 
-        public boolean contains( String s ) {
+        /**
+         * @param intervalStart
+         *            the start of the Interval
+         * @param intervalEnd
+         *            the end of the Interval
+         */
+        public Interval( final String intervalStart, final String intervalEnd ) {
+            this.intervalStart = new BigDecimal( intervalStart );
+            this.intervalEnd = new BigDecimal( intervalEnd );
+        }
+
+        /**
+         * checks if this interval contains the given number
+         * 
+         * @param s
+         *            the String to check. Passed to {@link BigDecimal#BigDecimal(String)} with only null-check
+         * @return false if the parameter is {@code null}, the result of {@link #contains(BigDecimal)} otherwise
+         */
+        public boolean contains( final String s ) {
+            if ( s == null ) {
+                return false;
+            }
             return contains( new BigDecimal( s ) );
         }
 
-        public boolean contains( BigDecimal d ) {
+        /**
+         * checks if this interval contains the given number. A number is considered to be contained if it is bigger or equal to
+         * the start of this Interval and smaller or equal to the end of this Interval
+         * 
+         * @param d
+         *            the BigDecimal to check
+         * @return false if the parameter is {@code null} or not in this interval
+         */
+        public boolean contains( final BigDecimal d ) {
             if ( d == null ) {
                 return false;
             }

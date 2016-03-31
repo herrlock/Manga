@@ -1,131 +1,185 @@
 package de.herrlock.manga.ui.main;
 
+import static de.herrlock.manga.util.Execs.DO_NOTHING;
+import static de.herrlock.manga.util.Execs.VIEW_PAGE_MAIN;
+
 import java.util.List;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
+import de.herrlock.javafx.handler.Exec;
+import de.herrlock.javafx.handler.ExecHandlerTask;
+import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.exceptions.InitializeException;
-import de.herrlock.manga.util.Exec;
-import de.herrlock.manga.util.ExecHandlerTask;
+import de.herrlock.manga.host.Hoster;
+import de.herrlock.manga.host.Hosters;
+import de.herrlock.manga.jd.JDExport;
 import de.herrlock.manga.util.configuration.Configuration;
+import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 /**
  * @author HerrLock
  */
-public class MDGuiController {
-    public static final ResourceBundle i18n = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.ui" );
+public final class MDGuiController {
+    @FXML
+    final StringProperty url = new SimpleStringProperty(), pattern = new SimpleStringProperty(),
+        proxy = new SimpleStringProperty(), jdhome = new SimpleStringProperty();
 
-    static final StringProperty urlProperty = new SimpleStringProperty();
-    static final StringProperty patternProperty = new SimpleStringProperty();
-    static final StringProperty proxyProperty = new SimpleStringProperty();
-    static final StringProperty jdhomeProperty = new SimpleStringProperty();
+    @FXML
+    private GridPane rightGridPane;
+    @FXML
+    private ScrollPane rightScrollPane;
+    @FXML
+    private VBox rightVBox;
 
-    public static final EventHandler<ActionEvent> START_DOWNLOAD = new EventHandler<ActionEvent>() {
-        @Override
-        public void handle( ActionEvent event ) {
-            handleBtnClick( Exec.GUI_DOWNLOADER );
-        }
-    };
-    public static final EventHandler<ActionEvent> EXPORT_TO_JD = new EventHandler<ActionEvent>() {
-        @Override
-        public void handle( ActionEvent event ) {
-            handleBtnClick( Exec.ADD_TO_JD_W_GUI );
-        }
-    };
-    public static final EventHandler<ActionEvent> CREATE_HTML = new EventHandler<ActionEvent>() {
-        @Override
-        public void handle( ActionEvent event ) {
-            handleBtnClick( Exec.VIEW_PAGE_MAIN );
-        }
-    };
-    public static final EventHandler<ActionEvent> EXIT_GUI = new EventHandler<ActionEvent>() {
-        @Override
-        public void handle( ActionEvent event ) {
-            handleBtnClick( Exec.DO_NOTHING );
-        }
-    };
+    public void startDownload() {
+        handleBtnClick( new Exec() {
+            @Override
+            public void execute() {
+                Properties p = getProperties();
+                DownloadConfiguration conf = DownloadConfiguration.create( p );
+                new MDownloader( conf) {
+                    @Override
+                    protected void run() {
+                        downloadAll( );
+                    }
+                }.run();
+            }
+        } );
+    }
 
-    public static void handleBtnClick( Exec exec ) {
+    public void exportToJd() {
+        handleBtnClick( new Exec() {
+            @Override
+            public void execute() {
+                Properties p = getProperties();
+                JDExport.execute( p );
+            }
+        } );
+    }
+
+    public void createHtml() {
+        handleBtnClick( VIEW_PAGE_MAIN );
+    }
+
+    public void exitGui() {
+        handleBtnClick( DO_NOTHING );
+    }
+
+    public void handleBtnClick( final Exec exec ) {
         new Thread( new ExecHandlerTask( exec ) ).start();
     }
 
-    private MDGuiController() {
-        // not used
+    public void setUrl( final String url ) {
+        this.url.set( url );
     }
 
-    public static Properties getProperties() {
+    public String getUrl() {
+        return this.url.get();
+    }
+
+    public StringProperty urlProperty() {
+        return this.url;
+    }
+
+    public void setPattern( final String pattern ) {
+        this.pattern.set( pattern );
+    }
+
+    public String getPattern() {
+        return this.pattern.get();
+    }
+
+    public StringProperty patternProperty() {
+        return this.pattern;
+    }
+
+    public void setPropxy( final String proxy ) {
+        this.proxy.set( proxy );
+    }
+
+    public String getProxy() {
+        return this.proxy.get();
+    }
+
+    public StringProperty proxyProperty() {
+        return this.proxy;
+    }
+
+    public void setJdhome( final String jdhome ) {
+        this.jdhome.set( jdhome );
+    }
+
+    public String getJdhome() {
+        return this.jdhome.get();
+    }
+
+    public StringProperty jdhomeProperty() {
+        return this.jdhome;
+    }
+
+    public Properties getProperties() {
         Properties p = new Properties();
         {
-            String url = urlProperty.getValueSafe();
-            if ( "".equals( url ) ) {
+            String url1 = this.url.getValueSafe();
+            if ( "".equals( url1 ) ) {
                 throw new InitializeException( "No URL is set." );
             }
-            p.put( Configuration.URL, url );
+            p.put( Configuration.URL, url1 );
         }
         {
-            p.put( Configuration.PATTERN, patternProperty.getValueSafe() );
+            p.put( Configuration.PATTERN, this.pattern.getValueSafe() );
         }
         {
-            String proxy = proxyProperty.getValueSafe();
-            if ( !"".equals( proxy ) ) {
-                p.put( Configuration.PROXY, proxy );
+            String proxy1 = this.proxy.getValueSafe();
+            if ( !"".equals( proxy1 ) ) {
+                p.put( Configuration.PROXY, proxy1 );
             }
         }
         {
-            p.put( Configuration.JDFW, jdhomeProperty.getValueSafe() );
+            p.put( Configuration.JDFW, this.jdhome.getValueSafe() );
         }
         return p;
-
     }
+
+    public void initialize() {
+        this.rightScrollPane.prefViewportWidthProperty().bind( this.rightVBox.widthProperty() );
+        List<Hoster> values = Hosters.sortedValues();
+        for ( int y = 0; y < values.size(); y++ ) {
+            Hoster hoster = values.get( y );
+            String hostname = hoster.getName();
+            this.rightGridPane.add( new Text( hostname ), 0, y );
+            String hosturl = hoster.getBaseUrl().getHost().substring( 4 );
+            this.rightGridPane.add( new Text( hosturl ), 1, y );
+        }
+    }
+
 }
 
 final class EmptyListener implements ChangeListener<String> {
+    public static final String ISEMPTY = "isEmpty";
     private final TextField textField;
 
-    public EmptyListener( TextField textField ) {
+    public EmptyListener( final TextField textField ) {
         this.textField = textField;
     }
 
     @Override
-    public void changed( ObservableValue<? extends String> obsValue, String string1, String string2 ) {
+    public void changed( final ObservableValue<? extends String> obsValue, final String string1, final String string2 ) {
         List<String> classes = this.textField.getStyleClass();
         if ( string2.trim().isEmpty() ) {
-            classes.add( CCN.ISEMPTY );
+            classes.add( ISEMPTY );
         } else {
-            classes.remove( CCN.ISEMPTY );
+            classes.remove( ISEMPTY );
         }
-    }
-}
-
-/**
- * CSS-Classname constants
- */
-final class CCN {
-
-    public static final String MAGENTA = "magenta";
-    public static final String RED = "red";
-    public static final String YELLOW = "yellow";
-    public static final String GREEN = "green";
-    public static final String BLUE = "blue";
-    public static final String CYAN = "cyan";
-    public static final String GREY = "grey";
-
-    public static final String GRIDPANE = "gridpane";
-    public static final String TEXT = "text";
-
-    public static final String ISEMPTY = "isEmpty";
-
-    public static final String PADDING_8 = "padding8";
-    public static final String PADDING_16 = "padding16";
-
-    private CCN() {
-        // not used
     }
 }

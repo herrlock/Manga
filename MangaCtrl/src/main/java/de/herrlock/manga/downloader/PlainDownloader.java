@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import javax.swing.JOptionPane;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Constants;
+import de.herrlock.manga.util.CtrlUtils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -16,11 +19,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * @author HerrLock
  */
 public final class PlainDownloader extends MDownloader {
-
-    public static void main( String... args ) {
-        logger.entry();
-        execute();
-    }
+    private static final Logger logger = LogManager.getLogger();
 
     public static void execute() {
         logger.entry();
@@ -29,7 +28,7 @@ public final class PlainDownloader extends MDownloader {
         try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
             p.load( fIn );
         } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+            throw new MDRuntimeException( ex );
         }
         // properties loaded successful
         DownloadConfiguration conf = DownloadConfiguration.create( p );
@@ -37,7 +36,7 @@ public final class PlainDownloader extends MDownloader {
         dlImpl.run();
     }
 
-    private PlainDownloader( DownloadConfiguration conf ) {
+    public PlainDownloader( final DownloadConfiguration conf ) {
         super( conf );
     }
 
@@ -46,8 +45,8 @@ public final class PlainDownloader extends MDownloader {
         logger.entry();
         try {
             downloadAll();
-        } catch ( RuntimeException ex ) {
-            JOptionPane.showMessageDialog( null, ex.getStackTrace(), ex.getMessage(), JOptionPane.ERROR_MESSAGE );
+        } catch ( Exception ex ) {
+            CtrlUtils.showErrorDialog( ex );
             throw ex;
         }
     }

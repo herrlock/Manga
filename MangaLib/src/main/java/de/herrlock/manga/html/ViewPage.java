@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,15 +19,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
+import de.herrlock.manga.exceptions.MDRuntimeException;
+
 /**
- * 
  * @author HerrLock
  */
-public class ViewPage {
+public final class ViewPage {
+    private static final Logger logger = LogManager.getLogger();
+
     private final File folder;
     private final Document document;
     private final int maxImgs;
@@ -37,14 +43,15 @@ public class ViewPage {
      * @param folder
      *            the folder to save the created files into
      */
-    public static void execute( File folder ) {
+    public static void execute( final File folder ) {
+        logger.trace( folder );
         Document doc = new ViewPage( folder ).getDocument();
         Path p = new File( folder, "index.html" ).toPath();
         try ( BufferedWriter writer = Files.newBufferedWriter( p, StandardCharsets.UTF_8 ) ) {
             writer.write( "<!DOCTYPE HTML>\n" );
             writer.write( doc.toString() );
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+        } catch ( final IOException ex ) {
+            throw new MDRuntimeException( ex );
         }
     }
 
@@ -54,13 +61,16 @@ public class ViewPage {
      * @param folder
      *            the folder where to create the ViewPages
      */
-    public ViewPage( File folder ) {
-        System.out.println( "create files in folder " + folder );
+    private ViewPage( final File folder ) {
+        logger.trace( folder );
         this.folder = folder;
-        this.document = new Document( "" );
         this.maxImgs = maxImgs();
-        this.document.appendChild( createHead() );
-        this.document.appendChild( createBody() );
+        logger.debug( "maxImgs: {}", this.maxImgs );
+        this.document = Document.createShell( "" );
+        Element head = this.document.select( "head" ).first();
+        createHeadChildren( head );
+        Element body = this.document.select( "body" ).first();
+        createBodyChildren( body );
     }
 
     /**
@@ -76,9 +86,8 @@ public class ViewPage {
         return mangarawname.replace( '_', ' ' );
     }
 
-    private Element createHead() {
-        System.out.println( "createHead" );
-        Element head = new Element( Tag.valueOf( "head" ), "" );
+    private Element createHeadChildren( final Element head ) {
+        logger.entry( head );
         head.appendElement( "title" ).text( mangaName() );
         head.appendElement( "meta" ).attr( "charset", "utf-8" );
         head.appendElement( "link" ).attr( "rel", "shortcut icon" ).attr( "href", "favicon.ico" );
@@ -89,15 +98,10 @@ public class ViewPage {
         File maxFile = Collections.max( files, Const.numericFilenameComparator );
         int max = Integer.parseInt( maxFile.getName() );
 
-        StringBuilder mangaObject = new StringBuilder();
-        mangaObject.append( "var manga={chapter: " );
-        mangaObject.append( max );
-        mangaObject.append( ",max_pages: " );
-        mangaObject.append( this.maxImgs );
-        mangaObject.append( ",chapterblock: " );
-        mangaObject.append( ( max - max % 10 ) / 10 );
-        mangaObject.append( "};" );
-        head.appendElement( "script" ).text( mangaObject.toString() );
+        String mangaObject = MessageFormat.format( "var manga = '{' chapter: {0}, max_pages: {1}, chapterblock: {2} '}';", max,
+            this.maxImgs, ( max - 1 ) / 10 );
+        logger.info( "mangaObject: {}", mangaObject );
+        head.appendElement( "script" ).text( mangaObject );
 
         String[] js = {
             "jquery-2.1.3.min.js", "onkeydown.js", "main.js"
@@ -109,16 +113,15 @@ public class ViewPage {
         return head;
     }
 
-    private Element createBody() {
-        System.out.println( "createBody" );
-        Element body = new Element( Tag.valueOf( "body" ), "" );
-        body.attr( "onload", "init()" );
+    private Element createBodyChildren( final Element body ) {
+        logger.info( "creating body" );
         body.appendChild( leftDiv() );
         body.appendChild( rightDiv() );
         return body;
     }
 
     private Element leftDiv() {
+        logger.info( "creating left div" );
         Map<Integer, List<String>> blocks = new HashMap<>();
         {
             // init map
@@ -131,6 +134,7 @@ public class ViewPage {
                 }
                 blocks.get( blockNr ).add( filename );
             }
+            logger.debug( "Number of blocks: {}", blocks.size() );
         }
         List<Entry<Integer, List<String>>> list = new ArrayList<>( blocks.entrySet() );
         Collections.sort( list, Collections.reverseOrder( Const.integerEntryComparator ) );
@@ -147,7 +151,8 @@ public class ViewPage {
         }
         return lDiv;
     }
-    private static Element wrapperDiv( Entry<Integer, List<String>> e, boolean addHidelink ) {
+
+    private static Element wrapperDiv( final Entry<Integer, List<String>> e, final boolean addHidelink ) {
         Element wrapperDiv = new Element( Tag.valueOf( "div" ), "" );
         Integer blockId = e.getKey();
         if ( addHidelink ) {
@@ -162,7 +167,7 @@ public class ViewPage {
         return wrapperDiv;
     }
 
-    private static Element hidelink( int blockId ) {
+    private static Element hidelink( final int blockId ) {
         int step = 10;
         int blockName = step * ( blockId + 1 );
 
@@ -170,31 +175,32 @@ public class ViewPage {
         a.attr( "class", "hidelink" );
         a.attr( "id", "hidelink" + blockId );
         a.attr( "href", "javascript:void(0)" );
-        a.attr( "onclick", "show(" + blockId + ")" );
+        a.attr( "onclick", "MangaUtils.show(" + blockId + ")" );
         a.attr( "title", "Zeige Kapitel " + ( blockName - step + 1 ) + " bis " + blockName );
 
         a.appendElement( "span" ).attr( "id", "arrow" + blockId ).text( " hereComesAnArrow! " );
-        a.appendElement( "span" ).text( "" + blockName );
+        a.appendElement( "span" ).text( Integer.toString( blockName ) );
         return a;
     }
 
-    private static Element whitelink( Object chp ) {
+    private static Element whitelink( final Object chp ) {
         return whitelink( "", chp, "" );
     }
 
-    private static Element whitelink( String pretext, Object chp, String posttext ) {
+    private static Element whitelink( final String pretext, final Object chp, final String posttext ) {
         String chpText = String.valueOf( chp );
         Element a = new Element( Tag.valueOf( "a" ), "" );
         a.attr( "class", "whitelink" );
         a.attr( "id", "choose" + chpText );
         a.attr( "href", "javascript:void(0)" );
-        a.attr( "onclick", "choose(" + chpText + ")" );
+        a.attr( "onclick", "MangaUtils.choose(" + chpText + ")" );
         a.attr( "title", "Lade Kapitel " + chpText );
         a.text( pretext + chpText + posttext );
         return a;
     }
 
     private Element rightDiv() {
+        logger.info( "creating right div" );
         Element rDiv = new Element( Tag.valueOf( "div" ), "" ).attr( "id", "rightdiv" );
         // pagetitle - current chapternumber
         rDiv.appendElement( "h1" ).attr( "id", "pagetitle" ).text( "If you can read this something BAD happened..." );
@@ -226,16 +232,17 @@ public class ViewPage {
         return maxPages;
     }
 
-    private void copyFile( String filename ) {
+    private void copyFile( final String filename ) {
         try ( InputStream resource = ViewPage.class.getResourceAsStream( filename ) ) {
             File toFile = new File( this.folder, filename );
+            logger.info( "copy {} to {}", filename, toFile );
             FileUtils.copyInputStreamToFile( resource, toFile );
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
+        } catch ( final IOException ex ) {
+            throw new MDRuntimeException( ex );
         }
     }
 
-    private List<File> getSortedChapters( Comparator<File> comp ) {
+    private List<File> getSortedChapters( final Comparator<File> comp ) {
         List<File> list = getChapters();
         Collections.sort( list, comp );
         return list;
@@ -250,14 +257,14 @@ public class ViewPage {
     }
 }
 
-class Const {
+final class Const {
     /**
      * a {@linkplain FileFilter} that filters directories.<br>
      * {@linkplain FileFilter#accept(File)} returns true, if {@linkplain File#isDirectory()} is {@code true}
      */
     static final FileFilter isDirectoryFilter = new FileFilter() {
         @Override
-        public boolean accept( File pathname ) {
+        public boolean accept( final File pathname ) {
             return pathname.isDirectory();
         }
     };
@@ -269,14 +276,14 @@ class Const {
      */
     static final Comparator<File> numericFilenameComparator = new Comparator<File>() {
         @Override
-        public int compare( File o1, File o2 ) {
+        public int compare( final File o1, final File o2 ) {
             String name1 = o1.getName();
             String name2 = o2.getName();
             try {
                 int i1 = Integer.parseInt( name1 );
                 int i2 = Integer.parseInt( name2 );
                 return Integer.compare( i1, i2 );
-            } catch ( NumberFormatException ex ) {
+            } catch ( final NumberFormatException ex ) {
                 double d1 = Double.parseDouble( name1 );
                 double d2 = Double.parseDouble( name2 );
                 return Double.compare( d1, d2 );
@@ -289,7 +296,7 @@ class Const {
      */
     static final Comparator<Entry<Integer, ?>> integerEntryComparator = new Comparator<Map.Entry<Integer, ?>>() {
         @Override
-        public int compare( Entry<Integer, ?> o1, Entry<Integer, ?> o2 ) {
+        public int compare( final Entry<Integer, ?> o1, final Entry<Integer, ?> o2 ) {
             return o1.getKey().compareTo( o2.getKey() );
         }
     };

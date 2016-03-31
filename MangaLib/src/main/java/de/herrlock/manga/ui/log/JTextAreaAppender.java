@@ -14,7 +14,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  * 
  * @author HerrLock
  */
-@Plugin( name = "JTextAreaAppender", category = "Core", elementType = "appender" )
+@Plugin( name = "JTextAreaAppender", category = "Manga", elementType = "appender" )
 public final class JTextAreaAppender extends AbstractAppender {
     private static final long serialVersionUID = 1L;
 
@@ -26,7 +26,7 @@ public final class JTextAreaAppender extends AbstractAppender {
     }
 
     @Override
-    public void append( LogEvent event ) {
+    public void append( final LogEvent event ) {
         String formattedMessage = event.getMessage().getFormattedMessage();
         LogWindow.addMessage( formattedMessage );
     }

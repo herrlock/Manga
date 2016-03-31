@@ -1,17 +1,18 @@
 package de.herrlock.manga;
 
+import de.herrlock.javafx.handler.Exec;
+import de.herrlock.javafx.handler.ExecHandlerTask;
+import de.herrlock.manga.util.Execs;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
-import de.herrlock.manga.util.Exec;
-import de.herrlock.manga.util.ExecHandlerTask;
 
-public class CtrlController {
+public final class CtrlController {
 
     @FXML
     public Text runningText, bottomText;
     @FXML
-    public Button btnStartDDL, btnStartPDL, btnShowHosts, btnAddToJD, btnCreateHTML;
+    public Button btnStartDDL, btnStartPDL, btnStartServer, btnShowHosts, btnCreateHTML;
 
     public void clearText() {
         this.bottomText.setText( "" );
@@ -23,6 +24,9 @@ public class CtrlController {
     public void showTextPStart() {
         setBottomText( "button.tooltip.startPDL" );
     }
+    public void showTextServerStart() {
+        setBottomText( "button.tooltip.startServer" );
+    }
     public void showTextHosts() {
         setBottomText( "button.tooltip.showHosts" );
     }
@@ -32,39 +36,47 @@ public class CtrlController {
     public void showTextHTML() {
         setBottomText( "button.tooltip.createHTML" );
     }
-    private void setBottomText( String i18nKey ) {
-        CtrlController.this.bottomText.setText( Ctrl.i18n.getString( i18nKey ) );
+    private void setBottomText( final String i18nKey ) {
+        this.bottomText.setText( Ctrl.I18N.getString( i18nKey ) );
     }
 
     public void startDDownload() {
-        handleBtnClick( Exec.DIALOG_DOWNLOADER );
+        handleBtnClick( Execs.DIALOG_DOWNLOADER );
     }
     public void startPDownload() {
-        handleBtnClick( Exec.PLAIN_DOWNLOADER );
+        handleBtnClick( Execs.PLAIN_DOWNLOADER );
+    }
+    public void startServer() {
+        handleBtnClick( Execs.START_SERVER, false );
     }
     public void showHosts() {
-        handleBtnClick( Exec.PRINT_ALL_HOSTER );
+        handleBtnClick( Execs.PRINT_ALL_HOSTER );
     }
-    public void exportToJD() {
-        handleBtnClick( Exec.ADD_TO_JD_W_FILE );
+    public void exportToJd() {
+        handleBtnClick( Execs.ADD_TO_JD_W_FILE );
     }
-    public void createHTML() {
-        handleBtnClick( Exec.VIEW_PAGE_MAIN );
+    public void createHtml() {
+        handleBtnClick( Execs.VIEW_PAGE_MAIN );
     }
-    public void handleBtnClick( Exec exec ) {
+
+    public void handleBtnClick( final Exec exec ) {
+        handleBtnClick( exec, true );
+    }
+
+    public void handleBtnClick( final Exec exec, final boolean daemon ) {
         this.btnStartDDL.setOnAction( null );
         this.btnStartPDL.setOnAction( null );
+        this.btnStartServer.setOnAction( null );
         this.btnShowHosts.setOnAction( null );
-        this.btnAddToJD.setOnAction( null );
         this.btnCreateHTML.setOnAction( null );
 
         Thread thread = new Thread( new ExecCtrlHandlerTask( exec ) );
-        thread.setDaemon( true );
+        thread.setDaemon( daemon );
         thread.start();
     }
 
-    class ExecCtrlHandlerTask extends ExecHandlerTask {
-        public ExecCtrlHandlerTask( Exec exec ) {
+    final class ExecCtrlHandlerTask extends ExecHandlerTask {
+        public ExecCtrlHandlerTask( final Exec exec ) {
             super( exec );
         }
 

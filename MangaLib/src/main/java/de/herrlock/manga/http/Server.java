@@ -1,149 +1,83 @@
 package de.herrlock.manga.http;
 
-import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import org.apache.commons.io.IOUtils;
+import javax.servlet.ServletException;
+
+import org.apache.catalina.Context;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.LifecycleState;
+import org.apache.catalina.startup.Tomcat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import de.herrlock.manga.http.location.Location;
-import de.herrlock.manga.http.location.NotFoundLocation;
-import de.herrlock.manga.http.response.Response;
-import de.herrlock.manga.http.response.ServerExceptionResponse;
-import de.herrlock.manga.http.response.TextResponse;
-import de.herrlock.manga.ui.log.LogWindow;
 
 /**
  * @author HerrLock
  */
-public class Server extends ServerSocket implements Runnable {
-
+public final class Server {
     private static final Logger logger = LogManager.getLogger();
+    private final Tomcat tomcat = new Tomcat();
 
-    private final Map<String, Location> locations = new HashMap<>();
-    private final Location location404 = new NotFoundLocation();
-    private boolean active = true;
-
-    /**
-     * Creates a Server that lets a {@link ServerSocket} listen to the port 1905
-     * 
-     * @throws IOException
-     *             thrown by {@link Server#Server(int)}
-     */
-    public Server() throws IOException {
-        this( 1905 );
+    public static void startServerAndWaitForStop() throws ServletException, LifecycleException, IOException {
+        final Server server = new Server();
+        server.start();
+        server.listenForStop();
     }
 
-    /**
-     * Creates a Server that lets a {@link ServerSocket} listen to the given port
-     * 
-     * @param port
-     *            the port to listen to
-     * @throws IOException
-     *             thrown by {@link ServerSocket#ServerSocket(int)}
-     */
-    public Server( int port ) throws IOException {
-        super( port );
+    public Server() throws ServletException {
+        this.tomcat.setPort( 1905 );
+
+        Context serverContext = this.tomcat.addContext( "server", new File( ".", "tomcat.1905/temp" ).getAbsolutePath() );
+        Tomcat.addServlet( serverContext, "StopServer", new StopServerServlet( this ) );
+        serverContext.addServletMapping( "/stop", "StopServer" );
+
+        this.tomcat.addWebapp( "", new File( ".", "tomcat.1905/webapps/ROOT.war" ).getAbsolutePath() );
     }
 
-    @Override
-    public void run() {
-        logger.entry();
-        try {
-            logger.info( "started, request data at http://localhost:{}/", this.getLocalPort() );
-            while ( this.active ) {
-                logger.debug( "socket waiting" );
-                Socket socket = this.accept();
-                logger.debug( socket );
-                try ( InputStream in = socket.getInputStream() ) {
-                    String requestPart = IOUtils.lineIterator( in, StandardCharsets.UTF_8 ).nextLine();
-                    String[] split = requestPart.split( " ", 3 );
-                    URL url = new URL( "http://localhost" + split[1] );
+    public void start() throws LifecycleException, IOException {
+        this.tomcat.start();
 
-                    Response res = handleXHR( url );
-                    try ( OutputStream out = socket.getOutputStream() ) {
-                        String httpHeader = res.createHTTPHeader();
-                        IOUtils.write( httpHeader, out );
-                        byte[] data = res.getData();
-                        IOUtils.write( data, out );
-                    }
+        logger.info( "Server: {} ({})", this.tomcat.getServer(), this.tomcat.getServer().getClass() );
+        logger.info( "Service: {} ({})", this.tomcat.getService(), this.tomcat.getService().getClass() );
+        logger.info( "Engine: {} ({})", this.tomcat.getEngine(), this.tomcat.getEngine().getClass() );
+        logger.info( "Host: {} ({})", this.tomcat.getHost(), this.tomcat.getHost().getClass() );
+        logger.info( "Connector: {} ({})", this.tomcat.getConnector(), this.tomcat.getConnector().getClass() );
+
+        if ( this.tomcat.getConnector().getState() == LifecycleState.FAILED ) {
+            IOException ioException = new IOException( "Something is already running on Port 1905" );
+            logger.error( ioException.getMessage() );
+            throw ioException;
+        }
+    }
+
+    public void listenForStop() throws IOException {
+        boolean active = true;
+        while ( active ) {
+            LifecycleState state = this.tomcat.getConnector().getState();
+            boolean connectorStopped = state == LifecycleState.STOPPED;
+            logger.debug( "Serverstatus: {}", state );
+            boolean quitBySysin = false;
+            if ( System.in.available() > 0 ) {
+                int read = System.in.read();
+                quitBySysin = read == 'q';
+                logger.info( "Read char: {}", ( char ) read );
+            }
+            if ( connectorStopped || quitBySysin ) {
+                active = false;
+            } else {
+                try {
+                    Thread.sleep( 2000 );
+                } catch ( InterruptedException ex ) {
+                    logger.error( ex );
                 }
             }
-        } catch ( SocketException ex ) {
-            logger.info( "stopping server" );
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
-        } finally {
-            logger.info( "server stopped" );
         }
+        logger.info( "Server stopped" );
     }
 
-    /**
-     * 
-     */
-    public void stopServer() {
-        try ( Socket s = new Socket( "localhost", 1905 ) ) {
-            try ( BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter( s.getOutputStream(), StandardCharsets.UTF_8 ) ) ) {
-                writer.write( "GET /stopServer HTTP/1.1" );
-            }
-        } catch ( IOException ex ) {
-            throw new ServerException( ex );
-        }
+    public void stop() throws LifecycleException {
+        this.tomcat.stop();
     }
 
-    private Response handleXHR( URL url ) {
-        String path = url.getPath();
-        logger.debug( "Path: {}", path );
-        String query = url.getQuery();
-        logger.debug( "Query: {}", query );
-
-        Location loc = this.location404;
-        for ( Entry<String, Location> entry : this.locations.entrySet() ) {
-            if ( entry.getKey().equals( path ) ) {
-                loc = entry.getValue();
-                break;
-            }
-        }
-        try {
-            return loc.handleXHR( url );
-        } catch ( ServerException ex ) {
-            logger.error( ex );
-            return new ServerExceptionResponse( ex );
-        } catch ( CloseServerException ex ) {
-            logger.info( "stopping Server" );
-            this.active = false;
-            LogWindow.dispose();
-            return new TextResponse( 200, "stoppedServer" );
-        }
-    }
-
-    /**
-     * adds a {@link Location} to request data from to this server
-     * 
-     * @param loc
-     *            the {@link Location} to add
-     * @throws IllegalArgumentException
-     *             in case the path is already registered
-     */
-    public void registerLocation( Location loc ) throws IllegalArgumentException {
-        logger.debug( "register \"/{}\"", loc.getPath() );
-        String path = "/" + loc.getPath();
-        if ( this.locations.containsKey( path ) ) {
-            throw new IllegalArgumentException( path + " already registered" );
-        }
-        this.locations.put( path, loc );
-    }
 }

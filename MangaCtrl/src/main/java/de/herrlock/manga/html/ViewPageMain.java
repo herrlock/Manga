@@ -11,13 +11,8 @@ import org.apache.logging.log4j.Logger;
  * @author HerrLock
  */
 public final class ViewPageMain {
-
+    @SuppressWarnings( "unused" )
     private static final Logger logger = LogManager.getLogger();
-
-    public static void main( String... args ) {
-        logger.entry();
-        execute();
-    }
 
     public static void execute() {
         String input = JOptionPane.showInputDialog( "Input the folder where the chapters are." );
@@ -35,7 +30,7 @@ public final class ViewPageMain {
      * @param folder
      *            the mangafolder to create a viewer for (has the format {@code <manganame>_<timestamp>})
      */
-    public static void execute( File folder ) {
+    public static void execute( final File folder ) {
         ViewPage.execute( folder );
     }
 

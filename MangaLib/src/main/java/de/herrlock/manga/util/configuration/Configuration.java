@@ -37,7 +37,7 @@ public abstract class Configuration {
     /**
      * the default value of the timeout
      */
-    public static final short TIMEOUT_DEFAULT = 5_000;
+    public static final int TIMEOUT_DEFAULT = 5_000;
     /**
      * the path to JDownloader's folderwatch-folder
      */
@@ -46,17 +46,38 @@ public abstract class Configuration {
      * the name of the property for setting the proxy-url
      */
     public static final String PROXY = "proxy";
+    /**
+     * the name of the property for the setting "headless"
+     */
+    public static final String HEADLESS = "headless";
+
+    private final boolean isHeadless;
+
+    /**
+     * creates a boolean from the property {@value #HEADLESS} in the given Properties
+     * 
+     * @param p
+     *            the {@link Properties} where to search for the headless-property
+     * @return the property headless as bollean
+     */
+    protected static boolean _getIsHeadless( final Properties p ) {
+        logger.entry();
+        String property = p.getProperty( HEADLESS, "false" );
+        boolean headless = property.matches( "true" );
+        logger.debug( "headless: {}", headless );
+        return headless;
+    }
 
     /**
      * creates a {@link URL} from the property {@value #URL} in the given Properties
      * 
      * @param p
      *            the {@link Properties} where to search for an url
-     * @return the reated URL
+     * @return the created URL
      * @throws InitializeException
      *             in case the URL is not availabile or malformed
      */
-    protected static URL _createUrl( Properties p ) throws InitializeException {
+    protected static URL _createUrl( final Properties p ) throws InitializeException {
         logger.entry();
         // get url
         URL url;
@@ -66,7 +87,7 @@ public abstract class Configuration {
                 throw new InitializeException( "url is not filled but required" );
             }
             url = new URL( urlString );
-        } catch ( MalformedURLException ex ) {
+        } catch ( final MalformedURLException ex ) {
             logger.error( "", ex );
             throw new InitializeException( "url is malformed", ex );
         }
@@ -83,23 +104,26 @@ public abstract class Configuration {
      * @throws InitializeException
      *             in case the given url is malformed or cannot be resolved
      */
-    protected static HttpHost _createProxy( Properties p ) throws InitializeException {
+    protected static HttpHost _createProxy( final Properties p ) throws InitializeException {
         logger.entry();
         // get proxy
         try {
             String urlString = p.getProperty( PROXY );
             if ( urlString != null && !"".equals( urlString ) ) {
-                if ( !urlString.startsWith( "http://" ) ) {
-                    urlString = "http://" + urlString;
+                final URL proxyUrl;
+                if ( urlString.startsWith( "http://" ) || urlString.startsWith( "https://" ) ) {
+                    proxyUrl = new URL( urlString );
+                } else {
+                    proxyUrl = new URL( "http://" + urlString );
                 }
-                URL proxyUrl = new URL( urlString );
                 String proxyHost = proxyUrl.getHost();
                 int proxyPort = proxyUrl.getPort();
+                String scheme = proxyUrl.getProtocol();
                 InetAddress proxyAddress = InetAddress.getByName( proxyHost );
                 logger.debug( "Proxy: {}:{}", proxyHost, proxyPort );
-                return new HttpHost( proxyAddress, proxyPort );
+                return new HttpHost( proxyAddress, proxyPort, scheme );
             }
-        } catch ( MalformedURLException | UnknownHostException ex ) {
+        } catch ( final MalformedURLException | UnknownHostException ex ) {
             logger.error( "", ex );
             throw new InitializeException( "proxy-url is malformed or not recognized.", ex );
         }
@@ -114,7 +138,7 @@ public abstract class Configuration {
      *            the {@link Properties} where to search for a pattern
      * @return a {@link ChapterPattern} containing the containing the chosen Chaptern
      */
-    protected static ChapterPattern _createPattern( Properties p ) {
+    protected static ChapterPattern _createPattern( final Properties p ) {
         logger.entry();
         String patternString = p.getProperty( PATTERN );
         logger.debug( "ChapterPattern: {}", patternString );
@@ -129,7 +153,7 @@ public abstract class Configuration {
      * @return an {@code int} containing the timeout, either the parsed value from the {@link Properties} or the default-value
      *         from {@link #TIMEOUT_DEFAULT} ({@value #TIMEOUT_DEFAULT})
      */
-    protected static int _createTimeout( Properties p ) {
+    protected static int _createTimeout( final Properties p ) {
         logger.entry();
         String timeoutString = p.getProperty( TIMEOUT );
         if ( timeoutString == null || timeoutString.trim().equals( "" ) ) {
@@ -138,6 +162,7 @@ public abstract class Configuration {
         }
         logger.debug( "Timeout: {}", timeoutString );
         return Integer.parseInt( timeoutString );
+        // TODO: maybe catch NumberFormatException?
     }
 
     /**
@@ -149,7 +174,7 @@ public abstract class Configuration {
      * @throws InitializeException
      *             in case the required property cannot be found
      */
-    protected static File _createFolderwatch( Properties p ) throws InitializeException {
+    protected static File _createFolderwatch( final Properties p ) throws InitializeException {
         logger.entry();
         String fwPath = p.getProperty( JDFW );
         if ( fwPath == null || fwPath.trim().equals( "" ) ) {
@@ -159,10 +184,33 @@ public abstract class Configuration {
         return new File( fwPath );
     }
 
+    @Override
+    public abstract String toString();
+
     /**
-     * Default-constuctor fo subclasses
+     * Default-constuctor for subclasses. Calls the constructor {@link Configuration#Configuration(boolean)} with the value
+     * {@code false}
      */
     protected Configuration() {
-        // not used directly
+        this( false );
+    }
+
+    /**
+     * Constructur with the headless-property
+     * 
+     * @param isHeadless
+     *            if the downloader runs in cli-mode (false) or with a type of gui (true)
+     */
+    protected Configuration( final boolean isHeadless ) {
+        this.isHeadless = isHeadless;
+    }
+
+    /**
+     * getter for isHeadless
+     * 
+     * @return isHeadless
+     */
+    public final boolean isHeadless() {
+        return this.isHeadless;
     }
 }

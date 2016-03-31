@@ -10,21 +10,40 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+/**
+ * Tests the ChapterPattern's matcher-regex
+ * 
+ * @author HerrLock
+ */
 @RunWith( Parameterized.class )
 public class TestChapterPatternRegex {
     private final String toCheck;
     private final boolean expected;
 
-    public TestChapterPatternRegex( String toCheck, boolean expected ) {
+    /**
+     * @param toCheck
+     *            the value to check
+     * @param expected
+     *            if the value to check is expected to be valid
+     */
+    public TestChapterPatternRegex( final String toCheck, final boolean expected ) {
         this.toCheck = toCheck;
         this.expected = expected;
     }
 
+    /**
+     * tests a single entry
+     */
     @Test
     public void testCase() {
         assertEquals( this.expected, ChapterPattern.REGEX.matcher( this.toCheck ).matches() );
     }
 
+    /**
+     * Creates the entries to test
+     * 
+     * @return the paramters
+     */
     @Parameters( name = "{0} => {1}" )
     public static Collection<Object[]> generateParams() {
         Object[][] params = {

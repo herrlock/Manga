@@ -1,157 +1,113 @@
 package de.herrlock.manga.host;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Locale;
-import java.util.regex.Pattern;
+import java.text.MessageFormat;
+import java.util.Objects;
 
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
- * all defined Hoster
+ * A class that has the purpose of creating {@linkplain ChapterList}s. Can be extended to provide an alternative implementation of
+ * {@link #getChapterList(DownloadConfiguration)}
  * 
  * @author HerrLock
  */
-// TODO refactor to implement an Interface to enable registering additional Hoster
-public enum Hoster {
-    /**
-     * Hoster Mangapanda with the URL mangapanda.com
-     */
-    MANGAPANDA( "Mangapanda", "http://www.mangapanda.com/" ) {
-        @Override
-        public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
-            return new MangaPanda( conf );
-        }
-    },
-    /**
-     * Hoster Pure-Manga with the URL pure-manga.org
-     */
-    PUREMANGA( "Pure-Manga", "http://www.pure-manga.org/" ) {
-        @Override
-        public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
-            return new PureManga( conf );
-        }
-    },
-    /**
-     * Hoster Mangafox with the URL mangafox.me
-     */
-    MANGAFOX( "Mangafox", "http://www.mangafox.me/" ) {
-        @Override
-        public ChapterList getChapterList( DownloadConfiguration conf ) throws IOException {
-            return new MangaFox( conf );
-        }
-    };
+public final class Hoster implements Comparable<Hoster> {
 
+    private final Class<? extends ChapterList> baseClass;
     private final String name;
-    private final URL url;
+    private final URL baseUrl;
 
     /**
-     * @param name
-     *            the Hoster's name
-     * @param url
-     *            the Hoster's "main"-URL
+     * creates an instance of this Hoster
+     * 
+     * @param baseClass
+     *            the subclass of ChapterList to create instances from with {@linkplain #getChapterList(DownloadConfiguration)}.
+     *            The class must be annotated with {@link Details}
      */
-    private Hoster( String name, String url ) {
-        this.name = name;
+    public Hoster( final Class<? extends ChapterList> baseClass ) {
+        this.baseClass = Objects.requireNonNull( baseClass );
+        Details hosterDetails = Objects.requireNonNull( baseClass.getAnnotation( Details.class ),
+            "Implementations of ChapterList require a name and a baseUrl provided by the annotation @Details" );
+        this.name = Objects.requireNonNull( hosterDetails.name() );
         try {
-            this.url = new URL( url );
-        } catch ( MalformedURLException ex ) {
-            throw new RuntimeException( ex );
+            this.baseUrl = new URL( Objects.requireNonNull( hosterDetails.baseUrl() ) );
+        } catch ( final MalformedURLException ex ) {
+            throw new IllegalStateException( ex );
         }
     }
 
     /**
-     * Getter for the Hoster's URL
+     * Creates an instance of the actual ChapterList. Can be overridden if a special behaviour is required. The
+     * default-implementation calls the constructor with a {@link DownloadConfiguration} in the signature with the help of the
+     * reflection-api (java.lang.reflect)
      * 
-     * @return the base-url of the Hoster
+     * @param conf
+     *            the {@link DownloadConfiguration} to use
+     * @return an actual ChapterList-implementation
+     * @throws IOException
+     *             may be thrown by the called ChapterList's constructor (not required though)
      */
-    public URL getUrl() {
-        return this.url;
+    public ChapterList getChapterList( final DownloadConfiguration conf ) throws IOException {
+        try {
+            Constructor<? extends ChapterList> constructor = this.baseClass.getConstructor( DownloadConfiguration.class );
+            return constructor.newInstance( conf );
+        } catch ( final NoSuchMethodException ex ) {
+            throw new IllegalStateException(
+                "The called implementation of ChapterList must contain a constructor accepting a DownloadConfiguration", ex );
+        } catch ( final InstantiationException ex ) {
+            throw new IllegalStateException( "The called class is abstract", ex );
+        } catch ( final IllegalAccessException ex ) {
+            throw new MDRuntimeException( "The called constructor is not accessible", ex );
+        } catch ( final IllegalArgumentException ex ) {
+            throw new MDRuntimeException( "The called constructor does not take one DownloadConfiguration as parameter", ex );
+        } catch ( final InvocationTargetException ex ) {
+            throw new MDRuntimeException( "The called constructor threw an exception", ex );
+        }
     }
 
     /**
-     * Getter for the Hoster's name
+     * getter for the Hoster's name
      * 
-     * @return the name of the Hoster
+     * @return the Hoster's name
      */
     public String getName() {
         return this.name;
     }
 
     /**
-     * creates an instance of a Host, specified by the URL's host-part
+     * getter for the Hoster's url
      * 
-     * @param conf
-     *            the {@link DownloadConfiguration} from the downloader
-     * @return an instance of the ChapterList specified by the current {@link Hoster}-Object
-     * @throws IOException
-     *             thrown by the constructors of the special ChapterList-implementations
+     * @return the Hoster's url
      */
-    public abstract ChapterList getChapterList( DownloadConfiguration conf ) throws IOException;
+    public URL getBaseUrl() {
+        return this.baseUrl;
+    }
 
-    /**
-     * checks all Hoster for the one that matches the given URL
-     * 
-     * @param url
-     *            the URL to check the Hoster against
-     * @return the Hoster that has the given URL; when none is found {@code null}
-     */
-    public static Hoster getHostByURL( URL url ) {
-        Pattern www = Pattern.compile( "www\\..+" );
-        String givenUrlHost = url.getHost();
-        if ( www.matcher( givenUrlHost ).matches() ) {
-            givenUrlHost = givenUrlHost.substring( 4 );
-        }
-        for ( Hoster h : Hoster.values() ) {
-            String hostUrlHost = h.url.getHost();
-            if ( www.matcher( hostUrlHost ).matches() ) {
-                hostUrlHost = hostUrlHost.substring( 4 );
-            }
-            if ( hostUrlHost.equalsIgnoreCase( givenUrlHost ) ) {
-                return h;
-            }
-        }
-        return null;
+    @Override
+    public int compareTo( final Hoster other ) {
+        String thisBaseClassName = this.baseClass.getName();
+        String otherBaseClassName = other.baseClass.getName();
+        return thisBaseClassName.compareTo( otherBaseClassName );
+    }
+
+    @Override
+    public boolean equals( final Object other ) {
+        return other != null && other instanceof Hoster && this.compareTo( ( Hoster ) other ) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.baseClass.getName().hashCode();
     }
 
     @Override
     public String toString() {
-        return this.name() + "\t" + this.url;
+        return MessageFormat.format( "Hoster (name: {0}, url: {1})", this.name, this.baseUrl );
     }
-
-    /**
-     * sorts the result of {@link #values()} with the {@link #NAME_COMPARATOR}
-     * 
-     * @return a sorted array of all Hosters
-     */
-    public static Hoster[] sortedValues() {
-        Hoster[] values = Hoster.values();
-        Hoster[] copy = Arrays.copyOf( values, values.length );
-        Arrays.sort( copy, NAME_COMPARATOR );
-        return copy;
-    }
-
-    /**
-     * A {@link Comparator} to compare to {@linkplain Hoster} with their {@linkplain #getName() name}
-     */
-    public static final Comparator<Hoster> NAME_COMPARATOR = new Comparator<Hoster>() {
-        /**
-         * compares the hoster by their name
-         * 
-         * @param h1
-         *            the first Hoster
-         * @param h2
-         *            the second Hoster
-         */
-        @Override
-        public int compare( Hoster h1, Hoster h2 ) {
-            String o1Lower = h1.getName().toLowerCase( Locale.GERMAN );
-            String o2Lower = h2.getName().toLowerCase( Locale.GERMAN );
-            return o1Lower.compareTo( o2Lower );
-        }
-    };
-
 }

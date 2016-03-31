@@ -15,31 +15,40 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.herrlock.manga.exceptions.MDRuntimeException;
+
 /**
  * @author HerrLock
  */
 public class RunTests {
 
+    /**
+     * Checks all ProvidedHoster-classes in the host-package
+     * 
+     * @throws IOException
+     *             if an IOException occurs
+     */
     @Test
     public void checkHoster() throws IOException {
-        Collection<Class<? extends ChapterList>> classes = getClasses( "de.herrlock.manga.host" );
+        Collection<Class<? extends ChapterList>> classes = getClasses( "de.herrlock.manga.host.impl" );
         Set<String> classnames = new HashSet<>( classes.size() );
         for ( Class<? extends ChapterList> c : classes ) {
             classnames.add( c.getSimpleName().toLowerCase( Locale.GERMAN ) );
         }
-        Hoster[] hoster = Hoster.values();
-        Set<String> hosternames = new HashSet<>( hoster.length );
+        List<Hoster> hoster = Hosters.sortedValues();
+        Set<String> hosternames = new HashSet<>( hoster.size() );
         for ( Hoster h : hoster ) {
-            hosternames.add( h.name().toLowerCase( Locale.GERMAN ) );
+            hosternames.add( h.getName().toLowerCase( Locale.GERMAN ) );
         }
 
+        Assert.assertEquals( classnames, hosternames );
         Assert.assertTrue( classnames.equals( hosternames ) && hosternames.equals( classnames ) );
     }
 
     /**
      * from http://stackoverflow.com/a/862130/3680684
      */
-    private static Collection<Class<? extends ChapterList>> getClasses( String packageName ) throws IOException {
+    private static Collection<Class<? extends ChapterList>> getClasses( final String packageName ) throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace( '.', '/' );
         Enumeration<URL> resources = classLoader.getResources( path );
@@ -51,7 +60,7 @@ public class RunTests {
 
         final FilenameFilter IS_CLASS_FILE_FILTER = new FilenameFilter() {
             @Override
-            public boolean accept( File dir, String name ) {
+            public boolean accept( final File dir, final String name ) {
                 return name.endsWith( ".class" );
             }
         };
@@ -71,8 +80,8 @@ public class RunTests {
                     if ( ChapterList.class.equals( c.getSuperclass() ) ) {
                         classes.add( c.asSubclass( ChapterList.class ) );
                     }
-                } catch ( ClassNotFoundException ex ) {
-                    throw new RuntimeException( ex );
+                } catch ( final ClassNotFoundException ex ) {
+                    throw new MDRuntimeException( ex );
                 }
             }
         }

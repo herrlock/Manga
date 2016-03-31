@@ -17,18 +17,21 @@ import de.herrlock.manga.util.ChapterPattern;
 public class JDConfiguration extends DownloadConfiguration {
     private final File folderwatch;
 
-    public static JDConfiguration create( Properties p ) {
+    public static JDConfiguration create( final Properties p ) {
+        boolean headless = _getIsHeadless( p );
         URL url = _createUrl( p );
         HttpHost proxy = _createProxy( p );
         ChapterPattern pattern = _createPattern( p );
         int timeout = _createTimeout( p );
         File folderwatch = _createFolderwatch( p );
-        return new JDConfiguration( url, proxy, pattern, timeout, folderwatch );
+        return new JDConfiguration( headless, url, proxy, pattern, timeout, folderwatch );
     }
 
     /**
      * constructor for a {@link JDConfiguration}
      * 
+     * @param headless
+     *            if the downloader runs in cli-mode (true) or with a type of gui (false)
      * @param url
      *            an {@link URL} to the manga's base-page.
      * @param proxy
@@ -40,8 +43,9 @@ public class JDConfiguration extends DownloadConfiguration {
      * @param folderwatch
      *            the {@link File} pointing to the folderwatch-folder from the local JDownloader-installation
      */
-    public JDConfiguration( URL url, HttpHost proxy, ChapterPattern pattern, int timeout, File folderwatch ) {
-        super( url, proxy, pattern, timeout );
+    public JDConfiguration( final boolean headless, final URL url, final HttpHost proxy, final ChapterPattern pattern,
+        final int timeout, final File folderwatch ) {
+        super( headless, url, proxy, pattern, timeout );
         this.folderwatch = Objects.requireNonNull( folderwatch, "The folderwatch-folder must not be null" );
     }
 

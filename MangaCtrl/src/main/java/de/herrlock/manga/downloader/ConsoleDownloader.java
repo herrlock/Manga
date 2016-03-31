@@ -1,67 +1,55 @@
 package de.herrlock.manga.downloader;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.NoSuchElementException;
-import java.util.Properties;
 import java.util.Scanner;
 
-import de.herrlock.manga.util.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
  * Starts the Download after printing informations about the number of Pictures to download to STDOUT and receiving a confirmation
  * the proceed by STDIN. Reads the settings from the central settings-file.
  * 
- * @deprecated Maybe use PlainDownloader instead
- * 
  * @author HerrLock
  */
-@Deprecated
 public final class ConsoleDownloader extends MDownloader {
+    private static final Logger logger = LogManager.getLogger();
 
     private final Scanner sc;
+    private final PrintStream out;
+    private final boolean interactive;
 
-    public static void main( String... args ) {
-        logger.entry();
-        execute();
-    }
-
-    public static void execute() {
-        logger.entry();
-        Properties p = new Properties();
-        try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
-            p.load( fIn );
-        } catch ( IOException ex ) {
-            throw new RuntimeException( ex );
-        }
-        DownloadConfiguration conf = DownloadConfiguration.create( p );
-        new ConsoleDownloader( conf, System.in ).run();
-    }
-
-    private ConsoleDownloader( DownloadConfiguration conf, InputStream in ) {
+    public ConsoleDownloader( final DownloadConfiguration conf, final boolean interactive, final InputStream in,
+        final PrintStream out ) {
         super( conf );
         this.sc = new Scanner( in, "UTF-8" );
+        this.out = out;
+        this.interactive = interactive;
+    }
+
+    public ConsoleDownloader( final DownloadConfiguration conf, final boolean interactive ) {
+        this( conf, interactive, System.in, System.out );
     }
 
     @Override
-    protected void run() {
+    public void run() {
         logger.entry();
-        try {
-            if ( goon() ) {
-                downloadAll();
-            }
-        } catch ( RuntimeException ex ) {
-            throw ex;
+        if ( !this.interactive || goon() ) {
+            logger.trace( "start download" );
+            downloadAll();
         }
+        logger.exit();
     }
 
     private boolean goon() {
         int noOfPictures = getPMCSize();
         if ( noOfPictures > 0 ) {
-            System.out.println( noOfPictures + " page" + ( noOfPictures > 1 ? "s" : "" ) + " availabile" );
-            System.out.println( "go on? y|n" );
+            this.out.println( noOfPictures + " page" + ( noOfPictures > 1 ? "s" : "" ) + " availabile" );
+            this.out.println( "go on? y|n" );
             try {
                 char c = this.sc.next( ".+" ).charAt( 0 );
                 return c == 'y' || c == 'Y';
@@ -69,7 +57,7 @@ public final class ConsoleDownloader extends MDownloader {
                 return false;
             }
         }
-        System.out.println( "no pages availabile; exiting" );
+        this.out.println( "no pages availabile; exiting" );
         return false;
     }
 }

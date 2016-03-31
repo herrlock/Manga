@@ -1,6 +1,7 @@
 package de.herrlock.manga.util.configuration;
 
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -26,17 +27,20 @@ public class DownloadConfiguration extends Configuration {
      *            the {@link Properties} where to get the values from
      * @return a new {@link DownloadConfiguration}
      */
-    public static DownloadConfiguration create( Properties p ) {
+    public static DownloadConfiguration create( final Properties p ) {
+        boolean isHeadless = _getIsHeadless( p );
         URL url = _createUrl( p );
         HttpHost proxy = _createProxy( p );
         ChapterPattern pattern = _createPattern( p );
         int timeout = _createTimeout( p );
-        return new DownloadConfiguration( url, proxy, pattern, timeout );
+        return new DownloadConfiguration( isHeadless, url, proxy, pattern, timeout );
     }
 
     /**
      * constructor for a {@link DownloadConfiguration}
      * 
+     * @param isHeadless
+     *            if the downloader runs in cli-mode (true) or with a type of gui (false)
      * @param url
      *            an {@link URL} to the manga's base-page.
      * @param proxy
@@ -46,7 +50,9 @@ public class DownloadConfiguration extends Configuration {
      * @param timeout
      *            the timeout for the http-requests. The dafult-value is used if negative.
      */
-    public DownloadConfiguration( URL url, HttpHost proxy, ChapterPattern pattern, int timeout ) {
+    public DownloadConfiguration( final boolean isHeadless, final URL url, final HttpHost proxy, final ChapterPattern pattern,
+        final int timeout ) {
+        super( isHeadless );
         this.url = Objects.requireNonNull( url, "A URL is required for downloading" );
         this.proxy = proxy;
         this.pattern = pattern == null ? new ChapterPattern( "" ) : pattern;
@@ -87,5 +93,11 @@ public class DownloadConfiguration extends Configuration {
      */
     public int getTimeout() {
         return this.timeout;
+    }
+
+    @Override
+    public String toString() {
+        return MessageFormat.format( "URL: {0}, Pattern: {1}, Proxy: {2}, Timeout: {3}", this.url, this.pattern, this.proxy,
+            this.timeout );
     }
 }

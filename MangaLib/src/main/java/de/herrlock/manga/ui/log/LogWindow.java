@@ -55,7 +55,7 @@ public final class LogWindow {
                     logger.debug( "set LoolAndFeel to {}", lookAndFeelInfo );
                     UIManager.setLookAndFeel( lookAndFeelInfo.getClassName() );
                     break;
-                } catch ( ReflectiveOperationException | UnsupportedLookAndFeelException ex ) {
+                } catch ( final ReflectiveOperationException | UnsupportedLookAndFeelException ex ) {
                     // do nothing, try the next preference
                     logger.warn( "LookAndFeel {} not found", s );
                 }
@@ -70,7 +70,7 @@ public final class LogWindow {
      * @param max
      *            the maximal value
      */
-    public static void setChapterProgressMax( int max ) {
+    public static void setChapterProgressMax( final int max ) {
         synchronized ( instance.chapterProgressModel ) {
             instance.chapterProgressModel.setMaximum( max );
         }
@@ -83,7 +83,7 @@ public final class LogWindow {
      * @param progress
      *            the current value
      */
-    public static void setChapterProgress( int progress ) {
+    public static void setChapterProgress( final int progress ) {
         synchronized ( instance.chapterProgressModel ) {
             instance.chapterProgressModel.setValue( progress );
         }
@@ -106,7 +106,7 @@ public final class LogWindow {
      * @param max
      *            the maximal value
      */
-    public static void setProgressMax( int max ) {
+    public static void setProgressMax( final int max ) {
         synchronized ( instance.totalProgressModel ) {
             instance.totalProgressModel.setMaximum( max );
         }
@@ -118,7 +118,7 @@ public final class LogWindow {
      * @param progress
      *            the current value
      */
-    public static void setProgress( int progress ) {
+    public static void setProgress( final int progress ) {
         synchronized ( instance.totalProgressModel ) {
             instance.totalProgressModel.setValue( progress );
         }
@@ -145,7 +145,7 @@ public final class LogWindow {
      * @param message
      *            the String to add, inserted at the top, followed by a {@code \n}
      */
-    public static void addMessage( String message ) {
+    public static void addMessage( final String message ) {
         synchronized ( instance.textarea ) {
             instance.textarea.insert( message + "\n", 0 );
         }

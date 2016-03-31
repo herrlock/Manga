@@ -13,9 +13,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
-import de.herrlock.manga.host.ChapterList.Chapter;
+import de.herrlock.manga.exceptions.MDRuntimeException;
+import de.herrlock.manga.host.Chapter;
 import de.herrlock.manga.util.Utils;
 
+/**
+ * A container for the actual urls of the images
+ * 
+ * @author HerrLock
+ */
 public final class PictureMapContainer {
     private static final Logger logger = LogManager.getLogger();
 
@@ -25,12 +31,18 @@ public final class PictureMapContainer {
     private final EntryList<String, EntryList<Integer, URL>> entries;
     private final ChapterListContainer clc;
 
-    public PictureMapContainer( ChapterListContainer clc ) {
+    /**
+     * Creates a new PictureMapContainer
+     * 
+     * @param clc
+     *            the container with the list of chapters
+     */
+    public PictureMapContainer( final ChapterListContainer clc ) {
         this.clc = clc;
         int clcSize = clc.getSize();
         this.entries = new EntryList<>( clcSize );
         List<PictureMapThread> callables = new ArrayList<>( clcSize );
-        for ( Chapter chapter : clc.getChapters() ) {
+        for ( Chapter chapter : clc ) {
             callables.add( new PictureMapThread( chapter ) );
         }
         Utils.callCallables( callables );
@@ -56,11 +68,11 @@ public final class PictureMapContainer {
         return noOfPictures;
     }
 
-    void addEntry( String number, EntryList<Integer, URL> pageMap ) {
+    void addEntry( final String number, final EntryList<Integer, URL> pageMap ) {
         this.entries.addEntry( number, pageMap );
     }
 
-    EntryList<Integer, URL> getAllPageURLs( Chapter chapter ) throws IOException {
+    EntryList<Integer, URL> getAllPageURLs( final Chapter chapter ) throws IOException {
         return this.clc.getAllPageURLs( chapter );
     }
 
@@ -73,7 +85,7 @@ public final class PictureMapContainer {
 
         private final Chapter chapter;
 
-        public PictureMapThread( Chapter chapter ) {
+        public PictureMapThread( final Chapter chapter ) {
             this.chapter = chapter;
         }
 
@@ -94,20 +106,19 @@ public final class PictureMapContainer {
             EntryList<Integer, URL> allPages;
             try {
                 allPages = PictureMapContainer.this.getAllPageURLs( this.chapter );
-            } catch ( SocketTimeoutException stex ) {
-                System.out.println( "read timed out (chapter " + this.chapter.getNumber() + "), trying again" );
+            } catch ( final SocketTimeoutException stex ) {
+                logger.info( "read timed out (chapter {}), trying again", this.chapter.getNumber() );
                 allPages = getMap();
-            } catch ( IOException ioex ) {
+            } catch ( final IOException ioex ) {
                 if ( ioex.getMessage().contains( "503" ) ) {
                     // http-statuscode 503
-                    System.out.println( "HTTP-Status 503 (chapter " + this.chapter.getNumber() + "), trying again" );
+                    logger.info( "HTTP-Status 503 (chapter {}), trying again", this.chapter.getNumber() );
                     allPages = getMap();
                 } else {
-                    throw new RuntimeException( ioex );
+                    throw new MDRuntimeException( ioex );
                 }
             }
             return allPages;
         }
-
     }
 }
