@@ -1,4 +1,7 @@
 logger.info ' >> MangaLib'
+
+description = 'The central library for this application containing all general implementations of the downloader.'
+
 dependencies {
 	// utilities
 	compile 'com.google.guava:guava:19.0'

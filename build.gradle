@@ -15,6 +15,8 @@ ext {
 
 apply plugin: 'distribution'
 
+description = 'The root-project. Contains the subprojects and a Launcher'
+
 // general setup
 allprojects {
 	apply plugin: 'eclipse'
@@ -53,8 +55,8 @@ allprojects {
 			'Created-By' : "${System.properties.'java.runtime.version'} (${System.properties.'java.vm.vendor'})",
 			'Info'
 		attributes 'Branch' : gitbranch.getName(),
+			'Commit' : githead.getId(),
 			'Date' : githead.getDate(),
-			'Commit' : githead.id,
 			'Git'
 	}
 	

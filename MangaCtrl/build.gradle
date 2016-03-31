@@ -1,4 +1,7 @@
 logger.info ' >> MangaCtrl'
+
+description = 'A library for all special implementations of the classes in MangaLib.'
+
 dependencies {
     compile project(':MangaLib')
 }

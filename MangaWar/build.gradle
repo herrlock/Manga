@@ -1,4 +1,7 @@
 logger.info ' >> MangaWar'
+
+description = 'A project that creates the WAR for the web-gui.'
+
 apply plugin: 'war'
 
 dependencies {
