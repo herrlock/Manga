@@ -32,12 +32,12 @@ public final class ClassPathHack {
     public static void makeSureJfxrtLoaded() throws ClassNotFoundException {
         try {
             tryToLoadJavafxApplication();
-            logger.info( "Loaded {} at first try", Application.class );
+            logger.debug( "Loaded {} at first try", Application.class );
         } catch ( ClassNotFoundException ex ) {
-            logger.info( "Could not find class, trying to add the jar" );
+            logger.debug( "Could not find class, trying to add the jar" );
             addJarToSystemClassloader();
             tryToLoadJavafxApplication();
-            logger.info( "Loaded {} after adding the jar", Application.class );
+            logger.debug( "Loaded {} after adding the jar", Application.class );
         }
     }
 
