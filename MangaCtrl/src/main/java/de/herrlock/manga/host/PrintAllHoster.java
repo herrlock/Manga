@@ -1,6 +1,7 @@
 package de.herrlock.manga.host;
 
 import java.io.PrintStream;
+import java.text.MessageFormat;
 import java.util.Collection;
 
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +22,7 @@ public final class PrintAllHoster {
         out.println( "availabile hoster" );
         Collection<Hoster> values = Hosters.sortedValues();
         for ( Hoster h : values ) {
-            out.println( h );
+            out.println( getHosterString( h ) );
         }
     }
 
@@ -29,8 +30,12 @@ public final class PrintAllHoster {
         logger.info( "availabile hoster" );
         Collection<Hoster> values = Hosters.sortedValues();
         for ( Hoster h : values ) {
-            logger.info( h );
+            logger.info( getHosterString( h ) );
         }
+    }
+
+    private static String getHosterString( final Hoster hoster ) {
+        return MessageFormat.format( "{0}:\t{1}", hoster.getName(), hoster.getBaseUrl() );
     }
 
     private PrintAllHoster() {

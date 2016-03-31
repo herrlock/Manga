@@ -147,6 +147,7 @@ public final class Hosters {
      * @see java.util.Collection#add(Object)
      */
     public static boolean registerHoster( final Hoster hoster ) {
+        logger.debug( "add Hoster: {}", hoster );
         return hosters.add( hoster );
     }
 

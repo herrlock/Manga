@@ -68,6 +68,11 @@ public final class MyOptions {
         .desc( "Interactive mode: request confirmation etc. from STDIN (mode: console)" )//
         .build();
 
+    private final Option showHosterOption = Option.builder()//
+        .longOpt( "hoster" )//
+        .desc( "List all availabile Hoster (mode: console)" )//
+        .build();
+
     private final Option folderOption = Option.builder()//
         .longOpt( "folder" )//
         .hasArg()//
@@ -99,6 +104,7 @@ public final class MyOptions {
             .addOption( this.patternOption )//
             .addOption( this.proxyOption )//
             .addOption( this.interactiveOption )//
+            .addOption( this.showHosterOption )//
             .addOption( this.folderOption )//
             .addOption( this.launchBrowserOption )//
             .addOption( this.logLevelOption )//

@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 import de.herrlock.manga.downloader.ConsoleDownloader;
 import de.herrlock.manga.exceptions.MDRuntimeException;
+import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.http.ServerMain;
 import de.herrlock.manga.http.StartWithDesktop;
@@ -140,19 +141,23 @@ public final class Main {
     private static void startCliDownloader( final CommandLine commandline ) {
         logger.entry( commandline );
 
-        try {
-            URL url = new URL( commandline.getOptionValue( "url" ) );
-            HttpHost proxy = commandline.hasOption( "proxy" ) ? new HttpHost( commandline.getOptionValue( "proxy" ) ) : null;
-            ChapterPattern pattern = commandline.hasOption( "pattern" )
-                ? new ChapterPattern( commandline.getOptionValue( "pattern" ) )
-                : null;
-            DownloadConfiguration conf = new DownloadConfiguration( true, url, proxy, pattern, 0 );
-            logger.info( conf );
-            boolean interactive = commandline.hasOption( 'i' );
-            ConsoleDownloader downloader = new ConsoleDownloader( conf, interactive );
-            downloader.run();
-        } catch ( MalformedURLException ex ) {
-            throw new MDRuntimeException( ex );
+        if ( commandline.hasOption( "hoster" ) ) {
+            PrintAllHoster.printHoster( System.out );
+        } else {
+            try {
+                URL url = new URL( commandline.getOptionValue( "url" ) );
+                HttpHost proxy = commandline.hasOption( "proxy" ) ? new HttpHost( commandline.getOptionValue( "proxy" ) ) : null;
+                ChapterPattern pattern = commandline.hasOption( "pattern" )
+                    ? new ChapterPattern( commandline.getOptionValue( "pattern" ) )
+                    : null;
+                DownloadConfiguration conf = new DownloadConfiguration( true, url, proxy, pattern, 0 );
+                logger.info( conf );
+                boolean interactive = commandline.hasOption( 'i' );
+                ConsoleDownloader downloader = new ConsoleDownloader( conf, interactive );
+                downloader.run();
+            } catch ( MalformedURLException ex ) {
+                throw new MDRuntimeException( ex );
+            }
         }
     }
 

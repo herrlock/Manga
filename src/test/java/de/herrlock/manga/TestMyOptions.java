@@ -10,7 +10,7 @@ public final class TestMyOptions {
     public void testOptionCount() {
         MyOptions myOptions = new MyOptions();
         Options options = myOptions.getOptions();
-        Assert.assertEquals( 13, options.getOptions().size() );
+        Assert.assertEquals( 14, options.getOptions().size() );
     }
 
     @Test
