@@ -1,13 +1,14 @@
 package de.herrlock.manga;
 
 import static de.herrlock.manga.util.Execs.ADD_TO_JD_W_FILE;
+import static de.herrlock.manga.util.Execs.DIALOG_DOWNLOADER;
 import static de.herrlock.manga.util.Execs.PLAIN_DOWNLOADER;
 import static de.herrlock.manga.util.Execs.PRINT_ALL_HOSTER;
+import static de.herrlock.manga.util.Execs.START_SERVER;
 import static de.herrlock.manga.util.Execs.VIEW_PAGE_MAIN;
 
 import de.herrlock.javafx.handler.Exec;
 import de.herrlock.javafx.handler.ExecHandlerTask;
-import de.herrlock.manga.util.Execs;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
@@ -17,7 +18,7 @@ public final class CtrlController {
     @FXML
     public Text runningText, bottomText;
     @FXML
-    public Button btnStartDDL, btnStartPDL, btnShowHosts, btnAddToJD, btnCreateHTML;
+    public Button btnStartDDL, btnStartPDL, btnStartServer, btnShowHosts, btnCreateHTML;
 
     public void clearText() {
         this.bottomText.setText( "" );
@@ -28,6 +29,9 @@ public final class CtrlController {
     }
     public void showTextPStart() {
         setBottomText( "button.tooltip.startPDL" );
+    }
+    public void showTextServerStart() {
+        setBottomText( "button.tooltip.startServer" );
     }
     public void showTextHosts() {
         setBottomText( "button.tooltip.showHosts" );
@@ -43,10 +47,13 @@ public final class CtrlController {
     }
 
     public void startDDownload() {
-        handleBtnClick( Execs.DIALOG_DOWNLOADER );
+        handleBtnClick( DIALOG_DOWNLOADER );
     }
     public void startPDownload() {
         handleBtnClick( PLAIN_DOWNLOADER );
+    }
+    public void startServer() {
+        handleBtnClick( START_SERVER, false );
     }
     public void showHosts() {
         handleBtnClick( PRINT_ALL_HOSTER );
@@ -57,15 +64,20 @@ public final class CtrlController {
     public void createHtml() {
         handleBtnClick( VIEW_PAGE_MAIN );
     }
+
     public void handleBtnClick( final Exec exec ) {
+        handleBtnClick( exec, true );
+    }
+
+    public void handleBtnClick( final Exec exec, final boolean daemon ) {
         this.btnStartDDL.setOnAction( null );
         this.btnStartPDL.setOnAction( null );
+        this.btnStartServer.setOnAction( null );
         this.btnShowHosts.setOnAction( null );
-        this.btnAddToJD.setOnAction( null );
         this.btnCreateHTML.setOnAction( null );
 
         Thread thread = new Thread( new ExecCtrlHandlerTask( exec ) );
-        thread.setDaemon( true );
+        thread.setDaemon( daemon );
         thread.start();
     }
 

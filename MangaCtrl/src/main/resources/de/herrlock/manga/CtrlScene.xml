@@ -25,12 +25,19 @@
 			</HBox>
 			<HBox spacing="8">
 				<padding>
+					<Insets right="8" left="8" />
+				</padding>
+				<Button fx:id="btnStartServer" text="%button.text.startServer" onAction="#startServer" onMouseEntered="#showTextServerStart"
+					onMouseExited="#clearText" />
+			</HBox>
+			<HBox spacing="8">
+				<padding>
 					<Insets right="8" bottom="8" left="8" />
 				</padding>
 				<Button fx:id="btnShowHosts" text="%button.text.showHosts" onAction="#showHosts" onMouseEntered="#showTextHosts"
 					onMouseExited="#clearText" />
-				<Button fx:id="btnAddToJD" text="%button.text.addToJD" onAction="#exportToJd" onMouseEntered="#showTextJD"
-					onMouseExited="#clearText" />
+				<!-- <Button fx:id="btnAddToJD" text="%button.text.addToJD" onAction="#exportToJd" onMouseEntered="#showTextJD"
+					onMouseExited="#clearText" /> -->
 				<Button fx:id="btnCreateHTML" text="%button.text.createHTML" onAction="#createHtml" onMouseEntered="#showTextHTML"
 					onMouseExited="#clearText" />
 			</HBox>

@@ -13,6 +13,7 @@ import org.apache.catalina.LifecycleException;
  * @author HerrLock
  */
 public final class StartWithDesktop {
+
     public static void main( final String... args ) throws IOException, URISyntaxException, ServletException, LifecycleException {
         ServerMain srvMain = new ServerMain();
         srvMain.start();
