@@ -9,6 +9,7 @@ dependencies {
 
 war {
 	archiveName = "${project.name}.war"
+	manifest = jar.manifest
 }
 
 task warDev(type: Copy, dependsOn: war) {
