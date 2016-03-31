@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script src="jquery-2.2.2.min.js"></script>
+<script src="data.js"></script>
+<style>
+	body {
+		background-color: #cbb;
+	}
+	div#outer-block {
+		background-color: #ddc;
+		padding: 1rem;
+		margin: 1rem;
+		border-radius: .5rem;
+	}
+	h2#title {
+		margin-top: 0rem;
+		margin-bottom: 0.5rem;
+		font-family: sans-serif;
+	}
+	ol#readme {
+		margin-top: 0.5rem;
+		margin-bottom: 1rem;
+	}
+</style>
+<script>
+	$(function() {
+		console.group("$(function)");
+		var $body = $("ol#readme");
+		Object.keys(properties).forEach(function(key) {
+			console.log("key", key);
+			$body.append("<li>" + properties[key] + "</li>");
+		});
+		console.groupEnd();
+	});
+</script>
+</head>
+<body>
+	<div id="outer-block">
+		<h2 id="title">Readme</h2>
+		<ol id="readme" />
+	</div>
+</body>
+</html>
