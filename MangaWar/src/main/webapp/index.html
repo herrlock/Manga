@@ -39,10 +39,12 @@
 </script>
 <style type="text/css">
 html {
+	background-color: #ccc;
 	background-image: url('j/images/background.jpg');
 	background-repeat: no-repeat;
 	background-position: top center;
 	background-size: 100%;
+	font-family: sans-serif;
 }
 
 div#content {
@@ -77,6 +79,12 @@ div#auswahl, form#eingabe {
 p#buttons {
 	float: left;
 }
+div#konachanlink {
+	position: fixed;
+	bottom: 1rem;
+	right: 2rem;
+	font-size: smaller;
+}
 </style>
 </head>
 <body>
@@ -107,6 +115,9 @@ p#buttons {
 				<button id="stopServer" type="button">Server stoppen</button>
 			</p>
 		</form>
+	</div>
+	<div id="konachanlink">
+		Bilder von <a href="http://konachan.net">konachan.net</a>
 	</div>
 </body>
 </html>
