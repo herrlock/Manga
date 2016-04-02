@@ -33,7 +33,10 @@
             $.get(url);
         });
         $("#stopServer").click(function() {
-            $.get("server/stop");
+            $.get("server/stop", function() {
+				$("#content").slideUp();
+				$("#closeNotice").slideDown();
+			});
         });
     });
 </script>
@@ -47,7 +50,7 @@ html {
 	font-family: sans-serif;
 }
 
-div#content {
+div#content, div#closeNotice {
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
@@ -115,6 +118,9 @@ div#konachanlink {
 				<button id="stopServer" type="button">Server stoppen</button>
 			</p>
 		</form>
+	</div>
+	<div id="closeNotice" style="display: none; padding: 1rem;">
+		Server stopped, please close this Tab.
 	</div>
 	<div id="konachanlink">
 		Bilder von <a href="http://konachan.net">konachan.net</a>
