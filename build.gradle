@@ -152,6 +152,9 @@ distributions {
 			from (jar.outputs) {
 				rename '.+', 'MangaLauncher.jar'
 			}
+			into ('licenses') {
+				from 'licenses'
+			}
 			into('lib') {
 				from configurations.runtime
 				exclude 'jfxrt.jar'
