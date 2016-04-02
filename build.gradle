@@ -164,10 +164,6 @@ distributions {
 					}
 					rename '.+', 'ROOT.war'
 				}
-				into('temp') {
-					from File.createTempFile('temp', '.txt')
-					rename '.+', '.tmp'
-				}
 			}
 		}
 	}
