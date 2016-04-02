@@ -34,7 +34,7 @@ public class ImageServlet {
         NARUTO_NSX( "naruto_ns.jpg" ), //
         NAUSICAA( "nausicaa.jpg" ), //
         ONEPIECE_JOLLYROGER( "onepiece_jollyroger.jpg" ), //
-        ONEPIECE_PIRATES( "onepiece_pirated.jpg" ), //
+        ONEPIECE_PIRATES( "onepiece_pirates.jpg" ), //
         SAKURASOU_SHIINA( "sakurasou_shiina.jpg" ), //
         SANKAREA( "sankarea.jpg" ), //
         TKR_MISAKA( "tkr_misaka.jpg" ), //
