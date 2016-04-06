@@ -94,6 +94,7 @@ public final class Server {
             }
         } catch ( IOException ex ) {
             // System.in is closed, this might happen when called from javaw
+            logger.info( ex );
         }
         return quitBySysin;
     }
