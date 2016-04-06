@@ -38,17 +38,7 @@ public class HosterDialog extends AbstractApplication {
         stage.initStyle( StageStyle.UTILITY );
         super.start( stage );
 
-        System.out.println( "nameColumn:\t" + container.nameColumn.getWidth() );
-        System.out.println( "urlColumn:\t" + container.urlColumn.getWidth() );
-        System.out.println( "both columns:\t" + ( container.nameColumn.getWidth() + container.urlColumn.getWidth() ) );
-        System.out.println( "table:\t\t" + container.table.getWidth() );
-        System.out.println( "stage:\t\t" + stage.getWidth() );
-        System.out.println( "scene:\t\t" + stage.getScene().getWidth() );
-        container.table.setPrefWidth( //
-            container.nameColumn.getWidth() + container.urlColumn.getWidth() + 2
-        // stage.getScene().getWidth()
-        //
-        );
+        container.table.setPrefWidth( container.nameColumn.getWidth() + container.urlColumn.getWidth() + 2 );
         stage.sizeToScene();
 
     }
