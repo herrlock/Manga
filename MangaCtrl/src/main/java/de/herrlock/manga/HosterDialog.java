@@ -44,9 +44,9 @@ public class HosterDialog extends AbstractApplication {
     }
 
     static class HosterSceneContainer extends SceneContainer {
-        private TableColumn<Hoster, Object> nameColumn;
-        private TableColumn<Hoster, Object> urlColumn;
-        private TableView<Hoster> table;
+        private final TableColumn<Hoster, Object> nameColumn;
+        private final TableColumn<Hoster, Object> urlColumn;
+        private final TableView<Hoster> table;
 
         public HosterSceneContainer() {
             this.nameColumn = TableColumnBuilder.<Hoster, Object> create()//
