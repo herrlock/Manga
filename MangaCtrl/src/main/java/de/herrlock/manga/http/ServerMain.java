@@ -32,7 +32,7 @@ public final class ServerMain {
         this.server.start();
     }
 
-    public void listenForStop() throws IOException {
+    public void listenForStop() {
         logger.entry();
         this.server.listenForStop();
     }

@@ -28,7 +28,7 @@ public final class Server {
     public Server() throws ServletException {
         this.tomcat.setPort( 1905 );
 
-        Context serverContext = this.tomcat.addContext( "server", new File( ".", "tomcat.1905/temp" ).getAbsolutePath() );
+        Context serverContext = this.tomcat.addContext( "/server", new File( ".", "tomcat.1905/temp" ).getAbsolutePath() );
         Tomcat.addServlet( serverContext, "StopServer", new StopServerServlet( this ) );
         serverContext.addServletMapping( "/stop", "StopServer" );
 
@@ -51,18 +51,17 @@ public final class Server {
         }
     }
 
-    public void listenForStop() throws IOException {
+    public void listenForStop() {
         boolean active = true;
+        boolean sysinIsOpen = true;
+        try {
+            System.in.available();
+        } catch ( IOException ex ) {
+            sysinIsOpen = false;
+        }
         while ( active ) {
-            LifecycleState state = this.tomcat.getConnector().getState();
-            boolean connectorStopped = state == LifecycleState.STOPPED;
-            logger.debug( "Serverstatus: {}", state );
-            boolean quitBySysin = false;
-            if ( System.in.available() > 0 ) {
-                int read = System.in.read();
-                quitBySysin = read == 'q';
-                logger.info( "Read char: {}", ( char ) read );
-            }
+            boolean connectorStopped = getConnectorStopped();
+            boolean quitBySysin = sysinIsOpen && getStopFromSysin();
             if ( connectorStopped || quitBySysin ) {
                 active = false;
             } else {
@@ -74,6 +73,29 @@ public final class Server {
             }
         }
         logger.info( "Server stopped" );
+    }
+
+    private boolean getConnectorStopped() {
+        logger.entry();
+        LifecycleState state = this.tomcat.getConnector().getState();
+        boolean connectorStopped = state == LifecycleState.STOPPED;
+        logger.debug( "Serverstatus: {}", state );
+        return connectorStopped;
+    }
+
+    private boolean getStopFromSysin() {
+        logger.entry();
+        boolean quitBySysin = false;
+        try {
+            if ( System.in.available() > 0 ) {
+                int read = System.in.read();
+                quitBySysin = read == 'q';
+                logger.info( "Read char: {}", ( char ) read );
+            }
+        } catch ( IOException ex ) {
+            // System.in is closed, this might happen when called from javaw
+        }
+        return quitBySysin;
     }
 
     public void stop() throws LifecycleException {
