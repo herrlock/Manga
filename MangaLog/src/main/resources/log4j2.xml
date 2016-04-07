@@ -31,7 +31,7 @@
 		<Logger name="org.apache.http.wire" level="INFO" additivity="false">
 			<AppenderRef ref="ApacheLogger" />
 		</Logger>
-		<Logger name="" level="DEBUG">
+		<Logger name="de.herrlock" level="DEBUG" additivity="false">
 			<AppenderRef ref="FileTrace" />
 		</Logger>
 		<Root level="INFO">
