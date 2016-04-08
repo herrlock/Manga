@@ -38,17 +38,18 @@ public final class Server {
     public void start() throws LifecycleException, IOException {
         this.tomcat.start();
 
-        logger.info( "Server: {} ({})", this.tomcat.getServer(), this.tomcat.getServer().getClass() );
-        logger.info( "Service: {} ({})", this.tomcat.getService(), this.tomcat.getService().getClass() );
-        logger.info( "Engine: {} ({})", this.tomcat.getEngine(), this.tomcat.getEngine().getClass() );
-        logger.info( "Host: {} ({})", this.tomcat.getHost(), this.tomcat.getHost().getClass() );
-        logger.info( "Connector: {} ({})", this.tomcat.getConnector(), this.tomcat.getConnector().getClass() );
+        logger.debug( "Server: {} ({})", this.tomcat.getServer(), this.tomcat.getServer().getClass() );
+        logger.debug( "Service: {} ({})", this.tomcat.getService(), this.tomcat.getService().getClass() );
+        logger.debug( "Engine: {} ({})", this.tomcat.getEngine(), this.tomcat.getEngine().getClass() );
+        logger.debug( "Host: {} ({})", this.tomcat.getHost(), this.tomcat.getHost().getClass() );
+        logger.debug( "Connector: {} ({})", this.tomcat.getConnector(), this.tomcat.getConnector().getClass() );
 
         if ( this.tomcat.getConnector().getState() == LifecycleState.FAILED ) {
             IOException ioException = new IOException( "Something is already running on Port 1905" );
             logger.error( ioException.getMessage() );
             throw ioException;
         }
+        logger.info( "Server started: http://localhost:{}", this.tomcat.getConnector().getPort() );
     }
 
     public void listenForStop() {
@@ -56,10 +57,13 @@ public final class Server {
         boolean sysinIsOpen = true;
         try {
             System.in.available();
+            logger.info( "Enter 'q' to quit" );
         } catch ( IOException ex ) {
+            logger.debug( "System.in threw Exception: ", ex );
             sysinIsOpen = false;
         }
         while ( active ) {
+            logger.debug( "Server active" );
             boolean connectorStopped = getConnectorStopped();
             boolean quitBySysin = sysinIsOpen && getStopFromSysin();
             if ( connectorStopped || quitBySysin ) {
@@ -79,7 +83,7 @@ public final class Server {
         logger.entry();
         LifecycleState state = this.tomcat.getConnector().getState();
         boolean connectorStopped = state == LifecycleState.STOPPED;
-        logger.debug( "Serverstatus: {}", state );
+        logger.debug( "Connector: {}", state );
         return connectorStopped;
     }
 

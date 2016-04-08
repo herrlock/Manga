@@ -135,6 +135,7 @@ public final class Main {
 
     private static void startDialogDownloader() {
         logger.entry();
+        logger.info( "Starting Dialog-Downloader:" );
         logger.error( "not yet implemented" );
     }
 
@@ -142,8 +143,10 @@ public final class Main {
         logger.entry( commandline );
 
         if ( commandline.hasOption( "hoster" ) ) {
+            logger.info( "Printing all Hoster:" );
             PrintAllHoster.printHoster( System.out );
         } else {
+            logger.info( "Starting Commandline-Downloader:" );
             try {
                 URL url = new URL( commandline.getOptionValue( "url" ) );
                 HttpHost proxy = commandline.hasOption( "proxy" ) ? new HttpHost( commandline.getOptionValue( "proxy" ) ) : null;
@@ -163,11 +166,13 @@ public final class Main {
 
     private static void startGuiDownloader() {
         logger.entry();
+        logger.info( "Starting GUI:" );
         Application.launch( Ctrl.class );
     }
 
     private static void startViewpageCreator( final CommandLine commandline ) {
         logger.entry( commandline );
+        logger.info( "Starting ViewpageCreator:" );
         if ( commandline.hasOption( "folder" ) ) {
             try {
                 File file = ( File ) commandline.getParsedOptionValue( "folder" );
@@ -190,8 +195,10 @@ public final class Main {
 
     private static void startServer( final CommandLine commandline ) {
         logger.entry( commandline );
+        logger.info( "Starting Server:" );
         try {
             if ( commandline.hasOption( "browser" ) ) {
+                logger.info( "(and browser)" );
                 StartWithDesktop.main();
             } else {
                 ServerMain.main();

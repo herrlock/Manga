@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration packages="de.herrlock.manga.ui.log" status="INFO">
+<Configuration packages="de.herrlock.manga.ui.log,de.herrlock.log4j2.filter" status="INFO">
 	<Properties>
 		<Property name="liveLayout">%m%n</Property>
 		<Property name="patternLayout">%d{HH:mm:ss.SSS} [%t] %-5p %c{1.}.%M - %m%n</Property>
@@ -13,10 +13,17 @@
 			</Policies>
 			<DefaultRolloverStrategy max="10" />
 		</RollingRandomAccessFile>
+		<RollingRandomAccessFile name="TomcatLogger" fileName="log/tomcat.log" filePattern="log/archive/tomcat-%i.log.gz">
+			<PatternLayout pattern="${patternDateLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="1 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingRandomAccessFile>
 		<RollingRandomAccessFile name="ApacheLogger" fileName="log/apache.log" filePattern="log/archive/apache-%i.log.gz">
 			<PatternLayout pattern="${patternDateLayout}" />
 			<Policies>
-				<SizeBasedTriggeringPolicy size="10 MB" />
+				<SizeBasedTriggeringPolicy size="1 MB" />
 			</Policies>
 			<DefaultRolloverStrategy max="10" />
 		</RollingRandomAccessFile>
@@ -31,12 +38,31 @@
 		<Logger name="org.apache.http.wire" level="INFO" additivity="false">
 			<AppenderRef ref="ApacheLogger" />
 		</Logger>
-		<Logger name="de.herrlock" level="DEBUG" additivity="false">
+		
+		<Logger name="org.apache.catalina" level="INFO" additivity="false">
+			<AppenderRef ref="TomcatLogger" />
+		</Logger>
+		<Logger name="org.apache.coyote" level="INFO" additivity="false">
+			<AppenderRef ref="TomcatLogger" />
+		</Logger>
+		<Logger name="org.apache.naming" level="INFO" additivity="false">
+			<AppenderRef ref="TomcatLogger" />
+		</Logger>
+		<Logger name="org.apache.tomcat" level="INFO" additivity="false">
+			<AppenderRef ref="TomcatLogger" />
+		</Logger>
+		
+		<Logger name="org.apache" level="DEBUG" additivity="false">
 			<AppenderRef ref="FileTrace" />
 		</Logger>
-		<Root level="INFO">
-			<AppenderRef ref="ConsoleLogger" />
+		<Logger name="de.herrlock" level="DEBUG">
 			<AppenderRef ref="FileTrace" />
+		</Logger>
+		
+		<Root level="INFO">
+			<AppenderRef ref="ConsoleLogger">
+				<LevelFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+			</AppenderRef>
 		</Root>
 	</Loggers>
 
