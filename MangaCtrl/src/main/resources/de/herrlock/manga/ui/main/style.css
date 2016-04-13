@@ -1,6 +1,6 @@
 
 .text {
-	-fx-font-family: sans-serif;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
 .gridpane {

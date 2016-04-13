@@ -16,7 +16,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public final class MDGui extends AbstractApplication {
-    public static final ResourceBundle I18N = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.ui" );
+    public static final ResourceBundle I18N = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.MDGui" );
 
     public static void main( final String... args ) {
         Application.launch( args );
@@ -41,7 +41,8 @@ public final class MDGui extends AbstractApplication {
 
         @Override
         public Collection<String> getStylesheets() {
-            return Arrays.asList( "/de/herrlock/manga/ui/main/style.css" );
+            return Arrays.asList( "/JMetroLightTheme.css", "/de/herrlock/javafx/jmetro_light_overrides.css",
+                "/de/herrlock/manga/ui/main/style.css" );
         }
 
         @Override
