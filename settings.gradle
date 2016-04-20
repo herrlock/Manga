@@ -1,1 +1,3 @@
+rootProject.name = 'Manga'
+
 include 'MangaLib', 'MangaCtrl', 'MangaWar', 'MangaLog'
