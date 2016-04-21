@@ -31,9 +31,11 @@ import javafx.scene.text.Text;
  */
 public final class MDGuiController {
     @FXML
-    final StringProperty url = new SimpleStringProperty(), pattern = new SimpleStringProperty(),
-        proxy = new SimpleStringProperty(), jdhome = new SimpleStringProperty();
-
+    final StringProperty url = new SimpleStringProperty();
+    @FXML
+    final StringProperty pattern = new SimpleStringProperty();
+    @FXML
+    final StringProperty proxy = new SimpleStringProperty();
     @FXML
     private GridPane rightGridPane;
     @FXML
@@ -47,10 +49,10 @@ public final class MDGuiController {
             public void execute() {
                 Properties p = getProperties();
                 DownloadConfiguration conf = DownloadConfiguration.create( p );
-                new MDownloader( conf) {
+                new MDownloader( conf ) {
                     @Override
                     protected void run() {
-                        downloadAll( );
+                        downloadAll();
                     }
                 }.run();
             }
@@ -115,18 +117,6 @@ public final class MDGuiController {
         return this.proxy;
     }
 
-    public void setJdhome( final String jdhome ) {
-        this.jdhome.set( jdhome );
-    }
-
-    public String getJdhome() {
-        return this.jdhome.get();
-    }
-
-    public StringProperty jdhomeProperty() {
-        return this.jdhome;
-    }
-
     public Properties getProperties() {
         Properties p = new Properties();
         {
@@ -144,9 +134,6 @@ public final class MDGuiController {
             if ( !"".equals( proxy1 ) ) {
                 p.put( Configuration.PROXY, proxy1 );
             }
-        }
-        {
-            p.put( Configuration.JDFW, this.jdhome.getValueSafe() );
         }
         return p;
     }

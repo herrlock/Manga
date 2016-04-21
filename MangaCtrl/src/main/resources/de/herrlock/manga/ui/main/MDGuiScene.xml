@@ -81,28 +81,6 @@
 				<GridPane.columnIndex>1</GridPane.columnIndex>
 				<GridPane.rowIndex>3</GridPane.rowIndex>
 			</TextField>
-			<Label text="%center.label.jdhome">
-				<tooltip>
-					<Tooltip text="%center.label.jdhome"></Tooltip>
-				</tooltip>
-				<GridPane.columnIndex>0</GridPane.columnIndex>
-				<GridPane.rowIndex>4</GridPane.rowIndex>
-			</Label>
-			<TextField promptText="C:/Program Files/JDownloader/" text="${controller.jdhome}">
-				<tooltip>
-					<Tooltip text="%center.textfield.jdhome"></Tooltip>
-				</tooltip>
-				<GridPane.columnIndex>1</GridPane.columnIndex>
-				<GridPane.rowIndex>4</GridPane.rowIndex>
-			</TextField>
-			<Label visible="false">
-				<GridPane.columnIndex>0</GridPane.columnIndex>
-				<GridPane.rowIndex>5</GridPane.rowIndex>
-			</Label>
-			<TextField visible="false">
-				<GridPane.columnIndex>1</GridPane.columnIndex>
-				<GridPane.rowIndex>5</GridPane.rowIndex>
-			</TextField>
 		</GridPane>
 	</center>
 	<bottom>
@@ -111,7 +89,6 @@
 				<AnchorPane.bottomAnchor>0.0</AnchorPane.bottomAnchor>
 				<AnchorPane.rightAnchor>0.0</AnchorPane.rightAnchor>
 				<Button text="%bottom.buttons.download" onAction="#startDownload" defaultButton="true" />
-				<Button text="%bottom.buttons.jdexport" onAction="#exportToJd" />
 				<Button text="%bottom.buttons.html" onAction="#createHtml" />
 				<Button text="%bottom.buttons.exit" onAction="#exitGui" cancelButton="true" />
 			</HBox>
