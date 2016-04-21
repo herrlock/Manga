@@ -6,14 +6,20 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.herrlock.javafx.AbstractApplication;
 import de.herrlock.javafx.scene.SceneContainer;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public final class MDGui extends AbstractApplication {
     public static final ResourceBundle I18N = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.MDGui" );
@@ -24,7 +30,14 @@ public final class MDGui extends AbstractApplication {
 
     @Override
     public void start( final Stage stage ) {
-        this.setScene( new MDGuiStage() );
+        stage.initStyle( StageStyle.UNDECORATED );
+        MDGuiStage container = new MDGuiStage();
+
+        MouseDragHandler dragHandler = new MouseDragHandler( stage );
+        container.getScene().setOnMousePressed( dragHandler );
+        container.getScene().setOnMouseDragged( dragHandler );
+
+        this.setScene( container );
         super.start( stage );
     }
 
@@ -49,6 +62,32 @@ public final class MDGui extends AbstractApplication {
         public String getTitle() {
             return "MangaDownloader";
         }
+
+    }
+
+    private static final class MouseDragHandler implements EventHandler<MouseEvent> {
+        private static final Logger logger = LogManager.getLogger();
+        private final Stage stage;
+        private double offsetX, offsetY;
+
+        public MouseDragHandler( final Stage stage ) {
+            this.stage = stage;
+        }
+
+        @Override
+        public void handle( MouseEvent event ) {
+            logger.entry( event );
+            double screenX = event.getScreenX();
+            double screenY = event.getScreenY();
+            if ( event.getEventType().getName().equals( "MOUSE_PRESSED" ) ) {
+                this.offsetX = this.stage.getX() - screenX;
+                this.offsetY = this.stage.getY() - screenY;
+            } else {
+                this.stage.setX( screenX + this.offsetX );
+                this.stage.setY( screenY + this.offsetY );
+            }
+        }
+
     }
 
 }
