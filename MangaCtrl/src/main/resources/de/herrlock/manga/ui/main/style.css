@@ -21,18 +21,26 @@
 	-fx-padding: 16px;
 }
 
-.bp-top {
-	-fx-background-color: #f99;
+.bp-top, .bp-right, .bp-center, .bp-bottom {
+	-fx-background-color: #f0f0f0;
 }
 
-.bp-right {
-	-fx-background-color: #ff9;
+/* Copied from JMetro light-theme, was commented out in the jar*/
+.tooltip {
+	-fx-background-color: white;
+	-fx-background-insets: 0;
+	-fx-background-radius: 0 0 0 0;
+	-fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em;
+	-fx-effect: dropshadow( one-pass-box , #808080 , 5, 0.0 , 0 , 0 );
+	-fx-font-family: "Segoe UI Semilight", "Segoe UI Light", "Segoe UI", Helvetica, Arial, sans-serif;
+	-fx-text-fill: #949494;
+	-fx-cursor: none !important;
 }
 
-.bp-center {
-	-fx-background-color: #ccc;
+.page-corner {
+	-fx-padding: 4.5 4.5 4.5 4.5;
+	-fx-background-color: transparent;
+	-fx-shape: null;
+	-fx-effect: null;
 }
 
-.bp-bottom {
-	-fx-background-color: #9f9;
-}
