@@ -75,7 +75,7 @@ public final class MDGui extends AbstractApplication {
         }
 
         @Override
-        public void handle( MouseEvent event ) {
+        public void handle( final MouseEvent event ) {
             logger.entry( event );
             double screenX = event.getScreenX();
             double screenY = event.getScreenY();
