@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
@@ -43,7 +44,7 @@ public final class Hosters {
      */
     public static final Comparator<Hoster> NAME_COMPARATOR = new Comparator<Hoster>() {
         /**
-         * compares the hoster by their name
+         * Compares the hoster by their name. Uses {@link Locale#GERMAN} to convert the names to lowercase.
          * 
          * @param h1
          *            the first Hoster
@@ -64,8 +65,6 @@ public final class Hosters {
             registerHoster( c );
         }
 
-        // TODO check if this works, write JUnit-tests
-
         Path additionalHostersPath = Paths.get( ".", "additionalHoster.txt" );
         if ( Files.exists( additionalHostersPath ) ) {
             try {
@@ -81,13 +80,22 @@ public final class Hosters {
 
     private static void loadAdditionalHosters( final List<String> lines ) {
         logger.entry( lines );
-        List<URL> resourcePaths = loadResourcePaths( lines );
+
+        final Predicate<String> isBracketLine = new Predicate<String>() {
+            @Override
+            public boolean apply( final String input ) {
+                return input != null && input.startsWith( "[" ) && input.endsWith( "]" );
+            }
+        };
+
+        Iterable<String> resourcesPathLines = Iterables.filter( lines, isBracketLine );
+        List<URL> resourcePaths = loadResourcePaths( resourcesPathLines );
 
         URL[] resourcePathArray = resourcePaths.toArray( new URL[resourcePaths.size()] );
         try ( URLClassLoader classLoader = new URLClassLoader( resourcePathArray, Hosters.class.getClassLoader() ) ) {
-
-            for ( String line : lines ) {
-                if ( !line.trim().isEmpty() && line.charAt( 0 ) != '[' ) {
+            Iterable<String> otherLines = Iterables.filter( lines, Predicates.not( isBracketLine ) );
+            for ( String line : otherLines ) {
+                if ( !line.trim().isEmpty() && !line.startsWith( "#" ) ) {
                     loadExtraClass( classLoader, line );
                 }
             }
@@ -96,22 +104,18 @@ public final class Hosters {
         }
     }
 
-    private static List<URL> loadResourcePaths( final List<String> lines ) {
+    private static List<URL> loadResourcePaths( final Iterable<String> lines ) {
         List<URL> resourcePaths = new ArrayList<>();
         try {
-            resourcePaths.add( new File( "lib/MangaExt.jar" ).toURI().toURL() );
-            final Predicate<String> isBracketLine = new Predicate<String>() {
-                @Override
-                public boolean apply( final String input ) {
-                    return input != null && input.startsWith( "[" ) && input.endsWith( "]" );
-                }
-            };
-            Iterable<String> linesWithResources = Iterables.filter( lines, isBracketLine );
-            for ( String line : linesWithResources ) {
+            for ( String line : lines ) {
                 String filename = line.substring( 1, line.length() - 1 );
                 File nextFile = new File( filename );
-                URL nextFileURL = nextFile.toURI().toURL();
-                resourcePaths.add( nextFileURL );
+                if ( nextFile.exists() ) {
+                    URL nextFileURL = nextFile.toURI().toURL();
+                    resourcePaths.add( nextFileURL );
+                } else {
+                    logger.warn( "The File \"{}\" does not exist", nextFile );
+                }
             }
         } catch ( MalformedURLException ex ) {
             throw new MDRuntimeException( ex );
