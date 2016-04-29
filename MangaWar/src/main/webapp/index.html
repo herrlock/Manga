@@ -4,6 +4,7 @@
 <title>MangaLoader WebUI</title>
 <meta charset="UTF-8" />
 <script src="jquery-2.2.2.min.js"></script>
+<link rel="stylesheet" href="style.css" />
 <script>
     function showOnly(c, duration) {
         if (c === "dl" || c == "jd") {
@@ -40,55 +41,6 @@
         });
     });
 </script>
-<style type="text/css">
-html {
-	background-color: #ccc;
-	background-image: url('j/images/background.jpg');
-	background-repeat: no-repeat;
-	background-position: top center;
-	background-size: 100%;
-	font-family: sans-serif;
-}
-
-div#content, div#closeNotice {
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
-	background-color: lightgray;
-	border-radius: 15px;
-	opacity: 0.8;
-	min-width: 30rem;
-}
-
-div#auswahl, form#eingabe {
-	margin: 15px;
-}
-
-#eingabe>div {
-	clear: both;
-	margin: 4px;
-	padding: 4px;
-}
-
-#eingabe>div>label {
-	float: left;
-}
-
-#eingabe>div>input {
-	float: right;
-	width: 25em;
-}
-
-p#buttons {
-	float: left;
-}
-div#konachanlink {
-	position: fixed;
-	bottom: 1rem;
-	right: 2rem;
-	font-size: smaller;
-}
-</style>
 </head>
 <body>
 	<br />
