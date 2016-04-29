@@ -82,7 +82,7 @@ public final class MyOptions {
 
     private final Option launchBrowserOption = Option.builder()//
         .longOpt( "browser" )//
-        .desc( "Start the browser after starting the sevrer (mode: server)" )//
+        .desc( "Start the browser after starting the server (mode: server)" )//
         .build();
 
     private final Option logLevelOption = Option.builder( "l" )//
