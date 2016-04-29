@@ -44,5 +44,6 @@ public final class StopServerServlet extends HttpServlet {
     protected void doGet( final HttpServletRequest req, final HttpServletResponse res ) throws ServletException, IOException {
         logger.info( "starting new Thread to shutdown the server." );
         new Thread( this.shutdownRunnable ).start();
+        res.getWriter().println( "<stop success=\"true\" />" );
     }
 }
