@@ -71,7 +71,8 @@ public abstract class ChapterList implements Iterable<Chapter> {
      */
     protected ChapterList( final DownloadConfiguration conf ) {
         this.conf = conf;
-        this.details = Objects.requireNonNull( this.getClass().getAnnotation( Details.class ) );
+        this.details = Objects.requireNonNull( this.getClass().getAnnotation( Details.class ),
+            "The class must contain @Details" );
     }
 
     public int size() {
