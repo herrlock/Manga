@@ -22,7 +22,7 @@ public class ImageServlet {
     public Response getImage() {
         logger.entry();
         String imagePath = Image.getRandom().getPath();
-        logger.info( "redir to: {}", imagePath );
+        logger.debug( "redir to: {}", imagePath );
         return Response.seeOther( URI.create( imagePath ) ).build();
     }
 
