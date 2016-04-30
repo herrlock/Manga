@@ -1,7 +1,6 @@
 html {
 	background-color: #ccc;
 	background-image: url('j/images/background.jpg');
-	/*background-image: url('images/background.jpg');*/
 	background-repeat: no-repeat;
 	background-position: top center;
 	background-size: 100%;
@@ -40,6 +39,21 @@ div#auswahl, form#eingabe {
 p#buttons {
 	float: left;
 }
+
+#bars {
+	float: left;
+}
+
+#bars>fieldset>legend {
+	color: #666;
+	font-size: x-small;
+}
+
+#bars progress {
+	font-size: large;
+	width: 100%;
+}
+
 div#konachanlink {
 	position: fixed;
 	bottom: 1rem;

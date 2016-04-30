@@ -10,14 +10,6 @@
 	</welcome-file-list>
 
 	<!-- Servlet-configuration -->
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/</url-pattern>
-		<url-pattern>/index.html</url-pattern>
-		<url-pattern>/style.css</url-pattern>
-		<url-pattern>/jquery-2.2.2.min.js</url-pattern>
-		<url-pattern>/img/*</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>Jersey REST Service</servlet-name>
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
@@ -29,7 +21,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Jersey REST Service</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/j/*</url-pattern>
 	</servlet-mapping>
 
 </web-app>
