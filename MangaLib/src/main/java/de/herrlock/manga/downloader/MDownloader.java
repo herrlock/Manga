@@ -70,7 +70,7 @@ public abstract class MDownloader implements Progressable {
             throw new InitializeException( ex );
         }
         this.pmc = new PictureMapContainer( this.clc );
-        setMaxProgress( this.pmc.getSize() );
+        this.maxProgress = this.pmc.getSize();
         this.dqc = new DownloadQueueContainer( this.clc, conf );
     }
 
@@ -115,18 +115,12 @@ public abstract class MDownloader implements Progressable {
         logger.entry();
         EntryList<String, EntryList<Integer, URL>> entries = this.pmc.getEntries();
         entries.sort( EntryList.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
-        this.progress = 0;
+        setProgress( 0 );
         for ( Entry<String, EntryList<Integer, URL>> entry : entries ) {
             EntryList<Integer, URL> urlMap = entry.getValue();
             String key = entry.getKey();
             downloadChapter( key, urlMap );
-
-            // increment progress and notify listeners
-            int oldProgress = this.progress;
-            setProgress( this.progress + entry.getValue().size() );
-            for ( ProgressListener listener : this.progressListeners ) {
-                listener.progress( oldProgress, this.progress, this.maxProgress );
-            }
+            doProgress( entry.getValue().size() );
         }
         logger.info( "Finished successful" );
     }
@@ -154,6 +148,20 @@ public abstract class MDownloader implements Progressable {
             throw new MDRuntimeException( chapterFolder + " does not exists and could not be created" );
         }
         logger.info( "finished chapter {}", key );
+    }
+
+    /**
+     * increment progress and notify listeners
+     * 
+     * @param delta
+     */
+    protected void doProgress( final int delta ) {
+        logger.entry( delta );
+        int oldProgress = this.progress;
+        setProgress( this.progress + delta );
+        for ( ProgressListener listener : this.progressListeners ) {
+            listener.progress( oldProgress, this.progress, this.maxProgress );
+        }
     }
 
     @Override
