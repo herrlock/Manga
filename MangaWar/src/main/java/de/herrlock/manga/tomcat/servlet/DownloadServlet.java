@@ -1,7 +1,10 @@
 package de.herrlock.manga.tomcat.servlet;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -27,11 +30,11 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 @Path( "download" )
 public class DownloadServlet {
     private static final Logger logger = LogManager.getLogger();
-    private static final Map<UUID, MDownloader> downloaders = new HashMap<>();
+    private static final Map<UUID, MDObject> downloaders = new HashMap<>();
 
     @GET
     @Path( "start" )
-    @Produces( MediaType.WILDCARD )
+    @Produces( MediaType.TEXT_PLAIN )
     public Response startDownload( @QueryParam( "url" ) final String url, @QueryParam( "proxy" ) final String proxy,
         @QueryParam( "pattern" ) final String pattern, @QueryParam( "folder" ) final String folder ) {
         logger.entry( url, proxy, pattern, folder );
@@ -49,10 +52,10 @@ public class DownloadServlet {
 
         logger.info( "using Configuration: {}", conf );
         final PlainDownloader newDownloader = new PlainDownloader( conf );
-        downloaders.put( randomUUID, newDownloader );
+        downloaders.put( randomUUID, new MDObject( url, newDownloader ) );
 
         logger.info( "starting downloader" );
-        // newDownloader.run();
+        newDownloader.run();
         logger.info( "downloader started" );
 
         return Response.ok( randomUUID.toString() ).build();
@@ -61,30 +64,57 @@ public class DownloadServlet {
     @GET
     @Path( "progress" )
     @Produces( MediaType.APPLICATION_JSON )
-    public Response getProgress( @QueryParam( "uuid" ) final UUID uuid ) {
-        logger.entry( uuid );
-        MDownloader downloader = downloaders.get( uuid );
-        // MDownloader downloader = this.downloaders.get( UUID.fromString( uuid ) );
-        if ( downloader == null ) {
-            return Response.serverError()//
-                .entity( "No UUID found for \"" + uuid + "\"" )//
-                .type( MediaType.TEXT_PLAIN_TYPE )//
-                .build();
+    public List<ProgressObject> getProgress() {
+        logger.entry();
+        List<ProgressObject> result = new ArrayList<>( downloaders.size() );
+        for ( Entry<UUID, MDObject> entry : downloaders.entrySet() ) {
+            UUID key = entry.getKey();
+            MDObject value = entry.getValue();
+            MDownloader mdownloader = value.getMdownloader();
+            ProgressObject entity = new ProgressObject( key, value.getUrl(), mdownloader.getProgress(),
+                mdownloader.getMaxProgress() );
+            result.add( entity );
         }
-        int progress = downloader.getProgress();
-        int maxProgress = downloader.getMaxProgress();
-        ProgressObject entity = new ProgressObject( progress, maxProgress );
+        return result;
+    }
 
-        return Response.ok( entity ).build();
+    static class MDObject {
+        private final String url;
+        private MDownloader mdownloader;
+
+        public MDObject( final String url, final MDownloader mdownloader ) {
+            this.url = url;
+            this.mdownloader = mdownloader;
+        }
+
+        public String getUrl() {
+            return this.url;
+        }
+
+        public MDownloader getMdownloader() {
+            return this.mdownloader;
+        }
     }
 
     static class ProgressObject {
+        private final UUID uuid;
+        private final String url;
         private final int progress;
         private final int maxProgress;
 
-        public ProgressObject( final int progress, final int maxProgress ) {
+        public ProgressObject( final UUID uuid, final String url, final int progress, final int maxProgress ) {
+            this.uuid = uuid;
+            this.url = url;
             this.progress = progress;
             this.maxProgress = maxProgress;
+        }
+
+        public UUID getUuid() {
+            return this.uuid;
+        }
+
+        public String getUrl() {
+            return this.url;
         }
 
         public int getProgress() {

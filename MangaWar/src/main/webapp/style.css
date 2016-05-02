@@ -42,6 +42,16 @@ p#buttons {
 
 #bars {
 	float: left;
+	background-color: lightgray;
+	border-radius: .5em;
+}
+
+#bars>h2 {
+	text-align: center;
+}
+
+#bars>fieldset {
+	margin: .5em;
 }
 
 #bars>fieldset>legend {
