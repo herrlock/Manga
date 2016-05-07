@@ -12,7 +12,7 @@ import de.herrlock.manga.downloader.DialogDownloader;
 import de.herrlock.manga.downloader.PlainDownloader;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.html.ViewPageMain;
-import de.herrlock.manga.http.StartWithDesktop;
+import de.herrlock.manga.http.ServerMain;
 import de.herrlock.manga.jd.JDExport;
 
 public enum Execs implements Exec {
@@ -32,7 +32,7 @@ public enum Execs implements Exec {
         @Override
         public void execute() {
             try {
-                StartWithDesktop.main();
+                ServerMain.execute( true );
             } catch ( ServletException | LifecycleException | IOException | URISyntaxException ex ) {
                 throw new MDRuntimeException( ex );
             }

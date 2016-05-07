@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import de.herrlock.javafx.AbstractApplication;
 import de.herrlock.javafx.scene.SceneContainer;
 import de.herrlock.manga.exceptions.MDRuntimeException;
-import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,10 +22,6 @@ import javafx.stage.StageStyle;
 
 public final class MDGui extends AbstractApplication {
     public static final ResourceBundle I18N = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.MDGui" );
-
-    public static void main( final String... args ) {
-        Application.launch( args );
-    }
 
     @Override
     public void start( final Stage stage ) {

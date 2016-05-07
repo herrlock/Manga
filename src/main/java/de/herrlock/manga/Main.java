@@ -29,7 +29,6 @@ import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.http.ServerMain;
-import de.herrlock.manga.http.StartWithDesktop;
 import de.herrlock.manga.util.ChapterPattern;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import javafx.application.Application;
@@ -199,9 +198,9 @@ public final class Main {
         try {
             if ( commandline.hasOption( "browser" ) ) {
                 logger.info( "(and browser)" );
-                StartWithDesktop.main();
+                ServerMain.execute( true );
             } else {
-                ServerMain.main();
+                ServerMain.execute( false );
             }
         } catch ( IOException | LifecycleException | ServletException | URISyntaxException ex ) {
             throw new MDRuntimeException( ex );

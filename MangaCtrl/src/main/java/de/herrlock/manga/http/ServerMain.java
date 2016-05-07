@@ -1,6 +1,9 @@
 package de.herrlock.manga.http;
 
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.servlet.ServletException;
 
@@ -16,14 +19,24 @@ public final class ServerMain {
 
     private final Server server;
 
-    public static void main( final String... args ) throws ServletException, LifecycleException, IOException {
+    public static void execute() throws ServletException, LifecycleException, IOException, URISyntaxException {
         logger.entry();
+        execute( false );
+    }
+
+    public static void execute( final boolean withDesktop )
+        throws ServletException, LifecycleException, IOException, URISyntaxException {
+        logger.entry( withDesktop );
         ServerMain srvMain = new ServerMain();
         srvMain.start();
+        if ( withDesktop && Desktop.isDesktopSupported() ) {
+            Desktop.getDesktop().browse( new URI( "http://localhost:1905" ) );
+        }
         srvMain.listenForStop();
     }
 
     public ServerMain() throws ServletException {
+        logger.entry();
         this.server = new Server();
     }
 

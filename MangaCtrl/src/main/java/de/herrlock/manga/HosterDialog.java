@@ -22,10 +22,6 @@ import javafx.stage.StageStyle;
 
 public class HosterDialog extends AbstractApplication {
 
-    public static void main( final String... args ) {
-        launch( args );
-    }
-
     public static void showHosterDialog() {
         new HosterDialog().start( new Stage() );
     }

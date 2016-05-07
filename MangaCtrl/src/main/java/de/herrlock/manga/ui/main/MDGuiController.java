@@ -59,16 +59,6 @@ public final class MDGuiController {
         } );
     }
 
-    public void exportToJd() {
-        handleBtnClick( new Exec() {
-            @Override
-            public void execute() {
-                Properties p = getProperties();
-                JDExport.execute( p );
-            }
-        } );
-    }
-
     public void createHtml() {
         handleBtnClick( VIEW_PAGE_MAIN );
     }
@@ -150,23 +140,4 @@ public final class MDGuiController {
         }
     }
 
-}
-
-final class EmptyListener implements ChangeListener<String> {
-    public static final String ISEMPTY = "isEmpty";
-    private final TextField textField;
-
-    public EmptyListener( final TextField textField ) {
-        this.textField = textField;
-    }
-
-    @Override
-    public void changed( final ObservableValue<? extends String> obsValue, final String string1, final String string2 ) {
-        List<String> classes = this.textField.getStyleClass();
-        if ( string2.trim().isEmpty() ) {
-            classes.add( ISEMPTY );
-        } else {
-            classes.remove( ISEMPTY );
-        }
-    }
 }

@@ -9,7 +9,6 @@ import java.util.ResourceBundle;
 import de.herrlock.javafx.AbstractApplication;
 import de.herrlock.javafx.scene.SceneContainer;
 import de.herrlock.manga.exceptions.MDRuntimeException;
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,10 +17,6 @@ import javafx.stage.Stage;
 public final class Ctrl extends AbstractApplication {
 
     public static final ResourceBundle I18N = ResourceBundle.getBundle( "de.herrlock.manga.Ctrl" );
-
-    public static void main( final String... args ) {
-        Application.launch( args );
-    }
 
     @Override
     public void start( final Stage stage ) {
