@@ -80,7 +80,7 @@ public class DownloadServlet {
 
     static class MDObject {
         private final String url;
-        private MDownloader mdownloader;
+        private final MDownloader mdownloader;
 
         public MDObject( final String url, final MDownloader mdownloader ) {
             this.url = url;
