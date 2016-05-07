@@ -119,7 +119,7 @@ public final class MDGuiController {
         }
         {
             String proxy1 = this.proxy.getValueSafe();
-            if ( !"".equals( proxy1 ) || proxy1.trim().isEmpty() ) {
+            if ( !"".equals( proxy1 ) && !proxy1.trim().isEmpty() ) {
                 p.put( Configuration.PROXY, proxy1 );
             }
         }
