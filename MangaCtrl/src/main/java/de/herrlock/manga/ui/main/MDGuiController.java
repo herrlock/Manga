@@ -104,12 +104,12 @@ public final class MDGuiController {
     public StringProperty proxyProperty() {
         return this.proxy;
     }
-    
+
     public Properties getProperties() {
         Properties p = new Properties();
         {
             String url1 = this.url.getValueSafe();
-            if ( "".equals( url1 ) && url1.trim().length() > 0 ) {
+            if ( "".equals( url1 ) || url1.trim().isEmpty() ) {
                 throw new InitializeException( "No URL is set." );
             }
             p.put( Configuration.URL, url1 );
@@ -119,7 +119,7 @@ public final class MDGuiController {
         }
         {
             String proxy1 = this.proxy.getValueSafe();
-            if ( !"".equals( proxy1 ) && proxy1.trim().length() > 0 ) {
+            if ( !"".equals( proxy1 ) || proxy1.trim().isEmpty() ) {
                 p.put( Configuration.PROXY, proxy1 );
             }
         }
