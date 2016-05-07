@@ -46,7 +46,7 @@
 				<GridPane.columnIndex>0</GridPane.columnIndex>
 				<GridPane.rowIndex>1</GridPane.rowIndex>
 			</Label>
-			<TextField promptText="http://www.example.org/manga/manganame" text="${controller.url}">
+			<TextField promptText="http://www.example.org/manga/manganame" text="#{controller.url}">
 				<tooltip>
 					<Tooltip text="%center.textfield.url"></Tooltip>
 				</tooltip>
@@ -60,7 +60,7 @@
 				<GridPane.columnIndex>0</GridPane.columnIndex>
 				<GridPane.rowIndex>2</GridPane.rowIndex>
 			</Label>
-			<TextField promptText="1-10;15;17" text="${controller.pattern}">
+			<TextField promptText="1-10;15;17" text="#{controller.pattern}">
 				<tooltip>
 					<Tooltip text="%center.textfield.pattern"></Tooltip>
 				</tooltip>
@@ -74,7 +74,7 @@
 				<GridPane.columnIndex>0</GridPane.columnIndex>
 				<GridPane.rowIndex>3</GridPane.rowIndex>
 			</Label>
-			<TextField promptText="http://www.example.org:8080" text="${controller.proxy}">
+			<TextField promptText="http://www.example.org:8080" text="#{controller.proxy}">
 				<tooltip>
 					<Tooltip text="%center.textfield.proxyaddress"></Tooltip>
 				</tooltip>

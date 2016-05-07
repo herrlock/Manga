@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.herrlock.javafx.AbstractApplication;
+import de.herrlock.javafx.annotation.Conf;
 import de.herrlock.javafx.scene.SceneContainer;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import javafx.event.EventHandler;
@@ -20,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+@Conf( enableBiDirectional = true )
 public final class MDGui extends AbstractApplication {
     public static final ResourceBundle I18N = ResourceBundle.getBundle( "de.herrlock.manga.ui.main.MDGui" );
 

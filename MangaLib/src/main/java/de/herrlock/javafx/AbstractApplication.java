@@ -1,5 +1,6 @@
 package de.herrlock.javafx;
 
+import de.herrlock.javafx.annotation.Conf;
 import de.herrlock.javafx.scene.SceneContainer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -10,6 +11,17 @@ import javafx.stage.Stage;
  */
 public abstract class AbstractApplication extends Application {
     private SceneContainer container;
+
+    /**
+     * search for <code>@Conf</code>-annotation and configurate the environment
+     */
+    public AbstractApplication() {
+        Conf conf = this.getClass().getAnnotation( Conf.class );
+        if ( conf != null && conf.enableBiDirectional() ) {
+            // enable bidirectonal binding if set
+            System.setProperty( "javafx.fxml.FXMLLoader.enableBidirectionalBinding", "true" );
+        }
+    }
 
     /**
      * Start the application. Requires a previous called {@linkplain #setScene(SceneContainer)} to get the

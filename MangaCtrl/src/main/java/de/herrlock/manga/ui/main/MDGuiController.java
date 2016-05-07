@@ -12,16 +12,12 @@ import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.host.Hoster;
 import de.herrlock.manga.host.Hosters;
-import de.herrlock.manga.jd.JDExport;
 import de.herrlock.manga.util.configuration.Configuration;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -30,12 +26,14 @@ import javafx.scene.text.Text;
  * @author HerrLock
  */
 public final class MDGuiController {
+
     @FXML
-    final StringProperty url = new SimpleStringProperty();
+    private final StringProperty url = new SimpleStringProperty();
     @FXML
-    final StringProperty pattern = new SimpleStringProperty();
+    private final StringProperty pattern = new SimpleStringProperty();
     @FXML
-    final StringProperty proxy = new SimpleStringProperty();
+    private final StringProperty proxy = new SimpleStringProperty();
+
     @FXML
     private GridPane rightGridPane;
     @FXML
@@ -95,7 +93,7 @@ public final class MDGuiController {
         return this.pattern;
     }
 
-    public void setPropxy( final String proxy ) {
+    public void setProxy( final String proxy ) {
         this.proxy.set( proxy );
     }
 
@@ -106,12 +104,12 @@ public final class MDGuiController {
     public StringProperty proxyProperty() {
         return this.proxy;
     }
-
+    
     public Properties getProperties() {
         Properties p = new Properties();
         {
             String url1 = this.url.getValueSafe();
-            if ( "".equals( url1 ) ) {
+            if ( "".equals( url1 ) && url1.trim().length() > 0 ) {
                 throw new InitializeException( "No URL is set." );
             }
             p.put( Configuration.URL, url1 );
@@ -121,7 +119,7 @@ public final class MDGuiController {
         }
         {
             String proxy1 = this.proxy.getValueSafe();
-            if ( !"".equals( proxy1 ) ) {
+            if ( !"".equals( proxy1 ) && proxy1.trim().length() > 0 ) {
                 p.put( Configuration.PROXY, proxy1 );
             }
         }
