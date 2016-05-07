@@ -119,7 +119,7 @@ public final class Main {
 
         final String cmdLineSyntax = "java -jar MangaLauncher.jar";
         final String header = "";
-        final String footer = "";
+        final String footer = "\nPlease consult readme.html for further information";
         final int width = 100;
         int leftPad = HelpFormatter.DEFAULT_LEFT_PAD;
         int descPad = HelpFormatter.DEFAULT_DESC_PAD;

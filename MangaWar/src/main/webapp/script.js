@@ -1,5 +1,6 @@
 var md = {
 	downloads : [],
+	worker : new Worker("worker.js"),
     showOnly : function(c, duration) {
     	console.info("showOnly", c, duration);
         if (c === "dl" || c == "jd") {
@@ -18,12 +19,11 @@ var md = {
         md.showOnly($("#selector > option:selected")[0].value, duration);
     },
     updateAll : function() {
-        console.info("updateAll", new Date().toLocaleTimeString());
     	$.getJSON("j/download/progress", md.updateProgressBars);
     },
     updateProgressBars : function(response) {
-    	console.group("updateProgressBars");
-    	console.info("response", response);
+    	console.group("updateProgressBars - " + new Date().toLocaleTimeString());
+    	console.dir(response);
         md.downloads = response.filter(x => x.progress < x.maxProgress);
     	
     	console.groupCollapsed("updateProgressBar");
@@ -33,8 +33,6 @@ var md = {
     	console.groupCollapsed("checkProgressBar");
     	$("#bars>fieldset").toArray().forEach(md.checkProgressBar);
     	console.groupEnd();
-    	
-        md.checkPBTitle();
                 
     	console.groupEnd();
 	},
@@ -69,20 +67,33 @@ var md = {
     checkProgressBar : function(fieldset) {
     	console.info("checkProgressBar", fieldset);
     	console.log("id: ", fieldset.id);
-    	var hasPB = md.downloads.some(obj => "pb_" + obj.uuid === fieldset.id);
-    	console.log("hasPB", hasPB);
-    	if(!hasPB) {
+    	var pb = md.downloads.find(obj => "pb_" + obj.uuid === fieldset.id);
+    	console.log("pb", pb);
+    	if(!pb) {
 	    	$(fieldset).slideUp(function() {
+				var url = fieldset.querySelector("legend").textContent;
 	    		$(fieldset).remove();
     			console.log("removed orphaned bar");
-                md.checkPBTitle();
+    			md.showNotification(url, {
+    				body: "Finished " + url
+    			});
 	    	});
     	}
     },
+    showNotification : function(title, options) {
+		if (Notification.permission === "granted") {
+			// show notification
+	    	md.worker.postMessage([title, options]);
+		} else if (Notification.permission !== 'denied') {
+		    Notification.requestPermission(function (permission) {
+		        if (permission === "granted") {
+		            md.showNotification(title, options);
+		        }
+		    });
+		}
+    },
     checkPBTitle : function() {
-    	console.info("checkPBTitle");
     	var hasBars = $("#bars>fieldset").length > 0;
-    	console.log("hasBars", hasBars);
     	if(hasBars) {
     		$("#bars").show();
 		} else {
@@ -105,6 +116,8 @@ $(function() {
     md.showSelected(0);
     var updateAllInterval = window.setInterval(md.updateAll, 5000);
     console.warn("uai", updateAllInterval);
+    var checkPBTitleInterval = window.setInterval(md.checkPBTitle, 1000);
+    console.warn("cti", checkPBTitleInterval);
     $("#selector").change(md.showSelected);
     $("#submit").click(function() {
         var queryArr = $("#eingabe > div > input")
@@ -117,9 +130,12 @@ $(function() {
     });
     $("#stopServer").click(function() {
         $.get("server/stop", function() {
+			$("#bars").slideUp();
 			$("#content").slideUp();
 			$("#closeNotice").slideDown();
 			window.clearInterval(updateAllInterval);
+			window.clearInterval(checkPBTitleInterval);
+			console.warn("stopped server");
 		});
     });
     md.updateAll();
