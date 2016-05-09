@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
@@ -22,8 +23,11 @@ import org.apache.http.HttpHost;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.AppenderRef;
 
+import de.herrlock.log4j2.filter.LevelFilter;
 import de.herrlock.manga.downloader.ConsoleDownloader;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.PrintAllHoster;
@@ -78,8 +82,24 @@ public final class Main {
         if ( commandline.hasOption( "log" ) ) {
             String optionValue = commandline.getOptionValue( "log" );
             Level level = Level.toLevel( optionValue, Level.INFO );
-            Configurator.setRootLevel( level );
-            logger.debug( "set log-level to {}", level );
+
+            LoggerContext context = ( LoggerContext ) LogManager.getContext( false );
+            List<AppenderRef> appenderRefs = context.getConfiguration().getRootLogger().getAppenderRefs();
+            for ( AppenderRef appenderRef : appenderRefs ) {
+                if ( "ConsoleLogger".equals( appenderRef.getRef() ) ) {
+                    Filter rootFilter = appenderRef.getFilter();
+                    if ( rootFilter != null && rootFilter.getClass() == LevelFilter.class ) {
+                        LevelFilter levelFilter = ( LevelFilter ) rootFilter;
+                        levelFilter.setLevel( level );
+                        context.updateLoggers();
+                        logger.debug( "set log-level to {}", level );
+                    } else {
+                        logger.debug( "cannot find LevelFilter" );
+                    }
+                } else {
+                    logger.debug( "Not ConsoleLogger: {}", appenderRef );
+                }
+            }
         }
     }
 
