@@ -1,5 +1,8 @@
 package de.herrlock.log4j2.filter;
 
+import java.text.MessageFormat;
+import java.util.Objects;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -11,18 +14,18 @@ import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.message.Message;
 
 /**
- * A simple Log4j2-Filter that filters with an additional log-level. Taken (and slightly modified) from
+ * A simple Log4j2-Filter that filters with an additional log-level. Taken and modified for personal requirements from
  * https://logging.apache.org/log4j/2.0/manual/extending.html#Filters
  */
 @Plugin( name = "LevelFilter", category = "Core", elementType = "filter", printObject = true )
 public final class LevelFilter extends AbstractFilter {
     private static final long serialVersionUID = 1L;
 
-    private final Level level;
+    private Level level;
 
     private LevelFilter( final Level level, final Result onMatch, final Result onMismatch ) {
         super( onMatch, onMismatch );
-        this.level = level;
+        this.level = Objects.requireNonNull( level );
     }
 
     @Override
@@ -47,12 +50,16 @@ public final class LevelFilter extends AbstractFilter {
     }
 
     private Result filter( final Level level ) {
-        return level.compareTo( this.level ) <= 0 ? this.onMatch : this.onMismatch;
+        return level.isMoreSpecificThan( this.level ) ? this.onMatch : this.onMismatch;
+    }
+
+    public void setLevel( final Level level ) {
+        this.level = level;
     }
 
     @Override
     public String toString() {
-        return java.text.MessageFormat.format( "LevelFilter: {0}", this.level );
+        return MessageFormat.format( "LevelFilter: {0}", this.level );
     }
 
     /**
