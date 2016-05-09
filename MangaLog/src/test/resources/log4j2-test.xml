@@ -2,10 +2,10 @@
 <Configuration packages="de.herrlock.manga.ui.log,de.herrlock.log4j2.filter" status="INFO">
 	<Properties>
 		<Property name="patternLayout">%d{HH:mm:ss.SSS} [%t] %-5level %logger{1.}.%M - %m%n</Property>
-		<Property name="consoleLayout">%logger{1.}.%M - %m%n</Property>
+		<Property name="consoleLayout">%-5level %logger{1.}.%M - %m%n</Property>
 	</Properties>
 	<Appenders>
-		<Console name="ConsoleAppender" target="SYSTEM_OUT">
+		<Console name="ConsoleLogger" target="SYSTEM_OUT">
 			<PatternLayout pattern="${consoleLayout}" />
 		</Console>
 	</Appenders>
@@ -14,7 +14,7 @@
 			<AppenderRef ref="ConsoleAppender" />
 		</Logger>
 		<Root level="DEBUG">
-			<AppenderRef ref="ConsoleAppender" />
+			<AppenderRef ref="ConsoleLogger" />
 		</Root>
 	</Loggers>
 
