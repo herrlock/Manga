@@ -81,8 +81,7 @@ public final class Dialogs {
             vbox.setPadding( new Insets( 10 ) );
             vbox.getChildren().addAll( topContent, buttons );
             Scene paramScene = new Scene( vbox );
-            paramScene.getStylesheets().add( "/JMetroLightTheme.css" );
-            paramScene.getStylesheets().add( "/de/herrlock/javafx/jmetro_light_overrides.css" );
+            paramScene.getStylesheets().addAll( "/JMetroLightTheme.css", "/de/herrlock/javafx/jmetro_light_overrides.css" );
             setScene( paramScene );
         }
 
