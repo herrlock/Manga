@@ -44,6 +44,11 @@ public final class Main {
     private static final Logger logger = LogManager.getLogger();
 
     /**
+     * flag for JavaFX. Assume it is not availabile initially.
+     */
+    private static boolean fxAvailabile = false;
+
+    /**
      * @param args
      *            the options passed from the commandline
      */
@@ -52,13 +57,8 @@ public final class Main {
             final CommandLine commandline = getCommandlineFromArgs( args );
             logger.debug( Arrays.toString( commandline.getOptions() ) );
 
-            try {
-                ClassPathHack.makeSureJfxrtLoaded();
-            } catch ( ClassNotFoundException ex ) {
-                logger.error( "Could not find jfxrt.jar on the classpath."
-                    + "This does not have to be fatal as it may be that JavaFX is not needed" );
-            }
-
+            // search for javafx and try to "hack" it into the system-classloader
+            runFxClasspathHack();
             // optional alter loglevel-configuration
             checkLoggerConfiguration( commandline );
 
@@ -68,6 +68,25 @@ public final class Main {
             logger.warn( ex.getMessage(), ex );
             printHelp();
         }
+    }
+
+    /**
+     * 
+     * @return if JavaFX is availabile.
+     */
+    public static boolean getFxAvailabile() {
+        return fxAvailabile;
+    }
+
+    private static void runFxClasspathHack() {
+        try {
+            ClassPathHack.makeSureJfxrtLoaded();
+            fxAvailabile = true;
+        } catch ( ClassNotFoundException ex ) {
+            logger.error( "Could not find jfxrt.jar on the classpath."
+                + "This does not have to be fatal as it may be that JavaFX is not needed" );
+        }
+
     }
 
     private static CommandLine getCommandlineFromArgs( final String... args ) throws ParseException {
