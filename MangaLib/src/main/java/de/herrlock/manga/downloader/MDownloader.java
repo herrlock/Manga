@@ -20,13 +20,14 @@ import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.ProgressListener;
 import de.herrlock.manga.util.Progressable;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
+import de.herrlock.manga.util.management.MDownloaderMBean;
 
 /**
  * An abstract class to implement downloaders with different behaviour
  * 
  * @author HerrLock
  */
-public abstract class MDownloader implements Progressable {
+public abstract class MDownloader implements Progressable, MDownloaderMBean {
     private static final Logger logger = LogManager.getLogger();
 
     /**
