@@ -6,6 +6,9 @@ html {
 	background-size: 100%;
 	font-family: sans-serif;
 }
+body {
+	padding: 1rem;
+}
 
 div#content, div#closeNotice {
 	position: absolute;
@@ -45,6 +48,7 @@ p#buttons {
 	background-color: lightgray;
 	opacity: 0.9;
 	border-radius: .5em;
+	min-width: 20%;
 }
 
 #bars>h2 {
@@ -70,6 +74,7 @@ div#reflinks {
 	bottom: .5rem;
 	right: .5rem;
 	padding: .2rem;
+	border-radius: .5em;
 	font-size: smaller;
 	background-color: lightgray;
 	opacity: 0.8;
