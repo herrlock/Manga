@@ -44,9 +44,9 @@ public final class Main {
     private static final Logger logger = LogManager.getLogger();
 
     /**
-     * flag for JavaFX. Assume it is not availabile initially.
+     * Flag for JavaFX. Assume it is not availabile initially.
      */
-    private static boolean fxAvailabile = false;
+    private static boolean fxAvailabile;
 
     /**
      * @param args
