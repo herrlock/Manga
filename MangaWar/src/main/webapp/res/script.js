@@ -1,16 +1,12 @@
 var md = {
 	downloads : [],
+	cnt : 0,
 	worker : new Worker("res/worker.js"),
 	showOnly : function(c, duration) {
 		console.info("showOnly", c, duration);
 		if (c === "dl" || c == "jd") {
-			$("form#eingabe div").each(function(i, e) {
-				var $this = $(this);
-				if ($this.hasClass(c)) {
-					$this.slideDown(duration);
-				} else {
-					$this.slideUp(duration);
-				}
+			$("form#eingabe div").slideUp(duration, function() {
+				$("form#eingabe div." + c).slideDown(duration);
 			});
 		}
 	},
@@ -48,34 +44,47 @@ var md = {
 				title : obj.progress + " / " + obj.maxProgress
 			});
 			$fs.find(">img").hide(() => $progress.show());
-			
 		}
 	},
-	createTempEntry : function(uuid) {
-		console.info("createTempEntry", uuid);
+	createTempEntry : function() {
+		console.info("createTempEntry");
+		var temp = ++md.cnt;
 		md.createEntry({
-			uuid : uuid,
+			uuid : temp,
 			url : $("#url").val(),
 			progress : 0,
 			maxProgress : 100,
 			temp : true
 		});
 		md.checkPBTitle();
+		return temp;
 	},
 	createEntry : function(obj) {
 		console.info("createEntry", obj);
 		var $legend = $("<legend>" + md.encodeHTML(obj.url) + "</legend>");
 		var $loading = $("<img src='res/loading.gif' />");
 		var $progress = $("<progress value='" + obj.progress + "' max='" + obj.maxProgress + "'/>");
+		var $fieldset = $("<fieldset style='display: none;'></fieldset>");
 		if(obj.temp === true) {
 			$progress.hide();
+			$fieldset.attr("data-temp", obj.uuid);
 		} else {
 			$loading.hide();
+			$fieldset.attr("id", "pb_" + obj.uuid);
 		}
-		var $fieldset = $("<fieldset id='pb_" + obj.uuid + "' style='display: none'></fieldset>");
 		$fieldset.append([$legend, $loading, $progress]);
 		$fieldset.appendTo($("#bars"));
-		$("#pb_" + obj.uuid).slideDown();
+		$fieldset.slideDown();
+	},
+	updateEntry(uuid, tempId) {
+		console.info("updateEntry", uuid, tempId);
+		var fieldset = $("fieldset[data-temp=" + tempId + "]");
+		if(fieldset.length > 0) {
+			fieldset.attr({
+				"data-temp": "",
+				"id" : "pb_" + uuid
+			});
+		}
 	},
 	checkAllProgressBars : function() {
 		console.groupCollapsed("checkAllProgressBars");
@@ -86,9 +95,11 @@ var md = {
 	checkProgressBar : function(fieldset) {
 		console.info("checkProgressBar", fieldset);
 		console.log("id: ", fieldset.id);
-		var pb = md.downloads.find(obj => "pb_" + obj.uuid === fieldset.id);
-		console.log("pb", pb);
-		if(!!pb) {
+		var progressBar = md.downloads.find(obj => "pb_" + obj.uuid === fieldset.id);
+		console.log("progressBar", progressBar);
+		var tempData = fieldset.dataset.temp;
+		console.log("tempData", tempData);
+		if(!!progressBar || !!tempData) {
 			return "";
 		} else {
 			var deferred = $.Deferred();
@@ -150,7 +161,8 @@ $(function() {
 			.toArray();
 		var query = "?" + queryArr.join("&");
 		var url = "j/download/start" + query;
-		$.get(url, md.createTempEntry);
+		var temp = md.createTempEntry();
+		$.get(url, response => md.updateEntry(response, temp));
 	});
 	$("#stopServer").click(function() {
 		$.get("server/stop", function() {
@@ -158,7 +170,9 @@ $(function() {
 			$("#content").slideUp();
 			$("#closeNotice").slideDown();
 			window.clearInterval(updateAllInterval);
-			console.warn("stopped server");
+			console.warn("+","----------------","+");
+			console.warn("|"," stopped server ","|");
+			console.warn("+","----------------","+");
 		});
 	});
 	md.updateAll();
