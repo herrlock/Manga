@@ -54,6 +54,10 @@ public abstract class MDownloader implements Progressable, MDownloaderMBean {
      * contains the maximal progress
      */
     private int maxProgress;
+    /**
+     * is the downloader started (set in #downloadAll())
+     */
+    private boolean started;
 
     /**
      * creates a new Downloader. this constructor initializes the ChapterListContainer, the PictureMapContainer and the
@@ -114,6 +118,7 @@ public abstract class MDownloader implements Progressable, MDownloaderMBean {
      */
     protected void downloadAll() {
         logger.entry();
+        this.started = true;
         EntryList<String, EntryList<Integer, URL>> entries = this.pmc.getEntries();
         entries.sort( EntryList.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
         setProgress( 0 );
@@ -164,6 +169,11 @@ public abstract class MDownloader implements Progressable, MDownloaderMBean {
         for ( ProgressListener listener : this.progressListeners ) {
             listener.progress( oldProgress, this.progress, this.maxProgress );
         }
+    }
+
+    @Override
+    public boolean getStarted() {
+        return this.started;
     }
 
     @Override

@@ -71,7 +71,7 @@ public class DownloadServlet {
             UUID key = entry.getKey();
             MDObject value = entry.getValue();
             MDownloader mdownloader = value.getMdownloader();
-            ProgressObject entity = new ProgressObject( key, value.getUrl(), mdownloader.getProgress(),
+            ProgressObject entity = new ProgressObject( key, value.getUrl(), mdownloader.getStarted(), mdownloader.getProgress(),
                 mdownloader.getMaxProgress() );
             result.add( entity );
         }
@@ -99,12 +99,15 @@ public class DownloadServlet {
     static class ProgressObject {
         private final UUID uuid;
         private final String url;
+        private final boolean started;
         private final int progress;
         private final int maxProgress;
 
-        public ProgressObject( final UUID uuid, final String url, final int progress, final int maxProgress ) {
+        public ProgressObject( final UUID uuid, final String url, final boolean started, final int progress,
+            final int maxProgress ) {
             this.uuid = uuid;
             this.url = url;
+            this.started = started;
             this.progress = progress;
             this.maxProgress = maxProgress;
         }
@@ -115,6 +118,10 @@ public class DownloadServlet {
 
         public String getUrl() {
             return this.url;
+        }
+
+        public boolean getStarted() {
+            return this.started;
         }
 
         public int getProgress() {
