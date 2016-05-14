@@ -12,7 +12,9 @@ import java.lang.annotation.Target;
 @Target( ElementType.TYPE )
 public @interface Conf {
     /**
-     * enable bidirectional binding in FXML (<code>#{controller.foo}</code>)
+     * enable bidirectional binding for FXML (<code>#{controller.foo}</code>)
+     * 
+     * @return if the bidirection-feature must be enabled
      */
     boolean enableBiDirectional() default false;
 }

@@ -9,7 +9,7 @@ package de.herrlock.manga.util;
     public class Foo implements Progressable {
         private int progress;
         private int maxProgress;
-        private Collection&lt;ProgressListener&gt; listeners = new HashSet<>(); // your favourite Collection
+        private Collection&lt;ProgressListener&gt; listeners = new HashSet&lt;&gt;(); // your favourite Collection
     
         &#64;Override
         public void setProgress( int progress ) {

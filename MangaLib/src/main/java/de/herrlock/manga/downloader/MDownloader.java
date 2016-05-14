@@ -155,6 +155,7 @@ public abstract class MDownloader implements Progressable, MDownloaderMBean {
      * increment progress and notify listeners
      * 
      * @param delta
+     *            the amount to inrement the progress by
      */
     protected void doProgress( final int delta ) {
         logger.entry( delta );
