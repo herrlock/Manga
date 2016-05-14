@@ -3,9 +3,9 @@
 <head>
 	<title>MangaLoader WebUI</title>
 	<meta charset="UTF-8" />
-	<script src="jquery-2.2.2.min.js"></script>
-	<link rel="stylesheet" href="style.css" />
-	<script src="script.js"></script>
+	<script src="res/jquery-2.2.2.min.js"></script>
+	<link rel="stylesheet" href="res/style.css" />
+	<script src="res/script.js"></script>
 </head>
 <body>
 	<br />
@@ -16,7 +16,7 @@
 		<div id="auswahl">
 			<select id="selector">
 				<option value="dl">Download</option>
-				<option value="jd">per JDownloader</option>
+				<!--<option value="jd">per JDownloader</option>-->
 			</select>
 		</div>
 		<form id="eingabe">
@@ -45,6 +45,10 @@
 	</div>
 	<div id="closeNotice" style="display: none; padding: 1rem;">
 		Server stopped, please close this Tab.
+	</div>
+	<div>
+		<!-- image-preload -->
+		<img src="res/loading.gif" style="display: none;" />
 	</div>
 	<div id="reflinks">
 		<span id="ajaxloadlink" class="reflink">Loading-indicator von <a href="http://ajaxload.info/" target="_blank">ajaxload.info</a></span>

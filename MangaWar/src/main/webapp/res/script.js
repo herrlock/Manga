@@ -1,6 +1,6 @@
 var md = {
 	downloads : [],
-	worker : new Worker("worker.js"),
+	worker : new Worker("res/worker.js"),
 	showOnly : function(c, duration) {
 		console.info("showOnly", c, duration);
 		if (c === "dl" || c == "jd") {
@@ -65,7 +65,7 @@ var md = {
 	createEntry : function(obj) {
 		console.info("createEntry", obj);
 		var $legend = $("<legend>" + md.encodeHTML(obj.url) + "</legend>");
-		var $loading = $("<img src='loading.gif' />");
+		var $loading = $("<img src='res/loading.gif' />");
 		var $progress = $("<progress value='" + obj.progress + "' max='" + obj.maxProgress + "'/>");
 		if(obj.temp === true) {
 			$progress.hide();
@@ -96,7 +96,7 @@ var md = {
 				var url = fieldset.querySelector("legend").textContent;
 				$(fieldset).remove();
 				console.log("removed orphaned bar");
-				md.showNotification(url, {
+				md.showNotification("MangaDownloader", {
 					body: "Finished " + url
 				});
 				deferred.resolve();

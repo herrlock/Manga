@@ -55,7 +55,7 @@ public class ImageServlet {
         }
 
         public String getPath() {
-            return "/img/" + this.filename;
+            return "/res/bg/" + this.filename;
         }
     }
 }
