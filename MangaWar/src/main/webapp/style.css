@@ -43,6 +43,7 @@ p#buttons {
 #bars {
 	float: left;
 	background-color: lightgray;
+	opacity: 0.9;
 	border-radius: .5em;
 }
 
@@ -64,9 +65,12 @@ p#buttons {
 	width: 100%;
 }
 
-div#konachanlink {
+div#reflinks {
 	position: fixed;
-	bottom: 1rem;
-	right: 2rem;
+	bottom: .5rem;
+	right: .5rem;
+	padding: .2rem;
 	font-size: smaller;
+	background-color: lightgray;
+	opacity: 0.8;
 }
