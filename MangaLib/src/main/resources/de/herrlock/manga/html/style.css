@@ -41,12 +41,12 @@ img.normalwidth {
 	}
 }
 
-@media (min-width: 800px) {
+@media (min-width: 784px) {
 	img.fullwidth {
-	    width: 740px;
+	    width: 730px;
 	}
 	img.normalwidth {
-	    width: 660px;
+	    width: 640px;
 	}
 }
 
