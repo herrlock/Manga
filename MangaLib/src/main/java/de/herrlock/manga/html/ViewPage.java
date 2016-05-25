@@ -104,7 +104,7 @@ public final class ViewPage {
         head.appendElement( "script" ).text( mangaObject );
 
         String[] js = {
-            "jquery-2.1.3.min.js", "onkeydown.js", "main.js"
+            "jquery-2.2.3.min.js", "onkeydown.js", "main.js"
         };
         for ( String src : js ) {
             head.appendElement( "script" ).attr( "src", src );
