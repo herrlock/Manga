@@ -1,7 +1,7 @@
 body {
     background-color: #000;
-    margin: 0px 20px 20px 10px;
-    padding: 20px 0px 0px 10px;
+    margin: 0em;
+    padding: 1em;
 }
 
 h1 {
@@ -15,20 +15,48 @@ h2 {
     font-weight: normal;
 }
 
-pre {
-    font-family: 'Times New Roman', Times, Sans-Serif;
-}
-
-img {
-    min-width: 600px;
-}
-
 img.fullwidth {
-    width: 90%;
+    width: 200px;
 }
 
 img.normalwidth {
-    width: 660px;
+    width: 150px;
+}
+
+@media (min-width: 400px) {
+	img.fullwidth {
+	    width: 340px;
+	}
+	img.normalwidth {
+	    width: 260px;
+	}
+}
+
+@media (min-width: 600px) {
+	img.fullwidth {
+	    width: 540px;
+	}
+	img.normalwidth {
+	    width: 500px;
+	}
+}
+
+@media (min-width: 800px) {
+	img.fullwidth {
+	    width: 740px;
+	}
+	img.normalwidth {
+	    width: 660px;
+	}
+}
+
+@media (min-width: 1300px) {
+	img.fullwidth {
+	    width: 1100px;
+	}
+	img.normalwidth {
+	    width: 800px;
+	}
 }
 
 hr.separator {
@@ -89,7 +117,8 @@ ul.leftList {
 }
 
 #rightdiv {
-    margin-left: 70px;
+    margin-left: 1em;
+    float: left;
 }
 
 div.center {

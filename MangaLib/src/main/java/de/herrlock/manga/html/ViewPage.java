@@ -82,7 +82,8 @@ public final class ViewPage {
 
     private String mangaName() {
         String foldername = this.folder.getName();
-        String mangarawname = foldername.substring( 0, foldername.lastIndexOf( '_' ) );
+        int lastUnderscore = foldername.lastIndexOf( '_' );
+        String mangarawname = lastUnderscore > -1 ? foldername.substring( 0, lastUnderscore ) : foldername;
         return mangarawname.replace( '_', ' ' );
     }
 
@@ -90,6 +91,7 @@ public final class ViewPage {
         logger.entry( head );
         head.appendElement( "title" ).text( mangaName() );
         head.appendElement( "meta" ).attr( "charset", "utf-8" );
+        head.appendElement( "meta" ).attr( "name", "viewport" ).attr( "content", "width=device-width, initial-scale=1.0" );
         head.appendElement( "link" ).attr( "rel", "shortcut icon" ).attr( "href", "favicon.ico" );
         head.appendElement( "link" ).attr( "rel", "stylesheet" ).attr( "href", "style.css" );
         copyFile( "style.css" );
@@ -104,7 +106,7 @@ public final class ViewPage {
         head.appendElement( "script" ).text( mangaObject );
 
         String[] js = {
-            "jquery-2.2.3.min.js", "onkeydown.js", "main.js"
+            "jquery-2.2.3.min.js", "main.js"
         };
         for ( String src : js ) {
             head.appendElement( "script" ).attr( "src", src );
