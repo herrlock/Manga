@@ -6,49 +6,71 @@ html {
 	background-size: 100%;
 	font-family: sans-serif;
 }
+
 body {
 	padding: 1rem;
 }
 
-div#content, div#closeNotice {
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
+* {
+	transition: all 2s ease 0s;
+}
+
+#content, 
+#closeNotice {
+	float: left;
+	margin: 1em;
+	padding: 1em;
+	width: 35em;
 	background-color: lightgray;
 	border-radius: 15px;
 	opacity: 0.8;
-	min-width: 30rem;
 }
 
-div#auswahl, form#eingabe {
-	margin: 15px;
+#auswahl, 
+#eingabe {
+	margin: .5em;
 }
 
-#eingabe>div {
-	clear: both;
+#eingabe label,
+#eingabe input {
+	margin: 2px;
+	display: inline-block;
+}
+
+#eingabe > ul {
+	list-style-type: none;
+	list-style-position: outside;
+	margin: 0px;
+	padding: 0px;
+}
+
+#eingabe label {
+	width: 7em;
+	padding: .5em 0em;
+}
+
+#eingabe input {
+	padding: .5em;
+	width: 100%;
+	max-width: 25em;
+}
+
+#buttons {
 	margin: 4px;
 	padding: 4px;
 }
 
-#eingabe>div>label {
-	float: left;
-}
-
-#eingabe>div>input {
-	float: right;
-	width: 25em;
-}
-
-p#buttons {
-	float: left;
+#buttons > button {
+	padding: 4px 8px;
 }
 
 #bars {
 	float: left;
+	margin: 1em;
+	display: inline-block;
 	background-color: lightgray;
 	opacity: 0.9;
 	border-radius: .5em;
-	min-width: 20%;
 }
 
 #bars>h2 {
@@ -69,13 +91,13 @@ p#buttons {
 	width: 100%;
 }
 
-div#reflinks {
+#reflinks {
 	position: fixed;
 	bottom: .5rem;
 	right: .5rem;
 	padding: .2rem;
 	border-radius: .5em;
-	font-size: smaller;
+	font-size: x-small;
 	background-color: lightgray;
 	opacity: 0.8;
 }

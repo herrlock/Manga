@@ -5,8 +5,8 @@ var md = {
 	showOnly : function(c, duration) {
 		console.info("showOnly", c, duration);
 		if (c === "dl" || c == "jd") {
-			$("form#eingabe div").slideUp(duration, function() {
-				$("form#eingabe div." + c).slideDown(duration);
+			$("form#eingabe>label").slideUp(duration, function() {
+				$("form#eingabe>label." + c).slideDown(duration);
 			});
 		}
 	},
@@ -56,7 +56,6 @@ var md = {
 			maxProgress : 100,
 			temp : true
 		});
-		md.checkPBTitle();
 		return temp;
 	},
 	createEntry : function(obj) {
@@ -73,10 +72,10 @@ var md = {
 			$fieldset.attr("id", "pb_" + obj.uuid);
 		}
 		$fieldset.append([$legend, $loading, $progress]);
-		$fieldset.appendTo($("#bars"));
+		$fieldset.insertBefore($("#bars>.dummy"));
 		$fieldset.slideDown();
 	},
-	updateEntry(uuid, tempId) {
+	updateEntry : function(uuid, tempId) {
 		console.info("updateEntry", uuid, tempId);
 		var fieldset = $("fieldset[data-temp=" + tempId + "]");
 		if(fieldset.length > 0) {
@@ -86,10 +85,14 @@ var md = {
 			});
 		}
 	},
+	removeEntry : function(jqXHR, tempId) {
+		console.warn("removeEntry", jqXHR, tempId);
+		var fieldset = $("fieldset[data-temp=" + tempId + "]");
+		fieldset.slideUp(1000, () => fieldset.remove());
+	},
 	checkAllProgressBars : function() {
 		console.groupCollapsed("checkAllProgressBars");
-		var list = [""].concat($("#bars>fieldset").toArray().map(md.checkProgressBar));
-		$.when(...list).then(md.checkPBTitle);
+		$("#bars>fieldset").toArray().forEach(md.checkProgressBar);
 		console.groupEnd();
 	},
 	checkProgressBar : function(fieldset) {
@@ -99,20 +102,15 @@ var md = {
 		console.log("progressBar", progressBar);
 		var tempData = fieldset.dataset.temp;
 		console.log("tempData", tempData);
-		if(!!progressBar || !!tempData) {
-			return "";
-		} else {
-			var deferred = $.Deferred();
-			$(fieldset).slideUp(function() {
-				var url = fieldset.querySelector("legend").textContent;
-				$(fieldset).remove();
-				console.log("removed orphaned bar");
-				md.showNotification("MangaDownloader", {
-					body: "Finished " + url
-				});
-				deferred.resolve();
-			});
-			return deferred;
+		if(!progressBar && !tempData && !fieldset.classList.contains("dummy")) {
+            $(fieldset).slideUp(function() {
+                var url = fieldset.querySelector("legend").textContent;
+                $(fieldset).remove();
+                console.log("removed orphaned bar");
+                md.showNotification("MangaDownloader", {
+                    body: "Finished " + url
+                });
+            });
 		}
 	},
 	showNotification : function(title, options) {
@@ -126,18 +124,6 @@ var md = {
 				}
 			});
 		}
-	},
-	checkPBTitle : function() {
-		console.group("checkPBTitle");
-		var hasBars = $("#bars>fieldset").length > 0;
-		console.log("hasBars: ", hasBars);
-		var $bars = $("#bars");
-		if(hasBars) {
-			$bars.show();
-		} else {
-			$bars.hide();
-		}
-		console.groupEnd();
 	},
 	encodeHTML : function(string) {
 		var tagsToReplace = {
@@ -155,20 +141,22 @@ $(function() {
 	console.warn("uai", updateAllInterval);
 	$("#selector").change(md.showSelected);
 	$("#submit").click(function() {
-		var queryArr = $("#eingabe > div > input")
+		var queryArr = $("#eingabe > ul > li > input")
 			.filter((i,elem) => $(elem).is(":visible"))
-			.map((i,elem) => encodeURIComponent(elem.id) + "=" + encodeURIComponent(elem.value))
+			.map((i,elem) => encodeURIComponent(elem.dataset.key) + "=" + encodeURIComponent(elem.value))
 			.toArray();
 		var query = "?" + queryArr.join("&");
 		var url = "j/download/start" + query;
 		var temp = md.createTempEntry();
-		$.get(url, response => md.updateEntry(response, temp));
+		$.get(url, "text").done(response => md.updateEntry(response, temp)).fail(jqXHR => md.removeEntry(jqXHR, temp));
 	});
 	$("#stopServer").click(function() {
 		$.get("server/stop", function() {
-			$("#bars").slideUp();
-			$("#content").slideUp();
-			$("#closeNotice").slideDown();
+			$("#bars").slideUp(1000, function() {
+				$("#content").slideUp(1000, function() {
+					$("#closeNotice").slideDown(1000);
+				});
+			});
 			window.clearInterval(updateAllInterval);
 			console.warn("+","----------------","+");
 			console.warn("|"," stopped server ","|");
