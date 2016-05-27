@@ -28,7 +28,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * @author HerrLock
  */
 @Path( "download" )
-public class DownloadServlet {
+public class DownloadService {
     private static final Logger logger = LogManager.getLogger();
     private static final Map<UUID, MDObject> downloaders = new HashMap<>();
 

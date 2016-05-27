@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
  * @author HerrLock
  */
 @Path( "images" )
-public class ImageServlet {
+public class ImageService {
     private static final Logger logger = LogManager.getLogger();
 
     @GET
