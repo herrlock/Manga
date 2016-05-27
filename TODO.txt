@@ -7,6 +7,9 @@
 
 1.5:
 - use java.util.concurrent.* package for more complex execution with progress-callbacks
+- add java-beans for easier tracking of running downloads
+- create DialogDownloader
+- make fx-gui usable
 
 1.x:
 - improve average filesize
