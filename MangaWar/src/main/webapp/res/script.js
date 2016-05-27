@@ -1,13 +1,13 @@
 var md = {
+	rb : {},
+	rben : {},
 	downloads : [],
 	cnt : 0,
 	worker : new Worker("res/worker.js"),
 	showOnly : function(c, duration) {
 		console.info("showOnly", c, duration);
-		if (c === "dl" || c == "jd") {
-			$("form#eingabe>label").slideUp(duration, function() {
-				$("form#eingabe>label." + c).slideDown(duration);
-			});
+		if (c === "dl") {
+			$("#eingabe > label").slideUp(duration, () => $("#eingabe > label." + c).slideDown(duration));
 		}
 	},
 	showSelected : function(duration) {
@@ -36,14 +36,14 @@ var md = {
 		if($fs.length === 0) {
 			md.createEntry(obj);
 		} else {
-			$fs.find(">legend").text(obj.url);
-			var $progress = $fs.find(">progress");
+			$fs.find("> legend").text(obj.url);
+			var $progress = $fs.find("> progress");
 			$progress.attr({
 				value : obj.progress,
 				max : obj.maxProgress,
 				title : obj.progress + " / " + obj.maxProgress
 			});
-			$fs.find(">img").hide(() => $progress.show());
+			$fs.find("> img").hide(() => $progress.show());
 		}
 	},
 	createTempEntry : function() {
@@ -72,7 +72,7 @@ var md = {
 			$fieldset.attr("id", "pb_" + obj.uuid);
 		}
 		$fieldset.append([$legend, $loading, $progress]);
-		$fieldset.insertBefore($("#bars>.dummy"));
+		$fieldset.insertBefore($("#bars > .dummy"));
 		$fieldset.slideDown();
 	},
 	updateEntry : function(uuid, tempId) {
@@ -92,7 +92,7 @@ var md = {
 	},
 	checkAllProgressBars : function() {
 		console.groupCollapsed("checkAllProgressBars");
-		$("#bars>fieldset").toArray().forEach(md.checkProgressBar);
+		$("#bars > fieldset").toArray().forEach(md.checkProgressBar);
 		console.groupEnd();
 	},
 	checkProgressBar : function(fieldset) {
@@ -136,6 +136,28 @@ var md = {
 };
 
 $(function() {
+	var rb = $.Deferred(), rben = $.Deferred();
+	$.getJSON("res/l10n/" + navigator.language.substring(0,2) + ".json")
+		.done(response => md.rb = response)
+		.fail(console.warn)
+		.always(() => rb.resolve());
+	$.getJSON("res/l10n/en.json")
+		.done(response => md.rben = response)
+		.fail(console.warn)
+		.always(() => rben.resolve());
+	$.when(rb, rben).done(function() {
+		var getDotValue = (array, string) => string.split(".").reduce((e,i) => e[i], array);
+		$("[data-i18n]").each(function(index, element) {
+			var key = element.dataset.i18n;
+			var text = getDotValue(md.rb, key) || getDotValue(md.rben, key);
+			if(!!text) {
+				$(element).text(text);
+			}
+		});
+	});
+});
+
+$(function() {
 	md.showSelected(0);
 	var updateAllInterval = window.setInterval(md.updateAll, 5000);
 	console.warn("uai", updateAllInterval);
@@ -152,11 +174,7 @@ $(function() {
 	});
 	$("#stopServer").click(function() {
 		$.get("server/stop", function() {
-			$("#bars").slideUp(1000, function() {
-				$("#content").slideUp(1000, function() {
-					$("#closeNotice").slideDown(1000);
-				});
-			});
+			$.when($("#bars").slideUp(1000), $("#content").fadeOut(1000)).then(() => $("#closeNotice").show(1000));
 			window.clearInterval(updateAllInterval);
 			console.warn("+","----------------","+");
 			console.warn("|"," stopped server ","|");

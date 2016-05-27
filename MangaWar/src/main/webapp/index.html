@@ -13,8 +13,8 @@
 
 	<section id="bars">
 		<!-- progress bars -->
-		<h2>Progress</h2>
-		<fieldset style="visibility: hidden" class="dummy">
+		<h2 data-i18n="progress"></h2>
+		<fieldset class="dummy">
 			<progress />
 		</fieldset>
 	</section>
@@ -29,22 +29,22 @@
 			<form id="eingabe">
 				<ul>
 					<li>
-						<label for="url" class="dl">URL:&nbsp;</label>
+						<label for="url" class="dl" data-i18n="lbl.url"></label>
 						<input type="url" data-key="url" id="url" placeholder="http://example.com/manga" />
 					</li>
 					<li>
-						<label for="proxy" class="dl">Proxy-URL:&nbsp;</label>
-						<input type="url" data-key="proxy" id="proxy" placeholder="http://example.com" />
+						<label for="proxy" class="dl" data-i18n="lbl.proxy"></label>
+						<input type="url" data-key="proxy" id="proxy" placeholder="http://example.com:8000" />
 					</li>
 					<li>
-						<label for="pattern" class="dl">Kapitel:&nbsp;</label>
+						<label for="pattern" class="dl" data-i18n="lbl.pattern"></label>
 						<input type="text" data-key="pattern" id="pattern" placeholder="2;4;6-8" />
 					</li>
 					<li>
 						<div id="buttons">
-							<button type="button" id="submit">absenden</button>
-							<button type="reset">zur&uuml;cksetzen</button>
-							<button id="stopServer" type="button">Server stoppen</button>
+							<button type="button" id="submit" data-i18n="btn.start">absenden</button>
+							<button type="reset" data-i18n="btn.clear">zur&uuml;cksetzen</button>
+							<button id="stopServer" type="button" data-i18n="btn.stop">Server stoppen</button>
 						</div>
 					</li>
 				</ul>
@@ -52,9 +52,8 @@
 		</section>
 	</section>
 	
-	<section id="closeNotice" style="display: none; padding: 1rem;">
+	<section id="closeNotice" data-i18n="closeNotice" style="display: none;">
 		<!-- notice shown after stopping the server -->
-		Server stopped, please close this Tab.
 	</section>
 	
 	<aside>
@@ -64,9 +63,17 @@
 	
 	<footer id="reflinks">
 		<!-- links -->
-		<span id="ajaxloadlink" class="reflink">Loading-indicator von <a href="http://ajaxload.info/" target="_blank">ajaxload.info</a></span>
+		<span class="reflink">
+			<span data-i18n="ref.firefox"></span><a href="https://mozilla.org/firefox" target="_blank">Mozilla Firefox</a>
+		</span>
 		&nbsp;|&nbsp;
-		<span id="konachanlink" class="reflink">Bilder von <a href="http://konachan.net" target="_blank">konachan.net</a></span>
+		<span class="reflink">
+			<span data-i18n="ref.ajaxload"></span><a href="http://ajaxload.info/" target="_blank">ajaxload.info</a>
+		</span>
+		&nbsp;|&nbsp;
+		<span class="reflink">
+			<span data-i18n="ref.konachan"></span><a href="http://konachan.net" target="_blank">konachan.net</a>
+		</span>
 	</footer>
 	
 </article>

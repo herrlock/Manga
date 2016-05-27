@@ -11,10 +11,6 @@ body {
 	padding: 1rem;
 }
 
-* {
-	transition: all 2s ease 0s;
-}
-
 #content, 
 #closeNotice {
 	float: left;
@@ -73,15 +69,15 @@ body {
 	border-radius: .5em;
 }
 
-#bars>h2 {
+#bars > h2 {
 	text-align: center;
 }
 
-#bars>fieldset {
+#bars > fieldset {
 	margin: .5em;
 }
 
-#bars>fieldset>legend {
+#bars > fieldset > legend {
 	color: #666;
 	font-size: x-small;
 }
@@ -89,6 +85,12 @@ body {
 #bars progress {
 	font-size: large;
 	width: 100%;
+}
+
+.dummy {
+	visibility: hidden;
+	height: 0em;
+	overflow-y: hidden;
 }
 
 #reflinks {
