@@ -49,6 +49,8 @@ public final class Main {
     private static boolean fxAvailabile;
 
     /**
+     * Entry point for the application.
+     * 
      * @param args
      *            the options passed from the commandline
      */
@@ -71,6 +73,8 @@ public final class Main {
     }
 
     /**
+     * Return if JavaFX is availabile. This can be useful to show messages rather than receiving exceptions in some hybrid
+     * classes.
      * 
      * @return if JavaFX is availabile.
      */

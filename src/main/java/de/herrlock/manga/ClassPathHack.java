@@ -29,6 +29,15 @@ import javafx.application.Application;
 public final class ClassPathHack {
     private static final Logger logger = LogManager.getLogger();
 
+    /**
+     * Tries to load the class {@linkplain Application} twice. When the first try succeeds everything is perfect. When the first
+     * try fails (ClassNotFoundException) the jfxrt-jar is searched and (probably) added to the classpath. Then the class is
+     * loaded a second time. A resulting ClassNotFoundException is thrown so the caller can see what happened.
+     * 
+     * @throws ClassNotFoundException
+     *             When the class {@linkplain Application} cannot be found after the jfxrt-jar has been tried to add to the
+     *             classpath.
+     */
     public static void makeSureJfxrtLoaded() throws ClassNotFoundException {
         try {
             tryToLoadJavafxApplication();
@@ -50,12 +59,7 @@ public final class ClassPathHack {
         Iterator<File> iterator = FileUtils.iterateFiles( javaHomeFolder, new String[] {
             "jar"
         }, true );
-        Optional<File> jfxrtOptional = Iterators.tryFind( iterator, new Predicate<File>() {
-            @Override
-            public boolean apply( final File input ) {
-                return input != null && input.getName().equals( "jfxrt.jar" );
-            }
-        } );
+        Optional<File> jfxrtOptional = Iterators.tryFind( iterator, new FilenamePredicate( "jfxrt.jar" ) );
 
         if ( jfxrtOptional.isPresent() ) {
             File jfxrt = jfxrtOptional.get();
@@ -98,5 +102,29 @@ public final class ClassPathHack {
 
     private ClassPathHack() {
         // not used
+    }
+
+    public static class FilenamePredicate implements Predicate<File> {
+        private final String filename;
+        private final boolean ignoreCase;
+
+        public FilenamePredicate( final String filename ) {
+            this( filename, false );
+        }
+
+        public FilenamePredicate( final String filename, final boolean ignoreCase ) {
+            this.filename = filename;
+            this.ignoreCase = ignoreCase;
+        }
+
+        @Override
+        public boolean apply( final File input ) {
+            boolean isNull = input == null;
+            if ( isNull ) {
+                return false;
+            }
+            String name = input.getName();
+            return this.ignoreCase ? name.equalsIgnoreCase( this.filename ) : name.equals( this.filename );
+        }
     }
 }

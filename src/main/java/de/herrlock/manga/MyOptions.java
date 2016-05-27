@@ -96,6 +96,9 @@ public final class MyOptions {
 
     private final Properties defaultValues = new Properties();
 
+    /**
+     * Create new Options
+     */
     public MyOptions() {
         this.typeOptionGroup.setRequired( true );
         this.options = new Options()//
