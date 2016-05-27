@@ -55,7 +55,7 @@
 		<Logger name="org.apache" level="DEBUG" additivity="false">
 			<AppenderRef ref="FileTrace" />
 		</Logger>
-		<Logger name="de.herrlock" level="DEBUG">
+		<Logger name="de.herrlock" level="TRACE">
 			<AppenderRef ref="FileTrace" />
 		</Logger>
 		
