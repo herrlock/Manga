@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * An annotation to set up different parameters for {@link de.herrlock.javafx.AbstractApplication AbstractApplications}
+ * 
  * @author HerrLock
  */
 @Retention( RetentionPolicy.RUNTIME )

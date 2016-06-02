@@ -14,6 +14,11 @@ import org.apache.logging.log4j.Logger;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * A Servlet that can stop a {@link Server}
+ * 
+ * @author HerrLock
+ */
 @SuppressFBWarnings( value = {
     "SE_BAD_FIELD_STORE", "SE_BAD_FIELD", "SE_NO_SERIALVERSIONID"
 }, justification = "Don't care about serialization" )

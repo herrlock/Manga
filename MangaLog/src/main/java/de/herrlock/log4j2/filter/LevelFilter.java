@@ -28,31 +28,57 @@ public final class LevelFilter extends AbstractFilter {
         this.level = Objects.requireNonNull( level );
     }
 
+    /**
+     * Simply calls {@link #filter(Level)} with the passed {@link Level}.
+     */
     @Override
     public Result filter( final Logger logger, final Level level, final Marker marker, final String msg,
         final Object... params ) {
         return filter( level );
     }
 
+    /**
+     * Simply calls {@link #filter(Level)} with the passed {@link Level}.
+     */
     @Override
     public Result filter( final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t ) {
         return filter( level );
     }
 
+    /**
+     * Simply calls {@link #filter(Level)} with the passed {@link Level}.
+     */
     @Override
     public Result filter( final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t ) {
         return filter( level );
     }
 
+    /**
+     * Simply calls {@link #filter(Level)} with the level from the passed {@link LogEvent}.
+     */
     @Override
     public Result filter( final LogEvent event ) {
         return filter( event.getLevel() );
     }
 
-    private Result filter( final Level level ) {
+    /**
+     * Compares the given Level with the level currently set in this filter. If the given level is more specific than this level
+     * {@code onMatch} is returned. Otherwise {@code onMismatch} is returned.
+     * 
+     * @param level
+     *            The level to filter on.
+     * @return The Result of filtering.
+     */
+    public Result filter( final Level level ) {
         return level.isMoreSpecificThan( this.level ) ? this.onMatch : this.onMismatch;
     }
 
+    /**
+     * Setter for the {@link Level} of this filter.
+     * 
+     * @param level
+     *            the new {@linkplain Level}
+     */
     public void setLevel( final Level level ) {
         this.level = level;
     }
@@ -66,11 +92,11 @@ public final class LevelFilter extends AbstractFilter {
      * Create a ThresholdFilter.
      * 
      * @param level
-     *            The log Level.
+     *            The log Level to filter with.
      * @param onMatch
-     *            The action to take on a match.
+     *            The action to return on a match.
      * @param onMismatch
-     *            The action to take on a mismatch.
+     *            The action to return on a mismatch.
      * @return The created ThresholdFilter.
      */
     @PluginFactory

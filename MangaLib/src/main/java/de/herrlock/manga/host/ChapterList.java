@@ -75,6 +75,11 @@ public abstract class ChapterList implements Iterable<Chapter> {
             "The class must contain @Details" );
     }
 
+    /**
+     * Returns the size of the stored list.
+     * 
+     * @return the size of the stored list.
+     */
     public int size() {
         return this.list.size();
     }

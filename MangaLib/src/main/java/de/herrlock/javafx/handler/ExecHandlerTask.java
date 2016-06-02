@@ -9,9 +9,9 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 
 /**
- * The bridge between an {@link Exec} and a {@link Task}. Can be used or extended
+ * The bridge between an {@link Exec} and a {@link Task}. Can be used or extended.
  * 
- * @author Herrlock
+ * @author HerrLock
  */
 public class ExecHandlerTask extends Task<Void> {
     private final Exec exec;
@@ -27,6 +27,11 @@ public class ExecHandlerTask extends Task<Void> {
         setOnFailed( new ExceptionHandler() );
     }
 
+    /**
+     * Calls {@link Exec#execute()}. Calls {@link Platform#exit()}, when the Exec ran without Exception.
+     * 
+     * @return Always {@code null}.
+     */
     @Override
     protected Void call() {
         boolean exit = true;
@@ -43,6 +48,12 @@ public class ExecHandlerTask extends Task<Void> {
         return null;
     }
 
+    /**
+     * An ExceptionHandler that throws rethrows a {@link RuntimeException} and wraps other Exceptions in a
+     * {@link MDRuntimeException}
+     * 
+     * @author HerrLock
+     */
     final class ExceptionHandler implements EventHandler<WorkerStateEvent> {
         @Override
         public void handle( final WorkerStateEvent t ) {

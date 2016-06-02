@@ -8,6 +8,9 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 
 /**
+ * A container that contains a {@link Scene}. Provides methods that can be overridden to set the title and icons and attach
+ * stylesheets to the scene.
+ * 
  * @author HerrLock
  */
 public abstract class SceneContainer {

@@ -7,7 +7,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
+ * A superclass for Applications. Must be used together with {@link SceneContainer}.
+ * 
  * @author HerrLock
+ * @see SceneContainer
  */
 public abstract class AbstractApplication extends Application {
     private SceneContainer container;
@@ -15,7 +18,7 @@ public abstract class AbstractApplication extends Application {
     /**
      * search for <code>@Conf</code>-annotation and configurate the environment
      */
-    public AbstractApplication() {
+    protected AbstractApplication() {
         Conf conf = this.getClass().getAnnotation( Conf.class );
         if ( conf != null && conf.enableBiDirectional() ) {
             // enable bidirectonal binding if set

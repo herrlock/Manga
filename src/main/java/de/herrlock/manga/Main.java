@@ -38,6 +38,8 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import javafx.application.Application;
 
 /**
+ * Entrance class for the jar.
+ * 
  * @author HerrLock
  */
 public final class Main {

@@ -11,12 +11,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * A service to serve the path to a random image from the enum {@link Image}
+ * 
  * @author HerrLock
  */
 @Path( "images" )
 public class ImageService {
     private static final Logger logger = LogManager.getLogger();
 
+    /**
+     * Returns a 303-response that links to an image that was randomly chosen from the enum {@link Image}
+     * 
+     * @return a 303-response containing the random link
+     */
     @GET
     @Path( "background.jpg" )
     public Response getImage() {
@@ -26,19 +33,56 @@ public class ImageService {
         return Response.seeOther( URI.create( imagePath ) ).build();
     }
 
-    private static enum Image {
-        CITS_ROBOT( "cits_robot.jpg" ), //
-        CITS_SAKURA( "cits_sakura.jpg" ), //
-        MG_KODAMA( "mh_kodama.jpg" ), //
-        NARUTO_NARUTOS( "naruto_narutos.jpg" ), //
-        NARUTO_NSX( "naruto_ns.jpg" ), //
-        NAUSICAA( "nausicaa.jpg" ), //
-        ONEPIECE_JOLLYROGER( "onepiece_jollyroger.jpg" ), //
-        ONEPIECE_PIRATES( "onepiece_pirates.jpg" ), //
-        SAKURASOU_SHIINA( "sakurasou_shiina.jpg" ), //
-        SANKAREA( "sankarea.jpg" ), //
-        TKR_MISAKA( "tkr_misaka.jpg" ), //
-        ;
+    /**
+     * All images that can be chosen as background in the web-gui.
+     * 
+     * @author HerrLock
+     */
+    public static enum Image {
+        /**
+         * a robot (the castle in the sky)
+         */
+        CITS_ROBOT( "cits_robot.jpg" ),
+        /**
+         * Sakura trees (the castle in the sky)
+         */
+        CITS_SAKURA( "cits_sakura.jpg" ),
+        /**
+         * Kodama (mononoke hime)
+         */
+        MG_KODAMA( "mh_kodama.jpg" ),
+        /**
+         * Many small narutos (naruto)
+         */
+        NARUTO_NARUTOS( "naruto_narutos.jpg" ),
+        /**
+         * Naruto and Sasuke (naruto)
+         */
+        NARUTO_NS( "naruto_ns.jpg" ),
+        /**
+         * Nausica&auml; (the valley of the wind)
+         */
+        NAUSICAA( "nausicaa.jpg" ),
+        /**
+         * the jollyroger from the strawhat crew (one piece)
+         */
+        ONEPIECE_JOLLYROGER( "onepiece_jollyroger.jpg" ),
+        /**
+         * pirates from the strawhat crew(one piece)
+         */
+        ONEPIECE_PIRATES( "onepiece_pirates.jpg" ),
+        /**
+         * Mashiro Shiina (sakurasou no pet no kanojo)
+         */
+        SAKURASOU_SHIINA( "sakurasou_shiina.jpg" ),
+        /**
+         * Sanka Rea (sankarea)
+         */
+        SANKAREA( "sankarea.jpg" ),
+        /**
+         * Misaka "the railgun" Mikoto (toaru kagaku no railgun)
+         */
+        TKR_MISAKA( "tkr_misaka.jpg" );
 
         private static final Random RANDOM = new Random();
         private final String filename;
@@ -47,6 +91,11 @@ public class ImageService {
             this.filename = filename;
         }
 
+        /**
+         * Returns a random Image from this enum's values.
+         * 
+         * @return a random Image
+         */
         public static Image getRandom() {
             Image[] values = Image.values();
             int length = values.length;
@@ -54,6 +103,11 @@ public class ImageService {
             return values[rnd];
         }
 
+        /**
+         * Returns the path of this image
+         * 
+         * @return a path that should lead to the actual image.
+         */
         public String getPath() {
             return "/res/bg/" + this.filename;
         }

@@ -19,12 +19,28 @@ public final class Server {
     private static final Logger logger = LogManager.getLogger();
     private final Tomcat tomcat = new Tomcat();
 
+    /**
+     * Creates a Server, starts it and waits until if receives the signal to stop.
+     * 
+     * @throws ServletException
+     *             thrown be {@link Server#Server()}
+     * @throws LifecycleException
+     *             thrown be {@link Server#start()}
+     * @throws IOException
+     *             thrown by {@link Server#start()}
+     */
     public static void startServerAndWaitForStop() throws ServletException, LifecycleException, IOException {
         final Server server = new Server();
         server.start();
         server.listenForStop();
     }
 
+    /**
+     * Creates a new Embed-Tomcat. The server listens to the port 1905.
+     * 
+     * @throws ServletException
+     *             thrown by {@link Tomcat#addWebapp(String, String)}
+     */
     public Server() throws ServletException {
         this.tomcat.setPort( 1905 );
 
@@ -35,6 +51,14 @@ public final class Server {
         this.tomcat.addWebapp( "", new File( ".", "tomcat.1905/webapps/ROOT.war" ).getAbsolutePath() );
     }
 
+    /**
+     * Start the tomcat-instance
+     * 
+     * @throws LifecycleException
+     *             thrown by {@link Tomcat#start()}
+     * @throws IOException
+     *             thrown if the tomcat's connector is in the state {@link LifecycleState#FAILED} after starting.
+     */
     public void start() throws LifecycleException, IOException {
         this.tomcat.start();
 
@@ -52,6 +76,10 @@ public final class Server {
         logger.info( "Server started: http://localhost:{}", this.tomcat.getConnector().getPort() );
     }
 
+    /**
+     * Wait for the server to be stopped. CHecks all 2 seconds if either 'q' can be read from System.in or the connector is
+     * stopped (this can be done by the method {@link Tomcat#stop()}.
+     */
     public void listenForStop() {
         boolean active = true;
         boolean sysinIsOpen = true;
@@ -103,6 +131,12 @@ public final class Server {
         return quitBySysin;
     }
 
+    /**
+     * Delegate for {@link Tomcat#stop()}.
+     * 
+     * @throws LifecycleException
+     *             thrown by {@link Tomcat#stop()}
+     */
     public void stop() throws LifecycleException {
         this.tomcat.stop();
     }

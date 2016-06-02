@@ -104,19 +104,45 @@ public final class ClassPathHack {
         // not used
     }
 
+    /**
+     * A {@link Predicate} checking the name of a file.
+     * 
+     * @author HerrLock
+     */
     public static class FilenamePredicate implements Predicate<File> {
         private final String filename;
         private final boolean ignoreCase;
 
+        /**
+         * Creates a new FilenamePredicate with the given filename and strict case-check.
+         * 
+         * @param filename
+         *            The filename to compare against
+         */
         public FilenamePredicate( final String filename ) {
             this( filename, false );
         }
 
+        /**
+         * Creates a new FilenamePredicate with the given filename and optional strict or non-strict checking.
+         * 
+         * @param filename
+         *            The filename to compare against
+         * @param ignoreCase
+         *            If the names should be compared via {@link String#equalsIgnoreCase(String)}.
+         */
         public FilenamePredicate( final String filename, final boolean ignoreCase ) {
             this.filename = filename;
             this.ignoreCase = ignoreCase;
         }
 
+        /**
+         * Checks if the stored filename and the name of the passed file are equal. If the filename equals the stored filename
+         * (optional equalsIgnoreCase) {@code true} is returned. Otherwise false is returned. If the input is {@code null} then
+         * {@code false} is returned as well.
+         * 
+         * @return If the name of the given file is equal to the stored file.
+         */
         @Override
         public boolean apply( final File input ) {
             boolean isNull = input == null;

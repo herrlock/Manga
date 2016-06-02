@@ -26,8 +26,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
- * 
- * http://stackoverflow.com/a/12718117/3680684
+ * A Utility-class to create and show dialogs with JavaFX. Taken and modified from
+ * <a>http://stackoverflow.com/a/12718117/3680684</a>
  */
 public final class Dialogs {
 

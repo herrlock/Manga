@@ -19,7 +19,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * Initializes the download and starts it after confirming the number of pictures and an estimated whole size of the images with a
  * dialog created in {@link Dialogs}
  * 
- * @author Herrlock
+ * @author HerrLock
  */
 public final class DialogDownloader extends MDownloader {
     private static final Logger logger = LogManager.getLogger();

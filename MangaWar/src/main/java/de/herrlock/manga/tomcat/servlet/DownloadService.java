@@ -25,6 +25,8 @@ import de.herrlock.manga.util.configuration.Configuration;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
+ * A service that receives the parameters required to start an {@link MDownloader} and handles the currently running MDownloaders
+ * 
  * @author HerrLock
  */
 @Path( "download" )
@@ -32,12 +34,24 @@ public class DownloadService {
     private static final Logger logger = LogManager.getLogger();
     private static final Map<UUID, MDObject> downloaders = new HashMap<>();
 
+    /**
+     * Creates a new {@link UUID} and a new {@link DownloadConfiguration} and creates and start a new {@link MDownloader}
+     * afterwards.
+     * 
+     * @param url
+     *            the url to download from
+     * @param proxy
+     *            the url to the proxy to use
+     * @param pattern
+     *            the chapter-pattern
+     * @return a response containing the UUID for the new MDownloader
+     */
     @GET
     @Path( "start" )
     @Produces( MediaType.TEXT_PLAIN )
     public Response startDownload( @QueryParam( "url" ) final String url, @QueryParam( "proxy" ) final String proxy,
-        @QueryParam( "pattern" ) final String pattern, @QueryParam( "folder" ) final String folder ) {
-        logger.entry( url, proxy, pattern, folder );
+        @QueryParam( "pattern" ) final String pattern ) {
+        logger.entry( url, proxy, pattern );
         UUID randomUUID;
         do {
             randomUUID = UUID.randomUUID();
@@ -61,6 +75,11 @@ public class DownloadService {
         return Response.ok( randomUUID.toString() ).build();
     }
 
+    /**
+     * Retrieves and returns the progress of all MDownloaders.
+     * 
+     * @return a list of progresses for all MDownloaders
+     */
     @GET
     @Path( "progress" )
     @Produces( MediaType.APPLICATION_JSON )
@@ -78,6 +97,11 @@ public class DownloadService {
         return result;
     }
 
+    /**
+     * A simple object to store MDownloaders together with the url
+     * 
+     * @author HerrLock
+     */
     static class MDObject {
         private final String url;
         private final MDownloader mdownloader;
@@ -96,6 +120,11 @@ public class DownloadService {
         }
     }
 
+    /**
+     * An object to store properties that are related to the progress of an MDownloader.
+     * 
+     * @author HerrLock
+     */
     static class ProgressObject {
         private final UUID uuid;
         private final String url;
@@ -134,6 +163,11 @@ public class DownloadService {
 
     }
 
+    /**
+     * An {@link MDownloader} that starts the download in a new Thread.
+     * 
+     * @author HerrLock
+     */
     @VisibleForTesting
     static final class PlainDownloader extends MDownloader {
         private final Thread thread;
