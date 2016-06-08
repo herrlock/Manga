@@ -149,9 +149,17 @@ $(function() {
 		var getDotValue = (array, string) => string.split(".").reduce((e,i) => e[i], array);
 		$("[data-i18n]").each(function(index, element) {
 			var key = element.dataset.i18n;
-			var text = getDotValue(md.rb, key) || getDotValue(md.rben, key);
+			var text = getDotValue(md.rb, key);
 			if(!!text) {
 				$(element).text(text);
+			} else {
+				var enText =  getDotValue(md.rben, key);
+				if(!!enText) {
+					logger warn("No own text for key", key);
+					$(element).text(enText);
+				} else {
+					logger warn("No texts for key", key);
+				}
 			}
 		});
 	});
