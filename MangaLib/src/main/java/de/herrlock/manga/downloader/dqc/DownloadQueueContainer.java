@@ -99,7 +99,7 @@ public final class DownloadQueueContainer {
      * clears the queue, calls itself in case a download timed out
      */
     public void downloadPages() {
-        logger.entry();
+        logger.traceEntry();
         List<Page> pages = ImmutableList.copyOf( this.dlQueue );
         this.dlQueue.clear();
         // download pictures from the ChapterListContainer
@@ -127,7 +127,7 @@ public final class DownloadQueueContainer {
         private final ResponseHandler<Void> handler;
 
         public DownloadThread( final Page p ) {
-            logger.entry( p.getUrl() );
+            logger.traceEntry( "page-url: {}", p.getUrl() );
             this.p = p;
             this.handler = new ResponseHandler<Void>() {
                 @Override

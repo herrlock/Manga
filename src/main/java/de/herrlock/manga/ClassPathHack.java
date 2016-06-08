@@ -38,6 +38,7 @@ public final class ClassPathHack {
      *             classpath.
      */
     public static void makeSureJfxrtLoaded() throws ClassNotFoundException {
+        logger.traceEntry();
         try {
             tryToLoadJavafxApplication();
             logger.debug( "Loaded {} at first try", Application.class );
@@ -50,10 +51,12 @@ public final class ClassPathHack {
     }
 
     private static void tryToLoadJavafxApplication() throws ClassNotFoundException {
+        logger.traceEntry();
         Class.forName( "javafx.application.Application" );
     }
 
     private static void addJarToSystemClassloader() {
+        logger.traceEntry();
         final File javaHomeFolder = Paths.get( System.getProperty( "java.home" ) ).toFile();
         Iterable<File> iterable = Files.fileTreeTraverser().preOrderTraversal( javaHomeFolder );
         Optional<File> jfxrtOptional = Iterables.tryFind( iterable, new FilenamePredicate( "jfxrt.jar" ) );

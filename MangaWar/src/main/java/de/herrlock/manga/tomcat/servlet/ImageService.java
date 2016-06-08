@@ -27,7 +27,7 @@ public class ImageService {
     @GET
     @Path( "background.jpg" )
     public Response getImage() {
-        logger.entry();
+        logger.traceEntry();
         String imagePath = Image.getRandom().getPath();
         logger.debug( "redir to: {}", imagePath );
         return Response.seeOther( URI.create( imagePath ) ).build();

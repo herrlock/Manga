@@ -20,13 +20,13 @@ public final class ServerMain {
     private final Server server;
 
     public static void execute() throws ServletException, LifecycleException, IOException, URISyntaxException {
-        logger.entry();
+        logger.traceEntry();
         execute( false );
     }
 
     public static void execute( final boolean withDesktop )
         throws ServletException, LifecycleException, IOException, URISyntaxException {
-        logger.entry( withDesktop );
+        logger.traceEntry( "withDesktop: {}", withDesktop );
         ServerMain srvMain = new ServerMain();
         srvMain.start();
         if ( withDesktop && Desktop.isDesktopSupported() ) {
@@ -36,22 +36,22 @@ public final class ServerMain {
     }
 
     public ServerMain() throws ServletException {
-        logger.entry();
+        logger.traceEntry();
         this.server = new Server();
     }
 
     public void start() throws LifecycleException, IOException {
-        logger.entry();
+        logger.traceEntry();
         this.server.start();
     }
 
     public void listenForStop() {
-        logger.entry();
+        logger.traceEntry();
         this.server.listenForStop();
     }
 
     public void stop() throws LifecycleException {
-        logger.entry();
+        logger.traceEntry();
         this.server.stop();
     }
 }

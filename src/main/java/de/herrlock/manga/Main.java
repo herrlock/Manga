@@ -85,6 +85,7 @@ public final class Main {
     }
 
     private static void runFxClasspathHack() {
+        logger.traceEntry();
         try {
             ClassPathHack.makeSureJfxrtLoaded();
             fxAvailabile = true;
@@ -96,7 +97,7 @@ public final class Main {
     }
 
     private static CommandLine getCommandlineFromArgs( final String... args ) throws ParseException {
-        logger.entry( Arrays.toString( args ) );
+        logger.traceEntry( "args: {}", Arrays.toString( args ) );
         MyOptions myOptions = new MyOptions();
         Options options = myOptions.getOptions();
         Properties defaultValues = myOptions.getDefaultValues();
@@ -104,6 +105,7 @@ public final class Main {
     }
 
     private static void checkLoggerConfiguration( final CommandLine commandline ) {
+        logger.traceEntry( "Commandline: {}", commandline );
         if ( commandline.hasOption( "log" ) ) {
             String optionValue = commandline.getOptionValue( "log" );
             Level level = Level.toLevel( optionValue, Level.INFO );
@@ -129,6 +131,7 @@ public final class Main {
     }
 
     private static void handleCommandline( final CommandLine commandline ) {
+        logger.traceEntry( "Commandline: {}", commandline );
         if ( commandline.hasOption( "help" ) ) {
             logger.trace( "Commandline has \"help\", show help" );
             printHelp();
@@ -153,7 +156,7 @@ public final class Main {
     }
 
     private static void printHelp() {
-        logger.entry();
+        logger.traceEntry();
 
         final HelpFormatter helpFormatter = new HelpFormatter();
         final StringWriter stringWriter = new StringWriter();
@@ -178,13 +181,13 @@ public final class Main {
     }
 
     private static void startDialogDownloader() {
-        logger.entry();
+        logger.traceEntry();
         logger.info( "Starting Dialog-Downloader:" );
         logger.error( "not yet implemented" );
     }
 
     private static void startCliDownloader( final CommandLine commandline ) {
-        logger.entry( commandline );
+        logger.traceEntry( "Commandline: {}", commandline );
 
         if ( commandline.hasOption( "hoster" ) ) {
             logger.info( "Printing all Hoster:" );
@@ -209,13 +212,13 @@ public final class Main {
     }
 
     private static void startGuiDownloader() {
-        logger.entry();
+        logger.traceEntry();
         logger.info( "Starting GUI:" );
         Application.launch( Ctrl.class );
     }
 
     private static void startViewpageCreator( final CommandLine commandline ) {
-        logger.entry( commandline );
+        logger.traceEntry( "Commandline: {}", commandline );
         logger.info( "Starting ViewpageCreator:" );
         if ( commandline.hasOption( "folder" ) ) {
             try {
@@ -238,7 +241,7 @@ public final class Main {
     }
 
     private static void startServer( final CommandLine commandline ) {
-        logger.entry( commandline );
+        logger.traceEntry( "Commandline: {}", commandline );
         logger.info( "Starting Server:" );
         try {
             if ( commandline.hasOption( "browser" ) ) {

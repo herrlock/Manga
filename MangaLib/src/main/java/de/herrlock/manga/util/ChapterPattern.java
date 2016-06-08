@@ -54,7 +54,7 @@ public final class ChapterPattern {
      *            the pattern to analyze, in case of {@code null} or an empty string an empty collection is used
      */
     public ChapterPattern( final String pattern ) {
-        logger.entry( pattern );
+        logger.traceEntry( "pattern: {}", pattern );
         Set<Interval> result = new HashSet<>();
         // accept only if valid
         if ( pattern != null && REGEX.matcher( pattern ).matches() ) {

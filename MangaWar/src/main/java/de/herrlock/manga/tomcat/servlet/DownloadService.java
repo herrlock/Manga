@@ -51,7 +51,7 @@ public class DownloadService {
     @Produces( MediaType.TEXT_PLAIN )
     public Response startDownload( @QueryParam( "url" ) final String url, @QueryParam( "proxy" ) final String proxy,
         @QueryParam( "pattern" ) final String pattern ) {
-        logger.entry( url, proxy, pattern );
+        logger.traceEntry( "URL: {}, Proxy: {}, Pattern: {}", url, proxy, pattern );
         UUID randomUUID;
         do {
             randomUUID = UUID.randomUUID();
@@ -84,7 +84,7 @@ public class DownloadService {
     @Path( "progress" )
     @Produces( MediaType.APPLICATION_JSON )
     public List<ProgressObject> getProgress() {
-        logger.entry();
+        logger.traceEntry();
         List<ProgressObject> result = new ArrayList<>( downloaders.size() );
         for ( Entry<UUID, MDObject> entry : downloaders.entrySet() ) {
             UUID key = entry.getKey();

@@ -49,7 +49,7 @@ public final class JDExport extends MDownloader {
     }
 
     public static void execute( final Properties p ) {
-        logger.entry();
+        logger.traceEntry();
         String jdhome = p.getProperty( Configuration.JDFW );
         if ( jdhome == null || jdhome.trim().isEmpty() ) {
             throw new InitializeException( "\"" + Configuration.JDFW + "\" must be set" );

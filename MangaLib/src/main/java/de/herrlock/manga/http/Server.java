@@ -108,7 +108,7 @@ public final class Server {
     }
 
     private boolean getConnectorStopped() {
-        logger.entry();
+        logger.traceEntry();
         LifecycleState state = this.tomcat.getConnector().getState();
         boolean connectorStopped = state == LifecycleState.STOPPED;
         logger.debug( "Connector: {}", state );
@@ -116,7 +116,7 @@ public final class Server {
     }
 
     private boolean getStopFromSysin() {
-        logger.entry();
+        logger.traceEntry();
         boolean quitBySysin = false;
         try {
             if ( System.in.available() > 0 ) {

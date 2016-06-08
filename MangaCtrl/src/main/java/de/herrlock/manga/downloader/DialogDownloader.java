@@ -25,7 +25,7 @@ public final class DialogDownloader extends MDownloader {
     private static final Logger logger = LogManager.getLogger();
 
     public static void execute() {
-        logger.entry();
+        logger.traceEntry();
         Properties p = new Properties();
         // load properties
         try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
@@ -44,7 +44,7 @@ public final class DialogDownloader extends MDownloader {
 
     @Override
     protected void run() {
-        logger.entry();
+        logger.traceEntry();
         try {
             if ( goon() ) {
                 downloadAll();

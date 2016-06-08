@@ -37,12 +37,12 @@ public final class ConsoleDownloader extends MDownloader {
 
     @Override
     public void run() {
-        logger.entry();
+        logger.traceEntry();
         if ( !this.interactive || goon() ) {
             logger.trace( "start download" );
             downloadAll();
         }
-        logger.exit();
+        logger.traceExit();
     }
 
     private boolean goon() {

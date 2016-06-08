@@ -19,13 +19,11 @@ import org.apache.logging.log4j.message.Message;
  */
 @Plugin( name = "LevelFilter", category = "Core", elementType = "filter", printObject = true )
 public final class LevelFilter extends AbstractFilter {
-    private static final long serialVersionUID = 1L;
-
-    private Level level;
+    private Level filterLevel;
 
     private LevelFilter( final Level level, final Result onMatch, final Result onMismatch ) {
         super( onMatch, onMismatch );
-        this.level = Objects.requireNonNull( level );
+        this.filterLevel = Objects.requireNonNull( level );
     }
 
     /**
@@ -70,7 +68,7 @@ public final class LevelFilter extends AbstractFilter {
      * @return The Result of filtering.
      */
     public Result filter( final Level level ) {
-        return level.isMoreSpecificThan( this.level ) ? this.onMatch : this.onMismatch;
+        return level.isMoreSpecificThan( this.filterLevel ) ? this.onMatch : this.onMismatch;
     }
 
     /**
@@ -80,12 +78,12 @@ public final class LevelFilter extends AbstractFilter {
      *            the new {@linkplain Level}
      */
     public void setLevel( final Level level ) {
-        this.level = level;
+        this.filterLevel = level;
     }
 
     @Override
     public String toString() {
-        return MessageFormat.format( "LevelFilter: {0}", this.level );
+        return MessageFormat.format( "LevelFilter: {0}", this.filterLevel );
     }
 
     /**

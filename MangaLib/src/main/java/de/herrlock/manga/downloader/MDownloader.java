@@ -65,7 +65,7 @@ public abstract class MDownloader implements Progressable, MDownloaderMBean {
      *            the Configuration to use
      */
     public MDownloader( final DownloadConfiguration conf ) {
-        logger.entry( conf );
+        logger.traceEntry( "conf: {}", conf );
         logger.info( conf.getUrl().toExternalForm() );
         this.clc = new ChapterListContainer( conf );
         this.pmc = new PictureMapContainer( this.clc );
@@ -111,7 +111,7 @@ public abstract class MDownloader implements Progressable, MDownloaderMBean {
      * downloads everything in the PictureMapContainer
      */
     protected void downloadAll() {
-        logger.entry();
+        logger.traceEntry();
         this.started = true;
         EntryList<String, EntryList<Integer, URL>> entries = this.pmc.getEntries();
         entries.sort( EntryList.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
@@ -136,7 +136,7 @@ public abstract class MDownloader implements Progressable, MDownloaderMBean {
      * @see DownloadQueueContainer#downloadPages()
      */
     private void downloadChapter( final String key, final EntryList<Integer, URL> entries ) {
-        logger.entry( key );
+        logger.traceEntry( "key: {}", key );
         logger.info( "Download chapter {} ({} pages)", key, entries.size() );
         File chapterFolder = new File( this.clc.getPath(), key );
         if ( chapterFolder.exists() || chapterFolder.mkdirs() ) {
@@ -157,7 +157,7 @@ public abstract class MDownloader implements Progressable, MDownloaderMBean {
      *            the amount to inrement the progress by
      */
     protected void doProgress( final int delta ) {
-        logger.entry( delta );
+        logger.traceEntry( "delta: {}", delta );
         int oldProgress = this.progress;
         setProgress( this.progress + delta );
         for ( ProgressListener listener : this.progressListeners ) {

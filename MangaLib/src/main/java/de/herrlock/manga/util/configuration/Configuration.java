@@ -61,7 +61,7 @@ public abstract class Configuration {
      * @return the property headless as bollean
      */
     protected static boolean _getIsHeadless( final Properties p ) {
-        logger.entry();
+        logger.traceEntry();
         String property = p.getProperty( HEADLESS, "false" );
         boolean headless = property.matches( "true" );
         logger.debug( "headless: {}", headless );
@@ -78,7 +78,7 @@ public abstract class Configuration {
      *             in case the URL is not availabile or malformed
      */
     protected static URL _createUrl( final Properties p ) throws InitializeException {
-        logger.entry();
+        logger.traceEntry();
         // get url
         URL url;
         try {
@@ -105,7 +105,7 @@ public abstract class Configuration {
      *             in case the given url is malformed or cannot be resolved
      */
     protected static HttpHost _createProxy( final Properties p ) throws InitializeException {
-        logger.entry();
+        logger.traceEntry();
         // get proxy
         try {
             String urlString = p.getProperty( PROXY );
@@ -139,7 +139,7 @@ public abstract class Configuration {
      * @return a {@link ChapterPattern} containing the containing the chosen Chaptern
      */
     protected static ChapterPattern _createPattern( final Properties p ) {
-        logger.entry();
+        logger.traceEntry();
         String patternString = p.getProperty( PATTERN );
         logger.debug( "ChapterPattern: {}", patternString );
         return new ChapterPattern( patternString );
@@ -154,7 +154,7 @@ public abstract class Configuration {
      *         from {@link #TIMEOUT_DEFAULT} ({@value #TIMEOUT_DEFAULT})
      */
     protected static int _createTimeout( final Properties p ) {
-        logger.entry();
+        logger.traceEntry();
         String timeoutString = p.getProperty( TIMEOUT );
         if ( timeoutString == null || timeoutString.trim().equals( "" ) ) {
             logger.debug( "Timeout: using default-value ({})", TIMEOUT_DEFAULT );
@@ -175,7 +175,7 @@ public abstract class Configuration {
      *             in case the required property cannot be found
      */
     protected static File _createFolderwatch( final Properties p ) throws InitializeException {
-        logger.entry();
+        logger.traceEntry();
         String fwPath = p.getProperty( JDFW );
         if ( fwPath == null || fwPath.trim().equals( "" ) ) {
             throw new InitializeException( "property " + JDFW + " is required but not availabile." );

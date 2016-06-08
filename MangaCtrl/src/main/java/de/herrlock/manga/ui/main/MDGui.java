@@ -73,7 +73,7 @@ public final class MDGui extends AbstractApplication {
 
         @Override
         public void handle( final MouseEvent event ) {
-            logger.entry( event );
+            logger.traceEntry( "event: {}", event );
             double screenX = event.getScreenX();
             double screenY = event.getScreenY();
             if ( event.getEventType().getName().equals( "MOUSE_PRESSED" ) ) {

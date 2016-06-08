@@ -91,7 +91,7 @@ public final class ViewPage {
     }
 
     private Element createHeadChildren( final Element head ) {
-        logger.entry( head );
+        logger.info( "creating head" );
         head.appendElement( "title" ).text( mangaName() );
         head.appendElement( "meta" ).attr( "charset", "utf-8" );
         head.appendElement( "meta" ).attr( "name", "viewport" ).attr( "content", "width=device-width, initial-scale=1.0" );
@@ -126,7 +126,7 @@ public final class ViewPage {
     }
 
     private Element leftDiv() {
-        logger.info( "creating left div" );
+        logger.traceEntry( "creating left div" );
         Map<Integer, List<String>> blocks = new HashMap<>();
         {
             // init map

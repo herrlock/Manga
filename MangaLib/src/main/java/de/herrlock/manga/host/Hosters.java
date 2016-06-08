@@ -79,7 +79,7 @@ public final class Hosters {
     }
 
     private static void loadAdditionalHosters( final List<String> lines ) {
-        logger.entry( lines );
+        logger.traceEntry( "lines: {}", lines );
 
         final Predicate<String> isBracketLine = new Predicate<String>() {
             @Override
