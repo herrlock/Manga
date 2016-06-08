@@ -89,7 +89,7 @@ public final class Main {
             ClassPathHack.makeSureJfxrtLoaded();
             fxAvailabile = true;
         } catch ( ClassNotFoundException ex ) {
-            logger.error( "Could not find jfxrt.jar on the classpath."
+            logger.error( "Could not find jfxrt.jar on the classpath. "
                 + "This does not have to be fatal as it may be that JavaFX is not needed" );
         }
 
