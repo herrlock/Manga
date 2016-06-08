@@ -49,10 +49,8 @@ public abstract class ChapterList implements Iterable<Chapter> {
      * @param conf
      *            the {@link DownloadConfiguration} to use
      * @return an instance of {@link ChapterList}; when no suitable Hoster can be detected {@code null}
-     * @throws IOException
-     *             thrown by {@link Hoster#getChapterList(DownloadConfiguration)}
      */
-    public static ChapterList getInstance( final DownloadConfiguration conf ) throws IOException {
+    public static ChapterList getInstance( final DownloadConfiguration conf ) {
         logger.entry();
         URL url = conf.getUrl();
         Hoster h = Hosters.getHostByURL( url );

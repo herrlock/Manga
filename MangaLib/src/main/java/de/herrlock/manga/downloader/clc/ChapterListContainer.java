@@ -34,11 +34,9 @@ public final class ChapterListContainer implements Iterable<Chapter> {
      * 
      * @param conf
      *            the {@link DownloadConfiguration} to use
-     * @throws IOException
-     *             thrown by {@link ChapterList#getInstance(DownloadConfiguration)}
      * @see ChapterList#getInstance(DownloadConfiguration)
      */
-    public ChapterListContainer( final DownloadConfiguration conf ) throws IOException {
+    public ChapterListContainer( final DownloadConfiguration conf ) {
         this.chapterlist = ChapterList.getInstance( conf );
         String mangaName = this.chapterlist.getMangaName().toLowerCase( Locale.ENGLISH ).replace( ' ', '_' );
         String timestamp = new SimpleDateFormat( "YYMMddHHmmss", Locale.GERMAN ).format( new Date() );

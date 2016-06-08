@@ -1,7 +1,6 @@
 package de.herrlock.manga.downloader;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,6 @@ import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.downloader.dqc.DownloadQueueContainer;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.downloader.pmc.PictureMapContainer;
-import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.ProgressListener;
@@ -69,11 +67,7 @@ public abstract class MDownloader implements Progressable, MDownloaderMBean {
     public MDownloader( final DownloadConfiguration conf ) {
         logger.entry( conf );
         logger.info( conf.getUrl().toExternalForm() );
-        try {
-            this.clc = new ChapterListContainer( conf );
-        } catch ( final IOException ex ) {
-            throw new InitializeException( ex );
-        }
+        this.clc = new ChapterListContainer( conf );
         this.pmc = new PictureMapContainer( this.clc );
         this.maxProgress = this.pmc.getSize();
         this.dqc = new DownloadQueueContainer( this.clc, conf );

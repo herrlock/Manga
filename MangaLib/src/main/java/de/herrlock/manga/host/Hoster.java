@@ -1,6 +1,5 @@
 package de.herrlock.manga.host;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -50,10 +49,8 @@ public final class Hoster implements Comparable<Hoster> {
      * @param conf
      *            the {@link DownloadConfiguration} to use
      * @return an actual ChapterList-implementation
-     * @throws IOException
-     *             may be thrown by the called ChapterList's constructor (not required though)
      */
-    public ChapterList getChapterList( final DownloadConfiguration conf ) throws IOException {
+    public ChapterList getChapterList( final DownloadConfiguration conf ) {
         try {
             Constructor<? extends ChapterList> constructor = this.baseClass.getConstructor( DownloadConfiguration.class );
             return constructor.newInstance( conf );
