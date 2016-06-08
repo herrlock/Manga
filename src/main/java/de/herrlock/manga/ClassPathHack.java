@@ -9,15 +9,14 @@ import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Iterator;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
+import com.google.common.collect.Iterables;
+import com.google.common.io.Files;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import javafx.application.Application;
@@ -56,10 +55,8 @@ public final class ClassPathHack {
 
     private static void addJarToSystemClassloader() {
         final File javaHomeFolder = Paths.get( System.getProperty( "java.home" ) ).toFile();
-        Iterator<File> iterator = FileUtils.iterateFiles( javaHomeFolder, new String[] {
-            "jar"
-        }, true );
-        Optional<File> jfxrtOptional = Iterators.tryFind( iterator, new FilenamePredicate( "jfxrt.jar" ) );
+        Iterable<File> iterable = Files.fileTreeTraverser().preOrderTraversal( javaHomeFolder );
+        Optional<File> jfxrtOptional = Iterables.tryFind( iterable, new FilenamePredicate( "jfxrt.jar" ) );
 
         if ( jfxrtOptional.isPresent() ) {
             File jfxrt = jfxrtOptional.get();

@@ -1,9 +1,12 @@
 package de.herrlock.manga.jd;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -13,9 +16,10 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.google.common.io.ByteStreams;
 
 import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.downloader.pmc.EntryList;
@@ -93,7 +97,9 @@ public final class JDExport extends MDownloader {
         public void write() throws IOException {
             File outFile = new File( JDExport.this.jdfwFolder, this.c.getFilename() );
             byte[] bytes = this.c.export().getBytes( StandardCharsets.UTF_8 );
-            FileUtils.writeByteArrayToFile( outFile, bytes );
+            try ( OutputStream out = new FileOutputStream( outFile ) ) {
+                ByteStreams.copy( new ByteArrayInputStream( bytes ), out );
+            }
             logger.info( "print string -> {}", outFile );
         }
 

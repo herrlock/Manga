@@ -3,8 +3,10 @@ package de.herrlock.manga.html;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,12 +20,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
+
+import com.google.common.io.ByteStreams;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
 
@@ -238,7 +241,9 @@ public final class ViewPage {
         try ( InputStream resource = ViewPage.class.getResourceAsStream( filename ) ) {
             File toFile = new File( this.folder, filename );
             logger.info( "copy {} to {}", filename, toFile );
-            FileUtils.copyInputStreamToFile( resource, toFile );
+            try ( OutputStream out = new FileOutputStream( toFile ) ) {
+                ByteStreams.copy( resource, out );
+            }
         } catch ( final IOException ex ) {
             throw new MDRuntimeException( ex );
         }

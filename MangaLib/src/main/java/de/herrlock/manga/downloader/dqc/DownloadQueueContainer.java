@@ -1,8 +1,10 @@
 package de.herrlock.manga.downloader.dqc;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -12,7 +14,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -22,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.io.ByteStreams;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.downloader.pmc.EntryList;
@@ -132,7 +134,9 @@ public final class DownloadQueueContainer {
                 public Void handleResponse( final HttpResponse response ) throws ClientProtocolException, IOException {
                     HttpEntity entity = response.getEntity();
                     try ( InputStream in = entity.getContent() ) {
-                        FileUtils.copyInputStreamToFile( in, p.getTargetFile() );
+                        try ( OutputStream out = new FileOutputStream( p.getTargetFile() ) ) {
+                            ByteStreams.copy( in, out );
+                        }
                     } finally {
                         EntityUtils.consume( entity );
                     }
