@@ -155,10 +155,10 @@ $(function() {
 			} else {
 				var enText =  getDotValue(md.rben, key);
 				if(!!enText) {
-					logger warn("No own text for key", key);
+					console.warn("No own text for key", key);
 					$(element).text(enText);
 				} else {
-					logger warn("No texts for key", key);
+					console.error("No texts for key", key);
 				}
 			}
 		});
