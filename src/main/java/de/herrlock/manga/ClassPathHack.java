@@ -79,7 +79,7 @@ public final class ClassPathHack {
     }
 
     private static void addURL( final URL url ) {
-        logger.trace( url );
+        logger.traceEntry( "url: {}", url );
         final URLClassLoader sysloader = ( URLClassLoader ) ClassLoader.getSystemClassLoader();
         final Class<? extends ClassLoader> sysclass = URLClassLoader.class;
 
