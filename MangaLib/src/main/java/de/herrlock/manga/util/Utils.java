@@ -46,7 +46,10 @@ public final class Utils {
         HttpGet get = new HttpGet( url.toExternalForm() );
         int timeout = conf.getTimeout();
         HttpHost proxy = conf.getProxy();
-        RequestConfig config = RequestConfig.custom().setConnectTimeout( timeout ).setSocketTimeout( timeout ).setProxy( proxy )
+        RequestConfig config = RequestConfig.custom() //
+            .setConnectTimeout( timeout ) //
+            .setSocketTimeout( timeout ) //
+            .setProxy( proxy ) //
             .build();
         get.setConfig( config );
         return get;

@@ -110,18 +110,7 @@ public abstract class Configuration {
         try {
             String urlString = p.getProperty( PROXY );
             if ( urlString != null && !"".equals( urlString ) ) {
-                final URL proxyUrl;
-                if ( urlString.startsWith( "http://" ) || urlString.startsWith( "https://" ) ) {
-                    proxyUrl = new URL( urlString );
-                } else {
-                    proxyUrl = new URL( "http://" + urlString );
-                }
-                String proxyHost = proxyUrl.getHost();
-                int proxyPort = proxyUrl.getPort();
-                String scheme = proxyUrl.getProtocol();
-                InetAddress proxyAddress = InetAddress.getByName( proxyHost );
-                logger.debug( "Proxy: {}:{}", proxyHost, proxyPort );
-                return new HttpHost( proxyAddress, proxyPort, scheme );
+                return createHttpHost( urlString );
             }
         } catch ( final MalformedURLException | UnknownHostException ex ) {
             logger.error( "", ex );
@@ -129,6 +118,21 @@ public abstract class Configuration {
         }
         logger.debug( "No Proxy" );
         return null;
+    }
+
+    public static HttpHost createHttpHost( final String urlString ) throws MalformedURLException, UnknownHostException {
+        final URL url;
+        if ( urlString.startsWith( "http://" ) || urlString.startsWith( "https://" ) ) {
+            url = new URL( urlString );
+        } else {
+            url = new URL( "http://" + urlString );
+        }
+        String proxyHost = url.getHost();
+        int proxyPort = url.getPort();
+        String scheme = url.getProtocol();
+        InetAddress address = InetAddress.getByName( proxyHost );
+        logger.debug( "URL: {}:{}", proxyHost, proxyPort );
+        return new HttpHost( address, proxyPort, scheme );
     }
 
     /**

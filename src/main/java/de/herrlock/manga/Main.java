@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -34,6 +35,7 @@ import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.http.ServerMain;
 import de.herrlock.manga.util.ChapterPattern;
+import de.herrlock.manga.util.configuration.Configuration;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import javafx.application.Application;
 
@@ -196,7 +198,9 @@ public final class Main {
             logger.info( "Starting Commandline-Downloader:" );
             try {
                 URL url = new URL( commandline.getOptionValue( "url" ) );
-                HttpHost proxy = commandline.hasOption( "proxy" ) ? new HttpHost( commandline.getOptionValue( "proxy" ) ) : null;
+                HttpHost proxy = commandline.hasOption( "proxy" )
+                    ? Configuration.createHttpHost( commandline.getOptionValue( "proxy" ) )
+                    : null;
                 ChapterPattern pattern = commandline.hasOption( "pattern" )
                     ? new ChapterPattern( commandline.getOptionValue( "pattern" ) )
                     : null;
@@ -205,7 +209,7 @@ public final class Main {
                 boolean interactive = commandline.hasOption( 'i' );
                 ConsoleDownloader downloader = new ConsoleDownloader( conf, interactive );
                 downloader.run();
-            } catch ( MalformedURLException ex ) {
+            } catch ( MalformedURLException | UnknownHostException ex ) {
                 throw new MDRuntimeException( ex );
             }
         }
