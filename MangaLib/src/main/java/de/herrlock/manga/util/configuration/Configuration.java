@@ -127,6 +127,9 @@ public abstract class Configuration {
 
     public static ProxyStorage createProxyStorage( final String urlString ) throws MalformedURLException, UnknownHostException {
         final URL url;
+        if ( urlString == null ) {
+            return new ProxyStorage();
+        }
         if ( urlString.startsWith( "http://" ) || urlString.startsWith( "https://" ) ) {
             url = new URL( urlString );
         } else {

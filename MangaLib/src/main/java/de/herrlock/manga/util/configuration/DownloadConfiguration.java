@@ -44,7 +44,7 @@ public class DownloadConfiguration extends Configuration {
      * @param url
      *            an {@link URL} to the manga's base-page.
      * @param proxy
-     *            a {@link HttpHost} containing schema, host-name and port of the used proxy. Or {@code null} to use no proxy.
+     *            a {@link ProxyStorage} containing address and auth of the used proxy. Must no be null.
      * @param pattern
      *            the {@link ChapterPattern} to use. Or null to use the default {@link ChapterPattern} to download all.
      * @param timeout
@@ -54,7 +54,7 @@ public class DownloadConfiguration extends Configuration {
         final int timeout ) {
         super( isHeadless );
         this.url = Objects.requireNonNull( url, "A URL is required for downloading" );
-        this.proxy = proxy;
+        this.proxy = proxy == null ? new ProxyStorage() : proxy;
         this.pattern = pattern == null ? new ChapterPattern( "" ) : pattern;
         this.timeout = timeout >= 0 ? timeout : TIMEOUT_DEFAULT;
     }
