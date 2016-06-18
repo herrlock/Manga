@@ -44,7 +44,7 @@ public class DownloadConfiguration extends Configuration {
      * @param url
      *            an {@link URL} to the manga's base-page.
      * @param proxy
-     *            a {@link ProxyStorage} containing address and auth of the used proxy. Must no be null.
+     *            a ProxyStorage containing address and auth of the used proxy. Must no be null.
      * @param pattern
      *            the {@link ChapterPattern} to use. Or null to use the default {@link ChapterPattern} to download all.
      * @param timeout
