@@ -1,6 +1,7 @@
 package de.herrlock.manga.util.configuration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -93,14 +94,18 @@ public class TestConfiguration {
     @Test
     public void testCreateProxy_missing1() {
         ProxyStorage proxy = Configuration._createProxy( this.p );
-        assertNull( proxy );
+        assertNotNull( proxy );
+        assertNull( proxy.getHttpHost() );
+        assertNull( proxy.getCreds() );
     }
 
     @Test
     public void testCreateProxy_missing2() {
         this.p.put( Configuration.PROXY, "" );
         ProxyStorage proxy = Configuration._createProxy( this.p );
-        assertNull( proxy );
+        assertNotNull( proxy );
+        assertNull( proxy.getHttpHost() );
+        assertNull( proxy.getCreds() );
     }
 
     @Test( expected = InitializeException.class )

@@ -100,11 +100,12 @@ public abstract class Configuration {
     }
 
     /**
-     * Creates a {@link HttpHost} that serves as proxy
+     * Creates a {@link ProxyStorage} that serves as proxy
      * 
      * @param p
      *            the {@link Properties} where to search for proxy-settings
-     * @return a {@link HttpHost} containing the proxy-settings, or {@code null}, when no proxy is defined
+     * @return a {@link ProxyStorage} containing the proxy-settings. Does not return null, instead the {@link ProxyStorage}
+     *         contains {@code null}-values
      * @throws InitializeException
      *             in case the given url is malformed or cannot be resolved
      */
@@ -121,7 +122,7 @@ public abstract class Configuration {
             throw new InitializeException( "proxy-url is malformed or not recognized.", ex );
         }
         logger.debug( "No Proxy" );
-        return null;
+        return new ProxyStorage();
     }
 
     public static ProxyStorage createProxyStorage( final String urlString ) throws MalformedURLException, UnknownHostException {
@@ -140,15 +141,15 @@ public abstract class Configuration {
 
         ProxyStorage proxyStorage;
         String userInfo = url.getUserInfo();
-        if ( userInfo != null ) {
+        if ( userInfo == null ) {
+            logger.debug( "No proxy-authentification" );
+            proxyStorage = new ProxyStorage( httpHost );
+        } else {
             String[] userInfoSplit = userInfo.split( ":" );
             String proxyUser = userInfoSplit[0];
             String proxyPassword = userInfoSplit[1];
             logger.debug( "Proxy-User: {}", proxyUser );
             proxyStorage = new ProxyStorage( httpHost, proxyUser, proxyPassword );
-        } else {
-            logger.debug( "No proxy-authentification" );
-            proxyStorage = new ProxyStorage( httpHost );
         }
 
         return proxyStorage;
@@ -247,6 +248,10 @@ public abstract class Configuration {
         private final HttpHost httpHost;
         private final String b64creds;
 
+        public ProxyStorage() {
+            this( null );
+        }
+
         /**
          * Creates a ProxyStorage with a proxy but no credentials. This constructor is to be used, when no authentication is
          * needed.
@@ -287,7 +292,7 @@ public abstract class Configuration {
         }
 
         /**
-         * Getter for the proxy-host.
+         * Getter for the proxy-host. {@code null} if no proxy exist.
          * 
          * @return a HttpHost containins the address to the proxy
          */
