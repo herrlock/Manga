@@ -20,7 +20,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.http.HttpHost;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,6 +35,7 @@ import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.http.ServerMain;
 import de.herrlock.manga.util.ChapterPattern;
 import de.herrlock.manga.util.configuration.Configuration;
+import de.herrlock.manga.util.configuration.Configuration.ProxyStorage;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import javafx.application.Application;
 
@@ -198,8 +198,8 @@ public final class Main {
             logger.info( "Starting Commandline-Downloader:" );
             try {
                 URL url = new URL( commandline.getOptionValue( "url" ) );
-                HttpHost proxy = commandline.hasOption( "proxy" )
-                    ? Configuration.createHttpHost( commandline.getOptionValue( "proxy" ) )
+                ProxyStorage proxy = commandline.hasOption( "proxy" )
+                    ? Configuration.createProxyStorage( commandline.getOptionValue( "proxy" ) )
                     : null;
                 ChapterPattern pattern = commandline.hasOption( "pattern" )
                     ? new ChapterPattern( commandline.getOptionValue( "pattern" ) )

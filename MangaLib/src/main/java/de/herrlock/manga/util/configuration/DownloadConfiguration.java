@@ -16,7 +16,7 @@ import de.herrlock.manga.util.ChapterPattern;
  */
 public class DownloadConfiguration extends Configuration {
     private final URL url;
-    private final HttpHost proxy;
+    private final ProxyStorage proxy;
     private final ChapterPattern pattern;
     private final int timeout;
 
@@ -30,7 +30,7 @@ public class DownloadConfiguration extends Configuration {
     public static DownloadConfiguration create( final Properties p ) {
         boolean isHeadless = _getIsHeadless( p );
         URL url = _createUrl( p );
-        HttpHost proxy = _createProxy( p );
+        ProxyStorage proxy = _createProxy( p );
         ChapterPattern pattern = _createPattern( p );
         int timeout = _createTimeout( p );
         return new DownloadConfiguration( isHeadless, url, proxy, pattern, timeout );
@@ -50,7 +50,7 @@ public class DownloadConfiguration extends Configuration {
      * @param timeout
      *            the timeout for the http-requests. The dafult-value is used if negative.
      */
-    public DownloadConfiguration( final boolean isHeadless, final URL url, final HttpHost proxy, final ChapterPattern pattern,
+    public DownloadConfiguration( final boolean isHeadless, final URL url, final ProxyStorage proxy, final ChapterPattern pattern,
         final int timeout ) {
         super( isHeadless );
         this.url = Objects.requireNonNull( url, "A URL is required for downloading" );
@@ -73,7 +73,7 @@ public class DownloadConfiguration extends Configuration {
      * 
      * @return a {@link HttpHost} containing the proxy-address from this {@link DownloadConfiguration}
      */
-    public final HttpHost getProxy() {
+    public final ProxyStorage getProxy() {
         return this.proxy;
     }
 

@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.util.ChapterPattern;
+import de.herrlock.manga.util.configuration.Configuration.ProxyStorage;
 
 public class TestConfiguration {
 
@@ -62,7 +63,8 @@ public class TestConfiguration {
     @Test
     public void testCreateProxy_validHttp() {
         this.p.put( Configuration.PROXY, "http://localhost:1337" );
-        HttpHost proxy = Configuration._createProxy( this.p );
+        ProxyStorage proxyStorage = Configuration._createProxy( this.p );
+        HttpHost proxy = proxyStorage.getHttpHost();
         assertEquals( "http", proxy.getSchemeName() );
         assertEquals( "localhost", proxy.getHostName() );
         assertEquals( 1337, proxy.getPort() );
@@ -71,7 +73,8 @@ public class TestConfiguration {
     @Test
     public void testCreateProxy_validHttps() {
         this.p.put( Configuration.PROXY, "https://localhost:1337" );
-        HttpHost proxy = Configuration._createProxy( this.p );
+        ProxyStorage proxyStorage = Configuration._createProxy( this.p );
+        HttpHost proxy = proxyStorage.getHttpHost();
         assertEquals( "https", proxy.getSchemeName() );
         assertEquals( "localhost", proxy.getHostName() );
         assertEquals( 1337, proxy.getPort() );
@@ -80,7 +83,8 @@ public class TestConfiguration {
     @Test
     public void testCreateProxy_validNoSchema() {
         this.p.put( Configuration.PROXY, "localhost:1337" );
-        HttpHost proxy = Configuration._createProxy( this.p );
+        ProxyStorage proxyStorage = Configuration._createProxy( this.p );
+        HttpHost proxy = proxyStorage.getHttpHost();
         assertEquals( "http", proxy.getSchemeName() );
         assertEquals( "localhost", proxy.getHostName() );
         assertEquals( 1337, proxy.getPort() );
@@ -88,14 +92,14 @@ public class TestConfiguration {
 
     @Test
     public void testCreateProxy_missing1() {
-        HttpHost proxy = Configuration._createProxy( this.p );
+        ProxyStorage proxy = Configuration._createProxy( this.p );
         assertNull( proxy );
     }
 
     @Test
     public void testCreateProxy_missing2() {
         this.p.put( Configuration.PROXY, "" );
-        HttpHost proxy = Configuration._createProxy( this.p );
+        ProxyStorage proxy = Configuration._createProxy( this.p );
         assertNull( proxy );
     }
 

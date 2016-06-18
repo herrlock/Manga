@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
@@ -20,6 +21,7 @@ import org.apache.http.impl.client.HttpClients;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
+import de.herrlock.manga.util.configuration.Configuration.ProxyStorage;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -45,13 +47,18 @@ public final class Utils {
     public static HttpGet createHttpGet( final URL url, final DownloadConfiguration conf ) {
         HttpGet get = new HttpGet( url.toExternalForm() );
         int timeout = conf.getTimeout();
-        HttpHost proxy = conf.getProxy();
+        ProxyStorage proxy = conf.getProxy();
+        HttpHost proxyHost = proxy.getHttpHost();
         RequestConfig config = RequestConfig.custom() //
             .setConnectTimeout( timeout ) //
             .setSocketTimeout( timeout ) //
-            .setProxy( proxy ) //
+            .setProxy( proxyHost ) //
             .build();
         get.setConfig( config );
+        String creds = proxy.getCreds();
+        if ( creds != null ) {
+            get.setHeader( HttpHeaders.PROXY_AUTHORIZATION, "Basic " + creds );
+        }
         return get;
     }
 

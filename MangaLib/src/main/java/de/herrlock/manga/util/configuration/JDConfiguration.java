@@ -20,7 +20,7 @@ public class JDConfiguration extends DownloadConfiguration {
     public static JDConfiguration create( final Properties p ) {
         boolean headless = _getIsHeadless( p );
         URL url = _createUrl( p );
-        HttpHost proxy = _createProxy( p );
+        ProxyStorage proxy = _createProxy( p );
         ChapterPattern pattern = _createPattern( p );
         int timeout = _createTimeout( p );
         File folderwatch = _createFolderwatch( p );
@@ -43,7 +43,7 @@ public class JDConfiguration extends DownloadConfiguration {
      * @param folderwatch
      *            the {@link File} pointing to the folderwatch-folder from the local JDownloader-installation
      */
-    public JDConfiguration( final boolean headless, final URL url, final HttpHost proxy, final ChapterPattern pattern,
+    public JDConfiguration( final boolean headless, final URL url, final ProxyStorage proxy, final ChapterPattern pattern,
         final int timeout, final File folderwatch ) {
         super( headless, url, proxy, pattern, timeout );
         this.folderwatch = Objects.requireNonNull( folderwatch, "The folderwatch-folder must not be null" );
