@@ -103,8 +103,9 @@ public final class ViewPage {
         File maxFile = Collections.max( files, Const.numericFilenameComparator );
         int max = Integer.parseInt( maxFile.getName() );
 
-        String mangaObject = MessageFormat.format( "var manga = '{' chapter: {0}, max_pages: {1}, chapterblock: {2} '}';", max,
-            this.maxImgs, ( max - 1 ) / 10 );
+        String mangaObject = MessageFormat.format(
+            "var manga = '{' title: {0}, chapter: {1}, max_pages: {2}, chapterblock: {3} '}';", mangaName(), max, this.maxImgs,
+            ( max - 1 ) / 10 );
         logger.info( "mangaObject: {}", mangaObject );
         head.appendElement( "script" ).text( mangaObject );
 
@@ -126,7 +127,7 @@ public final class ViewPage {
     }
 
     private Element leftDiv() {
-        logger.traceEntry( "creating left div" );
+        logger.info( "creating left div" );
         Map<Integer, List<String>> blocks = new HashMap<>();
         {
             // init map

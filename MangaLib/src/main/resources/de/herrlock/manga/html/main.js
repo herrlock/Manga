@@ -56,7 +56,7 @@ var MangaUtils = {
         // change hashvalue
         MangaUtils.setHash(toLoad);
         // change pagetitle
-        $("title").html("Kapitel " + toLoad);
+        $("title").html(manga.title + " - Kapitel " + toLoad);
         $("#pagetitle").html("Kapitel " + toLoad + ":");
         // check and alter images
         for (var i = 1; i <= manga.max_pages; i++) {

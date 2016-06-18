@@ -63,7 +63,7 @@ public final class Main {
             final CommandLine commandline = getCommandlineFromArgs( args );
             logger.debug( Arrays.toString( commandline.getOptions() ) );
 
-            // search for javafx and try to "hack" it into the system-classloader
+            // search for javafx and try to hack it into the system-classloader
             runFxClasspathHack();
             // optional alter loglevel-configuration
             checkLoggerConfiguration( commandline );
