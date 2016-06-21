@@ -17,7 +17,7 @@ war {
 
 task warDev(type: Copy, dependsOn: war) {
 	from tasks.war.outputs
-	into new File(project(':MangaLib').projectDir, 'tomcat.1905/webapps')
+	into new File(rootProject.projectDir, 'tomcat.1905/webapps')
 	rename '.+', 'ROOT.war'
 }
 task devWar(dependsOn: warDev) {

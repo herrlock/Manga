@@ -26,23 +26,22 @@ public final class StopServerServlet extends HttpServlet {
     private static final Logger logger = LogManager.getLogger();
 
     private final Server server;
-    private final Runnable shutdownRunnable;
+    private final Runnable shutdownRunnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                StopServerServlet.this.server.stop();
+            } catch ( LifecycleException ex ) {
+                throw new MDRuntimeException( ex );
+            }
+        }
+    };
 
     /**
      * @param server
      */
     StopServerServlet( final Server server ) {
         this.server = server;
-        this.shutdownRunnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    StopServerServlet.this.server.stop();
-                } catch ( LifecycleException ex ) {
-                    throw new MDRuntimeException( ex );
-                }
-            }
-        };
     }
 
     @Override

@@ -1,7 +1,9 @@
 package de.herrlock.manga.http;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.servlet.ServletException;
 
@@ -12,12 +14,16 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.annotations.VisibleForTesting;
+
 /**
  * @author HerrLock
  */
 public final class Server {
     private static final Logger logger = LogManager.getLogger();
+    private static final Path tomcatFolder = Paths.get( ".", "tomcat" );
     private final Tomcat tomcat = new Tomcat();
+    private final int port;
 
     /**
      * Creates a Server, starts it and waits until if receives the signal to stop.
@@ -40,15 +46,29 @@ public final class Server {
      * 
      * @throws ServletException
      *             thrown by {@link Tomcat#addWebapp(String, String)}
+     * @throws IOException
+     *             thrown by {@link Files#createDirectories(Path, java.nio.file.attribute.FileAttribute...)}
      */
-    public Server() throws ServletException {
-        this.tomcat.setPort( 1905 );
+    public Server() throws ServletException, IOException {
+        this( 1905 );
+    }
 
-        Context serverContext = this.tomcat.addContext( "/server", new File( ".", "tomcat.1905/temp" ).getAbsolutePath() );
+    Server( final int port ) throws ServletException, IOException {
+        this.tomcat.setBaseDir( tomcatFolder.toString() );
+        this.port = port;
+        this.tomcat.setPort( port );
+
+        Context serverContext;
+        try {
+            Path docBase = Files.createDirectories( tomcatFolder.resolve( "temp" ) );
+            serverContext = this.tomcat.addContext( "/server", docBase.toAbsolutePath().toString() );
+        } catch ( IOException ex ) {
+            throw ex;
+        }
         Tomcat.addServlet( serverContext, "StopServer", new StopServerServlet( this ) );
         serverContext.addServletMapping( "/stop", "StopServer" );
 
-        this.tomcat.addWebapp( "", new File( ".", "tomcat.1905/webapps/ROOT.war" ).getAbsolutePath() );
+        this.tomcat.addWebapp( "", tomcatFolder.resolve( "webapps/ROOT.war" ).toAbsolutePath().toString() );
     }
 
     /**
@@ -69,7 +89,7 @@ public final class Server {
         logger.debug( "Connector: {} ({})", this.tomcat.getConnector(), this.tomcat.getConnector().getClass() );
 
         if ( this.tomcat.getConnector().getState() == LifecycleState.FAILED ) {
-            IOException ioException = new IOException( "Something is already running on Port 1905" );
+            IOException ioException = new IOException( "Something is already running on Port " + this.port );
             logger.error( ioException.getMessage() );
             throw ioException;
         }
@@ -107,7 +127,8 @@ public final class Server {
         logger.info( "Server stopped" );
     }
 
-    private boolean getConnectorStopped() {
+    @VisibleForTesting
+    boolean getConnectorStopped() {
         logger.traceEntry();
         LifecycleState state = this.tomcat.getConnector().getState();
         boolean connectorStopped = state == LifecycleState.STOPPED;

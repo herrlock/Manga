@@ -166,7 +166,7 @@ distributions {
 				from configurations.runtime
 				exclude 'jfxrt.jar'
 			}
-			into('tomcat.1905') {
+			into('tomcat') {
 				into('webapps') {
 					from {
 						// closure to initialise the resource on demand instead of directly
