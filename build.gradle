@@ -175,6 +175,9 @@ distributions {
 					rename '.+', 'ROOT.war'
 				}
 			}
+			filesMatching ('MangaLauncher.sh') {
+				it.setMode 0744
+			}
 		}
 	}
 }
