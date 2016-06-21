@@ -8,6 +8,7 @@ bin/
 ## gradle-files
 .gradle/
 build/
+/gradle.properties
 
 ## files for local testing
 # All projects

@@ -11,6 +11,13 @@ ext {
 	grgit = org.ajoberstar.grgit.Grgit.open()
 	githead = grgit.head()
 	gitbranch = grgit.branch.getCurrent()
+	jfxLocation = project.hasProperty('jfx_doc_location') ? 
+	    'file:/' + project.getProperty('jfx_doc_location') :
+	    'http://docs.oracle.com/javafx/2/api/'
+    if(!project.hasProperty('jfx_doc_location')) {
+    	logger.info('JavaFX-Documentation is set to http://docs.oracle.com/.' + 
+    		' If you want to specify a different location add \'jfx_doc_location\' to your gradle.properties')
+    }
 }
 
 apply plugin: 'distribution'
@@ -88,7 +95,7 @@ allprojects {
 				Node attributes = new Node(jfxrt, 'attributes')
 				Node attribute = new Node(attributes, 'attribute')
 				attribute.'@name' = 'javadoc_location'
-				attribute.'@value' = 'http://docs.oracle.com/javafx/2/api/'
+				attribute.'@value' = jfxLocation
 			}
 		}
 	}
