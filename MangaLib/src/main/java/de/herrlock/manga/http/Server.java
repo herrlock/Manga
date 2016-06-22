@@ -59,12 +59,8 @@ public final class Server {
         this.tomcat.setPort( port );
 
         Context serverContext;
-        try {
-            Path docBase = Files.createDirectories( tomcatFolder.resolve( "temp" ) );
-            serverContext = this.tomcat.addContext( "/server", docBase.toAbsolutePath().toString() );
-        } catch ( IOException ex ) {
-            throw ex;
-        }
+        Path docBase = Files.createDirectories( tomcatFolder.resolve( "temp" ) );
+        serverContext = this.tomcat.addContext( "/server", docBase.toAbsolutePath().toString() );
         Tomcat.addServlet( serverContext, "StopServer", new StopServerServlet( this ) );
         serverContext.addServletMapping( "/stop", "StopServer" );
 
