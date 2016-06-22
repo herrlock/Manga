@@ -35,7 +35,7 @@ public final class ServerMain {
         srvMain.listenForStop();
     }
 
-    public ServerMain() throws ServletException {
+    public ServerMain() throws ServletException, IOException {
         logger.traceEntry();
         this.server = new Server();
     }
