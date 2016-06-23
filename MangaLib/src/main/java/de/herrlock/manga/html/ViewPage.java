@@ -104,8 +104,8 @@ public final class ViewPage {
         int max = Integer.parseInt( maxFile.getName() );
 
         String mangaObject = MessageFormat.format(
-            "var manga = '{' title: {0}, chapter: {1}, max_pages: {2}, chapterblock: {3} '}';", mangaName(), max, this.maxImgs,
-            ( max - 1 ) / 10 );
+            "var manga = '{' title: \"{0}\", chapter: +\"{1}\", max_pages: +\"{2}\", chapterblock: +\"{3}\" '}';", mangaName(),
+            max, this.maxImgs, ( max - 1 ) / 10 );
         logger.info( "mangaObject: {}", mangaObject );
         head.appendElement( "script" ).text( mangaObject );
 
