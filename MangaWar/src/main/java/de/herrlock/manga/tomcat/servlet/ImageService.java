@@ -1,10 +1,12 @@
 package de.herrlock.manga.tomcat.servlet;
 
-import java.net.URI;
+import java.awt.Color;
 import java.util.Random;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,22 +17,24 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author HerrLock
  */
-@Path( "images" )
+@Path( "background" )
 public class ImageService {
     private static final Logger logger = LogManager.getLogger();
 
     /**
-     * Returns a 303-response that links to an image that was randomly chosen from the enum {@link Image}
+     * Returns response that contains the path to a random image and a colour that matches this image as background.
      * 
-     * @return a 303-response containing the random link
+     * @return A Response containins background-information
      */
     @GET
-    @Path( "background.jpg" )
+    @Produces( MediaType.APPLICATION_JSON )
     public Response getImage() {
         logger.traceEntry();
-        String imagePath = Image.getRandom().getPath();
-        logger.debug( "redir to: {}", imagePath );
-        return Response.seeOther( URI.create( imagePath ) ).build();
+        Image image = Image.getRandom();
+        BGObject bgObject = new BGObject( image );
+
+        logger.debug( "bg-object: {}", bgObject );
+        return Response.ok( bgObject ).build();
     }
 
     /**
@@ -74,7 +78,7 @@ public class ImageService {
         /**
          * Mashiro Shiina (sakurasou no pet no kanojo)
          */
-        SAKURASOU_SHIINA( "sakurasou_shiina.jpg" ),
+        SAKURASOU_SHIINA( "sakurasou_shiina.jpg", Color.WHITE ),
         /**
          * Sanka Rea (sankarea)
          */
@@ -86,9 +90,15 @@ public class ImageService {
 
         private static final Random RANDOM = new Random();
         private final String filename;
+        private final Color color;
 
         private Image( final String filename ) {
+            this( filename, Color.BLACK );
+        }
+
+        private Image( final String filename, final Color color ) {
             this.filename = filename;
+            this.color = color;
         }
 
         /**
@@ -110,6 +120,30 @@ public class ImageService {
          */
         public String getPath() {
             return "/res/bg/" + this.filename;
+        }
+
+        public Color getColor() {
+            return this.color;
+        }
+    }
+
+    public static class BGObject {
+        private final Image image;
+
+        public BGObject( final Image image ) {
+            this.image = image;
+        }
+
+        public String getPath() {
+            return this.image.getPath();
+        }
+
+        public String getColor() {
+            Color color = this.image.getColor();
+            String r = Integer.toHexString( color.getRed() );
+            String g = Integer.toHexString( color.getGreen() );
+            String b = Integer.toHexString( color.getBlue() );
+            return "#" + r + g + b;
         }
     }
 }

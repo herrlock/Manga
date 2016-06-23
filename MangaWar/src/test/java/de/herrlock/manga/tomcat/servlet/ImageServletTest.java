@@ -14,6 +14,6 @@ public class ImageServletTest {
     @Test
     public void getImage() {
         Response response = this.imageServlet.getImage();
-        Assert.assertEquals( 303, response.getStatus() );
+        Assert.assertEquals( 200, response.getStatus() );
     }
 }

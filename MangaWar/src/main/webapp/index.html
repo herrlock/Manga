@@ -5,6 +5,15 @@
 	<meta charset="UTF-8" />
 	<script src="res/jquery-2.2.3.min.js"></script>
 	<link rel="stylesheet" href="res/style.css" />
+	<script>
+		$.getJSON("j/background", function(response) {
+			console.log("response", response);
+			$("html").css({
+				"background-image": "url(" + response.path + ")",
+				"background-color": response.color
+			});
+		});
+	</script>
 	<script src="res/script.js"></script>
 </head>
 <body>
