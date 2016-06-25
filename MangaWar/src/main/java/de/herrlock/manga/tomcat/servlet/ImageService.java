@@ -46,35 +46,35 @@ public class ImageService {
         /**
          * a robot (the castle in the sky)
          */
-        CITS_ROBOT( "cits_robot.jpg" ),
+        CITS_ROBOT( "cits_robot.jpg", Color.BLUE ),
         /**
          * Sakura trees (the castle in the sky)
          */
-        CITS_SAKURA( "cits_sakura.jpg" ),
+        CITS_SAKURA( "cits_sakura.jpg", Color.WHITE ),
         /**
          * Kodama (mononoke hime)
          */
-        MG_KODAMA( "mh_kodama.jpg" ),
+        MG_KODAMA( "mh_kodama.jpg", Color.BLACK ),
         /**
          * Many small narutos (naruto)
          */
-        NARUTO_NARUTOS( "naruto_narutos.jpg" ),
+        NARUTO_NARUTOS( "naruto_narutos.jpg", Color.ORANGE ),
         /**
          * Naruto and Sasuke (naruto)
          */
-        NARUTO_NS( "naruto_ns.jpg" ),
+        NARUTO_NS( "naruto_ns.jpg", Color.YELLOW ),
         /**
          * Nausica&auml; (the valley of the wind)
          */
-        NAUSICAA( "nausicaa.jpg" ),
+        NAUSICAA( "nausicaa.jpg", new Color( 185, 122, 87 ) ),
         /**
          * the jollyroger from the strawhat crew (one piece)
          */
-        ONEPIECE_JOLLYROGER( "onepiece_jollyroger.jpg" ),
+        ONEPIECE_JOLLYROGER( "onepiece_jollyroger.jpg", Color.BLACK ),
         /**
          * pirates from the strawhat crew(one piece)
          */
-        ONEPIECE_PIRATES( "onepiece_pirates.jpg" ),
+        ONEPIECE_PIRATES( "onepiece_pirates.jpg", Color.BLACK ),
         /**
          * Mashiro Shiina (sakurasou no pet no kanojo)
          */
@@ -82,11 +82,11 @@ public class ImageService {
         /**
          * Sanka Rea (sankarea)
          */
-        SANKAREA( "sankarea.jpg" ),
+        SANKAREA( "sankarea.jpg", Color.MAGENTA ),
         /**
          * Misaka "the railgun" Mikoto (toaru kagaku no railgun)
          */
-        TKR_MISAKA( "tkr_misaka.jpg" );
+        TKR_MISAKA( "tkr_misaka.jpg", Color.WHITE );
 
         private static final Random RANDOM = new Random();
         private final String filename;
@@ -140,9 +140,12 @@ public class ImageService {
 
         public String getColor() {
             Color color = this.image.getColor();
-            String r = Integer.toHexString( color.getRed() );
-            String g = Integer.toHexString( color.getGreen() );
-            String b = Integer.toHexString( color.getBlue() );
+            int red = color.getRed();
+            String r = ( red <= 0xf ? "0" : "" ) + Integer.toHexString( red );
+            int green = color.getGreen();
+            String g = ( green <= 0xf ? "0" : "" ) + Integer.toHexString( green );
+            int blue = color.getBlue();
+            String b = ( blue <= 0xf ? "0" : "" ) + Integer.toHexString( blue );
             return "#" + r + g + b;
         }
     }
