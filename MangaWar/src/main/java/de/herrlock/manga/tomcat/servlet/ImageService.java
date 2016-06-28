@@ -46,7 +46,7 @@ public class ImageService {
         /**
          * a robot (the castle in the sky)
          */
-        CITS_ROBOT( "cits_robot.jpg", Color.BLUE ),
+        CITS_ROBOT( "cits_robot.jpg", new Color( 0x55, 0x88, 0xFF ) ),
         /**
          * Sakura trees (the castle in the sky)
          */
@@ -58,15 +58,15 @@ public class ImageService {
         /**
          * Many small narutos (naruto)
          */
-        NARUTO_NARUTOS( "naruto_narutos.jpg", Color.ORANGE ),
+        NARUTO_NARUTOS( "naruto_narutos.jpg", new Color( 0xFF, 0x99, 0x00 ) ),
         /**
          * Naruto and Sasuke (naruto)
          */
-        NARUTO_NS( "naruto_ns.jpg", Color.YELLOW ),
+        NARUTO_NS( "naruto_ns.jpg", new Color( 0xFF, 0xCC, 0x00 ) ),
         /**
          * Nausica&auml; (the valley of the wind)
          */
-        NAUSICAA( "nausicaa.jpg", new Color( 0xB9, 0x7A, 0x57 ) ),
+        NAUSICAA( "nausicaa.jpg", new Color( 0xDD, 0xAA, 0x44 ) ),
         /**
          * the jollyroger from the strawhat crew (one piece)
          */
@@ -82,7 +82,7 @@ public class ImageService {
         /**
          * Sanka Rea (sankarea)
          */
-        SANKAREA( "sankarea.jpg", Color.MAGENTA ),
+        SANKAREA( "sankarea.jpg", new Color( 0xCC, 0x66, 0x99 ) ),
         /**
          * Misaka "the railgun" Mikoto (toaru kagaku no railgun)
          */
