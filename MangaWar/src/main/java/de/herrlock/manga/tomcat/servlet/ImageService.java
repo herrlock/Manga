@@ -66,7 +66,7 @@ public class ImageService {
         /**
          * Nausica&auml; (the valley of the wind)
          */
-        NAUSICAA( "nausicaa.jpg", new Color( 185, 122, 87 ) ),
+        NAUSICAA( "nausicaa.jpg", new Color( 0xB9, 0x7A, 0x57 ) ),
         /**
          * the jollyroger from the strawhat crew (one piece)
          */
