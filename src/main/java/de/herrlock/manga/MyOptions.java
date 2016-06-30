@@ -38,6 +38,10 @@ public final class MyOptions {
         .longOpt( "help" )//
         .desc( " > Show the help and exit" )//
         .build();
+    private final Option versionOption = Option.builder( "v" )//
+        .longOpt( "version" )//
+        .desc( " > Show the version and exit" )//
+        .build();
 
     private final OptionGroup typeOptionGroup = new OptionGroup()//
         .addOption( this.consoleTypeOption )//
@@ -46,6 +50,7 @@ public final class MyOptions {
         .addOption( this.viewpageTypeOption )//
         .addOption( this.serverTypeOption )//
         .addOption( this.helpOption )//
+        .addOption( this.versionOption )//
     ;
 
     private final Option urlOption = Option.builder( "u" )//

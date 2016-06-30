@@ -2,15 +2,19 @@ package de.herrlock.manga;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import javax.servlet.ServletException;
 
@@ -137,6 +141,9 @@ public final class Main {
         if ( commandline.hasOption( "help" ) ) {
             logger.debug( "Commandline has \"help\", show help" );
             printHelp();
+        } else if ( commandline.hasOption( "version" ) ) {
+            logger.debug( "Commandline has \"version\", show version" );
+            printVersion();
         } else if ( commandline.hasOption( "console" ) ) {
             logger.debug( "Commandline has \"console\", start CLI-Downloader" );
             startCliDownloader( commandline );
@@ -182,6 +189,39 @@ public final class Main {
         helpFormatter.printOptions( printwriter, width, options, leftPad, descPad );
         printwriter.println();
         helpFormatter.printWrapped( printwriter, width, footer );
+
+        logger.info( stringWriter );
+    }
+
+    private static void printVersion() {
+        logger.traceEntry();
+
+        URL[] urls = {
+            Main.class.getProtectionDomain().getCodeSource().getLocation()
+        };
+        Manifest m = new Manifest();
+        try ( URLClassLoader urlClassLoader = new URLClassLoader( urls ) ) {
+            try ( InputStream in = urlClassLoader.getResourceAsStream( "META-INF/MANIFEST.MF" ) ) {
+                m.read( in );
+            }
+        } catch ( IOException ex ) {
+            throw new MDRuntimeException( ex );
+        }
+
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter printwriter = new PrintWriter( stringWriter );
+
+        printwriter.println();
+
+        Attributes infoAttributes = m.getAttributes( "Info" );
+        Attributes gitAttributes = m.getAttributes( "Git" );
+        printwriter.println( "MangaDownloader" );
+        printwriter.println( "  Version: " + infoAttributes.getValue( "Version" ) );
+        printwriter.println();
+        printwriter.println( "Details: " );
+        printwriter.println( "  Built at: " + infoAttributes.getValue( "Built-At" ) );
+        printwriter.println( "  Commit: " + gitAttributes.getValue( "Commit" ) + ":" + gitAttributes.getValue( "Branch" ) + " ("
+            + gitAttributes.getValue( "Date" ) + ")" );
 
         logger.info( stringWriter );
     }
