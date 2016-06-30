@@ -135,25 +135,25 @@ public final class Main {
     private static void handleCommandline( final CommandLine commandline ) {
         logger.traceEntry( "Commandline: {}", commandline );
         if ( commandline.hasOption( "help" ) ) {
-            logger.trace( "Commandline has \"help\", show help" );
+            logger.debug( "Commandline has \"help\", show help" );
             printHelp();
         } else if ( commandline.hasOption( "console" ) ) {
-            logger.trace( "Commandline has \"console\", start CLI-Downloader" );
+            logger.debug( "Commandline has \"console\", start CLI-Downloader" );
             startCliDownloader( commandline );
         } else if ( commandline.hasOption( "dialog" ) ) {
-            logger.trace( "Commandline has \"dialog\", start Dialog-Downloader" );
+            logger.debug( "Commandline has \"dialog\", start Dialog-Downloader" );
             startDialogDownloader();
         } else if ( commandline.hasOption( "gui" ) ) {
-            logger.trace( "Commandline has \"gui\", launch GUI" );
+            logger.debug( "Commandline has \"gui\", launch GUI" );
             startGuiDownloader();
         } else if ( commandline.hasOption( "viewpage" ) ) {
-            logger.trace( "Commandline has \"viewpage\", start creating html-resources" );
+            logger.debug( "Commandline has \"viewpage\", start creating html-resources" );
             startViewpageCreator( commandline );
         } else if ( commandline.hasOption( "server" ) ) {
-            logger.trace( "Commandline has \"server\", start Server" );
+            logger.debug( "Commandline has \"server\", start Server" );
             startServer( commandline );
         } else {
-            logger.trace( "else, don't know what to do" );
+            logger.debug( "else, don't know what to do" );
         }
     }
 
