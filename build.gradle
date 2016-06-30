@@ -60,6 +60,7 @@ allprojects {
 		attributes 'Built-At' : new Date(),
 			'Built-With' : GradleVersion.current(),
 			'Created-By' : "${System.properties.'java.runtime.version'} (${System.properties.'java.vm.vendor'})",
+			'Version' : project.version,
 			'Info'
 		attributes 'Branch' : gitbranch.getName(),
 			'Commit' : githead.getId(),
