@@ -16,27 +16,27 @@ public final class MyOptions {
 
     private final Option consoleTypeOption = Option.builder()//
         .longOpt( "console" )//
-        .desc( "mode: start the console-downloader" )//
+        .desc( " > mode: start the console-downloader" )//
         .build();
     private final Option dialogTypeOption = Option.builder()//
         .longOpt( "dialog" )//
-        .desc( "mode: start the dialog-downloader" )//
+        .desc( " > mode: start the dialog-downloader" )//
         .build();
     private final Option guiTypeOption = Option.builder()//
         .longOpt( "gui" )//
-        .desc( "mode: start the gui-downloader" )//
+        .desc( " > mode: start the gui-downloader" )//
         .build();
     private final Option viewpageTypeOption = Option.builder()//
         .longOpt( "viewpage" )//
-        .desc( "mode: create files to view the downloaded manga in the browser" )//
+        .desc( " > mode: create files to view the downloaded manga in the browser" )//
         .build();
     private final Option serverTypeOption = Option.builder()//
         .longOpt( "server" )//
-        .desc( "mode: start the server to listen to http-requests" )//
+        .desc( " > mode: start the server to listen to http-requests" )//
         .build();
     private final Option helpOption = Option.builder( "h" )//
         .longOpt( "help" )//
-        .desc( "Show the help" )//
+        .desc( " > Show the help and exit" )//
         .build();
 
     private final OptionGroup typeOptionGroup = new OptionGroup()//
@@ -61,7 +61,7 @@ public final class MyOptions {
     private final Option proxyOption = Option.builder( "x" )//
         .longOpt( "proxy" )//
         .hasArg()//
-        .desc( "The Proxy to use (protocol://url:port) (mode: console)" )//
+        .desc( "The Proxy to use (protocol://[user[:password]@]url:port) (mode: console)" )//
         .build();
     private final Option interactiveOption = Option.builder( "i" )//
         .longOpt( "interactive" )//

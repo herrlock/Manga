@@ -168,15 +168,19 @@ public final class Main {
         printwriter.println();
 
         final String cmdLineSyntax = "java -jar MangaLauncher.jar";
-        final String header = "";
-        final String footer = "\nPlease consult readme.html for further information";
+        final String header = "The following commands are supported. "
+            + "A '>' indicates that the option defines a mode that is started.";
+        final String footer = "Please consult readme.html for further information.";
         final int width = 100;
         int leftPad = HelpFormatter.DEFAULT_LEFT_PAD;
         int descPad = HelpFormatter.DEFAULT_DESC_PAD;
 
         helpFormatter.printUsage( printwriter, width, cmdLineSyntax, options );
+        printwriter.println();
         helpFormatter.printWrapped( printwriter, width, header );
+        printwriter.println();
         helpFormatter.printOptions( printwriter, width, options, leftPad, descPad );
+        printwriter.println();
         helpFormatter.printWrapped( printwriter, width, footer );
 
         logger.info( stringWriter );
