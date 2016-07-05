@@ -133,12 +133,46 @@ dependencies {
 
 jar {
 	manifest {
-		attributes 'Main-Class' : 'de.herrlock.manga.Main',
+		attributes 'Main-Class' : 'de.herrlock.manga.UnpackerMain',
 			'Class-Path' : project.configurations.runtime
 				.plus(file('MangaExt.jar'))
 				.collect{ file -> "lib/${file.name}" }
 				.sort{ it.toLowerCase() }
 				.join(' ')
+	}
+}
+
+task packDependencies {
+	def jars = configurations.runtime
+	File targetFolder = new File(rootProject.buildDir, 'tmp/packjars/')
+	doLast {
+		targetFolder.mkdirs()
+	}
+	java.util.jar.Pack200.Packer packer = java.util.jar.Pack200.newPacker();
+	packer.properties().putAll([
+		(packer.EFFORT) : '9',
+		(packer.SEGMENT_LIMIT) : '-1',
+		(packer.KEEP_FILE_ORDER) : packer.FALSE,
+		(packer.MODIFICATION_TIME) : packer.LATEST,
+		(packer.DEFLATE_HINT) : packer.FALSE,
+		(packer.UNKNOWN_ATTRIBUTE) : packer.ERROR
+	])
+	if(project.hasProperty('stripLNT')) {
+		packer.properties().put(packer.CODE_ATTRIBUTE_PFX + 'LineNumberTable', packer.STRIP)
+	}
+	jars.each { jar ->
+		if(!'jfxrt.jar'.equals(jar.getName())) {
+			File newFile = new File(targetFolder, jar.getName() + '.pack.gz')
+			outputs.file newFile
+			doLast {
+				new java.util.jar.JarInputStream( new FileInputStream(jar) ).withStream { jarIn ->
+					new java.util.zip.GZIPOutputStream( newFile.newOutputStream() ).withStream { gzOut ->
+						logger.info "Packing to ${newFile}"
+				        packer.pack( jarIn, gzOut );
+				    }
+			    }
+			}
+		}
 	}
 }
 
@@ -155,8 +189,7 @@ distributions {
 				from 'licenses'
 			}
 			into('lib') {
-				from configurations.runtime
-				exclude 'jfxrt.jar'
+				from packDependencies
 			}
 			into('tomcat') {
 				into('webapps') {
