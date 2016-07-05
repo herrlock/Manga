@@ -53,4 +53,11 @@ public class UnpackerMain {
             throw new IllegalStateException( "Cannot unpack archives", ex );
         }
     }
+
+    /**
+     * Private constructor to avoid instantiation
+     */
+    private UnpackerMain() {
+    	// no used
+    }
 }
