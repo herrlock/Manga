@@ -1,16 +1,7 @@
-// buildscript-dependencies
-buildscript {
-	repositories {
-		jcenter()
-	}
-	dependencies {
-		classpath 'org.ajoberstar:grgit:1.7.0'
-	}
+plugins {
+	id 'org.ajoberstar.grgit' version '1.5.0'
 }
 ext {
-	grgit = org.ajoberstar.grgit.Grgit.open()
-	githead = grgit.head()
-	gitbranch = grgit.branch.getCurrent()
 	jfxLocation = project.hasProperty('jfx_doc_location') ? 
 	    'file:/' + project.getProperty('jfx_doc_location') :
 	    'http://docs.oracle.com/javafx/2/api/'
@@ -62,9 +53,9 @@ allprojects {
 			'Created-By' : "${System.properties.'java.runtime.version'} (${System.properties.'java.vm.vendor'})",
 			'Version' : project.version,
 			'Info'
-		attributes 'Branch' : gitbranch.getName(),
-			'Commit' : githead.getId(),
-			'Date' : githead.getDate(),
+		attributes 'Branch' : grgit.branch.getCurrent().getName(),
+			'Commit' : grgit.head().getId(),
+			'Date' : grgit.head().getDate(),
 			'Git'
 	}
 	
