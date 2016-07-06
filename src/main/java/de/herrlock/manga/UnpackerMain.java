@@ -11,9 +11,11 @@ import java.util.jar.Pack200.Unpacker;
 import java.util.zip.GZIPInputStream;
 
 /**
+ * Entrance class for the jar, that first unpacks the dependencies.
+ * 
  * @author HerrLock
  */
-public class UnpackerMain {
+public final class UnpackerMain {
     public static void main( final String... args ) {
         // check if packed archives exist
         unpackArchives();
@@ -58,6 +60,6 @@ public class UnpackerMain {
      * Private constructor to avoid instantiation
      */
     private UnpackerMain() {
-    	// no used
+        // not used
     }
 }
