@@ -144,7 +144,7 @@ jar {
 
 task packDependencies {
 	def jars = configurations.runtime
-	File targetFolder = new File(rootProject.buildDir, 'tmp/packjars/')
+	File targetFolder = new File(rootProject.buildDir, 'tmp/packJars/')
 	doLast {
 		targetFolder.mkdirs()
 	}
@@ -154,7 +154,7 @@ task packDependencies {
 		(packer.SEGMENT_LIMIT) : '-1',
 		(packer.KEEP_FILE_ORDER) : packer.FALSE,
 		(packer.MODIFICATION_TIME) : packer.LATEST,
-		(packer.DEFLATE_HINT) : packer.FALSE,
+		(packer.DEFLATE_HINT) : packer.TRUE,
 		(packer.UNKNOWN_ATTRIBUTE) : packer.ERROR
 	])
 	if(project.hasProperty('stripLNT')) {

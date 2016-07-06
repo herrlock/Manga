@@ -33,6 +33,8 @@ public final class UnpackerMain {
         Path lib = Paths.get( ".", "lib" );
         // create an unpacker
         Unpacker unpacker = Pack200.newUnpacker();
+        // always deflate the unpacked jars
+        unpacker.properties().put( Unpacker.DEFLATE_HINT, Unpacker.TRUE );
         // find all ".jar.pack.gz"-files
         try ( DirectoryStream<Path> directoryStream = Files.newDirectoryStream( lib, "*.jar.pack.gz" ) ) {
             // iterate over the packed files
