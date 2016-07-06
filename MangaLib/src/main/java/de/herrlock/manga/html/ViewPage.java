@@ -26,6 +26,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.ByteStreams;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
@@ -58,6 +59,22 @@ public final class ViewPage {
         }
     }
 
+    @VisibleForTesting
+    static String formatManganame( final String foldername ) {
+        String mangarawname;
+        if ( foldername.matches( ".+_\\d+" ) ) {
+            int lastUnderscore = foldername.lastIndexOf( '_' );
+            if ( lastUnderscore > -1 ) {
+                mangarawname = foldername.substring( 0, lastUnderscore );
+            } else {
+                mangarawname = foldername;
+            }
+        } else {
+            mangarawname = foldername;
+        }
+        return mangarawname.replace( '_', ' ' ).trim();
+    }
+
     /**
      * Create a new ViewPage in the given {@linkplain File folder}
      * 
@@ -85,9 +102,7 @@ public final class ViewPage {
 
     private String mangaName() {
         String foldername = this.folder.getName();
-        int lastUnderscore = foldername.lastIndexOf( '_' );
-        String mangarawname = lastUnderscore > -1 ? foldername.substring( 0, lastUnderscore ) : foldername;
-        return mangarawname.replace( '_', ' ' );
+        return formatManganame( foldername );
     }
 
     private Element createHeadChildren( final Element head ) {
