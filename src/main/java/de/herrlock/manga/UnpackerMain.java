@@ -43,7 +43,6 @@ public final class UnpackerMain {
                 Path newFile = lib.resolve( newFileName );
                 try ( GZIPInputStream in = new GZIPInputStream( Files.newInputStream( packedFile ) ) ) {
                     try ( JarOutputStream out = new JarOutputStream( Files.newOutputStream( newFile ) ) ) {
-                        System.out.println( "Unpacking " + oldFileName + " to " + newFileName );
                         // unpack the packed and gzipped file
                         unpacker.unpack( in, out );
                     }
