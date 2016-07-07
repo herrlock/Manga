@@ -215,13 +215,17 @@ public final class Main {
 
         Attributes infoAttributes = m.getAttributes( "Info" );
         Attributes gitAttributes = m.getAttributes( "Git" );
-        printwriter.println( "MangaDownloader" );
-        printwriter.println( "  Version: " + infoAttributes.getValue( "Version" ) );
-        printwriter.println();
-        printwriter.println( "Details: " );
-        printwriter.println( "  Built at: " + infoAttributes.getValue( "Built-At" ) );
-        printwriter.println( "  Commit: " + gitAttributes.getValue( "Commit" ) + ":" + gitAttributes.getValue( "Branch" ) + " ("
-            + gitAttributes.getValue( "Date" ) + ")" );
+        if ( infoAttributes == null || gitAttributes == null ) {
+            printwriter.println( "Cannot read all data, probably a development-version launched from an IDE." );
+        } else {
+            printwriter.println( "MangaDownloader" );
+            printwriter.println( "  Version: " + infoAttributes.getValue( "Version" ) );
+            printwriter.println();
+            printwriter.println( "Details: " );
+            printwriter.println( "  Built at: " + infoAttributes.getValue( "Built-At" ) );
+            printwriter.println( "  Commit: " + ( gitAttributes.getValue( "Commit" ) + ":" + gitAttributes.getValue( "Branch" )
+                + " (" + gitAttributes.getValue( "Date" ) + ")" ) );
+        }
 
         logger.info( stringWriter );
     }
