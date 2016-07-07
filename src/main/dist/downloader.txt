@@ -17,6 +17,6 @@ pattern=
 jdfw=
 
 # optional
-# set this to use a proxy (without authentification)
-# both do not have default values, when nothing is defined nothing is used
+# set this to use a proxy. Basic authentication is supported
+# Example: http://user:password@example.com:8000/
 proxy=

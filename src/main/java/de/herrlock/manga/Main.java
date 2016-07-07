@@ -176,7 +176,7 @@ public final class Main {
 
         final String cmdLineSyntax = "java -jar MangaLauncher.jar";
         final String header = "The following commands are supported. "
-            + "A '>' indicates that the option defines a mode that is started." + "Only one of these options should be given.";
+            + "A '>' indicates that the option defines a mode that is started. " + "Only one of these options should be given.";
         final String footer = "Please consult readme.html for further information.";
         final int width = 100;
         int leftPad = HelpFormatter.DEFAULT_LEFT_PAD;
