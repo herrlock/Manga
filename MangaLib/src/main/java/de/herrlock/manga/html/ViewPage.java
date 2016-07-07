@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -110,6 +114,7 @@ public final class ViewPage {
         head.appendElement( "title" ).text( mangaName() );
         head.appendElement( "meta" ).attr( "charset", "utf-8" );
         head.appendElement( "meta" ).attr( "name", "viewport" ).attr( "content", "width=device-width, initial-scale=1.0" );
+        head.appendElement( "meta" ).attr( "name", "generator" ).attr( "content", "MangaDownloader v." + getVersion() );
         head.appendElement( "link" ).attr( "rel", "shortcut icon" ).attr( "href", "favicon.ico" );
         head.appendElement( "link" ).attr( "rel", "stylesheet" ).attr( "href", "style.css" );
         copyFile( "style.css" );
@@ -132,6 +137,23 @@ public final class ViewPage {
             copyFile( src );
         }
         return head;
+    }
+
+    private String getVersion() {
+        URL[] urls = {
+            ViewPage.class.getProtectionDomain().getCodeSource().getLocation()
+        };
+        Manifest m = new Manifest();
+        try ( URLClassLoader urlClassLoader = new URLClassLoader( urls ) ) {
+            try ( InputStream in = urlClassLoader.getResourceAsStream( "META-INF/MANIFEST.MF" ) ) {
+                m.read( in );
+            }
+        } catch ( IOException ex ) {
+            throw new MDRuntimeException( ex );
+        }
+
+        Attributes infoAttributes = m.getAttributes( "Info" );
+        return infoAttributes == null ? "DEV" : infoAttributes.getValue( "Version" );
     }
 
     private Element createBodyChildren( final Element body ) {
