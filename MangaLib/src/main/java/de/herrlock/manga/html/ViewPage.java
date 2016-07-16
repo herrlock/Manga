@@ -2,22 +2,22 @@ package de.herrlock.manga.html;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,7 +31,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.io.ByteStreams;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
 
@@ -44,21 +43,23 @@ public final class ViewPage {
     private final File folder;
     private final Document document;
     private final int maxImgs;
+    private final Collection<String> filesToCopy = new HashSet<>();
 
     /**
      * Creates the new ViewPage-instance and prints the html to the destination
      * 
      * @param folder
      *            the folder to save the created files into
+     * @throws IOException
      */
     public static void execute( final File folder ) {
         logger.trace( folder );
-        Document doc = new ViewPage( folder ).getDocument();
-        Path p = new File( folder, "index.html" ).toPath();
-        try ( BufferedWriter writer = Files.newBufferedWriter( p, StandardCharsets.UTF_8 ) ) {
-            writer.write( "<!DOCTYPE HTML>\n" );
-            writer.write( doc.toString() );
-        } catch ( final IOException ex ) {
+        ViewPage viewPage = new ViewPage( folder );
+        Path indexhtml = folder.toPath().resolve( "index.html" );
+        try {
+            viewPage.saveAt( indexhtml );
+            viewPage.copyFiles();
+        } catch ( IOException ex ) {
             throw new MDRuntimeException( ex );
         }
     }
@@ -91,10 +92,14 @@ public final class ViewPage {
         this.maxImgs = maxImgs();
         logger.debug( "maxImgs: {}", this.maxImgs );
         this.document = Document.createShell( "" );
-        Element head = this.document.select( "head" ).first();
-        createHeadChildren( head );
-        Element body = this.document.select( "body" ).first();
-        createBodyChildren( body );
+        if ( getChapters().isEmpty() ) {
+            logger.warn( "The folder does not contain any other folders." );
+        } else {
+            Element head = this.document.select( "head" ).first();
+            createHeadChildren( head );
+            Element body = this.document.select( "body" ).first();
+            createBodyChildren( body );
+        }
     }
 
     /**
@@ -109,6 +114,23 @@ public final class ViewPage {
         return formatManganame( foldername );
     }
 
+    void saveAt( final Path indexhtml ) throws IOException {
+        try ( BufferedWriter writer = Files.newBufferedWriter( indexhtml, StandardCharsets.UTF_8 ) ) {
+            writer.write( "<!DOCTYPE HTML>\n" );
+            writer.write( getDocument().toString() );
+        }
+    }
+
+    void copyFiles() throws IOException {
+        for ( String filename : this.filesToCopy ) {
+            Path toFile = this.folder.toPath().resolve( filename );
+            logger.info( "copy {} to {}", filename, toFile );
+            try ( InputStream resource = ViewPage.class.getResourceAsStream( filename ) ) {
+                Files.copy( resource, toFile, StandardCopyOption.REPLACE_EXISTING );
+            }
+        }
+    }
+
     private Element createHeadChildren( final Element head ) {
         logger.info( "creating head" );
         head.appendElement( "title" ).text( mangaName() );
@@ -117,10 +139,10 @@ public final class ViewPage {
         head.appendElement( "meta" ).attr( "name", "generator" ).attr( "content", "MangaDownloader v." + getVersion() );
         head.appendElement( "link" ).attr( "rel", "shortcut icon" ).attr( "href", "favicon.ico" );
         head.appendElement( "link" ).attr( "rel", "stylesheet" ).attr( "href", "style.css" );
-        copyFile( "style.css" );
+        this.filesToCopy.add( "style.css" );
 
         List<File> files = getChapters();
-        File maxFile = Collections.max( files, Const.numericFilenameComparator );
+        File maxFile = Collections.max( files, ViewPageConstants.numericFilenameComparator );
         int max = Integer.parseInt( maxFile.getName() );
 
         String mangaObject = MessageFormat.format(
@@ -134,7 +156,7 @@ public final class ViewPage {
         };
         for ( String src : js ) {
             head.appendElement( "script" ).attr( "src", src );
-            copyFile( src );
+            this.filesToCopy.add( src );
         }
         return head;
     }
@@ -168,7 +190,7 @@ public final class ViewPage {
         Map<Integer, List<String>> blocks = new HashMap<>();
         {
             // init map
-            List<File> files = getSortedChapters( Collections.reverseOrder( Const.numericFilenameComparator ) );
+            List<File> files = getSortedChapters( Collections.reverseOrder( ViewPageConstants.numericFilenameComparator ) );
             for ( File f : files ) {
                 String filename = f.getName();
                 int blockNr = ( ( int ) Double.parseDouble( filename ) - 1 ) / 10;
@@ -180,7 +202,7 @@ public final class ViewPage {
             logger.debug( "Number of blocks: {}", blocks.size() );
         }
         List<Entry<Integer, List<String>>> list = new ArrayList<>( blocks.entrySet() );
-        Collections.sort( list, Collections.reverseOrder( Const.integerEntryComparator ) );
+        Collections.sort( list, Collections.reverseOrder( ViewPageConstants.integerEntryComparator ) );
 
         Element lDiv = new Element( Tag.valueOf( "div" ), "" ).attr( "id", "leftdiv" );
         List<String> firstBlock = list.get( 0 ).getValue();
@@ -275,18 +297,6 @@ public final class ViewPage {
         return maxPages;
     }
 
-    private void copyFile( final String filename ) {
-        try ( InputStream resource = ViewPage.class.getResourceAsStream( filename ) ) {
-            File toFile = new File( this.folder, filename );
-            logger.info( "copy {} to {}", filename, toFile );
-            try ( OutputStream out = new FileOutputStream( toFile ) ) {
-                ByteStreams.copy( resource, out );
-            }
-        } catch ( final IOException ex ) {
-            throw new MDRuntimeException( ex );
-        }
-    }
-
     private List<File> getSortedChapters( final Comparator<File> comp ) {
         List<File> list = getChapters();
         Collections.sort( list, comp );
@@ -294,55 +304,10 @@ public final class ViewPage {
     }
 
     private List<File> getChapters() {
-        File[] listFiles = this.folder.listFiles( Const.isDirectoryFilter );
+        File[] listFiles = this.folder.listFiles( ViewPageConstants.isDirectoryFilter );
         if ( listFiles != null ) {
             return Arrays.asList( listFiles );
         }
         return Arrays.asList();
     }
-}
-
-final class Const {
-    /**
-     * a {@linkplain FileFilter} that filters directories.<br>
-     * {@linkplain FileFilter#accept(File)} returns true, if {@linkplain File#isDirectory()} is {@code true}
-     */
-    static final FileFilter isDirectoryFilter = new FileFilter() {
-        @Override
-        public boolean accept( final File pathname ) {
-            return pathname.isDirectory();
-        }
-    };
-
-    /**
-     * copmares two {@link File}s by their name.<br>
-     * tries to use {@linkplain Integer#parseInt(String)} on both names and returns {@linkplain Integer#compare(int, int)}. If
-     * that fails it tries {@linkplain Double#parseDouble(String)} and returns {@linkplain Double#compare(double, double)}
-     */
-    static final Comparator<File> numericFilenameComparator = new Comparator<File>() {
-        @Override
-        public int compare( final File o1, final File o2 ) {
-            String name1 = o1.getName();
-            String name2 = o2.getName();
-            try {
-                int i1 = Integer.parseInt( name1 );
-                int i2 = Integer.parseInt( name2 );
-                return Integer.compare( i1, i2 );
-            } catch ( final NumberFormatException ex ) {
-                double d1 = Double.parseDouble( name1 );
-                double d2 = Double.parseDouble( name2 );
-                return Double.compare( d1, d2 );
-            }
-        }
-    };
-
-    /**
-     * compares two {@code Entry<Integer, ?>}-objects by their keys
-     */
-    static final Comparator<Entry<Integer, ?>> integerEntryComparator = new Comparator<Map.Entry<Integer, ?>>() {
-        @Override
-        public int compare( final Entry<Integer, ?> o1, final Entry<Integer, ?> o2 ) {
-            return o1.getKey().compareTo( o2.getKey() );
-        }
-    };
 }
