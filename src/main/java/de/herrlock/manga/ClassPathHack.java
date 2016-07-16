@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
@@ -58,8 +57,8 @@ final class ClassPathHack {
     private static void addJarToSystemClassloader() {
         logger.traceEntry();
         final File javaHomeFolder = Paths.get( System.getProperty( "java.home" ) ).toFile();
-        Iterable<File> iterable = Files.fileTreeTraverser().preOrderTraversal( javaHomeFolder );
-        Optional<File> jfxrtOptional = Iterables.tryFind( iterable, new FilenamePredicate( "jfxrt.jar" ) );
+        Optional<File> jfxrtOptional = Files.fileTreeTraverser().preOrderTraversal( javaHomeFolder )
+            .firstMatch( new FilenamePredicate( "jfxrt.jar" ) );
 
         if ( jfxrtOptional.isPresent() ) {
             File jfxrt = jfxrtOptional.get();
@@ -83,9 +82,9 @@ final class ClassPathHack {
         final URLClassLoader sysloader = ( URLClassLoader ) ClassLoader.getSystemClassLoader();
         final Class<? extends ClassLoader> sysclass = URLClassLoader.class;
 
-        AccessController.doPrivileged( new PrivilegedAction<Object>() {
+        AccessController.doPrivileged( new PrivilegedAction<Void>() {
             @Override
-            public Object run() {
+            public Void run() {
                 try {
                     Method method = sysclass.getDeclaredMethod( "addURL", URL.class );
                     method.setAccessible( true );
