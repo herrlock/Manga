@@ -24,7 +24,7 @@ public final class CtrlUtils {
     }
 
     public static void showErrorDialog( final Exception ex ) {
-        String joinedStackTrace = CtrlUtils.convertStackTraceElementsToSingleNewlineString( ex.getStackTrace() );
+        String joinedStackTrace = convertStackTraceElementsToSingleNewlineString( ex.getStackTrace() );
         TextArea textArea = new TextArea( joinedStackTrace );
         textArea.setEditable( false );
         Dialogs.showErrorDialog( null, textArea, ex.getMessage() );
