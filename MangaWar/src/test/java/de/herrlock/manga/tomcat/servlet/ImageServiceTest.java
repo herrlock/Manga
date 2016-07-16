@@ -12,7 +12,7 @@ import de.herrlock.manga.tomcat.servlet.ImageService.Image;
 /**
  * @author HerrLock
  */
-public class ImageServletTest {
+public class ImageServiceTest {
     private final ImageService imageService = new ImageService();
 
     @Test
