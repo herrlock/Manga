@@ -16,13 +16,14 @@ import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.Chapter;
 import de.herrlock.manga.util.Utils;
+import de.herrlock.manga.util.management.PictureMapContainerMXBean;
 
 /**
  * A container for the actual urls of the images
  * 
  * @author HerrLock
  */
-public final class PictureMapContainer {
+public final class PictureMapContainer implements PictureMapContainerMXBean {
     private static final Logger logger = LogManager.getLogger();
 
     /**

@@ -17,6 +17,7 @@ import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.ProgressListener;
 import de.herrlock.manga.util.Progressable;
+import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import de.herrlock.manga.util.management.MDownloaderMXBean;
 
@@ -71,6 +72,11 @@ public abstract class MDownloader implements Progressable, MDownloaderMXBean {
         this.pmc = new PictureMapContainer( this.clc );
         this.maxProgress = this.pmc.getSize();
         this.dqc = new DownloadQueueContainer( this.clc, conf );
+
+        Utils.registerMBean( this, "de.herrlock.manga", "type", "MDownloader" );
+        Utils.registerMBean( this.clc, "de.herrlock.manga", "type", "ChapterListContainer" );
+        Utils.registerMBean( this.pmc, "de.herrlock.manga", "type", "PictureMapContainer" );
+        Utils.registerMBean( this.dqc, "de.herrlock.manga", "type", "DownloadQueueContainer" );
     }
 
     /**
@@ -138,7 +144,7 @@ public abstract class MDownloader implements Progressable, MDownloaderMXBean {
     private void downloadChapter( final String key, final EntryList<Integer, URL> entries ) {
         logger.traceEntry( "key: {}", key );
         logger.info( "Download chapter {} ({} pages)", key, entries.size() );
-        File chapterFolder = new File( this.clc.getPath(), key );
+        File chapterFolder = new File( getTargetFolder(), key );
         if ( chapterFolder.exists() || chapterFolder.mkdirs() ) {
             // add pictures to queue
             this.dqc.addEntryList( chapterFolder, entries );

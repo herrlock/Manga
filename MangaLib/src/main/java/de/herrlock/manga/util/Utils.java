@@ -1,6 +1,7 @@
 package de.herrlock.manga.util;
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
@@ -8,6 +9,13 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
@@ -17,6 +25,8 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
@@ -30,6 +40,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * @author HerrLock
  */
 public final class Utils {
+    private static final Logger logger = LogManager.getLogger();
 
     private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20,
         new ThreadFactoryBuilder().setDaemon( true ).build() );
@@ -145,6 +156,33 @@ public final class Utils {
             return THREAD_POOL.invokeAll( callables );
         } catch ( final InterruptedException ex ) {
             throw new MDRuntimeException( ex );
+        }
+    }
+
+    public static void registerMBean( final Object mbean, final String domain, final String key, final String value ) {
+        try {
+            ObjectName objectName = new ObjectName( domain, key, value );
+            registerMBean( mbean, objectName );
+        } catch ( MalformedObjectNameException ex ) {
+            logger.warn( "Could not register MBeans, ignoring this.", ex );
+        }
+    }
+
+    public static void registerMBean( final Object mbean, final String name ) {
+        try {
+            ObjectName objectName = new ObjectName( name );
+            registerMBean( mbean, objectName );
+        } catch ( MalformedObjectNameException ex ) {
+            logger.warn( "Could not register MBeans, ignoring this.", ex );
+        }
+    }
+
+    public static void registerMBean( final Object mbean, final ObjectName name ) {
+        try {
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+            mbs.registerMBean( mbean, name );
+        } catch ( InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException ex ) {
+            logger.warn( "Could not register MBeans, ignoring this.", ex );
         }
     }
 

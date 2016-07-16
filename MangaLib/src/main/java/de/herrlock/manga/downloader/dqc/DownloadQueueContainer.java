@@ -30,13 +30,14 @@ import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
+import de.herrlock.manga.util.management.DownloadQueueContainerMXBean;
 
 /**
  * A container for a list of downloads
  * 
  * @author HerrLock
  */
-public final class DownloadQueueContainer {
+public final class DownloadQueueContainer implements DownloadQueueContainerMXBean {
     static final Logger logger = LogManager.getLogger();
 
     private final List<Page> dlQueue = new ArrayList<>();
@@ -52,6 +53,11 @@ public final class DownloadQueueContainer {
     public DownloadQueueContainer( final ChapterListContainer clc, final DownloadConfiguration conf ) {
         this.clc = clc;
         this.conf = conf;
+    }
+
+    @Override
+    public int getSize() {
+        return this.dlQueue.size();
     }
 
     /**

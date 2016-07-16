@@ -13,13 +13,14 @@ import de.herrlock.manga.host.Chapter;
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.util.Constants;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
+import de.herrlock.manga.util.management.ChapterListContainerMXBean;
 
 /**
  * a container-class for the class {@link ChapterList}. also knows the folder where to save the pages into
  * 
  * @author HerrLock
  */
-public final class ChapterListContainer implements Iterable<Chapter> {
+public final class ChapterListContainer implements Iterable<Chapter>, ChapterListContainerMXBean {
     /**
      * the parent-folder to write the pages into. set in the constructor to {@code download/<mangaName>_<timestamp>}
      */
