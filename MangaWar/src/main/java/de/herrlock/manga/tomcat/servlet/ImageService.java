@@ -92,10 +92,6 @@ public class ImageService {
         private final String filename;
         private final Color color;
 
-        private Image( final String filename ) {
-            this( filename, Color.BLACK );
-        }
-
         private Image( final String filename, final Color color ) {
             this.filename = filename;
             this.color = color;
