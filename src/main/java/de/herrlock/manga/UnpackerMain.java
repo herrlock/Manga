@@ -25,8 +25,6 @@ final class UnpackerMain {
 
     /**
      * Unpacks all files ending with .jar.pack.gz with first gzip and second unpack200
-     * 
-     * @throws IOException
      */
     private static void unpackArchives() {
         // check the lib-folder
