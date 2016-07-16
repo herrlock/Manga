@@ -51,10 +51,7 @@ import javafx.application.Application;
 public final class Main {
     private static final Logger logger = LogManager.getLogger();
 
-    /**
-     * Flag for JavaFX. Assume it is not availabile initially.
-     */
-    private static boolean fxAvailabile;
+    public static final String FX_AVAILABILE = "de.herrlock.manga.fxAvailabile";
 
     /**
      * Entry point for the application.
@@ -80,21 +77,11 @@ public final class Main {
         }
     }
 
-    /**
-     * Return if JavaFX is availabile. This can be useful to show messages rather than receiving exceptions in some hybrid
-     * classes.
-     * 
-     * @return if JavaFX is availabile.
-     */
-    public static boolean getFxAvailabile() {
-        return fxAvailabile;
-    }
-
     private static void runFxClasspathHack() {
         logger.traceEntry();
         try {
             ClassPathHack.makeSureJfxrtLoaded();
-            fxAvailabile = true;
+            System.setProperty( FX_AVAILABILE, "true" );
         } catch ( ClassNotFoundException ex ) {
             logger.error( "Could not find jfxrt.jar on the classpath. "
                 + "This does not have to be fatal as it may be that JavaFX is not needed" );
