@@ -3,7 +3,7 @@ package de.herrlock.manga.util.management;
 /**
  * @author HerrLock
  */
-public interface MDownloaderMBean {
+public interface MDownloaderMXBean {
 
     /**
      * @return if the MDownloader was started
