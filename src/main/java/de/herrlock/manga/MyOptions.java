@@ -12,7 +12,7 @@ import org.apache.commons.cli.Options;
  * 
  * @author HerrLock
  */
-public final class MyOptions {
+final class MyOptions {
 
     private final Option consoleTypeOption = Option.builder()//
         .longOpt( "console" )//

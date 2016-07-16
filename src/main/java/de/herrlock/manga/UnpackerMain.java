@@ -15,7 +15,7 @@ import java.util.zip.GZIPInputStream;
  * 
  * @author HerrLock
  */
-public final class UnpackerMain {
+final class UnpackerMain {
     public static void main( final String... args ) {
         // check if packed archives exist
         unpackArchives();
