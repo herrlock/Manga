@@ -1,51 +1,51 @@
 package de.herrlock.manga.exceptions;
 
 /**
- * A general custom RuntimeException
+ * A general custom checked Exception
  * 
  * @author HerrLock
  */
-public final class MDRuntimeException extends RuntimeException {
+public final class MDException extends Exception {
 
     /**
-     * A new MDRuntimeException without detailed message or cause
+     * A new MDException without detailed message or cause
      * 
      * @deprecated should not be used since there will be no detail-message
      */
     @Deprecated
-    public MDRuntimeException() {
+    public MDException() {
         super();
     }
 
     /**
-     * A new MDRuntimeException with a detailed message
+     * A new MDException with a detailed message
      * 
      * @param message
      *            a detailmessage why this exception occurred
      */
-    public MDRuntimeException( final String message ) {
+    public MDException( final String message ) {
         super( message );
     }
 
     /**
-     * A new MDRuntimeException with a cause
+     * A new MDException with a cause
      * 
      * @param cause
      *            the cause of this exception
      */
-    public MDRuntimeException( final Throwable cause ) {
+    public MDException( final Throwable cause ) {
         super( cause );
     }
 
     /**
-     * A new MDRuntimeException with a detailed message and cause
+     * A new MDException with a detailed message and cause
      * 
      * @param message
      *            a detailmessage why this exception occurred
      * @param cause
      *            the cause of this exception
      */
-    public MDRuntimeException( final String message, final Throwable cause ) {
+    public MDException( final String message, final Throwable cause ) {
         super( message, cause );
     }
 
