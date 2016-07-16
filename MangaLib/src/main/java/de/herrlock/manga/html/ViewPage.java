@@ -50,7 +50,6 @@ public final class ViewPage {
      * 
      * @param folder
      *            the folder to save the created files into
-     * @throws IOException
      */
     public static void execute( final File folder ) {
         logger.trace( folder );
