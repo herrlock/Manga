@@ -6,18 +6,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.herrlock.javafx.AbstractApplication;
 import de.herrlock.javafx.annotation.Conf;
+import de.herrlock.javafx.handler.MouseDragHandler;
 import de.herrlock.javafx.scene.SceneContainer;
 import de.herrlock.manga.exceptions.MDRuntimeException;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -58,31 +54,6 @@ public final class MDGui extends AbstractApplication {
         @Override
         public String getTitle() {
             return "MangaDownloader";
-        }
-
-    }
-
-    private static final class MouseDragHandler implements EventHandler<MouseEvent> {
-        private static final Logger logger = LogManager.getLogger();
-        private final Stage stage;
-        private double offsetX, offsetY;
-
-        public MouseDragHandler( final Stage stage ) {
-            this.stage = stage;
-        }
-
-        @Override
-        public void handle( final MouseEvent event ) {
-            logger.traceEntry( "event: {}", event );
-            double screenX = event.getScreenX();
-            double screenY = event.getScreenY();
-            if ( event.getEventType().getName().equals( "MOUSE_PRESSED" ) ) {
-                this.offsetX = this.stage.getX() - screenX;
-                this.offsetY = this.stage.getY() - screenY;
-            } else {
-                this.stage.setX( screenX + this.offsetX );
-                this.stage.setY( screenY + this.offsetY );
-            }
         }
 
     }
