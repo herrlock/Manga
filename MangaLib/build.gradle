@@ -20,3 +20,8 @@ dependencies {
 	}
 	compile files(new File(rootProject.projectDir, 'lib/jmetro.jar'))
 }
+
+pmdMain.ignoreFailures = true
+pmdMain << {
+	assertPmdErrors pmdMain, ['InsufficientStringBufferDeclaration']
+}

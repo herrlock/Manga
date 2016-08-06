@@ -5,3 +5,8 @@ description = 'A library for all special implementations of the classes in Manga
 dependencies {
     compile project(':MangaLib')
 }
+
+pmdMain.ignoreFailures = true
+pmdMain << {
+	assertPmdErrors pmdMain, ['AvoidCatchingGenericException', 'AvoidCatchingGenericException']
+}

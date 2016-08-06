@@ -71,7 +71,6 @@ allprojects {
 	}
 	
 	pmd {
-		ignoreFailures = true
 		ruleSetFiles = files("${rootProject.projectDir}/misc/pmd.rulesets.xml")
 	}
 	
@@ -210,4 +209,21 @@ distributions {
 
 tasks.withType(Tar) {
 	compression = Compression.GZIP
+}
+
+void assertPmdErrors(Task pmdTask, List expected) {
+	assertPmdErrors pmdTask.reports.xml.destination, expected
+}
+
+void assertPmdErrors(File file, List expected) {
+	def violations = new XmlParser().parse(file).file.violation
+	if(violations.size() != expected.size()) {
+		throw new GradleException("Wrong number of PMD warnings: Expected ${expected.size()} but found ${violations.size()}")
+	}
+	violations.eachWithIndex { e,i ->
+		if(e.@rule != expected.get(i)) {
+			throw new GradleException("Wrong PMD rule. Is ${e.@rule} but should be ${expected.get(i)}")
+		}
+	}
+	println 'Suppressing PMD warnings, as they seem be be expected.'
 }
