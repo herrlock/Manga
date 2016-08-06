@@ -3,8 +3,10 @@ package de.herrlock.manga.ui.main;
 import static de.herrlock.manga.util.Execs.DO_NOTHING;
 import static de.herrlock.manga.util.Execs.VIEW_PAGE_MAIN;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import de.herrlock.javafx.handler.Exec;
 import de.herrlock.javafx.handler.ExecHandlerTask;
@@ -17,6 +19,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -25,7 +28,7 @@ import javafx.scene.text.Text;
 /**
  * @author HerrLock
  */
-public final class MDGuiController {
+public final class MDGuiController implements Initializable {
 
     @FXML
     private final StringProperty url = new SimpleStringProperty();
@@ -126,7 +129,8 @@ public final class MDGuiController {
         return p;
     }
 
-    public void initialize() {
+    @Override
+    public void initialize( final URL location, final ResourceBundle resources ) {
         this.rightScrollPane.prefViewportWidthProperty().bind( this.rightVBox.widthProperty() );
         List<Hoster> values = Hosters.sortedValues();
         for ( int y = 0; y < values.size(); y++ ) {
