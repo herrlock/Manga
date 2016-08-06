@@ -150,7 +150,7 @@ task packDependencies {
 	}
 	java.util.jar.Pack200.Packer packer = java.util.jar.Pack200.newPacker();
 	packer.properties().putAll([
-		(packer.EFFORT) : '9',
+		(packer.EFFORT) : project.hasProperty('lowEffortPacking') ? '0' : '9',
 		(packer.SEGMENT_LIMIT) : '-1',
 		(packer.KEEP_FILE_ORDER) : packer.FALSE,
 		(packer.MODIFICATION_TIME) : packer.LATEST,
@@ -162,6 +162,7 @@ task packDependencies {
 	}
 	jars.each { jar ->
 		if(!'jfxrt.jar'.equals(jar.getName())) {
+			inputs.file jar
 			File newFile = new File(targetFolder, jar.getName() + '.pack.gz')
 			outputs.file newFile
 			doLast {
