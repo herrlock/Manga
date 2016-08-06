@@ -93,15 +93,7 @@ public final class Server {
      * shutdown-mechanism was triggered.
      */
     public void listenForStop() {
-        Thread thread = new Thread( new Runnable() {
-            @Override
-            public void run() {
-                logger.debug( "Tomcat.await" );
-                // this method blocks until the server receives a shutdown-message by port 1904
-                Server.this.tomcat.getServer().await();
-                logger.debug( "Tomcat.await returned" );
-            }
-        } );
+        Thread thread = new CheckServerThread( this.tomcat );
         thread.start();
         boolean active = true;
         boolean sysinIsOpen = true;
@@ -157,4 +149,26 @@ public final class Server {
         this.tomcat.stop();
     }
 
+    /**
+     * A Thread that calls {@link org.apache.catalina.Server#await()}
+     * 
+     * @author HerrLock
+     */
+    private static final class CheckServerThread extends Thread {
+        private final Tomcat tomcat;
+
+        public CheckServerThread( final Tomcat tomcat ) {
+            this.tomcat = tomcat;
+            setName( "CheckTomcatAlive-Thread" );
+            setDaemon( true );
+        }
+
+        @Override
+        public void run() {
+            logger.debug( "Tomcat.await" );
+            // this method blocks until the server receives a shutdown-message by port 1904
+            this.tomcat.getServer().await();
+            logger.debug( "Tomcat.await returned" );
+        }
+    }
 }
