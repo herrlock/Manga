@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +30,7 @@ import de.herrlock.manga.util.management.MDownloaderMXBean;
 public abstract class MDownloader implements Progressable, MDownloaderMXBean {
     private static final Logger logger = LogManager.getLogger();
 
+    private static final AtomicInteger cnt = new AtomicInteger();
     /**
      * contains the {@link ChapterListContainer}
      */
@@ -73,10 +75,13 @@ public abstract class MDownloader implements Progressable, MDownloaderMXBean {
         this.maxProgress = this.pmc.getSize();
         this.dqc = new DownloadQueueContainer( this.clc, conf );
 
-        Utils.registerMBean( this, "de.herrlock.manga", "type", "MDownloader" );
-        Utils.registerMBean( this.clc, "de.herrlock.manga", "type", "ChapterListContainer" );
-        Utils.registerMBean( this.pmc, "de.herrlock.manga", "type", "PictureMapContainer" );
-        Utils.registerMBean( this.dqc, "de.herrlock.manga", "type", "DownloadQueueContainer" );
+        // register MBeans
+        int nextCnt = cnt.getAndIncrement();
+        String cntString = "type=" + nextCnt;
+        Utils.registerMBean( this, "de.herrlock.manga", cntString, "object=MDownloader" );
+        // Utils.registerMBean( this.clc, "de.herrlock.manga", cntString, "object=ChapterListContainer" ); // currently no content
+        // Utils.registerMBean( this.pmc, "de.herrlock.manga", cntString, "object=PictureMapContainer" ); // currently no content
+        Utils.registerMBean( this.dqc, "de.herrlock.manga", cntString, "object=DownloadQueueContainer" );
     }
 
     /**

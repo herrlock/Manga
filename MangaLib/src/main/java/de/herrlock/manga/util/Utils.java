@@ -28,6 +28,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.base.Joiner;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
@@ -45,6 +46,7 @@ public final class Utils {
     private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20,
         new ThreadFactoryBuilder().setNameFormat( "Droggelb%dcher" ).setDaemon( true ).build() );
     private static final CloseableHttpClient CLIENT = HttpClients.createDefault();
+    private static final Joiner COMMA_JOINER = Joiner.on( "," );
 
     /**
      * Creates new {@link HttpGet} to the given {@link URL} and with the given {@link DownloadConfiguration}
@@ -159,13 +161,14 @@ public final class Utils {
         }
     }
 
-    public static void registerMBean( final Object mbean, final String domain, final String key, final String value ) {
-        try {
-            ObjectName objectName = new ObjectName( domain, key, value );
-            registerMBean( mbean, objectName );
-        } catch ( MalformedObjectNameException ex ) {
-            logger.warn( "Could not register MBeans, ignoring this.", ex );
-        }
+    public static void registerMBean( final Object mbean, final String domain, final String... params ) {
+        String paramString = COMMA_JOINER.join( params );
+        registerMBean( mbean, domain, paramString );
+    }
+
+    public static void registerMBean( final Object mbean, final String domain, final String paramString ) {
+        String name = domain + ":" + paramString;
+        registerMBean( mbean, name );
     }
 
     public static void registerMBean( final Object mbean, final String name ) {
