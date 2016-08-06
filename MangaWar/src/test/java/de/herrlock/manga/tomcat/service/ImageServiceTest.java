@@ -1,4 +1,4 @@
-package de.herrlock.manga.tomcat.servlet;
+package de.herrlock.manga.tomcat.service;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,8 +6,8 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
-import de.herrlock.manga.tomcat.servlet.ImageService.BGObject;
-import de.herrlock.manga.tomcat.servlet.ImageService.Image;
+import de.herrlock.manga.tomcat.service.ImageService.BGObject;
+import de.herrlock.manga.tomcat.service.ImageService.Image;
 
 /**
  * @author HerrLock

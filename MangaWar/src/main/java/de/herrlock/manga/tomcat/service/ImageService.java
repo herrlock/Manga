@@ -1,4 +1,4 @@
-package de.herrlock.manga.tomcat.servlet;
+package de.herrlock.manga.tomcat.service;
 
 import java.awt.Color;
 import java.util.Random;

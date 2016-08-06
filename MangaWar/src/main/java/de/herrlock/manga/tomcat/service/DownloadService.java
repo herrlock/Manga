@@ -1,4 +1,4 @@
-package de.herrlock.manga.tomcat.servlet;
+package de.herrlock.manga.tomcat.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;

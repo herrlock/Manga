@@ -1,4 +1,4 @@
-package de.herrlock.manga.tomcat.servlet;
+package de.herrlock.manga.tomcat.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -8,8 +8,8 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import de.herrlock.manga.tomcat.servlet.DownloadService.MDObject;
-import de.herrlock.manga.tomcat.servlet.DownloadService.ProgressObject;
+import de.herrlock.manga.tomcat.service.DownloadService.MDObject;
+import de.herrlock.manga.tomcat.service.DownloadService.ProgressObject;
 
 /**
  * @author HerrLock
