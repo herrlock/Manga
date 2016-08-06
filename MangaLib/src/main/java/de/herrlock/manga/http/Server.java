@@ -7,14 +7,11 @@ import java.nio.file.Paths;
 
 import javax.servlet.ServletException;
 
-import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.google.common.annotations.VisibleForTesting;
 
 /**
  * @author HerrLock
@@ -57,12 +54,11 @@ public final class Server {
         this.tomcat.setBaseDir( tomcatFolder.toString() );
         this.port = port;
         this.tomcat.setPort( port );
+        this.tomcat.getServer().setPort( 1904 );
 
-        Context serverContext;
         Path docBase = Files.createDirectories( tomcatFolder.resolve( "temp" ) );
-        serverContext = this.tomcat.addContext( "/server", docBase.toAbsolutePath().toString() );
-        Tomcat.addServlet( serverContext, "StopServer", new StopServerServlet( this ) );
-        serverContext.addServletMapping( "/stop", "StopServer" );
+        // Context serverContext =
+        this.tomcat.addContext( "/server", docBase.toAbsolutePath().toString() );
 
         this.tomcat.addWebapp( "", tomcatFolder.resolve( "webapps/ROOT.war" ).toAbsolutePath().toString() );
     }
@@ -93,10 +89,20 @@ public final class Server {
     }
 
     /**
-     * Wait for the server to be stopped. CHecks all 2 seconds if either 'q' can be read from System.in or the connector is
-     * stopped (this can be done by the method {@link Tomcat#stop()}.
+     * Wait for the server to be stopped. Checks all 2 seconds if either 'q' can be read from System.in or the server's
+     * shutdown-mechanism was triggered.
      */
     public void listenForStop() {
+        Thread thread = new Thread( new Runnable() {
+            @Override
+            public void run() {
+                logger.debug( "Tomcat.await" );
+                // this method blocks until the server receives a shutdown-message by port 1904
+                Server.this.tomcat.getServer().await();
+                logger.debug( "Tomcat.await returned" );
+            }
+        } );
+        thread.start();
         boolean active = true;
         boolean sysinIsOpen = true;
         try {
@@ -108,9 +114,11 @@ public final class Server {
         }
         while ( active ) {
             logger.debug( "Server active" );
-            boolean connectorStopped = getConnectorStopped();
+            boolean threadTerminated = !thread.isAlive();
+            logger.debug( "threadTerminated: {}", threadTerminated );
             boolean quitBySysin = sysinIsOpen && getStopFromSysin();
-            if ( connectorStopped || quitBySysin ) {
+            logger.debug( "quitBySysin: {}", quitBySysin );
+            if ( threadTerminated || quitBySysin ) {
                 active = false;
             } else {
                 try {
@@ -121,15 +129,6 @@ public final class Server {
             }
         }
         logger.info( "Server stopped" );
-    }
-
-    @VisibleForTesting
-    boolean getConnectorStopped() {
-        logger.traceEntry();
-        LifecycleState state = this.tomcat.getConnector().getState();
-        boolean connectorStopped = state == LifecycleState.STOPPED;
-        logger.debug( "Connector: {}", state );
-        return connectorStopped;
     }
 
     private boolean getStopFromSysin() {

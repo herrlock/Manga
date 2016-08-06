@@ -181,8 +181,8 @@ $(function() {
 		$.get(url, "text").done(response => md.updateEntry(response, temp)).fail(jqXHR => md.removeEntry(jqXHR, temp));
 	});
 	$("#stopServer").click(function() {
-		$.get("server/stop", function() {
-			$.when($("#bars").slideUp(1000), $("#content").fadeOut(1000)).then(() => $("#closeNotice").show(1000));
+		$.get("j/stop", function() {
+			$.when($("#bars").slideUp(), $("#content").fadeOut()).then(() => $("#closeNotice").show());
 			window.clearInterval(updateAllInterval);
 			console.warn("+","----------------","+");
 			console.warn("|"," stopped server ","|");
