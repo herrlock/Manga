@@ -314,7 +314,7 @@ public abstract class Configuration {
 
         @Override
         public String toString() {
-            return MessageFormat.format( "ProxyStorage( host: {0} )", this.httpHost );
+            return MessageFormat.format( "ProxyStorage( host: {0}, auth: {1} )", this.httpHost, this.b64creds != null );
         }
     }
 }

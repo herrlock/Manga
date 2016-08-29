@@ -72,12 +72,12 @@ public abstract class MDownloader implements Progressable, MDownloaderMXBean {
         logger.info( conf.getUrl().toExternalForm() );
         this.clc = new ChapterListContainer( conf );
         this.pmc = new PictureMapContainer( this.clc );
-        this.maxProgress = this.pmc.getSize();
+        setMaxProgress( this.pmc.getSize() );
         this.dqc = new DownloadQueueContainer( this.clc, conf );
 
         // register MBeans
         int nextCnt = cnt.getAndIncrement();
-        String cntString = "type=" + nextCnt;
+        final String cntString = "type=" + nextCnt;
         Utils.registerMBean( this, "de.herrlock.manga", cntString, "object=MDownloader" );
         // Utils.registerMBean( this.clc, "de.herrlock.manga", cntString, "object=ChapterListContainer" ); // currently no content
         // Utils.registerMBean( this.pmc, "de.herrlock.manga", cntString, "object=PictureMapContainer" ); // currently no content
@@ -128,8 +128,8 @@ public abstract class MDownloader implements Progressable, MDownloaderMXBean {
         entries.sort( EntryList.getStringComparator( Constants.STRING_NUMBER_COMPARATOR ) );
         setProgress( 0 );
         for ( Entry<String, EntryList<Integer, URL>> entry : entries ) {
-            EntryList<Integer, URL> urlMap = entry.getValue();
             String key = entry.getKey();
+            EntryList<Integer, URL> urlMap = entry.getValue();
             downloadChapter( key, urlMap );
             doProgress( entry.getValue().size() );
         }

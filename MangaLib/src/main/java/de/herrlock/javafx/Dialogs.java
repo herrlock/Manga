@@ -164,6 +164,9 @@ public final class Dialogs {
 
     private static Dialog _createDialog( final String title, final Stage owner, final Node parent, final Parent buttons,
         final String iconFile ) {
+        if ( Platform.isFxApplicationThread() ) {
+            throw new IllegalStateException( "This method must not be called from the FX-Application-Thread" );
+        }
         final Task<Dialog> task = new Task<Dialog>() {
             @Override
             protected Dialog call() {
