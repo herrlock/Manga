@@ -15,9 +15,10 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.impl.client.AbstractResponseHandler;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -111,7 +112,8 @@ public final class DownloadQueueContainer implements DownloadQueueContainerMXBea
         // download pictures from the ChapterListContainer
         List<DownloadThread> callables = new ArrayList<>( pages.size() );
         for ( Page p : pages ) {
-            callables.add( new DownloadThread( p ) );
+            DownloadThread downloadThread = new DownloadThread( p );
+            callables.add( downloadThread );
         }
         Utils.callCallables( callables );
         if ( !this.dlQueue.isEmpty() ) {
@@ -123,32 +125,33 @@ public final class DownloadQueueContainer implements DownloadQueueContainerMXBea
         return this.clc.getImageLink( pageUrl );
     }
 
+    void executeDownload( final URL url, final ResponseHandler<?> handler ) throws ClientProtocolException, IOException {
+        Utils.getDataAndExecuteResponseHandler( url, this.conf, handler );
+    }
+
     /**
      * A Thread to download one image
      * 
      * @author HerrLock
      */
-    private final class DownloadThread implements Callable<Void> {
+    private final class DownloadThread extends AbstractResponseHandler<Void> implements Callable<Void> {
         private final Page p;
-        private final ResponseHandler<Void> handler;
 
         public DownloadThread( final Page p ) {
             logger.traceEntry( "page-url: {}", p.getUrl() );
             this.p = p;
-            this.handler = new ResponseHandler<Void>() {
-                @Override
-                public Void handleResponse( final HttpResponse response ) throws ClientProtocolException, IOException {
-                    HttpEntity entity = response.getEntity();
-                    try ( InputStream in = entity.getContent() ) {
-                        try ( OutputStream out = new FileOutputStream( p.getTargetFile() ) ) {
-                            ByteStreams.copy( in, out );
-                        }
-                    } finally {
-                        EntityUtils.consume( entity );
-                    }
-                    return null;
+        }
+
+        @Override
+        public Void handleEntity( final HttpEntity entity ) throws IOException {
+            try ( InputStream in = entity.getContent() ) {
+                try ( OutputStream out = new FileOutputStream( this.p.getTargetFile() ) ) {
+                    ByteStreams.copy( in, out );
                 }
-            };
+            } finally {
+                EntityUtils.consume( entity );
+            }
+            return null;
         }
 
         /**
@@ -156,24 +159,34 @@ public final class DownloadQueueContainer implements DownloadQueueContainerMXBea
          */
         @Override
         public Void call() {
+            URL pageUrl = this.p.getUrl();
             try {
-                URL imageURL = DownloadQueueContainer.this.getImageLink( this.p.getUrl() );
-                File outputFile = this.p.getTargetFile();
+                URL imageURL = getImageLink( pageUrl );
                 logger.debug( "start reading image {}", imageURL );
-                Utils.getDataAndExecuteResponseHandler( imageURL, DownloadQueueContainer.this.conf, this.handler );
-                logger.debug( "saved image to {}", outputFile );
+                executeDownload( imageURL, this );
+                logger.debug( "saved image to {}", this.p.getTargetFile() );
             } catch ( final SocketException | SocketTimeoutException ex ) {
-                DownloadQueueContainer.this.add( this.p );
+                // timeout, try again
+                add( this.p );
+            } catch ( final HttpResponseException ex ) {
+                if ( ex.getStatusCode() == 503 ) {
+                    // http-statuscode 503
+                    logger.info( "HTTP-Status 503 ({}), trying again", pageUrl );
+                    add( this.p );
+                } else {
+                    throw new MDRuntimeException( ex );
+                }
             } catch ( final IOException ex ) {
                 if ( ex.getMessage().contains( "503" ) ) {
                     // http-statuscode 503
-                    logger.info( "HTTP-Status 503 ({}), trying again", this.p.getUrl() );
-                    DownloadQueueContainer.this.add( this.p );
+                    logger.info( "HTTP-Status 503 ({}), trying again", pageUrl );
+                    add( this.p );
                 } else {
                     throw new MDRuntimeException( ex );
                 }
             }
             return null;
         }
+
     }
 }
