@@ -145,7 +145,7 @@ public final class Utils {
     }
 
     /**
-     * Invokes all given Callables
+     * Queue all given Callables in the ExecutorService and returns the resulting {@link Future}s
      * 
      * @param <T>
      *            The generic type of the given callables, the generic type of the Future-objects in the result
@@ -161,16 +161,73 @@ public final class Utils {
         }
     }
 
+    /**
+     * Queue the Callable in the ExecutorService and returns the resulting {@link Future}.
+     * 
+     * @param callable
+     *            the Callable to run
+     * @return the Future that results from this Callable
+     * @see ExecutorService#submit(Callable)
+     */
+    public static <T> Future<T> callCallable( final Callable<T> callable ) {
+        return THREAD_POOL.submit( callable );
+    }
+
+    /**
+     * Queue the Runnable in the ExecutorService and returns the resulting {@link Future}.
+     * 
+     * @param callable
+     *            the Callable to run
+     * @return the Future always returns {@code null}
+     * @see ExecutorService#submit(Runnable)
+     */
+    public static Future<?> callCallable( final Runnable runnable ) {
+        return THREAD_POOL.submit( runnable );
+    }
+
+    /**
+     * Register the MBean at the ObjectName constructed by the given Strings.
+     * 
+     * @param mbean
+     *            The MBean to register.
+     * @param domain
+     *            The domain for the ObjectName.
+     * @param params
+     *            An array of parameters. These parameters are joined by a comma ({@code ,}) to represent the path of the
+     *            ObjectName.
+     * @see #registerMBean(Object, String, String)
+     */
     public static void registerMBean( final Object mbean, final String domain, final String... params ) {
         String paramString = COMMA_JOINER.join( params );
         registerMBean( mbean, domain, paramString );
     }
 
+    /**
+     * Registers the given MBean at the ObjectName constructed by the given Strings. The domain and the path are concatenated by a
+     * colon ({@code :}) to represent the ObjectName.
+     * 
+     * @param mbean
+     *            The MBean to register.
+     * @param domain
+     *            The domain for the ObjectName.
+     * @param paramString
+     *            The path of the ObjectName.
+     * @see #registerMBean(Object, String)
+     */
     public static void registerMBean( final Object mbean, final String domain, final String paramString ) {
         String name = domain + ":" + paramString;
         registerMBean( mbean, name );
     }
 
+    /**
+     * Registers the given MBean at the ObjectName constructed by the given String.
+     * 
+     * @param mbean
+     *            The MBean to register.
+     * @param name
+     *            The String representing the ObjectName of the MBean. Passed to {@link ObjectName#ObjectName(String) new
+     *            ObjectName(String)}.
+     */
     public static void registerMBean( final Object mbean, final String name ) {
         try {
             ObjectName objectName = new ObjectName( name );
@@ -180,6 +237,14 @@ public final class Utils {
         }
     }
 
+    /**
+     * Registers the given MBean at the given ObjectName.
+     * 
+     * @param mbean
+     *            The MBean to register.
+     * @param name
+     *            The ObjectName of the MBean.
+     */
     public static void registerMBean( final Object mbean, final ObjectName name ) {
         try {
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
