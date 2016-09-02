@@ -1,12 +1,13 @@
 package de.herrlock.manga.host;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.Objects;
 
+import de.herrlock.manga.exceptions.HosterInstantiationException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
@@ -18,27 +19,42 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  */
 public final class Hoster implements Comparable<Hoster> {
 
-    private final Class<? extends ChapterList> baseClass;
+    private final InstantiationProxy proxy;
+    private final String baseClassName;
     private final String name;
     private final URL baseUrl;
 
     /**
-     * creates an instance of this Hoster
+     * Creates an instance of this Hoster
      * 
-     * @param baseClass
-     *            the subclass of ChapterList to create instances from with {@linkplain #getChapterList(DownloadConfiguration)}.
-     *            The class must be annotated with {@link Details}
+     * @param proxy
+     *            An implementation of {@link InstantiationProxy} that returns an object of the {@link ChapterList}-implementation
      */
-    public Hoster( final Class<? extends ChapterList> baseClass ) {
-        this.baseClass = Objects.requireNonNull( baseClass );
-        Details hosterDetails = Objects.requireNonNull( baseClass.getAnnotation( Details.class ),
+    public Hoster( final InstantiationProxy proxy ) throws HosterInstantiationException {
+        this.proxy = requireNonNull( proxy, "InstantiationProxy is null" );
+        Class<? extends ChapterList> baseClass = requireNonNull( this.proxy.getProxiedClass(),
+            "The InstantiationProxy must return the proxied class." );
+        this.baseClassName = baseClass.getName();
+        Details hosterDetails = requireNonNull( baseClass.getAnnotation( Details.class ),
             "Implementations of ChapterList require a name and a baseUrl provided by the annotation @Details" );
-        this.name = Objects.requireNonNull( hosterDetails.name() );
+        this.name = requireNonNull( hosterDetails.name(), "@Details.name() is null." );
         try {
-            this.baseUrl = new URL( Objects.requireNonNull( hosterDetails.baseUrl() ) );
+            String urlString = hosterDetails.baseUrl();
+            this.baseUrl = new URL( requireNonNull( urlString, "@Details.baseUrl() is null." ) );
         } catch ( final MalformedURLException ex ) {
             throw new IllegalStateException( ex );
         }
+    }
+
+    public static <K> K requireNonNull( final K k, final String message ) throws HosterInstantiationException {
+        if ( k == null ) {
+            throw new HosterInstantiationException( message );
+        }
+        return k;
+    }
+
+    public <T extends ChapterList> Hoster( final Class<T> clazz ) throws HosterInstantiationException {
+        this( new GeneralInstantiationProxy( clazz ) );
     }
 
     /**
@@ -52,19 +68,9 @@ public final class Hoster implements Comparable<Hoster> {
      */
     public ChapterList getChapterList( final DownloadConfiguration conf ) {
         try {
-            Constructor<? extends ChapterList> constructor = this.baseClass.getConstructor( DownloadConfiguration.class );
-            return constructor.newInstance( conf );
-        } catch ( final NoSuchMethodException ex ) {
-            throw new IllegalStateException(
-                "The called implementation of ChapterList must contain a constructor accepting a DownloadConfiguration", ex );
-        } catch ( final InstantiationException ex ) {
-            throw new IllegalStateException( "The called class is abstract", ex );
-        } catch ( final IllegalAccessException ex ) {
-            throw new MDRuntimeException( "The called constructor is not accessible", ex );
-        } catch ( final IllegalArgumentException ex ) {
-            throw new MDRuntimeException( "The called constructor does not take one DownloadConfiguration as parameter", ex );
-        } catch ( final InvocationTargetException ex ) {
-            throw new MDRuntimeException( "The called constructor threw an exception", ex );
+            return this.proxy.getInstance( conf );
+        } catch ( IOException ex ) {
+            throw new MDRuntimeException( ex );
         }
     }
 
@@ -88,8 +94,8 @@ public final class Hoster implements Comparable<Hoster> {
 
     @Override
     public int compareTo( final Hoster other ) {
-        String thisBaseClassName = this.baseClass.getName();
-        String otherBaseClassName = other.baseClass.getName();
+        String thisBaseClassName = this.baseClassName;
+        String otherBaseClassName = other.baseClassName;
         return thisBaseClassName.compareTo( otherBaseClassName );
     }
 
@@ -100,11 +106,49 @@ public final class Hoster implements Comparable<Hoster> {
 
     @Override
     public int hashCode() {
-        return this.baseClass.getName().hashCode();
+        return this.baseClassName.hashCode();
     }
 
     @Override
     public String toString() {
         return MessageFormat.format( "Hoster (name: {0}, url: {1})", this.name, this.baseUrl );
+    }
+
+    /**
+     * @author HerrLock
+     */
+    public static final class GeneralInstantiationProxy extends InstantiationProxy {
+        private final Class<? extends ChapterList> clazz;
+
+        GeneralInstantiationProxy( final Class<? extends ChapterList> clazz ) {
+            this.clazz = clazz;
+        }
+
+        @Override
+        public Class<? extends ChapterList> getProxiedClass() {
+            return this.clazz;
+        }
+
+        @Override
+        public ChapterList getInstance( final DownloadConfiguration conf ) throws IOException {
+            Constructor<? extends ChapterList> constructor;
+            try {
+                constructor = this.clazz.getConstructor( DownloadConfiguration.class );
+            } catch ( final NoSuchMethodException ex ) {
+                String message = "The called implementation of ChapterList must contain a constructor accepting a DownloadConfiguration";
+                throw new IllegalStateException( message, ex );
+            }
+            try {
+                return constructor.newInstance( conf );
+            } catch ( final InstantiationException ex ) {
+                throw new IllegalStateException( "The called class is abstract", ex );
+            } catch ( final IllegalAccessException ex ) {
+                throw new MDRuntimeException( "The called constructor is not accessible", ex );
+            } catch ( final IllegalArgumentException ex ) {
+                throw new MDRuntimeException( "The called constructor does not take one DownloadConfiguration as parameter", ex );
+            } catch ( final InvocationTargetException ex ) {
+                throw new MDRuntimeException( "The called constructor threw an exception", ex );
+            }
+        }
     }
 }

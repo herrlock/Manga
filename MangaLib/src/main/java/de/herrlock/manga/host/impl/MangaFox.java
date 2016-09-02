@@ -12,9 +12,10 @@ import com.google.auto.service.AutoService;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.Details;
+import de.herrlock.manga.host.InstantiationProxy;
+import de.herrlock.manga.host.ProxyDetails;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
-@AutoService( ChapterList.class )
 @Details( name = "Mangafox", baseUrl = "http://www.mangafox.me/", reversed = true )
 public final class MangaFox extends ChapterList {
 
@@ -24,9 +25,9 @@ public final class MangaFox extends ChapterList {
         super( conf );
         Document document = getDocument( conf.getUrl() );
 
-        this.name = document.select( "#series_info>.cover>img" ).first().attr( "alt" );
+        this.name = document.select( "#series_info > .cover > img" ).first().attr( "alt" );
 
-        Elements elements = document.select( "#chapters>ul.chlist>li" );
+        Elements elements = document.select( "#chapters > ul.chlist > li" );
         for ( Element e : elements ) {
             Element h3 = e.select( "h3" ).first();
             if ( h3 == null ) {
@@ -68,6 +69,15 @@ public final class MangaFox extends ChapterList {
             result.addEntry( number, value );
         }
         return result;
+    }
+
+    @AutoService( InstantiationProxy.class )
+    @ProxyDetails( proxiedClass = MangaFox.class )
+    public static final class MangaFoxInstantiationProxy extends InstantiationProxy {
+        @Override
+        public MangaFox getInstance( final DownloadConfiguration conf ) throws IOException {
+            return new MangaFox( conf );
+        }
     }
 
 }

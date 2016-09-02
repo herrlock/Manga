@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.ServiceLoader;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,8 +27,8 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 
+import de.herrlock.manga.exceptions.HosterInstantiationException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
-import de.herrlock.manga.util.Lookup;
 
 /**
  * A Utility-class containing the predefined {@link Hoster} as well as those loaded at runtime
@@ -35,6 +36,7 @@ import de.herrlock.manga.util.Lookup;
  * @author HerrLock
  */
 public final class Hosters {
+
     private static final Logger logger = LogManager.getLogger();
 
     private static final Collection<Hoster> hosters = new HashSet<>();
@@ -60,9 +62,9 @@ public final class Hosters {
     };
 
     static {
-        Collection<? extends Class<ChapterList>> lookupAll = Lookup.lookupAll( ChapterList.class );
-        for ( Class<? extends ChapterList> c : lookupAll ) {
-            registerHoster( c );
+        ServiceLoader<InstantiationProxy> loader = ServiceLoader.load( InstantiationProxy.class );
+        for ( InstantiationProxy proxy : loader ) {
+            registerHoster( proxy );
         }
 
         Path additionalHostersPath = Paths.get( ".", "additionalHoster.txt" );
@@ -151,20 +153,39 @@ public final class Hosters {
      * @see java.util.Collection#add(Object)
      */
     public static boolean registerHoster( final Hoster hoster ) {
-        logger.debug( "add Hoster: {}", hoster );
-        return hosters.add( hoster );
+        boolean added = hosters.add( hoster );
+        logger.debug( "add Hoster: {}, wasAdded: {}", hoster, added );
+        return added;
     }
 
     /**
      * adds a {@link Hoster} to the global pool
      * 
-     * @param c
-     *            the class to create a Hoster with
+     * @param proxy
+     *            the {@link InstantiationProxy} to create a Hoster with
      * @return if the Hoster was actually added
-     * @see Hoster#Hoster(Class)
+     * @see Hoster#Hoster(InstantiationProxy)
      */
-    public static boolean registerHoster( final Class<? extends ChapterList> c ) {
-        return registerHoster( new Hoster( c ) );
+    public static boolean registerHoster( final InstantiationProxy proxy ) {
+        try {
+            Hoster hoster = new Hoster( proxy );
+            return registerHoster( hoster );
+        } catch ( HosterInstantiationException ex ) {
+            logger.warn( "Hoster could not be instantiated." );
+            logger.catching( ex );
+            return false;
+        }
+    }
+
+    public static boolean registerHoster( final Class<? extends ChapterList> clazz ) {
+        try {
+            Hoster hoster = new Hoster( clazz );
+            return registerHoster( hoster );
+        } catch ( HosterInstantiationException ex ) {
+            logger.warn( "Hoster could not be instantiated." );
+            logger.catching( ex );
+            return false;
+        }
     }
 
     /**

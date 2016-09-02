@@ -5,7 +5,7 @@ package de.herrlock.manga.exceptions;
  * 
  * @author HerrLock
  */
-public final class MDRuntimeException extends RuntimeException {
+public class MDRuntimeException extends RuntimeException {
 
     /**
      * A new MDRuntimeException without detailed message or cause

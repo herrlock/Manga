@@ -12,9 +12,10 @@ import com.google.auto.service.AutoService;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.Details;
+import de.herrlock.manga.host.InstantiationProxy;
+import de.herrlock.manga.host.ProxyDetails;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
-@AutoService( ChapterList.class )
 @Details( name = "Manga-Tube", baseUrl = "http://www.manga-tube.com/", reversed = true )
 public final class MangaTube extends ChapterList {
 
@@ -61,6 +62,15 @@ public final class MangaTube extends ChapterList {
             result.addEntry( key, value );
         }
         return result;
+    }
+
+    @AutoService( InstantiationProxy.class )
+    @ProxyDetails( proxiedClass = MangaTube.class )
+    public static final class MangaTubeInstantiationProxy extends InstantiationProxy {
+        @Override
+        public MangaTube getInstance( final DownloadConfiguration conf ) throws IOException {
+            return new MangaTube( conf );
+        }
     }
 
 }

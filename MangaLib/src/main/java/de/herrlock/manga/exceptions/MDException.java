@@ -5,7 +5,7 @@ package de.herrlock.manga.exceptions;
  * 
  * @author HerrLock
  */
-public final class MDException extends Exception {
+public class MDException extends Exception {
 
     /**
      * A new MDException without detailed message or cause

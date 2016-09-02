@@ -12,9 +12,10 @@ import com.google.auto.service.AutoService;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.Details;
+import de.herrlock.manga.host.InstantiationProxy;
+import de.herrlock.manga.host.ProxyDetails;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
-@AutoService( ChapterList.class )
 @Details( name = "Mangapanda", baseUrl = "http://www.mangapanda.com/" )
 public final class MangaPanda extends ChapterList {
 
@@ -55,13 +56,22 @@ public final class MangaPanda extends ChapterList {
     @Override
     protected EntryList<Integer, URL> _getAllPageURLs( final URL url ) throws IOException {
         EntryList<Integer, URL> result = new EntryList<>();
-        Elements pages = getDocument( url ).select( "#pageMenu>option" );
+        Elements pages = getDocument( url ).select( "#pageMenu > option" );
         for ( Element e : pages ) {
             Integer key = Integer.valueOf( e.text() );
             URL value = new URL( url, e.attr( "value" ) );
             result.addEntry( key, value );
         }
         return result;
+    }
+
+    @AutoService( InstantiationProxy.class )
+    @ProxyDetails( proxiedClass = MangaPanda.class )
+    public static final class MangaPandaInstantiationProxy extends InstantiationProxy {
+        @Override
+        public MangaPanda getInstance( final DownloadConfiguration conf ) throws IOException {
+            return new MangaPanda( conf );
+        }
     }
 
 }
