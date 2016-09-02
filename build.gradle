@@ -76,6 +76,9 @@ allprojects {
 	
 	eclipse {
 		project {
+			if(rootProject.hasProperty('eclipseNamePrefix')) {
+				name = rootProject.eclipseNamePrefix + '-' + project.name
+			}
 			buildCommand 'edu.umd.cs.findbugs.plugin.eclipse.findbugsBuilder'
 		}
 		classpath {
