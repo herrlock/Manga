@@ -176,8 +176,8 @@ public final class Utils {
     /**
      * Queue the Runnable in the ExecutorService and returns the resulting {@link Future}.
      * 
-     * @param callable
-     *            the Callable to run
+     * @param runnable
+     *            the Runnable to run
      * @return the Future always returns {@code null}
      * @see ExecutorService#submit(Runnable)
      */
