@@ -42,7 +42,7 @@ public final class Hoster implements Comparable<Hoster> {
             String urlString = hosterDetails.baseUrl();
             this.baseUrl = new URL( requireNonNull( urlString, "@Details.baseUrl() is null." ) );
         } catch ( final MalformedURLException ex ) {
-            throw new IllegalStateException( ex );
+            throw new HosterInstantiationException( ex );
         }
     }
 
