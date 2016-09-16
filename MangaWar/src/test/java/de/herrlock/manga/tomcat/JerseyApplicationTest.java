@@ -15,6 +15,6 @@ public class JerseyApplicationTest {
     @Test
     public void test() {
         Set<Class<?>> classes = this.jerseyApplication.getClasses();
-        Assert.assertEquals( 3, classes.size() );
+        Assert.assertEquals( 4, classes.size() );
     }
 }
