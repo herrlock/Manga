@@ -178,7 +178,7 @@ $(function() {
 		var query = "?" + queryArr.join("&");
 		var url = "j/download/start" + query;
 		var temp = md.createTempEntry();
-		$.get(url, "text").done(response => md.updateEntry(response, temp)).fail(jqXHR => md.removeEntry(jqXHR, temp));
+		$.get(url).done(response => md.updateEntry(response, temp)).fail(jqXHR => md.removeEntry(jqXHR, temp));
 	});
 	$("#stopServer").click(function() {
 		$.get("j/stop", function() {
