@@ -103,14 +103,14 @@ var md = {
 		var tempData = fieldset.dataset.temp;
 		console.log("tempData", tempData);
 		if(!progressBar && !tempData && !fieldset.classList.contains("dummy")) {
-            $(fieldset).slideUp(function() {
-                var url = fieldset.querySelector("legend").textContent;
-                $(fieldset).remove();
-                console.log("removed orphaned bar");
-                md.showNotification("MangaDownloader", {
-                    body: "Finished " + url
-                });
-            });
+			$(fieldset).slideUp(function() {
+				var url = fieldset.querySelector("legend").textContent;
+				$(fieldset).remove();
+				console.log("removed orphaned bar");
+				md.showNotification("MangaDownloader", {
+					body: "Finished " + url
+				});
+			});
 		}
 	},
 	showNotification : function(title, options) {
