@@ -4,9 +4,10 @@ import static de.herrlock.manga.util.Execs.DO_NOTHING;
 import static de.herrlock.manga.util.Execs.VIEW_PAGE_MAIN;
 
 import java.net.URL;
-import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.SortedSet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import de.herrlock.javafx.handler.Exec;
 import de.herrlock.javafx.handler.ExecHandlerTask;
@@ -132,13 +133,14 @@ public final class MDGuiController implements Initializable {
     @Override
     public void initialize( final URL location, final ResourceBundle resources ) {
         this.rightScrollPane.prefViewportWidthProperty().bind( this.rightVBox.widthProperty() );
-        List<Hoster> values = Hosters.sortedValues();
-        for ( int y = 0; y < values.size(); y++ ) {
-            Hoster hoster = values.get( y );
+        SortedSet<Hoster> values = Hosters.sortedValues();
+        AtomicInteger cnt = new AtomicInteger();
+        for ( Hoster hoster : values ) {
+            int current = cnt.getAndIncrement();
             String hostname = hoster.getName();
-            this.rightGridPane.add( new Text( hostname ), 0, y );
+            this.rightGridPane.add( new Text( hostname ), 0, current );
             String hosturl = hoster.getBaseUrl().getHost().substring( 4 );
-            this.rightGridPane.add( new Text( hosturl ), 1, y );
+            this.rightGridPane.add( new Text( hosturl ), 1, current );
         }
     }
 

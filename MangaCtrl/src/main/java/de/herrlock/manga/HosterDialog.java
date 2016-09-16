@@ -60,7 +60,7 @@ public class HosterDialog extends AbstractApplication {
             this.table = TableViewBuilder.<Hoster> create()//
                 .columns( columns )//
                 .editable( false )//
-                .items( FXCollections.observableList( Hosters.sortedValues() ) )//
+                .items( FXCollections.observableArrayList( Hosters.sortedValues() ) )//
                 .build();
 
             HBox hbox = new HBox();

@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.ServiceLoader;
+import java.util.SortedSet;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterables;
 
 import de.herrlock.manga.exceptions.HosterInstantiationException;
@@ -228,7 +230,7 @@ public final class Hosters {
      * 
      * @return the registered Hoster
      */
-    public static List<Hoster> sortedValues() {
+    public static SortedSet<Hoster> sortedValues() {
         return sortedValues( NAME_COMPARATOR );
     }
 
@@ -240,10 +242,8 @@ public final class Hosters {
      *            the comparator to sort with
      * @return the registered Hoster
      */
-    public static List<Hoster> sortedValues( final Comparator<Hoster> comparator ) {
-        ArrayList<Hoster> hosterCopy = new ArrayList<>( hosters );
-        Collections.sort( hosterCopy, comparator );
-        return Collections.unmodifiableList( hosterCopy );
+    public static SortedSet<Hoster> sortedValues( final Comparator<Hoster> comparator ) {
+        return ImmutableSortedSet.copyOf( comparator, hosters );
     }
 
     private Hosters() {

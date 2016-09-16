@@ -14,87 +14,87 @@ import org.apache.commons.cli.Options;
  */
 final class MyOptions {
 
-    private final Option consoleTypeOption = Option.builder()//
-        .longOpt( "console" )//
-        .desc( " > mode: start the console-downloader" )//
+    private final Option consoleTypeOption = Option.builder() //
+        .longOpt( "console" ) //
+        .desc( " > mode: start the console-downloader" ) //
         .build();
-    private final Option dialogTypeOption = Option.builder()//
-        .longOpt( "dialog" )//
-        .desc( " > mode: start the dialog-downloader" )//
+    private final Option dialogTypeOption = Option.builder() //
+        .longOpt( "dialog" ) //
+        .desc( " > mode: start the dialog-downloader" ) //
         .build();
-    private final Option guiTypeOption = Option.builder()//
-        .longOpt( "gui" )//
-        .desc( " > mode: start the gui-downloader" )//
+    private final Option guiTypeOption = Option.builder() //
+        .longOpt( "gui" ) //
+        .desc( " > mode: start the gui-downloader" ) //
         .build();
-    private final Option viewpageTypeOption = Option.builder()//
-        .longOpt( "viewpage" )//
-        .desc( " > mode: create files to view the downloaded manga in the browser" )//
+    private final Option viewpageTypeOption = Option.builder() //
+        .longOpt( "viewpage" ) //
+        .desc( " > mode: create files to view the downloaded manga in the browser" ) //
         .build();
-    private final Option serverTypeOption = Option.builder()//
-        .longOpt( "server" )//
-        .desc( " > mode: start the server to listen to http-requests" )//
+    private final Option serverTypeOption = Option.builder() //
+        .longOpt( "server" ) //
+        .desc( " > mode: start the server to listen to http-requests" ) //
         .build();
-    private final Option helpOption = Option.builder( "h" )//
-        .longOpt( "help" )//
-        .desc( " > Show the help and exit" )//
+    private final Option helpOption = Option.builder( "h" ) //
+        .longOpt( "help" ) //
+        .desc( " > Show the help and exit" ) //
         .build();
-    private final Option versionOption = Option.builder( "v" )//
-        .longOpt( "version" )//
-        .desc( " > Show the version and exit" )//
+    private final Option versionOption = Option.builder( "v" ) //
+        .longOpt( "version" ) //
+        .desc( " > Show the version and exit" ) //
         .build();
 
-    private final OptionGroup typeOptionGroup = new OptionGroup()//
-        .addOption( this.consoleTypeOption )//
-        .addOption( this.dialogTypeOption )//
-        .addOption( this.guiTypeOption )//
-        .addOption( this.viewpageTypeOption )//
-        .addOption( this.serverTypeOption )//
-        .addOption( this.helpOption )//
-        .addOption( this.versionOption )//
+    private final OptionGroup typeOptionGroup = new OptionGroup() //
+        .addOption( this.consoleTypeOption ) //
+        .addOption( this.dialogTypeOption ) //
+        .addOption( this.guiTypeOption ) //
+        .addOption( this.viewpageTypeOption ) //
+        .addOption( this.serverTypeOption ) //
+        .addOption( this.helpOption ) //
+        .addOption( this.versionOption ) //
     ;
 
-    private final Option urlOption = Option.builder( "u" )//
-        .longOpt( "url" )//
-        .hasArg()//
-        .desc( "The URL to download from (mode: console)" )//
+    private final Option urlOption = Option.builder( "u" ) //
+        .longOpt( "url" ) //
+        .hasArg() //
+        .desc( "The URL to download from (mode: console)" ) //
         .build();
-    private final Option patternOption = Option.builder( "p" )//
-        .longOpt( "pattern" )//
-        .hasArg()//
-        .desc( "The pattern to use (mode: console)" )//
+    private final Option patternOption = Option.builder( "p" ) //
+        .longOpt( "pattern" ) //
+        .hasArg() //
+        .desc( "The pattern to use (mode: console)" ) //
         .build();
-    private final Option proxyOption = Option.builder( "x" )//
-        .longOpt( "proxy" )//
-        .hasArg()//
-        .desc( "The Proxy to use (protocol://[user[:password]@]url:port) (mode: console)" )//
+    private final Option proxyOption = Option.builder( "x" ) //
+        .longOpt( "proxy" ) //
+        .hasArg() //
+        .desc( "The Proxy to use (protocol: //[user[:password]@]url:port) (mode: console)" ) //
         .build();
-    private final Option interactiveOption = Option.builder( "i" )//
-        .longOpt( "interactive" )//
-        .desc( "Interactive mode: request confirmation etc. from STDIN (mode: console)" )//
-        .build();
-
-    private final Option showHosterOption = Option.builder()//
-        .longOpt( "hoster" )//
-        .desc( "List all availabile Hoster (mode: console)" )//
+    private final Option interactiveOption = Option.builder( "i" ) //
+        .longOpt( "interactive" ) //
+        .desc( "Interactive mode: request confirmation etc. from STDIN (mode: console)" ) //
         .build();
 
-    private final Option folderOption = Option.builder()//
-        .longOpt( "folder" )//
-        .hasArg()//
-        .type( File.class )//
-        .desc( "The folder to create the files in (mode: viewpage)" )//
+    private final Option showHosterOption = Option.builder() //
+        .longOpt( "hoster" ) //
+        .desc( "List all availabile Hoster (mode: console)" ) //
         .build();
 
-    private final Option launchBrowserOption = Option.builder()//
-        .longOpt( "browser" )//
-        .desc( "Start the browser after starting the server (mode: server)" )//
+    private final Option folderOption = Option.builder() //
+        .longOpt( "folder" ) //
+        .hasArg() //
+        .type( File.class ) //
+        .desc( "The folder to create the files in (mode: viewpage)" ) //
         .build();
 
-    private final Option logLevelOption = Option.builder( "l" )//
-        .longOpt( "log" )//
-        .hasArg()//
-        .argName( "level" )//
-        .desc( "Loglevel to use. Allowed values: OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL" )//
+    private final Option launchBrowserOption = Option.builder() //
+        .longOpt( "browser" ) //
+        .desc( "Start the browser after starting the server (mode: server)" ) //
+        .build();
+
+    private final Option logLevelOption = Option.builder( "l" ) //
+        .longOpt( "log" ) //
+        .hasArg() //
+        .argName( "level" ) //
+        .desc( "Loglevel to use. Allowed values: OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL" ) //
         .build();
 
     private final Options options;
@@ -106,16 +106,16 @@ final class MyOptions {
      */
     public MyOptions() {
         this.typeOptionGroup.setRequired( true );
-        this.options = new Options()//
-            .addOptionGroup( this.typeOptionGroup )//
-            .addOption( this.urlOption )//
-            .addOption( this.patternOption )//
-            .addOption( this.proxyOption )//
-            .addOption( this.interactiveOption )//
-            .addOption( this.showHosterOption )//
-            .addOption( this.folderOption )//
-            .addOption( this.launchBrowserOption )//
-            .addOption( this.logLevelOption )//
+        this.options = new Options() //
+            .addOptionGroup( this.typeOptionGroup ) //
+            .addOption( this.urlOption ) //
+            .addOption( this.patternOption ) //
+            .addOption( this.proxyOption ) //
+            .addOption( this.interactiveOption ) //
+            .addOption( this.showHosterOption ) //
+            .addOption( this.folderOption ) //
+            .addOption( this.launchBrowserOption ) //
+            .addOption( this.logLevelOption ) //
         ;
         this.defaultValues.setProperty( "gui", "true" );
     }

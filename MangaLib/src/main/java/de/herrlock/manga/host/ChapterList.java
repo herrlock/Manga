@@ -3,16 +3,18 @@ package de.herrlock.manga.host;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
+import java.util.Queue;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.impl.client.AbstractResponseHandler;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +41,7 @@ public abstract class ChapterList implements Iterable<Chapter> {
      */
     protected final DownloadConfiguration conf;
 
-    private final List<Chapter> list = new ArrayList<>();
+    private final Queue<Chapter> chapters = new ArrayDeque<>();
     private final Details details;
 
     /**
@@ -79,7 +81,7 @@ public abstract class ChapterList implements Iterable<Chapter> {
      * @return the size of the stored list.
      */
     public int size() {
-        return this.list.size();
+        return this.chapters.size();
     }
 
     /**
@@ -93,7 +95,7 @@ public abstract class ChapterList implements Iterable<Chapter> {
      */
     protected void addChapter( final String number, final URL chapterUrl ) {
         if ( this.conf.getPattern().contains( number ) ) {
-            this.list.add( new Chapter( number, chapterUrl ) );
+            this.chapters.add( new Chapter( number, chapterUrl ) );
         }
     }
 
@@ -157,10 +159,9 @@ public abstract class ChapterList implements Iterable<Chapter> {
     /**
      * converts an {@link HttpResponse} to a Jsoup-{@link Document}
      */
-    public static final ResponseHandler<Document> TO_DOCUMENT_HANDLER = new ResponseHandler<Document>() {
+    public static final ResponseHandler<Document> TO_DOCUMENT_HANDLER = new AbstractResponseHandler<Document>() {
         @Override
-        public Document handleResponse( final HttpResponse response ) throws ClientProtocolException, IOException {
-            HttpEntity entity = response.getEntity();
+        public Document handleEntity( final HttpEntity entity ) throws ClientProtocolException, IOException {
             try {
                 return Jsoup.parse( EntityUtils.toString( entity, StandardCharsets.UTF_8 ) );
             } finally {
@@ -171,7 +172,7 @@ public abstract class ChapterList implements Iterable<Chapter> {
 
     @Override
     public Iterator<Chapter> iterator() {
-        ArrayList<Chapter> arrayList = new ArrayList<>( this.list );
+        ArrayList<Chapter> arrayList = new ArrayList<>( this.chapters );
         if ( this.details.reversed() ) {
             Collections.reverse( arrayList );
         }

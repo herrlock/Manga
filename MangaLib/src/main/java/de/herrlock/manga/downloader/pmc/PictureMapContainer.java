@@ -3,8 +3,8 @@ package de.herrlock.manga.downloader.pmc;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
@@ -27,7 +27,7 @@ public final class PictureMapContainer implements PictureMapContainerMXBean {
     private static final Logger logger = LogManager.getLogger();
 
     /**
-     * a {@link Map} containing the {@link URL}s of all the pages
+     * a {@link EntryList} containing the {@link URL}s of all the pages
      */
     private final EntryList<String, EntryList<Integer, URL>> entries;
     private final ChapterListContainer clc;
@@ -42,7 +42,7 @@ public final class PictureMapContainer implements PictureMapContainerMXBean {
         this.clc = clc;
         int clcSize = clc.getSize();
         this.entries = new EntryList<>( clcSize );
-        List<PictureMapThread> callables = new ArrayList<>( clcSize );
+        Collection<PictureMapThread> callables = new ArrayDeque<>( clcSize );
         for ( Chapter chapter : clc ) {
             callables.add( new PictureMapThread( chapter ) );
         }

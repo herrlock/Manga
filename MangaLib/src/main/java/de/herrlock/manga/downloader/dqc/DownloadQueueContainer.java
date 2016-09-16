@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,7 +42,7 @@ import de.herrlock.manga.util.management.DownloadQueueContainerMXBean;
 public final class DownloadQueueContainer implements DownloadQueueContainerMXBean {
     static final Logger logger = LogManager.getLogger();
 
-    private final List<Page> dlQueue = new ArrayList<>();
+    private final Collection<Page> dlQueue = new ArrayDeque<>();
     private final ChapterListContainer clc;
     final DownloadConfiguration conf;
 
