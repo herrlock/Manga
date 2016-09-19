@@ -96,7 +96,7 @@ public final class ListDownloadService {
         private final String mangaName;
         private final Path mangaFolder;
 
-        private ZipStreamingOutput( final String mangaName, final Path mangaFolder ) {
+        public ZipStreamingOutput( final String mangaName, final Path mangaFolder ) {
             this.mangaName = Objects.requireNonNull( mangaName );
             this.mangaFolder = Objects.requireNonNull( mangaFolder );
         }
@@ -116,7 +116,7 @@ public final class ListDownloadService {
         private final ZipOutputStream zipOut;
         private final String mangaName;
 
-        private ZipAdder( final OutputStream out, final String mangaName ) {
+        public ZipAdder( final OutputStream out, final String mangaName ) {
             this.zipOut = new ZipOutputStream( Objects.requireNonNull( out ) );
             this.mangaName = Objects.requireNonNull( mangaName );
         }
