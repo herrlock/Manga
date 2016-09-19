@@ -1,6 +1,7 @@
 package de.herrlock.manga;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,10 +18,35 @@ import java.util.zip.GZIPInputStream;
  */
 final class UnpackerMain {
     public static void main( final String... args ) {
+        // check if the currrent working directory is valid
+        checkWorkingDirectory();
         // check if packed archives exist
         unpackArchives();
         // call "real" main-class after the unpacking was successful
         Main.main( args );
+    }
+
+    private static void checkWorkingDirectory() {
+        try {
+            // the folder containing the Launcher-jar
+            Path launcherFolderPath = Paths.get( Main.class.getProtectionDomain().getCodeSource().getLocation().toURI() )
+                .getParent();
+            // the current folder
+            Path currentPath = Paths.get( "." ).toAbsolutePath();
+
+            // null-check
+            if ( launcherFolderPath == null || currentPath == null ) {
+                throw new IllegalStateException( "One folder is null" );
+            }
+            // check if the files are the same
+            boolean isSameFile = Files.isSameFile( launcherFolderPath, currentPath );
+            // throw exception if not the same folder
+            if ( !isSameFile ) {
+                throw new IllegalStateException( "Please navigate to " + launcherFolderPath.toString() );
+            }
+        } catch ( IOException | URISyntaxException ex ) {
+            throw new RuntimeException( ex );
+        }
     }
 
     /**
