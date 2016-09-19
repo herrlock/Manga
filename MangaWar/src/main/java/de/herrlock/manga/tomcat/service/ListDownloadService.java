@@ -92,7 +92,7 @@ public final class ListDownloadService {
     /**
      * @author HerrLock
      */
-    private static final class ZipStreamingOutput implements StreamingOutput {
+    public static final class ZipStreamingOutput implements StreamingOutput {
         private final String mangaName;
         private final Path mangaFolder;
 
@@ -112,7 +112,7 @@ public final class ListDownloadService {
     /**
      * @author HerrLock
      */
-    private static final class ZipAdder extends SimpleFileVisitor<Path> implements Closeable {
+    public static final class ZipAdder extends SimpleFileVisitor<Path> implements Closeable {
         private final ZipOutputStream zipOut;
         private final String mangaName;
 
