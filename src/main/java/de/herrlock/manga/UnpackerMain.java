@@ -45,7 +45,7 @@ final class UnpackerMain {
                 throw new IllegalStateException( "Please navigate to " + launcherFolderPath.toString() );
             }
         } catch ( IOException | URISyntaxException ex ) {
-            throw new RuntimeException( ex );
+            throw new IllegalStateException( ex );
         }
     }
 
