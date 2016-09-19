@@ -103,14 +103,14 @@ var md = {
 		var tempData = fieldset.dataset.temp;
 		console.log("tempData", tempData);
 		if(!progressBar && !tempData && !fieldset.classList.contains("dummy")) {
-            $(fieldset).slideUp(function() {
-                var url = fieldset.querySelector("legend").textContent;
-                $(fieldset).remove();
-                console.log("removed orphaned bar");
-                md.showNotification("MangaDownloader", {
-                    body: "Finished " + url
-                });
-            });
+			$(fieldset).slideUp(function() {
+				var url = fieldset.querySelector("legend").textContent;
+				$(fieldset).remove();
+				console.log("removed orphaned bar");
+				md.showNotification("MangaDownloader", {
+					body: "Finished " + url
+				});
+			});
 		}
 	},
 	showNotification : function(title, options) {
@@ -178,7 +178,7 @@ $(function() {
 		var query = "?" + queryArr.join("&");
 		var url = "j/download/start" + query;
 		var temp = md.createTempEntry();
-		$.get(url, "text").done(response => md.updateEntry(response, temp)).fail(jqXHR => md.removeEntry(jqXHR, temp));
+		$.get(url).done(response => md.updateEntry(response, temp)).fail(jqXHR => md.removeEntry(jqXHR, temp));
 	});
 	$("#stopServer").click(function() {
 		$.get("j/stop", function() {
