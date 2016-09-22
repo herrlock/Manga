@@ -20,7 +20,7 @@ import java.util.zip.GZIPInputStream;
  * 
  * @author HerrLock
  */
-public class Launcher {
+public final class Launcher {
     private static final Path lockFile = Paths.get( "temp", ".lock" );
 
     public static void main( final String... args ) {
@@ -108,4 +108,10 @@ public class Launcher {
         }
     }
 
+    /**
+     * private constructor to avoid instantiation
+     */
+    private Launcher() {
+        // not used
+    }
 }
