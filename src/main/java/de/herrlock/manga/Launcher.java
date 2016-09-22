@@ -1,29 +1,56 @@
 package de.herrlock.manga;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200;
 import java.util.jar.Pack200.Unpacker;
 import java.util.zip.GZIPInputStream;
 
 /**
- * Entrance class for the jar, that first unpacks the dependencies.
+ * Entrance class for the jar, first checks that the working-directory is correct, and makes sure, that no other instance is
+ * running then unpacks the dependencies and starts the actual program.
  * 
  * @author HerrLock
  */
-final class UnpackerMain {
+public class Launcher {
+    private static final Path lockFile = Paths.get( "temp", ".lock" );
+
     public static void main( final String... args ) {
         // check if the currrent working directory is valid
         checkWorkingDirectory();
-        // check if packed archives exist
-        unpackArchives();
-        // call "real" main-class after the unpacking was successful
-        Main.main( args );
+        try {
+            // make sure the temp-directory exists
+            Path parent = lockFile.getParent();
+            if ( parent == null ) {
+                throw new IllegalStateException( "Directory is null" );
+            }
+            Files.createDirectories( parent );
+        } catch ( IOException ex ) {
+            throw new IllegalStateException( ex );
+        }
+        // make sure only one instance is running at the same time
+        try ( OutputStream lockFileStream = Files.newOutputStream( lockFile, StandardOpenOption.CREATE_NEW,
+            StandardOpenOption.DELETE_ON_CLOSE ) ) {
+            // check if packed archives exist
+            unpackArchives();
+            // call "real" main-class after the unpacking was successful
+            Main.execute( args );
+        } catch ( FileAlreadyExistsException ex ) {
+            String message = "The file \"" + ex.getFile() + "\" alredy exists. "
+                + "This means, that another process is already running. "
+                + "If you are sure this is not the case delete the file manually.";
+            throw new IllegalStateException( message, ex );
+        } catch ( IOException ex ) {
+            throw new IllegalStateException( ex );
+        }
     }
 
     private static void checkWorkingDirectory() {
@@ -81,10 +108,4 @@ final class UnpackerMain {
         }
     }
 
-    /**
-     * Private constructor to avoid instantiation
-     */
-    private UnpackerMain() {
-        // not used
-    }
 }

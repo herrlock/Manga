@@ -135,7 +135,7 @@ dependencies {
 
 jar {
 	manifest {
-		attributes 'Main-Class' : 'de.herrlock.manga.UnpackerMain',
+		attributes 'Main-Class' : 'de.herrlock.manga.Launcher',
 			'Class-Path' : project.configurations.runtime
 				.plus(file('MangaExt.jar'))
 				.collect{ file -> "lib/${file.name}" }

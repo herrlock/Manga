@@ -24,6 +24,8 @@ build/
 /Manga*/folderwatch/
 /tomcat/
 /Manga*/tomcat/
+/temp/
+/Manga*/temp/
 # MangaCtrl
 
 # MangaLib

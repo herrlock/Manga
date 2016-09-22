@@ -59,7 +59,7 @@ public final class Main {
      * @param args
      *            the options passed from the commandline
      */
-    public static void main( final String... args ) {
+    public static void execute( final String... args ) {
         try {
             final CommandLine commandline = getCommandlineFromArgs( args );
             logger.debug( Arrays.toString( commandline.getOptions() ) );
