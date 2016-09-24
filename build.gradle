@@ -228,5 +228,5 @@ void assertPmdErrors(File file, List expected) {
 			throw new GradleException("Wrong PMD rule. Is ${e.@rule} but should be ${expected.get(i)}")
 		}
 	}
-	println 'Suppressing PMD warnings, as they seem be be expected.'
+	println 'Suppressing PMD warnings, as they seem to be expected.'
 }
