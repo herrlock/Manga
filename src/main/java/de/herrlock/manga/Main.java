@@ -38,6 +38,8 @@ import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.http.ServerMain;
 import de.herrlock.manga.util.ChapterPattern;
+import de.herrlock.manga.util.CliOptions;
+import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.Configuration;
 import de.herrlock.manga.util.configuration.Configuration.ProxyStorage;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
@@ -68,6 +70,8 @@ public final class Main {
             runFxClasspathHack();
             // optional alter loglevel-configuration
             checkLoggerConfiguration( commandline );
+            // register MBean
+            registerCliMBean( commandline );
 
             // start running
             handleCommandline( commandline );
@@ -121,6 +125,11 @@ public final class Main {
                 }
             }
         }
+    }
+
+    private static void registerCliMBean( final CommandLine commandline ) {
+        CliOptions cliOptions = new CliOptions( commandline );
+        Utils.registerMBean( cliOptions, "de.herrlock.manga:type=commandline" );
     }
 
     private static void handleCommandline( final CommandLine commandline ) {
