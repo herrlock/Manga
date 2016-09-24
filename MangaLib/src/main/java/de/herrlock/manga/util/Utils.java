@@ -20,6 +20,7 @@ import javax.management.ObjectName;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
@@ -45,7 +46,7 @@ public final class Utils {
 
     private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20,
         new ThreadFactoryBuilder().setNameFormat( "Droggelb%dcher" ).setDaemon( true ).build() );
-    private static final CloseableHttpClient CLIENT = HttpClients.createDefault();
+    private static final HttpClient CLIENT = HttpClients.createDefault();
     private static final Joiner COMMA_JOINER = Joiner.on( "," );
 
     /**
@@ -115,6 +116,7 @@ public final class Utils {
      */
     public static <T> T getDataAndExecuteResponseHandler( final URL url, final DownloadConfiguration conf,
         final ResponseHandler<T> handler ) throws IOException, ClientProtocolException {
+        logger.debug( "url: {}", url );
         final HttpGet httpGet = createHttpGet( url, conf );
         return executeHttpGet( httpGet, handler );
     }
