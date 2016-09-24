@@ -14,7 +14,7 @@ dependencies {
 	compile 'org.apache.tomcat.embed:tomcat-embed-core:8.0.35'
 	runtime 'org.apache.tomcat.embed:tomcat-embed-logging-log4j:8.0.35'
     
-	// javafx
+	// javafx, needs to be added for java 7 only
 	if(JavaVersion.current() == JavaVersion.VERSION_1_7) {
 		compile files(System.properties.'java.home' + '/lib/jfxrt.jar')
 	}

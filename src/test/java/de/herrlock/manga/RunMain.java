@@ -13,7 +13,7 @@ public final class RunMain {
             {
                 "--help"
             };
-        Main.main( arguments );
+        Launcher.main( arguments );
     }
 
     private RunMain() {
