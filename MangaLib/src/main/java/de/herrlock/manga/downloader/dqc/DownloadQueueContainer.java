@@ -5,14 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.concurrent.Callable;
 
 import org.apache.http.HttpEntity;
@@ -111,12 +110,14 @@ public final class DownloadQueueContainer implements DownloadQueueContainerMXBea
         List<Page> pages = ImmutableList.copyOf( this.dlQueue );
         this.dlQueue.clear();
         // download pictures from the ChapterListContainer
-        List<DownloadThread> callables = new ArrayList<>( pages.size() );
+        Queue<DownloadThread> callables = new ArrayDeque<>( pages.size() );
         for ( Page p : pages ) {
             DownloadThread downloadThread = new DownloadThread( p );
             callables.add( downloadThread );
         }
+        // waits for the Callables to complete
         Utils.callCallables( callables );
+        // all Callables are finished here
         if ( !this.dlQueue.isEmpty() ) {
             downloadPages();
         }
@@ -136,17 +137,17 @@ public final class DownloadQueueContainer implements DownloadQueueContainerMXBea
      * @author HerrLock
      */
     private final class DownloadThread extends AbstractResponseHandler<Void> implements Callable<Void> {
-        private final Page p;
+        private final Page page;
 
-        public DownloadThread( final Page p ) {
-            logger.traceEntry( "page-url: {}", p.getUrl() );
-            this.p = p;
+        public DownloadThread( final Page page ) {
+            logger.traceEntry( "DownloadThread - page-url: {}", page.getUrl() );
+            this.page = page;
         }
 
         @Override
         public Void handleEntity( final HttpEntity entity ) throws IOException {
             try ( InputStream in = entity.getContent() ) {
-                try ( OutputStream out = new FileOutputStream( this.p.getTargetFile() ) ) {
+                try ( OutputStream out = new FileOutputStream( this.page.getTargetFile() ) ) {
                     ByteStreams.copy( in, out );
                 }
             } finally {
@@ -160,20 +161,20 @@ public final class DownloadQueueContainer implements DownloadQueueContainerMXBea
          */
         @Override
         public Void call() {
-            URL pageUrl = this.p.getUrl();
+            URL pageUrl = this.page.getUrl();
             try {
                 URL imageURL = getImageLink( pageUrl );
                 logger.debug( "start reading image {}", imageURL );
                 executeDownload( imageURL, this );
-                logger.debug( "saved image to {}", this.p.getTargetFile() );
-            } catch ( final SocketException | SocketTimeoutException ex ) {
+                logger.debug( "saved image to {}", this.page.getTargetFile() );
+            } catch ( final SocketTimeoutException ex ) {
                 // timeout, try again
-                add( this.p );
+                add( this.page );
             } catch ( final HttpResponseException ex ) {
                 if ( ex.getStatusCode() == 503 ) {
                     // http-statuscode 503
                     logger.info( "HTTP-Status 503 ({}), trying again", pageUrl );
-                    add( this.p );
+                    add( this.page );
                 } else {
                     throw new MDRuntimeException( ex );
                 }
@@ -181,7 +182,7 @@ public final class DownloadQueueContainer implements DownloadQueueContainerMXBea
                 if ( ex.getMessage().contains( "503" ) ) {
                     // http-statuscode 503
                     logger.info( "HTTP-Status 503 ({}), trying again", pageUrl );
-                    add( this.p );
+                    add( this.page );
                 } else {
                     throw new MDRuntimeException( ex );
                 }
