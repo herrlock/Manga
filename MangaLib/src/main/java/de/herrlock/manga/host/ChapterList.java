@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.Queue;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -41,7 +39,7 @@ public abstract class ChapterList implements Iterable<Chapter> {
      */
     protected final DownloadConfiguration conf;
 
-    private final Queue<Chapter> chapters = new ArrayDeque<>();
+    private final Deque<Chapter> chapters = new ArrayDeque<>();
     private final Details details;
 
     /**
@@ -172,11 +170,13 @@ public abstract class ChapterList implements Iterable<Chapter> {
 
     @Override
     public Iterator<Chapter> iterator() {
-        ArrayList<Chapter> arrayList = new ArrayList<>( this.chapters );
+        Iterator<Chapter> iterator;
         if ( this.details.reversed() ) {
-            Collections.reverse( arrayList );
+            iterator = this.chapters.descendingIterator();
+        } else {
+            iterator = this.chapters.iterator();
         }
-        return arrayList.iterator();
+        return iterator;
     }
 
 }
