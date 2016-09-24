@@ -15,8 +15,8 @@ import java.util.jar.Pack200.Unpacker;
 import java.util.zip.GZIPInputStream;
 
 /**
- * Entrance class for the jar, first checks that the working-directory is correct, and makes sure, that no other instance is
- * running then unpacks the dependencies and starts the actual program.
+ * Entrance class for the jar, first checks that the working-directory is correct, makes sure, that no other instance is running
+ * then unpacks the dependencies and finally starts the actual program.
  * 
  * @author HerrLock
  */
@@ -90,11 +90,15 @@ public final class Launcher {
         try ( DirectoryStream<Path> directoryStream = Files.newDirectoryStream( lib, "*.jar.pack.gz" ) ) {
             // iterate over the packed files
             for ( Path packedFile : directoryStream ) {
+                // the name of the packed file
                 String oldFileName = packedFile.toFile().getName();
                 // get the new filename
                 String newFileName = oldFileName.replace( ".pack.gz", "" );
+                // the Path to the new file
                 Path newFile = lib.resolve( newFileName );
+                // read from GZIP
                 try ( GZIPInputStream in = new GZIPInputStream( Files.newInputStream( packedFile ) ) ) {
+                    // write to jar
                     try ( JarOutputStream out = new JarOutputStream( Files.newOutputStream( newFile ) ) ) {
                         // unpack the packed and gzipped file
                         unpacker.unpack( in, out );
