@@ -6,5 +6,6 @@ package de.herrlock.manga.util.management;
 public interface CliOptionsMXBean {
 
     String getMainOption();
+    String[] getSubOptions();
 
 }

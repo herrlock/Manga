@@ -1,4 +1,4 @@
-package de.herrlock.manga;
+package de.herrlock.manga.util;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -24,7 +24,7 @@ import javafx.application.Application;
  * A class that searches for the jfxrt-jar and adds it to the System-Classloder's resources. <br>
  * Taken (and customied) from <a href="http://stackoverflow.com/a/60766/3680684">Stackoverflow</a>
  */
-final class ClassPathHack {
+public final class ClassPathHack {
     private static final Logger logger = LogManager.getLogger();
 
     /**
