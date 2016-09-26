@@ -1,4 +1,4 @@
-package de.herrlock.manga;
+package de.herrlock.manga.cli;
 
 import java.io.File;
 import java.util.Properties;
@@ -8,11 +8,11 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 
 /**
- * A set of {@linkplain Option}s extracted from {@link Main}
+ * A set of {@linkplain Option}s
  * 
  * @author HerrLock
  */
-final class MyOptions {
+public final class MyOptions {
 
     private final Option consoleTypeOption = Option.builder() //
         .longOpt( "console" ) //
@@ -66,7 +66,7 @@ final class MyOptions {
     private final Option proxyOption = Option.builder( "x" ) //
         .longOpt( "proxy" ) //
         .hasArg() //
-        .desc( "The Proxy to use (protocol: //[user[:password]@]url:port) (mode: console)" ) //
+        .desc( "The Proxy to use (protocol://[user[:password]@]url:port) (mode: console)" ) //
         .build();
     private final Option interactiveOption = Option.builder( "i" ) //
         .longOpt( "interactive" ) //

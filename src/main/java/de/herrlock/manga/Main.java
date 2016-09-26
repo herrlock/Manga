@@ -32,12 +32,16 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AppenderRef;
 
 import de.herrlock.log4j2.filter.LevelFilter;
+import de.herrlock.manga.cli.CliOptions;
+import de.herrlock.manga.cli.MyOptions;
 import de.herrlock.manga.downloader.ConsoleDownloader;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.http.ServerMain;
 import de.herrlock.manga.util.ChapterPattern;
+import de.herrlock.manga.util.ClassPathHack;
+import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.Configuration;
 import de.herrlock.manga.util.configuration.Configuration.ProxyStorage;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
@@ -68,11 +72,13 @@ public final class Main {
             runFxClasspathHack();
             // optional alter loglevel-configuration
             checkLoggerConfiguration( commandline );
+            // register MBean
+            registerCliMBean( commandline );
 
             // start running
             handleCommandline( commandline );
         } catch ( ParseException ex ) {
-            logger.warn( ex.getMessage(), ex );
+            logger.error( ex.getMessage(), ex );
             printHelp();
         }
     }
@@ -86,7 +92,6 @@ public final class Main {
             logger.error( "Could not find jfxrt.jar on the classpath. "
                 + "This does not have to be fatal as it may be that JavaFX is not needed" );
         }
-
     }
 
     private static CommandLine getCommandlineFromArgs( final String... args ) throws ParseException {
@@ -121,6 +126,11 @@ public final class Main {
                 }
             }
         }
+    }
+
+    private static void registerCliMBean( final CommandLine commandline ) {
+        CliOptions cliOptions = new CliOptions( commandline );
+        Utils.registerMBean( cliOptions, "de.herrlock.manga:type=commandline" );
     }
 
     private static void handleCommandline( final CommandLine commandline ) {

@@ -1,4 +1,4 @@
-package de.herrlock.manga;
+package de.herrlock.manga.cli;
 
 import org.apache.commons.cli.Options;
 import org.junit.Assert;
