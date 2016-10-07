@@ -23,5 +23,7 @@ dependencies {
 
 pmdMain.ignoreFailures = true
 pmdMain << {
-	assertPmdErrors pmdMain, ['InsufficientStringBufferDeclaration']
+	assertPmdErrors pmdMain, [
+		[clazz:'de.herrlock.manga.jd.Crawljob', rule:'InsufficientStringBufferDeclaration']
+	]
 }
