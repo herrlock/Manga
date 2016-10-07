@@ -3,10 +3,13 @@ package de.herrlock.manga.util;
 import static de.herrlock.manga.util.Constants.TO_DOCUMENT_HANDLER;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -195,6 +198,14 @@ public final class Utils {
         return THREAD_POOL.submit( runnable );
     }
 
+    public static PropertiesBuilder newPropertiesBuilder() {
+        return new PropertiesBuilder();
+    }
+
+    public static PropertiesBuilder newPropertiesBuilder( final Properties defaults ) {
+        return new PropertiesBuilder( defaults );
+    }
+
     /**
      * Register the MBean at the ObjectName constructed by the given Strings.
      * 
@@ -266,5 +277,53 @@ public final class Utils {
 
     private Utils() {
         // not called
+    }
+
+    public static class PropertiesBuilder {
+        private final Properties _properties;
+        private boolean open = true;
+
+        public PropertiesBuilder() {
+            this._properties = new Properties();
+        }
+
+        public PropertiesBuilder( final Properties defaults ) {
+            this._properties = new Properties( defaults );
+        }
+
+        private void assureOpen() {
+            if ( !this.open ) {
+                throw new IllegalStateException( "Builder is already finished" );
+            }
+        }
+
+        public PropertiesBuilder setProperty( final String key, final String value ) {
+            assureOpen();
+            if ( value != null ) {
+                this._properties.setProperty( key, value );
+            } else if ( this._properties.containsKey( key ) ) {
+                this._properties.remove( key );
+            }
+            return this;
+        }
+
+        public PropertiesBuilder load( final Reader reader ) throws IOException {
+            assureOpen();
+            this._properties.load( reader );
+            return this;
+        }
+
+        public PropertiesBuilder load( final InputStream inStream ) throws IOException {
+            assureOpen();
+            this._properties.load( inStream );
+            return this;
+        }
+
+        public Properties build() {
+            assureOpen();
+            this.open = false;
+            return this._properties;
+        }
+
     }
 }
