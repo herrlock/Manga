@@ -6,6 +6,9 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.TreeSet;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -26,6 +29,7 @@ import de.herrlock.manga.util.configuration.IndexerConfiguration;
 @AutoService( HosterImpl.class )
 @Details( name = "Mangafox", baseUrl = "http://www.mangafox.me/" )
 public final class MangaFox extends HosterImpl {
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public ChapterList getChapterList( final DownloadConfiguration conf ) throws IOException {
@@ -51,7 +55,7 @@ public final class MangaFox extends HosterImpl {
             try {
                 entry.setUrl( new URL( baseUrl, element.attr( "href" ) ) );
             } catch ( MalformedURLException ex ) {
-                // ignore
+                logger.catching( Level.DEBUG, ex );
             }
             entries.add( entry );
         }
