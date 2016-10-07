@@ -44,7 +44,7 @@ public final class Chapter {
 
     @Override
     public String toString() {
-        return MessageFormat.format( "{0}: {1}", this.number, this.getChapterUrl() );
+        return MessageFormat.format( "{0}: {1}", this.number, this.chapterUrl );
     }
 
 }
