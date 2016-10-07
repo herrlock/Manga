@@ -77,6 +77,10 @@ public final class MyOptions {
         .longOpt( "hoster" ) //
         .desc( "List all availabile Hoster (mode: console)" ) //
         .build();
+    private final Option createListOption = Option.builder() //
+        .longOpt( "list" ) //
+        .desc( "Create a list of all availabile mangas (mode: console)" ) //
+        .build();
 
     private final Option folderOption = Option.builder() //
         .longOpt( "folder" ) //
@@ -113,6 +117,7 @@ public final class MyOptions {
             .addOption( this.proxyOption ) //
             .addOption( this.interactiveOption ) //
             .addOption( this.showHosterOption ) //
+            .addOption( this.createListOption ) //
             .addOption( this.folderOption ) //
             .addOption( this.launchBrowserOption ) //
             .addOption( this.logLevelOption ) //
