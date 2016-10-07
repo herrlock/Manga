@@ -1,7 +1,10 @@
 package de.herrlock.manga.host.impl;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.TreeSet;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,18 +13,58 @@ import org.jsoup.select.Elements;
 import com.google.auto.service.AutoService;
 
 import de.herrlock.manga.downloader.pmc.EntryList;
+import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.ChapterList;
-import de.herrlock.manga.host.Details;
-import de.herrlock.manga.host.InstantiationProxy;
-import de.herrlock.manga.host.ProxyDetails;
+import de.herrlock.manga.host.HosterImpl;
+import de.herrlock.manga.host.annotations.ChapterListDetails;
+import de.herrlock.manga.host.annotations.Details;
+import de.herrlock.manga.index.HosterListEntry;
+import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
+import de.herrlock.manga.util.configuration.IndexerConfiguration;
 
-@Details( name = "Mangafox", baseUrl = "http://www.mangafox.me/", reversed = true )
-public final class MangaFox extends ChapterList {
+@AutoService( HosterImpl.class )
+@Details( name = "Mangafox", baseUrl = "http://www.mangafox.me/" )
+public final class MangaFox extends HosterImpl {
 
+    @Override
+    public ChapterList getChapterList( final DownloadConfiguration conf ) throws IOException {
+        return new MangaFoxChapterList( conf );
+    }
+
+    @Override
+    public Collection<HosterListEntry> getAvailabile( final IndexerConfiguration conf ) {
+        Document doc;
+        final URL baseUrl;
+        try {
+            baseUrl = new URL( getDetails().baseUrl() );
+            URL listUrl = new URL( baseUrl, "/manga/" );
+            doc = Utils.getDocument( listUrl, conf );
+        } catch ( IOException ex ) {
+            throw new MDRuntimeException( ex );
+        }
+        Elements elements = doc.select( "div#page div.manga_list > ul > li > a" );
+        Collection<HosterListEntry> entries = new TreeSet<>( HosterListEntry.NAME_COMPARATOR );
+        for ( Element element : elements ) {
+            HosterListEntry entry = new HosterListEntry();
+            entry.setName( element.text() );
+            try {
+                entry.setUrl( new URL( baseUrl, element.attr( "href" ) ) );
+            } catch ( MalformedURLException ex ) {
+                // ignore
+            }
+            entries.add( entry );
+        }
+        return entries;
+    }
+
+}
+
+@ChapterListDetails( reversed = true )
+final class MangaFoxChapterList extends ChapterList {
     private final String name;
 
-    public MangaFox( final DownloadConfiguration conf ) throws IOException {
+    public MangaFoxChapterList( final DownloadConfiguration conf ) throws IOException {
         super( conf );
         Document document = getDocument( conf.getUrl() );
 
@@ -69,15 +112,6 @@ public final class MangaFox extends ChapterList {
             result.addEntry( number, value );
         }
         return result;
-    }
-
-    @AutoService( InstantiationProxy.class )
-    @ProxyDetails( proxiedClass = MangaFox.class )
-    public static final class MangaFoxInstantiationProxy extends InstantiationProxy {
-        @Override
-        public MangaFox getInstance( final DownloadConfiguration conf ) throws IOException {
-            return new MangaFox( conf );
-        }
     }
 
 }

@@ -2,6 +2,8 @@ package de.herrlock.manga.host.impl;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,17 +13,35 @@ import com.google.auto.service.AutoService;
 
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.host.ChapterList;
-import de.herrlock.manga.host.Details;
-import de.herrlock.manga.host.InstantiationProxy;
-import de.herrlock.manga.host.ProxyDetails;
+import de.herrlock.manga.host.HosterImpl;
+import de.herrlock.manga.host.annotations.ChapterListDetails;
+import de.herrlock.manga.host.annotations.Details;
+import de.herrlock.manga.index.HosterListEntry;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
+import de.herrlock.manga.util.configuration.IndexerConfiguration;
 
-@Details( name = "PureManga", baseUrl = "http://www.pure-manga.org/", reversed = true )
-public final class PureManga extends ChapterList {
+@AutoService( HosterImpl.class )
+@Details( name = "PureManga", baseUrl = "http://www.pure-manga.org/" )
+public final class PureManga extends HosterImpl {
 
+    @Override
+    public ChapterList getChapterList( final DownloadConfiguration conf ) throws IOException {
+        return new MangaTubeChapterList( conf );
+    }
+
+    @Override
+    public Collection<HosterListEntry> getAvailabile( final IndexerConfiguration conf ) {
+        // TODO
+        return Collections.emptyList();
+    }
+
+}
+
+@ChapterListDetails( reversed = true )
+final class PureMangaChapterList extends ChapterList {
     private final String name;
 
-    public PureManga( final DownloadConfiguration conf ) throws IOException {
+    public PureMangaChapterList( final DownloadConfiguration conf ) throws IOException {
         super( conf );
         Document document = getDocument( conf.getUrl() );
 
@@ -62,15 +82,6 @@ public final class PureManga extends ChapterList {
             result.addEntry( number, absUrl );
         }
         return result;
-    }
-
-    @AutoService( InstantiationProxy.class )
-    @ProxyDetails( proxiedClass = PureManga.class )
-    public static final class PureMangaInstantiationProxy extends InstantiationProxy {
-        @Override
-        public PureManga getInstance( final DownloadConfiguration conf ) throws IOException {
-            return new PureManga( conf );
-        }
     }
 
 }

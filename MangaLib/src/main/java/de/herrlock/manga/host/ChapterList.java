@@ -14,6 +14,9 @@ import org.jsoup.nodes.Document;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.downloader.pmc.ImmutableEntryList;
 import de.herrlock.manga.exceptions.InitializeException;
+import de.herrlock.manga.host.annotations.ChapterListDetails;
+import de.herrlock.manga.host.annotations.Details;
+import de.herrlock.manga.host.exceptions.NoHosterFoundException;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
@@ -32,7 +35,7 @@ public abstract class ChapterList implements Iterable<Chapter> {
     protected final DownloadConfiguration conf;
 
     private final Deque<Chapter> chapters = new ArrayDeque<>();
-    private final Details details;
+    private final ChapterListDetails chapterListDetails;
 
     /**
      * creates an instance of {@linkplain ChapterList}, gets the right {@linkplain Details} from the {@linkplain URL} in the given
@@ -45,9 +48,11 @@ public abstract class ChapterList implements Iterable<Chapter> {
     public static ChapterList getInstance( final DownloadConfiguration conf ) {
         logger.traceEntry( "Configuration: {}", conf );
         URL url = conf.getUrl();
-        Hoster h = Hosters.getHostByURL( url );
-        if ( h == null ) {
-            throw new InitializeException( url + " could not be resolved to a registered host." );
+        Hoster h;
+        try {
+            h = Hosters.getHostByURL( url );
+        } catch ( NoHosterFoundException ex ) {
+            throw new InitializeException( ex );
         }
         logger.debug( "Selected Hoster: {}", h.getName() );
         return h.getChapterList( conf );
@@ -61,8 +66,8 @@ public abstract class ChapterList implements Iterable<Chapter> {
      */
     protected ChapterList( final DownloadConfiguration conf ) {
         this.conf = conf;
-        this.details = Objects.requireNonNull( this.getClass().getAnnotation( Details.class ),
-            "The class must contain @Details" );
+        this.chapterListDetails = Objects.requireNonNull( this.getClass().getAnnotation( ChapterListDetails.class ),
+            "The class must contain @ChapterListDetails" );
     }
 
     /**
@@ -149,7 +154,7 @@ public abstract class ChapterList implements Iterable<Chapter> {
     @Override
     public Iterator<Chapter> iterator() {
         Iterator<Chapter> iterator;
-        if ( this.details.reversed() ) {
+        if ( this.chapterListDetails.reversed() ) {
             iterator = this.chapters.descendingIterator();
         } else {
             iterator = this.chapters.iterator();

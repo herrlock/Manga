@@ -5,11 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -39,12 +37,12 @@ import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.http.ServerMain;
-import de.herrlock.manga.util.ChapterPattern;
+import de.herrlock.manga.index.Indexer;
 import de.herrlock.manga.util.ClassPathHack;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.Configuration;
-import de.herrlock.manga.util.configuration.Configuration.ProxyStorage;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
+import de.herrlock.manga.util.configuration.IndexerConfiguration;
 import javafx.application.Application;
 
 /**
@@ -240,22 +238,23 @@ public final class Main {
             logger.info( "Printing all Hoster:" );
             PrintAllHoster.printHoster( System.out );
         } else {
-            logger.info( "Starting Commandline-Downloader:" );
-            try {
-                URL url = new URL( commandline.getOptionValue( "url" ) );
-                ProxyStorage proxy = commandline.hasOption( "proxy" )
-                    ? Configuration.createProxyStorage( commandline.getOptionValue( "proxy" ) )
-                    : null;
-                ChapterPattern pattern = commandline.hasOption( "pattern" )
-                    ? new ChapterPattern( commandline.getOptionValue( "pattern" ) )
-                    : null;
-                DownloadConfiguration conf = new DownloadConfiguration( true, url, proxy, pattern, 0 );
+            Properties properties = Utils.newPropertiesBuilder() //
+                .setProperty( Configuration.URL, commandline.getOptionValue( "url" ) ) //
+                .setProperty( Configuration.PROXY, commandline.getOptionValue( "proxy" ) ) //
+                .setProperty( Configuration.PATTERN, commandline.getOptionValue( "pattern" ) ) //
+                .setProperty( Configuration.HEADLESS, String.valueOf( commandline.hasOption( 'i' ) ) ) //
+                .build();
+            if ( commandline.hasOption( "list" ) ) {
+                logger.info( "Creating index" );
+                IndexerConfiguration conf = IndexerConfiguration.create( properties );
                 logger.info( conf );
-                boolean interactive = commandline.hasOption( 'i' );
-                ConsoleDownloader downloader = new ConsoleDownloader( conf, interactive );
+                Indexer.exportIndex( conf );
+            } else {
+                logger.info( "Starting Commandline-Downloader:" );
+                DownloadConfiguration conf = DownloadConfiguration.create( properties );
+                logger.info( conf );
+                ConsoleDownloader downloader = new ConsoleDownloader( conf, conf.isHeadless() );
                 downloader.run();
-            } catch ( MalformedURLException | UnknownHostException ex ) {
-                throw new MDRuntimeException( ex );
             }
         }
     }

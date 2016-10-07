@@ -2,6 +2,8 @@ package de.herrlock.manga.host.impl;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,17 +13,35 @@ import com.google.auto.service.AutoService;
 
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.host.ChapterList;
-import de.herrlock.manga.host.Details;
-import de.herrlock.manga.host.InstantiationProxy;
-import de.herrlock.manga.host.ProxyDetails;
+import de.herrlock.manga.host.HosterImpl;
+import de.herrlock.manga.host.annotations.ChapterListDetails;
+import de.herrlock.manga.host.annotations.Details;
+import de.herrlock.manga.index.HosterListEntry;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
+import de.herrlock.manga.util.configuration.IndexerConfiguration;
 
-@Details( name = "Manga-Tube", baseUrl = "http://www.manga-tube.com/", reversed = true )
-public final class MangaTube extends ChapterList {
+@AutoService( HosterImpl.class )
+@Details( name = "Manga-Tube", baseUrl = "http://www.manga-tube.com/" )
+public final class MangaTube extends HosterImpl {
 
+    @Override
+    public ChapterList getChapterList( final DownloadConfiguration conf ) throws IOException {
+        return new MangaTubeChapterList( conf );
+    }
+
+    @Override
+    public Collection<HosterListEntry> getAvailabile( final IndexerConfiguration conf ) {
+        // TODO
+        return Collections.emptyList();
+    }
+
+}
+
+@ChapterListDetails( reversed = true )
+final class MangaTubeChapterList extends ChapterList {
     private final String name;
 
-    public MangaTube( final DownloadConfiguration conf ) throws IOException {
+    public MangaTubeChapterList( final DownloadConfiguration conf ) throws IOException {
         super( conf );
         Document document = getDocument( conf.getUrl() );
 
@@ -62,15 +82,6 @@ public final class MangaTube extends ChapterList {
             result.addEntry( key, value );
         }
         return result;
-    }
-
-    @AutoService( InstantiationProxy.class )
-    @ProxyDetails( proxiedClass = MangaTube.class )
-    public static final class MangaTubeInstantiationProxy extends InstantiationProxy {
-        @Override
-        public MangaTube getInstance( final DownloadConfiguration conf ) throws IOException {
-            return new MangaTube( conf );
-        }
     }
 
 }

@@ -100,6 +100,30 @@ public abstract class Configuration {
     }
 
     /**
+     * creates a {@link URL} from the property {@value #URL} in the given Properties
+     * 
+     * @param p
+     *            the {@link Properties} where to search for an url
+     * @return the created URL
+     * @throws InitializeException
+     *             in case the URL is not availabile or malformed
+     */
+    protected static URL _createUrlNotRequired( final Properties p ) throws InitializeException {
+        logger.traceEntry();
+        // get url
+        try {
+            String urlString = p.getProperty( URL );
+            if ( urlString == null || "".equals( urlString ) ) {
+                return null;
+            }
+            return new URL( urlString );
+        } catch ( final MalformedURLException ex ) {
+            logger.error( "", ex );
+            throw new InitializeException( "url is malformed", ex );
+        }
+    }
+
+    /**
      * Creates a {@link ProxyStorage} that serves as proxy
      * 
      * @param p
