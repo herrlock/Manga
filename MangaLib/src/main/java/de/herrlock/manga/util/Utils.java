@@ -1,5 +1,7 @@
 package de.herrlock.manga.util;
 
+import static de.herrlock.manga.util.Constants.TO_DOCUMENT_HANDLER;
+
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
@@ -28,6 +30,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jsoup.nodes.Document;
 
 import com.google.common.base.Joiner;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -119,6 +122,11 @@ public final class Utils {
         logger.debug( "url: {}", url );
         final HttpGet httpGet = createHttpGet( url, conf );
         return executeHttpGet( httpGet, handler );
+    }
+
+    public static Document getDocument( final URL url, final DownloadConfiguration conf )
+        throws ClientProtocolException, IOException {
+        return getDataAndExecuteResponseHandler( url, conf, TO_DOCUMENT_HANDLER );
     }
 
     /**

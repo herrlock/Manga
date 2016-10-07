@@ -2,21 +2,13 @@ package de.herrlock.manga.host;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.Objects;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.impl.client.AbstractResponseHandler;
-import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import de.herrlock.manga.downloader.pmc.EntryList;
@@ -151,22 +143,8 @@ public abstract class ChapterList implements Iterable<Chapter> {
      *             in case an IOException occurs
      */
     protected Document getDocument( final URL url ) throws IOException {
-        return Utils.getDataAndExecuteResponseHandler( url, this.conf, TO_DOCUMENT_HANDLER );
+        return Utils.getDocument( url, this.conf );
     }
-
-    /**
-     * converts an {@link HttpResponse} to a Jsoup-{@link Document}
-     */
-    public static final ResponseHandler<Document> TO_DOCUMENT_HANDLER = new AbstractResponseHandler<Document>() {
-        @Override
-        public Document handleEntity( final HttpEntity entity ) throws ClientProtocolException, IOException {
-            try {
-                return Jsoup.parse( EntityUtils.toString( entity, StandardCharsets.UTF_8 ) );
-            } finally {
-                EntityUtils.consume( entity );
-            }
-        }
-    };
 
     @Override
     public Iterator<Chapter> iterator() {
