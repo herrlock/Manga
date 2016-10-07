@@ -7,8 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
 
-import de.herrlock.manga.exceptions.HosterInstantiationException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
+import de.herrlock.manga.host.exceptions.HosterInstantiationException;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**

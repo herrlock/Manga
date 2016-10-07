@@ -29,8 +29,8 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterables;
 
-import de.herrlock.manga.exceptions.HosterInstantiationException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
+import de.herrlock.manga.host.exceptions.HosterInstantiationException;
 
 /**
  * A Utility-class containing the predefined {@link Hoster} as well as those loaded at runtime
