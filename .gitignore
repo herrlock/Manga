@@ -12,20 +12,22 @@ build/
 
 ## files for local testing
 # All projects
-/downloader.txt
-/Manga*/downloader.txt
 /additionalHoster.txt
 /Manga*/additionalHoster.txt
 /download/
 /Manga*/download/
-/log/
-/Manga*/log/
+/downloader.txt
+/Manga*/downloader.txt
 /folderwatch/
 /Manga*/folderwatch/
-/tomcat/
-/Manga*/tomcat/
+/index/
+/Manga*/index/
+/log/
+/Manga*/log/
 /temp/
 /Manga*/temp/
+/tomcat/
+/Manga*/tomcat/
 # MangaCtrl
 
 # MangaLib
