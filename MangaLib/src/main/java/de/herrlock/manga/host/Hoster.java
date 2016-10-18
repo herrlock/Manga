@@ -1,15 +1,19 @@
 package de.herrlock.manga.host;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Locale;
 
-import de.herrlock.manga.exceptions.HosterInstantiationException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
+import de.herrlock.manga.host.annotations.Details;
+import de.herrlock.manga.host.exceptions.HosterInstantiationException;
+import de.herrlock.manga.index.HosterListEntry;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
+import de.herrlock.manga.util.configuration.IndexerConfiguration;
 
 /**
  * A class that has the purpose of creating {@linkplain ChapterList}s. Can be extended to provide an alternative implementation of
@@ -19,31 +23,31 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  */
 public final class Hoster implements Comparable<Hoster> {
 
-    private final InstantiationProxy proxy;
-    private final String baseClassName;
+    private final HosterImpl hosterImpl;
     private final String name;
     private final URL baseUrl;
 
     /**
      * Creates an instance of this Hoster
      * 
-     * @param proxy
-     *            An implementation of {@link InstantiationProxy} that returns an object of the {@link ChapterList}-implementation
+     * @param hosterImpl
+     *            An implementation of {@link HosterImpl}.
      */
-    public Hoster( final InstantiationProxy proxy ) throws HosterInstantiationException {
-        this.proxy = requireNonNull( proxy, "InstantiationProxy is null" );
-        Class<? extends ChapterList> baseClass = requireNonNull( this.proxy.getProxiedClass(),
-            "The InstantiationProxy must return the proxied class." );
-        this.baseClassName = baseClass.getName();
-        Details hosterDetails = requireNonNull( baseClass.getAnnotation( Details.class ),
-            "Implementations of ChapterList require a name and a baseUrl provided by the annotation @Details" );
+    public Hoster( final HosterImpl hosterImpl ) throws HosterInstantiationException {
+        this.hosterImpl = requireNonNull( hosterImpl, "HosterImpl is null" );
+        Details hosterDetails = requireNonNull( this.hosterImpl.getDetails(),
+            "Implementations of HosterImpl require a name and a baseUrl provided by the annotation @Details" );
         this.name = requireNonNull( hosterDetails.name(), "@Details.name() is null." );
         try {
-            String urlString = hosterDetails.baseUrl();
-            this.baseUrl = new URL( requireNonNull( urlString, "@Details.baseUrl() is null." ) );
+            String urlString = requireNonNull( hosterDetails.baseUrl(), "@Details.baseUrl() is null." );
+            this.baseUrl = new URL( urlString );
         } catch ( final MalformedURLException ex ) {
             throw new HosterInstantiationException( ex );
         }
+    }
+
+    public Hoster( final Class<? extends HosterImpl> clazz ) throws HosterInstantiationException {
+        this( new HosterImplWrapper( clazz ) );
     }
 
     public static <K> K requireNonNull( final K k, final String message ) throws HosterInstantiationException {
@@ -51,10 +55,6 @@ public final class Hoster implements Comparable<Hoster> {
             throw new HosterInstantiationException( message );
         }
         return k;
-    }
-
-    public <T extends ChapterList> Hoster( final Class<T> clazz ) throws HosterInstantiationException {
-        this( new GeneralInstantiationProxy( clazz ) );
     }
 
     /**
@@ -68,10 +68,14 @@ public final class Hoster implements Comparable<Hoster> {
      */
     public ChapterList getChapterList( final DownloadConfiguration conf ) {
         try {
-            return this.proxy.getInstance( conf );
+            return this.hosterImpl.getChapterList( conf );
         } catch ( IOException ex ) {
             throw new MDRuntimeException( ex );
         }
+    }
+
+    public Collection<HosterListEntry> getAvailabile( final IndexerConfiguration conf ) {
+        return this.hosterImpl.getAvailabile( conf );
     }
 
     /**
@@ -94,9 +98,9 @@ public final class Hoster implements Comparable<Hoster> {
 
     @Override
     public int compareTo( final Hoster other ) {
-        String thisBaseClassName = this.baseClassName;
-        String otherBaseClassName = other.baseClassName;
-        return thisBaseClassName.compareTo( otherBaseClassName );
+        String thisName = this.name;
+        String otherName = other.name;
+        return thisName.compareTo( otherName );
     }
 
     @Override
@@ -106,7 +110,7 @@ public final class Hoster implements Comparable<Hoster> {
 
     @Override
     public int hashCode() {
-        return this.baseClassName.hashCode();
+        return this.name.hashCode();
     }
 
     @Override
@@ -115,40 +119,52 @@ public final class Hoster implements Comparable<Hoster> {
     }
 
     /**
-     * @author HerrLock
+     * A {@link Comparator} to compare two {@link Hoster} according to their name. Uses {@link String#compareTo(String)}
      */
-    public static final class GeneralInstantiationProxy extends InstantiationProxy {
-        private final Class<? extends ChapterList> clazz;
+    public static final Comparator<Hoster> NAME_COMPARATOR = new Comparator<Hoster>() {
+        /**
+         * Compares the hoster by their name. Uses {@link Locale#GERMANY} to convert the names to lowercase.
+         * 
+         * @param h1
+         *            the first Hoster
+         * @param h2
+         *            the second Hoster
+         */
+        @Override
+        public int compare( final Hoster h1, final Hoster h2 ) {
+            String h1LowerName = h1.getName().toLowerCase( Locale.GERMANY );
+            String h2LowerName = h2.getName().toLowerCase( Locale.GERMANY );
+            return h1LowerName.compareTo( h2LowerName );
+        }
+    };
 
-        GeneralInstantiationProxy( final Class<? extends ChapterList> clazz ) {
-            this.clazz = clazz;
+    private static class HosterImplWrapper extends HosterImpl {
+
+        private final HosterImpl actualHosterImpl;
+
+        HosterImplWrapper( final Class<? extends HosterImpl> clazz ) throws HosterInstantiationException {
+            try {
+                this.actualHosterImpl = clazz.newInstance();
+            } catch ( InstantiationException | IllegalAccessException ex ) {
+                throw new HosterInstantiationException( ex );
+            }
         }
 
         @Override
-        public Class<? extends ChapterList> getProxiedClass() {
-            return this.clazz;
+        public ChapterList getChapterList( final DownloadConfiguration conf ) throws IOException {
+            return this.actualHosterImpl.getChapterList( conf );
         }
 
         @Override
-        public ChapterList getInstance( final DownloadConfiguration conf ) throws IOException {
-            Constructor<? extends ChapterList> constructor;
-            try {
-                constructor = this.clazz.getConstructor( DownloadConfiguration.class );
-            } catch ( final NoSuchMethodException ex ) {
-                String message = "The called implementation of ChapterList must contain a constructor accepting a DownloadConfiguration";
-                throw new IllegalStateException( message, ex );
-            }
-            try {
-                return constructor.newInstance( conf );
-            } catch ( final InstantiationException ex ) {
-                throw new IllegalStateException( "The called class is abstract", ex );
-            } catch ( final IllegalAccessException ex ) {
-                throw new MDRuntimeException( "The called constructor is not accessible", ex );
-            } catch ( final IllegalArgumentException ex ) {
-                throw new MDRuntimeException( "The called constructor does not take one DownloadConfiguration as parameter", ex );
-            } catch ( final InvocationTargetException ex ) {
-                throw new MDRuntimeException( "The called constructor threw an exception", ex );
-            }
+        public Collection<HosterListEntry> getAvailabile( final IndexerConfiguration conf ) {
+            return this.actualHosterImpl.getAvailabile( conf );
         }
+
+        @Override
+        public Details getDetails() {
+            return this.actualHosterImpl.getDetails();
+        }
+
     }
+
 }

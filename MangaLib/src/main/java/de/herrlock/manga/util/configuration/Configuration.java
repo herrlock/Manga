@@ -83,20 +83,36 @@ public abstract class Configuration {
      */
     protected static URL _createUrl( final Properties p ) throws InitializeException {
         logger.traceEntry();
+        URL url = _createUrlNotRequired( p );
+        if ( url == null ) {
+            throw new InitializeException( "url is not filled but required" );
+        }
+        logger.debug( "URL: {}", url );
+        return url;
+    }
+
+    /**
+     * creates a {@link URL} from the property {@value #URL} in the given Properties
+     * 
+     * @param p
+     *            the {@link Properties} where to search for an url
+     * @return the created URL
+     * @throws InitializeException
+     *             in case the URL is not availabile or malformed
+     */
+    protected static URL _createUrlNotRequired( final Properties p ) throws InitializeException {
+        logger.traceEntry();
         // get url
-        URL url;
         try {
             String urlString = p.getProperty( URL );
             if ( urlString == null || "".equals( urlString ) ) {
-                throw new InitializeException( "url is not filled but required" );
+                return null;
             }
-            url = new URL( urlString );
+            return new URL( urlString );
         } catch ( final MalformedURLException ex ) {
             logger.error( "", ex );
             throw new InitializeException( "url is malformed", ex );
         }
-        logger.debug( "URL: {}", url );
-        return url;
     }
 
     /**

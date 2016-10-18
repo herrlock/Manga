@@ -10,14 +10,14 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
+import java.util.Queue;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.regex.Pattern;
 
@@ -26,11 +26,13 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterables;
 
-import de.herrlock.manga.exceptions.HosterInstantiationException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
+import de.herrlock.manga.host.exceptions.HosterInstantiationException;
+import de.herrlock.manga.host.exceptions.NoHosterFoundException;
 
 /**
  * A Utility-class containing the predefined {@link Hoster} as well as those loaded at runtime
@@ -43,30 +45,10 @@ public final class Hosters {
 
     private static final Collection<Hoster> hosters = new HashSet<>();
 
-    /**
-     * A {@link Comparator} to compare two {@link Hoster} according to their name. Uses {@link String#compareTo(String)}
-     */
-    public static final Comparator<Hoster> NAME_COMPARATOR = new Comparator<Hoster>() {
-        /**
-         * Compares the hoster by their name. Uses {@link Locale#GERMAN} to convert the names to lowercase.
-         * 
-         * @param h1
-         *            the first Hoster
-         * @param h2
-         *            the second Hoster
-         */
-        @Override
-        public int compare( final Hoster h1, final Hoster h2 ) {
-            String h1LowerName = h1.getName().toLowerCase( Locale.GERMAN );
-            String h2LowerName = h2.getName().toLowerCase( Locale.GERMAN );
-            return h1LowerName.compareTo( h2LowerName );
-        }
-    };
-
     static {
-        ServiceLoader<InstantiationProxy> loader = ServiceLoader.load( InstantiationProxy.class );
-        for ( InstantiationProxy proxy : loader ) {
-            registerHoster( proxy );
+        ServiceLoader<HosterImpl> loader = ServiceLoader.load( HosterImpl.class );
+        for ( HosterImpl impl : loader ) {
+            registerHoster( impl );
         }
 
         Path additionalHostersPath = Paths.get( ".", "additionalHoster.txt" );
@@ -82,7 +64,7 @@ public final class Hosters {
         }
     }
 
-    private static void loadAdditionalHosters( final List<String> lines ) {
+    private static void loadAdditionalHosters( final Collection<String> lines ) {
         logger.traceEntry( "lines: {}", lines );
 
         final Predicate<String> isBracketLine = new Predicate<String>() {
@@ -93,7 +75,7 @@ public final class Hosters {
         };
 
         Iterable<String> resourcesPathLines = Iterables.filter( lines, isBracketLine );
-        List<URL> resourcePaths = loadResourcePaths( resourcesPathLines );
+        Collection<URL> resourcePaths = loadResourcePaths( resourcesPathLines );
 
         URL[] resourcePathArray = resourcePaths.toArray( new URL[resourcePaths.size()] );
         try ( URLClassLoader classLoader = new URLClassLoader( resourcePathArray, Hosters.class.getClassLoader() ) ) {
@@ -108,8 +90,8 @@ public final class Hosters {
         }
     }
 
-    private static List<URL> loadResourcePaths( final Iterable<String> lines ) {
-        List<URL> resourcePaths = new ArrayList<>();
+    private static Collection<URL> loadResourcePaths( final Iterable<String> lines ) {
+        Queue<URL> resourcePaths = new ArrayDeque<>();
         try {
             for ( String line : lines ) {
                 String filename = line.substring( 1, line.length() - 1 );
@@ -130,8 +112,8 @@ public final class Hosters {
     private static void loadExtraClass( final URLClassLoader classLoader, final String line ) {
         try {
             Class<?> c = Class.forName( line, false, classLoader );
-            if ( ChapterList.class.isAssignableFrom( c ) ) {
-                Class<? extends ChapterList> asSubclass = c.asSubclass( ChapterList.class );
+            if ( HosterImpl.class.isAssignableFrom( c ) ) {
+                Class<? extends HosterImpl> asSubclass = c.asSubclass( HosterImpl.class );
                 boolean added = registerHoster( asSubclass );
                 if ( added ) {
                     logger.info( "Class {} registered", c );
@@ -163,14 +145,14 @@ public final class Hosters {
     /**
      * adds a {@link Hoster} to the global pool
      * 
-     * @param proxy
-     *            the {@link InstantiationProxy} to create a Hoster with
+     * @param impl
+     *            the {@link HosterImpl} to create a Hoster with
      * @return if the Hoster was actually added
-     * @see Hoster#Hoster(InstantiationProxy)
+     * @see Hoster#Hoster(HosterImpl)
      */
-    public static boolean registerHoster( final InstantiationProxy proxy ) {
+    public static boolean registerHoster( final HosterImpl impl ) {
         try {
-            Hoster hoster = new Hoster( proxy );
+            Hoster hoster = new Hoster( impl );
             return registerHoster( hoster );
         } catch ( HosterInstantiationException ex ) {
             logger.warn( "Hoster could not be instantiated." );
@@ -179,7 +161,7 @@ public final class Hosters {
         }
     }
 
-    public static boolean registerHoster( final Class<? extends ChapterList> clazz ) {
+    public static boolean registerHoster( final Class<? extends HosterImpl> clazz ) {
         try {
             Hoster hoster = new Hoster( clazz );
             return registerHoster( hoster );
@@ -191,14 +173,14 @@ public final class Hosters {
     }
 
     /**
-     * checks all Hoster for the one that matches the given URL
+     * Returns the Hoster that matches the given URL or {@code null}, if none matches.
      * 
      * @param url
      *            the URL to check the Hoster against
      * @return the Hoster that has the given URL; when none is found {@code null}
      */
-    public static Hoster getHostByURL( final URL url ) {
-        Pattern www = Pattern.compile( "www\\..+" );
+    public static Hoster tryGetHostByURL( final URL url ) {
+        final Pattern www = Pattern.compile( "www\\..+" );
         String givenUrlHost = url.getHost();
         if ( www.matcher( givenUrlHost ).matches() ) {
             givenUrlHost = givenUrlHost.substring( 4 );
@@ -216,31 +198,53 @@ public final class Hosters {
     }
 
     /**
-     * returns an {@linkplain Collections#unmodifiableList(List) unmodifiable List} containing the registered {@link Hoster}
+     * Returns the Hoster that matches the given URL. Throws an exception, if none matches.
      * 
-     * @return the registered Hoster
+     * @param url
+     *            the URL to check the Hoster against
+     * @return the Hoster that has the given URL; throws an exception when none is found
+     * @throws NoHosterFoundException
+     *             if no Hoster matches the given URL
      */
-    public static List<Hoster> values() {
-        return Collections.unmodifiableList( new ArrayList<>( hosters ) );
+    public static Hoster getHostByURL( final URL url ) throws NoHosterFoundException {
+        Hoster hoster = tryGetHostByURL( url );
+        if ( hoster == null ) {
+            throw new NoHosterFoundException( "Hoster for " + url + " cannot be found" );
+        }
+        return hoster;
     }
 
     /**
-     * returns a sorted, {@linkplain Collections#unmodifiableList(List) unmodifiable List} containing the registered
-     * {@link Hoster}. The {@link Comparator} used for sorting is {@link Hosters#NAME_COMPARATOR}
+     * Returns an {@linkplain ImmutableSet} containing all registered {@link Hoster} in an unspecified order.
      * 
      * @return the registered Hoster
+     * @see #sortedValues()
+     * @see #sortedValues(Comparator)
+     */
+    public static Set<Hoster> values() {
+        return ImmutableSet.copyOf( hosters );
+    }
+
+    /**
+     * Returns a {@link SortedSet} containing all registered {@link Hoster}. The {@link Comparator} used for sorting is
+     * {@link Hoster#NAME_COMPARATOR}
+     * 
+     * @return the registered Hoster
+     * @see #values()
+     * @see #sortedValues(Comparator)
      */
     public static SortedSet<Hoster> sortedValues() {
-        return sortedValues( NAME_COMPARATOR );
+        return sortedValues( Hoster.NAME_COMPARATOR );
     }
 
     /**
-     * returns a sorted, {@linkplain Collections#unmodifiableList(List) unmodifiable List} containing the registered
-     * {@link Hoster}.
+     * Returns a {@link SortedSet} containing all registered {@link Hoster}. The given {@link Comparator} is used for sorting.
      * 
      * @param comparator
      *            the comparator to sort with
      * @return the registered Hoster
+     * @see #values()
+     * @see #sortedValues()
      */
     public static SortedSet<Hoster> sortedValues( final Comparator<Hoster> comparator ) {
         return ImmutableSortedSet.copyOf( comparator, hosters );

@@ -1,4 +1,6 @@
-package de.herrlock.manga.exceptions;
+package de.herrlock.manga.host.exceptions;
+
+import de.herrlock.manga.exceptions.MDException;
 
 /**
  * An Exception indicating, that a Hoster could not be created.

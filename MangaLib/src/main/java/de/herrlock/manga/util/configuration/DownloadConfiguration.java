@@ -37,7 +37,7 @@ public class DownloadConfiguration extends Configuration {
     }
 
     /**
-     * constructor for a {@link DownloadConfiguration}
+     * Constructor for a {@link DownloadConfiguration}. If the given URL is {@code null} an exception is thrown.
      * 
      * @param isHeadless
      *            if the downloader runs in cli-mode (true) or with a type of gui (false)
@@ -52,8 +52,30 @@ public class DownloadConfiguration extends Configuration {
      */
     public DownloadConfiguration( final boolean isHeadless, final URL url, final ProxyStorage proxy, final ChapterPattern pattern,
         final int timeout ) {
+        this( isHeadless, true, url, proxy, pattern, timeout );
+    }
+
+    /**
+     * Constructor for a {@link DownloadConfiguration}
+     * 
+     * @param isHeadless
+     *            if the downloader runs in cli-mode (true) or with a type of gui (false)
+     * @param requireURL
+     *            indicates if a URL is required. An exception is thrown, if this parameter is true and the parameter url is
+     *            {@code null}.
+     * @param url
+     *            an {@link URL} to the manga's base-page.
+     * @param proxy
+     *            a ProxyStorage containing address and auth of the used proxy. Must no be null.
+     * @param pattern
+     *            the {@link ChapterPattern} to use. Or null to use the default {@link ChapterPattern} to download all.
+     * @param timeout
+     *            the timeout for the http-requests. The dafult-value is used if negative.
+     */
+    protected DownloadConfiguration( final boolean isHeadless, final boolean requireURL, final URL url, final ProxyStorage proxy,
+        final ChapterPattern pattern, final int timeout ) {
         super( isHeadless );
-        this.url = Objects.requireNonNull( url, "A URL is required for downloading" );
+        this.url = requireURL ? Objects.requireNonNull( url, "A URL is required." ) : url;
         this.proxy = proxy == null ? new ProxyStorage() : proxy;
         this.pattern = pattern == null ? new ChapterPattern( "" ) : pattern;
         this.timeout = timeout >= 0 ? timeout : TIMEOUT_DEFAULT;

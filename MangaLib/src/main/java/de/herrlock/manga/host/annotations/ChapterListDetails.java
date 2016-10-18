@@ -1,4 +1,4 @@
-package de.herrlock.manga.host;
+package de.herrlock.manga.host.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,27 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * provides information about {@link Hoster}s
- * 
  * @author HerrLock
  */
 @Target( value = ElementType.TYPE )
 @Retention( RetentionPolicy.RUNTIME )
-public @interface Details {
+public @interface ChapterListDetails {
     /**
-     * the Hoster's name
+     * indicates if the chapters are listed in descending order
      * 
-     * @return the hoster's name
-     */
-    String name();
-    /**
-     * the hoster's url, only the host-part
-     * 
-     * @return the hoster's url
-     */
-    String baseUrl();
-
-    /**
      * @return true if the list is reversed (highest chapter first). Defaults to false
      */
     boolean reversed() default false;

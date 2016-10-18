@@ -1,10 +1,15 @@
 package de.herrlock.manga.util;
 
+import static de.herrlock.manga.util.Constants.TO_DOCUMENT_HANDLER;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,6 +33,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jsoup.nodes.Document;
 
 import com.google.common.base.Joiner;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -121,6 +127,11 @@ public final class Utils {
         return executeHttpGet( httpGet, handler );
     }
 
+    public static Document getDocument( final URL url, final DownloadConfiguration conf )
+        throws ClientProtocolException, IOException {
+        return getDataAndExecuteResponseHandler( url, conf, TO_DOCUMENT_HANDLER );
+    }
+
     /**
      * start all {@link Thread}s in the give collection and wait for them to die
      * 
@@ -185,6 +196,14 @@ public final class Utils {
      */
     public static Future<?> callCallable( final Runnable runnable ) {
         return THREAD_POOL.submit( runnable );
+    }
+
+    public static PropertiesBuilder newPropertiesBuilder() {
+        return new PropertiesBuilder();
+    }
+
+    public static PropertiesBuilder newPropertiesBuilder( final Properties defaults ) {
+        return new PropertiesBuilder( defaults );
     }
 
     /**
@@ -258,5 +277,53 @@ public final class Utils {
 
     private Utils() {
         // not called
+    }
+
+    public static class PropertiesBuilder {
+        private final Properties _properties;
+        private boolean open = true;
+
+        public PropertiesBuilder() {
+            this._properties = new Properties();
+        }
+
+        public PropertiesBuilder( final Properties defaults ) {
+            this._properties = new Properties( defaults );
+        }
+
+        private void assureOpen() {
+            if ( !this.open ) {
+                throw new IllegalStateException( "Builder is already finished" );
+            }
+        }
+
+        public PropertiesBuilder setProperty( final String key, final String value ) {
+            assureOpen();
+            if ( value != null ) {
+                this._properties.setProperty( key, value );
+            } else if ( this._properties.containsKey( key ) ) {
+                this._properties.remove( key );
+            }
+            return this;
+        }
+
+        public PropertiesBuilder load( final Reader reader ) throws IOException {
+            assureOpen();
+            this._properties.load( reader );
+            return this;
+        }
+
+        public PropertiesBuilder load( final InputStream inStream ) throws IOException {
+            assureOpen();
+            this._properties.load( inStream );
+            return this;
+        }
+
+        public Properties build() {
+            assureOpen();
+            this.open = false;
+            return this._properties;
+        }
+
     }
 }

@@ -2,26 +2,21 @@ package de.herrlock.manga.host;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.Objects;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.impl.client.AbstractResponseHandler;
-import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.downloader.pmc.ImmutableEntryList;
 import de.herrlock.manga.exceptions.InitializeException;
+import de.herrlock.manga.host.annotations.ChapterListDetails;
+import de.herrlock.manga.host.annotations.Details;
+import de.herrlock.manga.host.exceptions.NoHosterFoundException;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
@@ -40,7 +35,7 @@ public abstract class ChapterList implements Iterable<Chapter> {
     protected final DownloadConfiguration conf;
 
     private final Deque<Chapter> chapters = new ArrayDeque<>();
-    private final Details details;
+    private final ChapterListDetails chapterListDetails;
 
     /**
      * creates an instance of {@linkplain ChapterList}, gets the right {@linkplain Details} from the {@linkplain URL} in the given
@@ -53,9 +48,11 @@ public abstract class ChapterList implements Iterable<Chapter> {
     public static ChapterList getInstance( final DownloadConfiguration conf ) {
         logger.traceEntry( "Configuration: {}", conf );
         URL url = conf.getUrl();
-        Hoster h = Hosters.getHostByURL( url );
-        if ( h == null ) {
-            throw new InitializeException( url + " could not be resolved to a registered host." );
+        Hoster h;
+        try {
+            h = Hosters.getHostByURL( url );
+        } catch ( NoHosterFoundException ex ) {
+            throw new InitializeException( ex );
         }
         logger.debug( "Selected Hoster: {}", h.getName() );
         return h.getChapterList( conf );
@@ -69,8 +66,8 @@ public abstract class ChapterList implements Iterable<Chapter> {
      */
     protected ChapterList( final DownloadConfiguration conf ) {
         this.conf = conf;
-        this.details = Objects.requireNonNull( this.getClass().getAnnotation( Details.class ),
-            "The class must contain @Details" );
+        this.chapterListDetails = Objects.requireNonNull( this.getClass().getAnnotation( ChapterListDetails.class ),
+            "The class must contain @ChapterListDetails" );
     }
 
     /**
@@ -151,27 +148,13 @@ public abstract class ChapterList implements Iterable<Chapter> {
      *             in case an IOException occurs
      */
     protected Document getDocument( final URL url ) throws IOException {
-        return Utils.getDataAndExecuteResponseHandler( url, this.conf, TO_DOCUMENT_HANDLER );
+        return Utils.getDocument( url, this.conf );
     }
-
-    /**
-     * converts an {@link HttpResponse} to a Jsoup-{@link Document}
-     */
-    public static final ResponseHandler<Document> TO_DOCUMENT_HANDLER = new AbstractResponseHandler<Document>() {
-        @Override
-        public Document handleEntity( final HttpEntity entity ) throws ClientProtocolException, IOException {
-            try {
-                return Jsoup.parse( EntityUtils.toString( entity, StandardCharsets.UTF_8 ) );
-            } finally {
-                EntityUtils.consume( entity );
-            }
-        }
-    };
 
     @Override
     public Iterator<Chapter> iterator() {
         Iterator<Chapter> iterator;
-        if ( this.details.reversed() ) {
+        if ( this.chapterListDetails.reversed() ) {
             iterator = this.chapters.descendingIterator();
         } else {
             iterator = this.chapters.iterator();
