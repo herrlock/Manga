@@ -108,13 +108,7 @@ public abstract class Configuration {
             if ( urlString == null || "".equals( urlString ) ) {
                 return null;
             }
-            URL url;
-            try {
-                url = new URL( urlString );
-            } catch ( MalformedURLException ex ) {
-                url = new URL( "http://" + urlString );
-            }
-            return url;
+            return new URL( urlString );
         } catch ( final MalformedURLException ex ) {
             logger.error( "", ex );
             throw new InitializeException( "url is malformed", ex );
