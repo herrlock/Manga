@@ -37,7 +37,7 @@ import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.http.ServerMain;
-import de.herrlock.manga.index.Indexer;
+import de.herrlock.manga.index.IndexerMain;
 import de.herrlock.manga.util.ClassPathHack;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.Configuration;
@@ -248,7 +248,7 @@ public final class Main {
                 logger.info( "Creating index" );
                 IndexerConfiguration conf = IndexerConfiguration.create( properties );
                 logger.info( conf );
-                Indexer.exportIndex( conf );
+                IndexerMain.writeIndex( conf );
             } else {
                 logger.info( "Starting Commandline-Downloader:" );
                 DownloadConfiguration conf = DownloadConfiguration.create( properties );

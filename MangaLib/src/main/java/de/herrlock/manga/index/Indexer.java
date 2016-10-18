@@ -1,23 +1,13 @@
 package de.herrlock.manga.index;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.TreeSet;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableSet;
 
-import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.Hoster;
 import de.herrlock.manga.host.Hosters;
 import de.herrlock.manga.util.configuration.IndexerConfiguration;
@@ -27,23 +17,6 @@ import de.herrlock.manga.util.configuration.IndexerConfiguration;
  */
 public final class Indexer {
     private static final Logger logger = LogManager.getLogger();
-
-    public static void exportIndex( final IndexerConfiguration conf ) {
-        logger.traceEntry();
-        Index index = createIndex( conf );
-
-        Path indexxml = Paths.get( "index.xml" );
-        try ( OutputStream outputStream = Files.newOutputStream( indexxml ) ) {
-            Marshaller marshaller = JAXBContext.newInstance( Index.class ).createMarshaller();
-            marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
-            marshaller.marshal( index, outputStream );
-        } catch ( JAXBException e ) {
-            throw new MDRuntimeException( e );
-        } catch ( IOException ex ) {
-            throw new MDRuntimeException( ex );
-        }
-        logger.traceExit();
-    }
 
     public static Index createIndex( final IndexerConfiguration conf ) {
         logger.traceEntry( "({})", conf );
