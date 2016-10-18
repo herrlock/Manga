@@ -39,7 +39,7 @@ public class HosterList {
 
     @Override
     public String toString() {
-        return MessageFormat.format( "HosterList @{0}: {1})", this.hosterName, this.mangas );
+        return MessageFormat.format( "HosterList @{0} ({1})", this.hosterName, this.mangas == null ? null : this.mangas.size() );
     }
 
     public static final Comparator<HosterList> HOSTER_NAME_COMPARATOR = new Comparator<HosterList>() {
