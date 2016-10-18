@@ -83,17 +83,9 @@ public abstract class Configuration {
      */
     protected static URL _createUrl( final Properties p ) throws InitializeException {
         logger.traceEntry();
-        // get url
-        URL url;
-        try {
-            String urlString = p.getProperty( URL );
-            if ( urlString == null || "".equals( urlString ) ) {
-                throw new InitializeException( "url is not filled but required" );
-            }
-            url = new URL( urlString );
-        } catch ( final MalformedURLException ex ) {
-            logger.error( "", ex );
-            throw new InitializeException( "url is malformed", ex );
+        URL url = _createUrlNotRequired( p );
+        if ( url == null ) {
+            throw new InitializeException( "url is not filled but required" );
         }
         logger.debug( "URL: {}", url );
         return url;
@@ -116,7 +108,13 @@ public abstract class Configuration {
             if ( urlString == null || "".equals( urlString ) ) {
                 return null;
             }
-            return new URL( urlString );
+            URL url;
+            try {
+                url = new URL( urlString );
+            } catch ( MalformedURLException ex ) {
+                url = new URL( "http://" + urlString );
+            }
+            return url;
         } catch ( final MalformedURLException ex ) {
             logger.error( "", ex );
             throw new InitializeException( "url is malformed", ex );
