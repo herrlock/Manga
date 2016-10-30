@@ -141,7 +141,8 @@ public abstract class Configuration {
         return new ProxyStorage();
     }
 
-    public static ProxyStorage createProxyStorage( final String urlString ) throws MalformedURLException, UnknownHostException {
+    protected static ProxyStorage createProxyStorage( final String urlString )
+        throws MalformedURLException, UnknownHostException {
         if ( urlString == null ) {
             return new ProxyStorage();
         }
