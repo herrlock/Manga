@@ -1,6 +1,5 @@
 package de.herrlock.manga.index;
 
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.Locale;
@@ -13,12 +12,12 @@ import javax.xml.bind.annotation.XmlAttribute;
  * @author HerrLock
  */
 @XmlAccessorType( XmlAccessType.NONE )
-public class HosterListEntry {
+public final class HosterListEntry {
 
     @XmlAttribute( name = "name" )
     private String name;
     @XmlAttribute( name = "url" )
-    private URL url;
+    private String url;
 
     public String getName() {
         return this.name;
@@ -28,11 +27,11 @@ public class HosterListEntry {
         this.name = name;
     }
 
-    public URL getUrl() {
+    public String getUrl() {
         return this.url;
     }
 
-    public void setUrl( final URL url ) {
+    public void setUrl( final String url ) {
         this.url = url;
     }
 

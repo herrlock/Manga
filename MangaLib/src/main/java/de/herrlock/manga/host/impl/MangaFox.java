@@ -53,7 +53,7 @@ public final class MangaFox extends HosterImpl {
             HosterListEntry entry = new HosterListEntry();
             entry.setName( element.text() );
             try {
-                entry.setUrl( new URL( baseUrl, element.attr( "href" ) ) );
+                entry.setUrl( new URL( baseUrl, element.attr( "href" ) ).toExternalForm() );
             } catch ( MalformedURLException ex ) {
                 logger.catching( Level.DEBUG, ex );
             }
