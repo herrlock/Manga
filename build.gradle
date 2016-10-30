@@ -47,6 +47,10 @@ allprojects {
 		testCompile 'org.mockito:mockito-core:1.10.19'
 	}
 	
+	tasks.withType(JavaCompile) {
+		options.encoding = 'UTF-8'
+	}
+	
 	jar.manifest {
 		attributes 'Built-At' : new Date(),
 			'Built-With' : GradleVersion.current(),
