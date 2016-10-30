@@ -1,40 +1,47 @@
-package de.herrlock.manga.tomcat.service;
+package de.herrlock.manga.http.jetty.handlers;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.util.Random;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.handler.AbstractHandler;
+
+import com.google.common.net.MediaType;
 
 /**
- * A service to serve the path to a random image from the enum {@link Image}
- * 
  * @author HerrLock
  */
-@Path( "background" )
-public class ImageService {
-    private static final Logger logger = LogManager.getLogger();
+public class ReturnImageHandler extends AbstractHandler {
 
-    /**
-     * Returns response that contains the path to a random image and a colour that matches this image as background.
-     * 
-     * @return A Response containins background-information
-     */
-    @GET
-    @Produces( MediaType.APPLICATION_JSON )
-    public Response getImage() {
-        logger.traceEntry();
+    public static final String PREFIX_PATH = "background";
+
+    @Override
+    public void handle( final String target, final Request baseRequest, final HttpServletRequest request,
+        final HttpServletResponse response ) throws IOException, ServletException {
+
         Image image = Image.getRandom();
-        BGObject bgObject = new BGObject( image );
 
-        logger.debug( "bg-object: {}", bgObject );
-        return Response.ok( bgObject ).build();
+        JsonObject object = Json.createObjectBuilder() //
+            .add( "path", image.getPath() ) //
+            .add( "colour", getHtmlColour( image.getColor() ) ) //
+            .build();
+        Json.createWriter( response.getOutputStream() ).writeObject( object );
+        response.setContentType( MediaType.JSON_UTF_8.toString() );
+        response.setStatus( HttpServletResponse.SC_OK );
+
+        baseRequest.setHandled( true );
+    }
+
+    private static String getHtmlColour( final Color color ) {
+        int red = color.getRed(), green = color.getGreen(), blue = color.getBlue();
+        return String.format( "#%02x%02x%02x", red, green, blue );
     }
 
     /**
@@ -123,26 +130,4 @@ public class ImageService {
         }
     }
 
-    public static class BGObject {
-        private final Image image;
-
-        public BGObject( final Image image ) {
-            this.image = image;
-        }
-
-        public String getPath() {
-            return this.image.getPath();
-        }
-
-        public String getColor() {
-            Color color = this.image.getColor();
-            int red = color.getRed();
-            String r = ( red <= 0xf ? "0" : "" ) + Integer.toHexString( red );
-            int green = color.getGreen();
-            String g = ( green <= 0xf ? "0" : "" ) + Integer.toHexString( green );
-            int blue = color.getBlue();
-            String b = ( blue <= 0xf ? "0" : "" ) + Integer.toHexString( blue );
-            return "#" + r + g + b;
-        }
-    }
 }
