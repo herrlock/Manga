@@ -1,15 +1,21 @@
 package de.herrlock.manga.index;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonWriter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -39,19 +45,28 @@ public final class IndexerMain {
             // the index-directory
             final Path indexDir = Files.createDirectories( Paths.get( "index" ) );
 
+            // write data.js
+            logger.debug( "Writing index-data" );
+            try ( OutputStream out = Files.newOutputStream( indexDir.resolve( "data.js" ) ) ) {
+                exportDataJs( out, conf );
+            }
+
             // write index.html
-            logger.debug( "Writing Index" );
+            logger.debug( "Copying index-html" );
             try ( OutputStream out = Files.newOutputStream( indexDir.resolve( "index.html" ) ) ) {
-                exportHtmlIndex( out, conf );
+                try ( InputStream in = Indexer.class.getResourceAsStream( "index.html" ) ) {
+                    ByteStreams.copy( in, out );
+                }
             }
 
             // unzip DataTables
-            logger.debug( "Unzipping" );
+            logger.debug( "Unzipping DataTables" );
             try ( ZipInputStream zin = new ZipInputStream( Indexer.class.getResourceAsStream( "DataTables.zip" ) ) ) {
+                Path datatablesDir = Files.createDirectories( indexDir.resolve( "DataTables" ) );
                 ZipEntry entry;
                 while ( ( entry = zin.getNextEntry() ) != null ) {
                     String entryName = entry.getName();
-                    Path entryPath = indexDir.resolve( entryName );
+                    Path entryPath = datatablesDir.resolve( entryName );
                     if ( entry.isDirectory() ) {
                         Files.createDirectories( entryPath );
                     } else {
@@ -70,6 +85,16 @@ public final class IndexerMain {
             }
         } catch ( IOException ex ) {
             throw new MDRuntimeException( ex );
+        }
+    }
+
+    public static void exportDataJs( final OutputStream out, final IndexerConfiguration conf ) throws IOException {
+        JsonArray jsonArray = Indexer.createJsonIndex( conf );
+        try ( BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( out, StandardCharsets.UTF_8 ) );
+            JsonWriter jsonWriter = Json.createWriter( writer ) ) {
+            writer.write( "var data = " );
+            jsonWriter.writeArray( jsonArray );
+            writer.write( ";" );
         }
     }
 

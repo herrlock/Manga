@@ -5,6 +5,7 @@ description = 'The central library for this application containing all general i
 dependencies {
 	// utilities
 	compile 'com.google.guava:guava:19.0'
+	compile 'org.glassfish:javax.json:1.0.4'
 	
 	// IO
 	compile 'org.jsoup:jsoup:1.9.2'

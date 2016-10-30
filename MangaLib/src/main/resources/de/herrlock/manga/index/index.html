@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>Mangaindex</title>
+<meta charset="UTF-8">
+<style>
+	@import "Datatables/datatables.min.css";
+	#footer { position: fixed; bottom: .5em; right: .5em; font-size: x-small; font-family: sans-serif; }
+</style>
+<script src="DataTables/datatables.min.js"></script>
+<script src="data.js"></script>
+<script>
+	console.info("data contains %s entries", data.length);
+	document.title += ": " + data.length + " entries";
+	$(function() {
+		$("#mangatable").dataTable({
+			data: data,
+			processing: true,
+			lengthChange: false,
+			pageLength: 20,
+			autoWidth: false,
+			columns: [{
+				data: "hosterName",
+				title: "Hoster",
+				width: "10em",
+				className: "dt-right"
+			}, {
+				data: "name",
+				title: "Manga",
+				className: "dt-left",
+				render: ( data, type, row ) => `<a href="${row.url}" title="${row.url}">${data}</a>`
+			}]
+		});
+	});
+</script>
+</head>
+<body>
+<table id="mangatable" class="display compact" border="0" cellpadding="0" cellspacing="0"></table>
+<div id="footer">
+	<span>This page uses <a href="https://datatables.net" target="_blank">DataTables</a> for jQuery</span>
+</div>
+</body>
+</html>
