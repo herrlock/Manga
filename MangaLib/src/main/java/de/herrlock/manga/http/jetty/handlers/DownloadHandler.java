@@ -53,7 +53,7 @@ public class DownloadHandler extends AbstractHandler {
 final class DownloadHandlerContext {
     private final Map<UUID, MDObject> downloaders = new HashMap<>();
 
-    public UUID put( MDObject mdObject ) {
+    public UUID put( final MDObject mdObject ) {
         UUID randomUUID;
         synchronized ( this.downloaders ) {
             do {
