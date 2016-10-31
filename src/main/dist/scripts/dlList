@@ -1,0 +1,32 @@
+#!/bin/bash
+####################################################################
+# This script downloads all mangas lined up in the file dlListData #
+####################################################################
+
+# exit if the data-file does not exist
+if [ ! -e dlListData ]
+then
+	echo dlListData does not exist - exiting
+	exit 3
+fi
+
+# verbose
+set -x
+
+# read list
+list=$(cat dlListData)
+
+# print list, useful to assure the arguments are read correctly
+echo list: $list | tee log/shlog.txt
+
+# execute the downloader for every entry in the list
+for url in $list
+do
+	echo | tee --append log/shlog.txt
+	echo $url | tee --append log/shlog.txt
+	java -jar MangaLauncher.jar \
+	--log debug \
+		--console \
+		--url $url \
+		| tee --append log/shlog.txt
+done
