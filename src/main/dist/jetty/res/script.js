@@ -181,7 +181,7 @@ $(function() {
 		$.get(url).done(response => md.updateEntry(response, temp)).fail(jqXHR => md.removeEntry(jqXHR, temp));
 	});
 	$("#stopServer").click(function() {
-		$.get("j/stop", function() {
+		$.post("/shutdown?token=avadakedavra", function() {
 			$.when($("#bars").slideUp(), $("#content").fadeOut()).then(() => $("#closeNotice").show());
 			window.clearInterval(updateAllInterval);
 			console.warn("+","----------------","+");

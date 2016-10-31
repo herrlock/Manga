@@ -13,9 +13,6 @@ import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import javax.servlet.ServletException;
-
-import org.apache.catalina.LifecycleException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -28,6 +25,7 @@ import de.herrlock.log4j2.util.Log4jConfiguration;
 import de.herrlock.manga.cli.CliOptions;
 import de.herrlock.manga.cli.MyOptions;
 import de.herrlock.manga.downloader.ConsoleDownloader;
+import de.herrlock.manga.exceptions.MDException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.html.ViewPageMain;
@@ -275,7 +273,7 @@ public final class Main {
             } else {
                 ServerMain.execute( false );
             }
-        } catch ( IOException | LifecycleException | ServletException | URISyntaxException ex ) {
+        } catch ( IOException | MDException | URISyntaxException ex ) {
             throw new MDRuntimeException( ex );
         }
     }

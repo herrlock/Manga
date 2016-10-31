@@ -195,15 +195,6 @@ distributions {
 			into('lib') {
 				from packDependencies
 			}
-			into('tomcat') {
-				into('webapps') {
-					from {
-						// closure to initialise the resource on demand instead of directly
-						project(':MangaWar').war
-					}
-					rename '.+', 'ROOT.war'
-				}
-			}
 			filesMatching ('MangaLauncher.sh') {
 				it.setMode 0744
 			}

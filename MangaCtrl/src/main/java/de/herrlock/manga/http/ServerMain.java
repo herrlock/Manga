@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.servlet.ServletException;
-
-import org.apache.catalina.LifecycleException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.herrlock.manga.exceptions.MDException;
+import de.herrlock.manga.http.jetty.JettyServer;
 
 /**
  * @author HerrLock
@@ -17,15 +17,14 @@ import org.apache.logging.log4j.Logger;
 public final class ServerMain {
     private static final Logger logger = LogManager.getLogger();
 
-    private final Server server;
+    private final JettyServer server;
 
-    public static void execute() throws ServletException, LifecycleException, IOException, URISyntaxException {
+    public static void execute() throws IOException, URISyntaxException, MDException {
         logger.traceEntry();
         execute( false );
     }
 
-    public static void execute( final boolean withDesktop )
-        throws ServletException, LifecycleException, IOException, URISyntaxException {
+    public static void execute( final boolean withDesktop ) throws IOException, URISyntaxException, MDException {
         logger.traceEntry( "withDesktop: {}", withDesktop );
         ServerMain srvMain = new ServerMain();
         srvMain.start();
@@ -33,14 +32,15 @@ public final class ServerMain {
             Desktop.getDesktop().browse( new URI( "http://localhost:1905" ) );
         }
         srvMain.listenForStop();
+        srvMain.stop();
     }
 
-    public ServerMain() throws ServletException, IOException {
+    public ServerMain() {
         logger.traceEntry();
-        this.server = new Server();
+        this.server = new JettyServer();
     }
 
-    public void start() throws LifecycleException, IOException {
+    public void start() throws MDException {
         logger.traceEntry();
         this.server.start();
     }
@@ -50,7 +50,7 @@ public final class ServerMain {
         this.server.listenForStop();
     }
 
-    public void stop() throws LifecycleException {
+    public void stop() throws MDException {
         logger.traceEntry();
         this.server.stop();
     }

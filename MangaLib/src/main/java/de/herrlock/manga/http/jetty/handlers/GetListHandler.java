@@ -1,4 +1,4 @@
-package de.herrlock.manga.tomcat.service;
+package de.herrlock.manga.http.jetty.handlers;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -18,81 +18,113 @@ import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.StreamingOutput;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
+import com.google.common.net.HttpHeaders;
+import com.google.common.net.MediaType;
 
 import de.herrlock.manga.util.Constants;
 
-@javax.ws.rs.Path( "list" )
-public final class ListDownloadService {
+/**
+ * @author HerrLock
+ */
+public class GetListHandler extends AbstractHandler {
     private static final Logger logger = LogManager.getLogger();
 
-    @GET
-    @Produces( MediaType.APPLICATION_XML )
-    public Response getEntries() {
-        logger.info( "Reading downloads." );
-        DownloadList entries = getNames();
-        return Response.ok( entries ).build();
-    }
+    public static final String PREFIX_PATH = "list";
 
-    private DownloadList getNames() {
-        logger.traceEntry();
-        Path targetPath = Paths.get( Constants.TARGET_FOLDER );
-        DownloadList entries = new DownloadList();
-        if ( Files.exists( targetPath ) ) {
-            try ( DirectoryStream<Path> downloads = Files.newDirectoryStream( targetPath, IS_DIR_FILTER ) ) {
-                for ( Path path : downloads ) {
-                    Entry entry = new Entry( path );
-                    try ( DirectoryStream<Path> chapters = Files.newDirectoryStream( path, IS_DIR_FILTER ) ) {
-                        entry.setChapterCount( Iterables.size( chapters ) );
-                    }
-                    entries.addDownload( entry );
-                }
-            } catch ( IOException e ) {
-                logger.catching( e );
+    private final Handler listHandler = new GetMangaListHandler();
+    private final Handler zipHandler = new GetMangaZipHandler();
+
+    @Override
+    public void handle( final String target, final Request baseRequest, final HttpServletRequest request,
+        final HttpServletResponse response ) throws IOException, ServletException {
+        logger.info( target );
+        if ( target != null && target.startsWith( PREFIX_PATH ) ) {
+            if ( baseRequest.getParameter( "name" ) == null ) {
+                this.listHandler.handle( target, baseRequest, request, response );
+            } else {
+                this.zipHandler.handle( target, baseRequest, request, response );
             }
         }
-        return entries;
-    }
 
-    @GET
-    @javax.ws.rs.Path( "{name}" )
-    @Produces( MediaType.APPLICATION_OCTET_STREAM )
-    public Response getSingleZip( @PathParam( "name" ) final String name ) {
-        logger.info( "creating ZIP-file for {}", name );
-        if ( name == null ) {
-            throw new IllegalArgumentException( "Name must not be null" );
-        }
-        final Path downloadFolderPath = Paths.get( Constants.TARGET_FOLDER );
-        final Path mangaFolder = downloadFolderPath.resolve( name );
-        if ( !Files.exists( mangaFolder ) ) {
-            throw new WebApplicationException( Status.NOT_FOUND );
-        }
-        ZipStreamingOutput streamingOutput = new ZipStreamingOutput( name, mangaFolder );
-        return Response.ok( streamingOutput ) //
-            .header( HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + name + ".zip" ) //
-            .build();
     }
 
     /**
      * @author HerrLock
      */
-    public static final class ZipStreamingOutput implements StreamingOutput {
+    static class GetMangaListHandler extends AbstractHandler {
+        @Override
+        public void handle( final String target, final Request baseRequest, final HttpServletRequest request,
+            final HttpServletResponse response ) throws IOException, ServletException {
+            DownloadList entries = getNames();
+            JAXB.marshal( entries, response.getOutputStream() );
+            response.setContentType( MediaType.XML_UTF_8.toString() );
+            response.setStatus( HttpServletResponse.SC_OK );
+            baseRequest.setHandled( true );
+        }
+
+        private DownloadList getNames() throws IOException {
+            Path targetPath = Paths.get( Constants.TARGET_FOLDER );
+            DownloadList entries = new DownloadList();
+            if ( Files.exists( targetPath ) ) {
+                try ( DirectoryStream<Path> downloads = Files.newDirectoryStream( targetPath, IS_DIR_FILTER ) ) {
+                    for ( Path path : downloads ) {
+                        Entry entry = new Entry( path );
+                        try ( DirectoryStream<Path> chapters = Files.newDirectoryStream( path, IS_DIR_FILTER ) ) {
+                            entry.setChapterCount( Iterables.size( chapters ) );
+                        }
+                        entries.addDownload( entry );
+                    }
+                }
+            }
+            return entries;
+        }
+    }
+
+    /**
+     * @author HerrLock
+     */
+    static class GetMangaZipHandler extends AbstractHandler {
+        @Override
+        public void handle( final String target, final Request baseRequest, final HttpServletRequest request,
+            final HttpServletResponse response ) throws IOException, ServletException {
+
+            String name = baseRequest.getParameter( "name" );
+
+            if ( name == null ) {
+                throw new IllegalArgumentException( "Name must not be null" );
+            }
+            final Path downloadFolderPath = Paths.get( Constants.TARGET_FOLDER );
+            final Path mangaFolder = downloadFolderPath.resolve( name );
+            if ( !Files.exists( mangaFolder ) ) {
+                throw new ServletException();
+            }
+
+            response.setHeader( HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + name + ".zip" );
+            ZipStreamingOutput streamingOutput = new ZipStreamingOutput( name, mangaFolder );
+            streamingOutput.write( response.getOutputStream() );
+
+            baseRequest.setHandled( true );
+        }
+    }
+    /**
+     * @author HerrLock
+     */
+    public static final class ZipStreamingOutput {
         private final String mangaName;
         private final Path mangaFolder;
 
@@ -101,8 +133,7 @@ public final class ListDownloadService {
             this.mangaFolder = Objects.requireNonNull( mangaFolder );
         }
 
-        @Override
-        public void write( final OutputStream output ) throws IOException, WebApplicationException {
+        public void write( final OutputStream output ) throws IOException {
             try ( ZipAdder zipAdder = new ZipAdder( output, this.mangaName ) ) {
                 Files.walkFileTree( this.mangaFolder, zipAdder );
             }
@@ -191,4 +222,5 @@ public final class ListDownloadService {
             return Files.isDirectory( entry );
         }
     };
+
 }

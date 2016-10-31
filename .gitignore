@@ -22,6 +22,8 @@ build/
 /Manga*/folderwatch/
 /index/
 /Manga*/index/
+/jetty/
+/Manga*/jetty/
 /log/
 /Manga*/log/
 /temp/
