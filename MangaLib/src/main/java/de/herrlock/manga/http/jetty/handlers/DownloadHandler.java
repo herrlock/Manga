@@ -28,152 +28,169 @@ import de.herrlock.manga.util.configuration.Configuration;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 public class DownloadHandler extends AbstractHandler {
-
     private static final Logger logger = LogManager.getLogger();
 
     public static final String PREFIX_PATH = "download";
 
-    private final Handler downloadHandler = new StartDownloadHandler();
-    private final Handler progressHandler = new GetProgressHandler();
-
-    private final Map<UUID, MDObject> downloaders = new HashMap<>();
+    private final DownloadHandlerContext dlContext = new DownloadHandlerContext();
+    private final Handler downloadHandler = new StartDownloadHandler( this.dlContext );
+    private final Handler progressHandler = new GetProgressHandler( this.dlContext );
 
     @Override
     public void handle( final String target, final Request baseRequest, final HttpServletRequest request,
         final HttpServletResponse response ) throws IOException, ServletException {
-        logger.info( target );
+        logger.traceEntry();
         if ( target != null ) {
             if ( target.startsWith( PREFIX_PATH + "/start" ) ) {
-                logger.info( "download: {}", this.downloadHandler );
-                // this.downloadHandler.handle( target, baseRequest, request, response );
+                this.downloadHandler.handle( target, baseRequest, request, response );
             } else if ( target.startsWith( PREFIX_PATH + "/progress" ) ) {
-                logger.info( "progress: {}", this.progressHandler );
-                // this.progressHandler.handle( target, baseRequest, request, response );
-            } else {
-                // TODO
-                logger.info( "other" );
+                this.progressHandler.handle( target, baseRequest, request, response );
             }
         }
-
     }
+}
 
-    /**
-     * @author HerrLock
-     */
-    class StartDownloadHandler extends AbstractHandler {
+final class DownloadHandlerContext {
+    private final Map<UUID, MDObject> downloaders = new HashMap<>();
 
-        @Override
-        public void handle( final String target, final Request baseRequest, final HttpServletRequest request,
-            final HttpServletResponse response ) throws IOException, ServletException {
-            String url = baseRequest.getParameter( "url" );
-            String proxy = baseRequest.getParameter( "proxy" );
-            String pattern = baseRequest.getParameter( "pattern" );
-
-            logger.traceEntry( "URL: {}, Proxy: {}, Pattern: {}", url, proxy, pattern );
-            UUID randomUUID;
+    public UUID put( MDObject mdObject ) {
+        UUID randomUUID;
+        synchronized ( this.downloaders ) {
             do {
                 randomUUID = UUID.randomUUID();
-            } while ( DownloadHandler.this.downloaders.containsKey( randomUUID ) );
-
-            Properties p = Utils.newPropertiesBuilder() //
-                .setProperty( Configuration.HEADLESS, "true" ) //
-                .setProperty( Configuration.URL, url ) //
-                .setProperty( Configuration.PROXY, proxy ) //
-                .setProperty( Configuration.PATTERN, pattern ) //
-                .build();
-            final DownloadConfiguration conf = DownloadConfiguration.create( p );
-
-            logger.info( "using Configuration: {}", conf );
-            final PlainDownloader newDownloader = new PlainDownloader( conf );
-            DownloadHandler.this.downloaders.put( randomUUID, new MDObject( url, newDownloader ) );
-
-            logger.info( "starting downloader" );
-            newDownloader.run();
-            logger.info( "downloader started" );
-
-            response.getWriter().write( randomUUID.toString() );
-            response.setContentType( MediaType.PLAIN_TEXT_UTF_8.toString() );
-            response.setStatus( HttpServletResponse.SC_OK );
-            baseRequest.setHandled( true );
+            } while ( this.downloaders.containsKey( randomUUID ) );
+            this.downloaders.put( randomUUID, mdObject );
         }
-
+        return randomUUID;
     }
 
-    /**
-     * @author HerrLock
-     */
-    class GetProgressHandler extends AbstractHandler {
+    public Iterable<Entry<UUID, MDObject>> entrySet() {
+        return this.downloaders.entrySet();
+    }
 
-        @Override
-        public void handle( final String target, final Request baseRequest, final HttpServletRequest request,
-            final HttpServletResponse response ) throws IOException, ServletException {
-            logger.traceEntry();
-            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-            for ( Entry<UUID, MDObject> entry : DownloadHandler.this.downloaders.entrySet() ) {
-                UUID key = entry.getKey();
-                MDObject value = entry.getValue();
-                MDownloader mdownloader = value.getMdownloader();
-                arrayBuilder.add( Json.createObjectBuilder() //
-                    .add( "uuid", key.toString() ) //
-                    .add( "url", value.getUrl() ) //
-                    .add( "started", mdownloader.getStarted() ) //
-                    .add( "progress", mdownloader.getProgress() ) //
-                    .add( "maxProgress", mdownloader.getMaxProgress() ) );
+}
+
+/**
+ * @author HerrLock
+ */
+final class StartDownloadHandler extends AbstractHandler {
+    private static final Logger logger = LogManager.getLogger();
+
+    private final DownloadHandlerContext dlContext;
+
+    public StartDownloadHandler( final DownloadHandlerContext dlContext ) {
+        this.dlContext = dlContext;
+    }
+
+    @Override
+    public void handle( final String target, final Request baseRequest, final HttpServletRequest request,
+        final HttpServletResponse response ) throws IOException, ServletException {
+        logger.traceEntry();
+        String url = baseRequest.getParameter( "url" );
+        String proxy = baseRequest.getParameter( "proxy" );
+        String pattern = baseRequest.getParameter( "pattern" );
+
+        Properties p = Utils.newPropertiesBuilder() //
+            .setProperty( Configuration.HEADLESS, "true" ) //
+            .setProperty( Configuration.URL, url ) //
+            .setProperty( Configuration.PROXY, proxy ) //
+            .setProperty( Configuration.PATTERN, pattern ) //
+            .build();
+        final DownloadConfiguration conf = DownloadConfiguration.create( p );
+
+        final PlainDownloader newDownloader = new PlainDownloader( conf );
+        UUID randomUUID = this.dlContext.put( new MDObject( url, newDownloader ) );
+
+        newDownloader.run();
+
+        response.getWriter().write( randomUUID.toString() );
+        response.setContentType( MediaType.PLAIN_TEXT_UTF_8.toString() );
+        response.setStatus( HttpServletResponse.SC_OK );
+        baseRequest.setHandled( true );
+    }
+
+}
+
+/**
+ * @author HerrLock
+ */
+final class GetProgressHandler extends AbstractHandler {
+    private static final Logger logger = LogManager.getLogger();
+
+    private final DownloadHandlerContext dlContext;
+
+    public GetProgressHandler( final DownloadHandlerContext dlContext ) {
+        this.dlContext = dlContext;
+    }
+
+    @Override
+    public void handle( final String target, final Request baseRequest, final HttpServletRequest request,
+        final HttpServletResponse response ) throws IOException, ServletException {
+        logger.traceEntry();
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for ( Entry<UUID, MDObject> entry : this.dlContext.entrySet() ) {
+            UUID key = entry.getKey();
+            MDObject value = entry.getValue();
+            MDownloader mdownloader = value.getMdownloader();
+            arrayBuilder.add( Json.createObjectBuilder() //
+                .add( "uuid", key.toString() ) //
+                .add( "url", value.getUrl() ) //
+                .add( "started", mdownloader.getStarted() ) //
+                .add( "progress", mdownloader.getProgress() ) //
+                .add( "maxProgress", mdownloader.getMaxProgress() ) );
+        }
+        Json.createWriter( response.getOutputStream() ).write( arrayBuilder.build() );
+        response.setContentType( MediaType.JSON_UTF_8.toString() );
+        response.setStatus( HttpServletResponse.SC_OK );
+        baseRequest.setHandled( true );
+    }
+
+}
+
+/**
+ * A simple object to store MDownloaders together with the url
+ * 
+ * @author HerrLock
+ */
+final class MDObject {
+    private final String url;
+    private final MDownloader mdownloader;
+
+    public MDObject( final String url, final MDownloader mdownloader ) {
+        this.url = url;
+        this.mdownloader = mdownloader;
+    }
+
+    public String getUrl() {
+        return this.url;
+    }
+
+    public MDownloader getMdownloader() {
+        return this.mdownloader;
+    }
+}
+
+/**
+ * An {@link MDownloader} that starts the download in a new Thread.
+ * 
+ * @author HerrLock
+ */
+@VisibleForTesting
+final class PlainDownloader extends MDownloader {
+    private final Thread thread;
+
+    public PlainDownloader( final DownloadConfiguration conf ) {
+        super( conf );
+        this.thread = new Thread( new Runnable() {
+            @Override
+            public void run() {
+                PlainDownloader.this.downloadAll();
             }
-            Json.createWriter( response.getOutputStream() ).write( arrayBuilder.build() );
-            response.setContentType( MediaType.JSON_UTF_8.toString() );
-            response.setStatus( HttpServletResponse.SC_OK );
-            baseRequest.setHandled( true );
-        }
-
+        } );
     }
 
-    /**
-     * A simple object to store MDownloaders together with the url
-     * 
-     * @author HerrLock
-     */
-    static class MDObject {
-        private final String url;
-        private final MDownloader mdownloader;
-
-        public MDObject( final String url, final MDownloader mdownloader ) {
-            this.url = url;
-            this.mdownloader = mdownloader;
-        }
-
-        public String getUrl() {
-            return this.url;
-        }
-
-        public MDownloader getMdownloader() {
-            return this.mdownloader;
-        }
+    @Override
+    protected void run() {
+        this.thread.start();
     }
-
-    /**
-     * An {@link MDownloader} that starts the download in a new Thread.
-     * 
-     * @author HerrLock
-     */
-    @VisibleForTesting
-    static final class PlainDownloader extends MDownloader {
-        private final Thread thread;
-
-        public PlainDownloader( final DownloadConfiguration conf ) {
-            super( conf );
-            this.thread = new Thread( new Runnable() {
-                @Override
-                public void run() {
-                    PlainDownloader.this.downloadAll();
-                }
-            } );
-        }
-
-        @Override
-        protected void run() {
-            this.thread.start();
-        }
-    }
-
 }
