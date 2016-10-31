@@ -3,13 +3,10 @@ package de.herrlock.manga.util;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import javax.servlet.ServletException;
-
-import org.apache.catalina.LifecycleException;
-
 import de.herrlock.javafx.handler.Exec;
 import de.herrlock.manga.downloader.DialogDownloader;
 import de.herrlock.manga.downloader.PlainDownloader;
+import de.herrlock.manga.exceptions.MDException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.http.ServerMain;
@@ -33,7 +30,7 @@ public enum Execs implements Exec {
         public void execute() {
             try {
                 ServerMain.execute( true );
-            } catch ( ServletException | LifecycleException | IOException | URISyntaxException ex ) {
+            } catch ( MDException | IOException | URISyntaxException ex ) {
                 throw new MDRuntimeException( ex );
             }
         }
