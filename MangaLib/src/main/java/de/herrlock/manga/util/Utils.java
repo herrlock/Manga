@@ -299,10 +299,12 @@ public final class Utils {
 
         public PropertiesBuilder setProperty( final String key, final String value ) {
             assureOpen();
-            if ( value != null ) {
-                this._properties.setProperty( key, value );
-            } else if ( this._properties.containsKey( key ) ) {
-                this._properties.remove( key );
+            if ( key != null ) {
+                if ( value != null ) {
+                    this._properties.setProperty( key, value );
+                } else if ( this._properties.containsKey( key ) ) {
+                    this._properties.remove( key );
+                }
             }
             return this;
         }
