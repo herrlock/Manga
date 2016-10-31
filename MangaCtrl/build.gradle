@@ -9,7 +9,7 @@ dependencies {
 pmdMain.ignoreFailures = true
 pmdMain << {
 	assertPmdErrors pmdMain, [
-		[clazz: 'de.herrlock.manga.downloader.DialogDownloader', rule: 'AvoidCatchingGenericException'], 
-		[clazz: 'de.herrlock.manga.downloader.PlainDownloader', rule: 'AvoidCatchingGenericException']
+		[clazz: 'de.herrlock.manga.downloader.DialogDownloader', method: 'run', rule: 'AvoidCatchingGenericException'], 
+		[clazz: 'de.herrlock.manga.downloader.PlainDownloader', method: 'run', rule: 'AvoidCatchingGenericException']
 	]
 }

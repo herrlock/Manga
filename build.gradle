@@ -221,6 +221,7 @@ void assertPmdErrors(File file, List expected) {
 	violations.eachWithIndex { element,index ->
 		def exp = expected.get(index)
 		assert "${element.@package}.${element.@class}" == exp.clazz, "Wrong class. Is ${element.@package}.${element.@class} but should be ${exp.clazz}"
+		assert element.@method == exp.method, "Wrong method. Is ${element.@method} but should be ${exp.method}"
 		assert element.@rule == exp.rule, "Wrong PMD rule. Is ${element.@rule} but should be ${exp.rule}"
 	}
 	println 'Suppressing PMD warnings, as they seem to be expected.'

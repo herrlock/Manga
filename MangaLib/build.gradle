@@ -25,9 +25,9 @@ dependencies {
 pmdMain.ignoreFailures = true
 pmdMain << {
 	assertPmdErrors pmdMain, [
-		[clazz:'de.herrlock.manga.http.jetty.JettyServer', rule:'AvoidCatchingGenericException'],
-		[clazz:'de.herrlock.manga.http.jetty.JettyServer', rule:'AvoidCatchingGenericException'],
-		[clazz:'de.herrlock.manga.jd.Crawljob', rule:'InsufficientStringBufferDeclaration'],
-		[clazz:'de.herrlock.manga.util.Utils$PropertiesBuilder', rule:'ConfusingTernary']
+		[clazz:'de.herrlock.manga.http.jetty.JettyServer', method: 'start', rule:'AvoidCatchingGenericException'],
+		[clazz:'de.herrlock.manga.http.jetty.JettyServer', method: 'stop', rule:'AvoidCatchingGenericException'],
+		[clazz:'de.herrlock.manga.jd.Crawljob', method: 'export', rule:'InsufficientStringBufferDeclaration'],
+		[clazz:'de.herrlock.manga.util.Utils$PropertiesBuilder', method: 'setProperty', rule:'ConfusingTernary']
 	]
 }
