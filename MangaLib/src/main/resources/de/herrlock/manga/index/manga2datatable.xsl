@@ -40,7 +40,7 @@
         </tbody>
         </table>
 		<div id="footer">
-			<span>This page uses <a href="https://datatables.net" target="blank">DataTables</a> for jQuery</span>
+			<span>This page uses <a href="https://datatables.net" target="_blank">DataTables</a> for jQuery</span>
 		</div>
     </xsl:template>
     

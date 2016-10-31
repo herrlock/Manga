@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
  * @author HerrLock
  */
 @XmlAccessorType( XmlAccessType.NONE )
-public class HosterList {
+public final class HosterList {
 
     @XmlAttribute( name = "name" )
     private String hosterName;
