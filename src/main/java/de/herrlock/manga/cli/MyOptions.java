@@ -56,16 +56,19 @@ public final class MyOptions {
     private final Option urlOption = Option.builder( "u" ) //
         .longOpt( "url" ) //
         .hasArg() //
+        .argName( "url" ) //
         .desc( "The URL to download from (mode: console)" ) //
         .build();
     private final Option patternOption = Option.builder( "p" ) //
         .longOpt( "pattern" ) //
         .hasArg() //
+        .argName( "pattern" ) //
         .desc( "The pattern to use (mode: console)" ) //
         .build();
     private final Option proxyOption = Option.builder( "x" ) //
         .longOpt( "proxy" ) //
         .hasArg() //
+        .argName( "proxy" ) //
         .desc( "The Proxy to use (protocol://[user[:password]@]url:port) (mode: console)" ) //
         .build();
     private final Option interactiveOption = Option.builder( "i" ) //
