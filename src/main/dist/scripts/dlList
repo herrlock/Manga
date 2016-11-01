@@ -1,7 +1,7 @@
 #!/bin/bash
-####################################################################
-# This script downloads all mangas lined up in the file dlListData #
-####################################################################
+##################################################################
+# This script downloads all mangas listed in the file dlListData #
+##################################################################
 
 # exit if the data-file does not exist
 if [ ! -e dlListData ]
