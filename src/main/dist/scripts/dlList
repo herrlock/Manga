@@ -22,11 +22,11 @@ echo list: $list | tee log/shlog.txt
 # execute the downloader for every entry in the list
 for url in $list
 do
-	echo | tee --append log/shlog.txt
-	echo $url | tee --append log/shlog.txt
+	echo | tee -a log/shlog.txt
+	echo $url | tee -a log/shlog.txt
 	java -jar MangaLauncher.jar \
-	--log debug \
+		--log debug \
 		--console \
 		--url $url \
-		| tee --append log/shlog.txt
+		| tee -a log/shlog.txt
 done
