@@ -18,6 +18,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -98,6 +99,10 @@ public final class Main {
         if ( commandline.hasOption( "log" ) ) {
             String optionValue = commandline.getOptionValue( "log" );
             Log4jConfiguration.changeLevelFilterLevel( optionValue );
+        } else if ( commandline.hasOption( "verbose" ) ) {
+            Log4jConfiguration.changeLevelFilterLevel( Level.DEBUG );
+        } else if ( commandline.hasOption( "quiet" ) ) {
+            Log4jConfiguration.changeLevelFilterLevel( Level.WARN );
         }
     }
 

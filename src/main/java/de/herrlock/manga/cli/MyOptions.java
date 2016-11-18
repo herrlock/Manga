@@ -103,6 +103,20 @@ public final class MyOptions {
         .argName( "level" ) //
         .desc( "Loglevel to use. Allowed values: OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL" ) //
         .build();
+    private final Option quietOption = Option.builder( "q" ) //
+        .longOpt( "quiet" ) //
+        .desc( "Set the log-level to WARN" ) //
+        .build();
+    private final Option verboseOption = Option.builder( "v" ) //
+        .longOpt( "verbose" ) //
+        .desc( "Set the log-level to DEBUG" ) //
+        .build();
+
+    private final OptionGroup logOptionGroup = new OptionGroup() //
+        .addOption( this.logLevelOption ) //
+        .addOption( this.quietOption ) //
+        .addOption( this.verboseOption ) //
+    ;
 
     private final Options options;
 
@@ -113,6 +127,7 @@ public final class MyOptions {
      */
     public MyOptions() {
         this.typeOptionGroup.setRequired( true );
+        this.logOptionGroup.setRequired( false );
         this.options = new Options() //
             .addOptionGroup( this.typeOptionGroup ) //
             .addOption( this.urlOption ) //
@@ -123,7 +138,7 @@ public final class MyOptions {
             .addOption( this.createListOption ) //
             .addOption( this.folderOption ) //
             .addOption( this.launchBrowserOption ) //
-            .addOption( this.logLevelOption ) //
+            .addOptionGroup( this.logOptionGroup ) //
         ;
         this.defaultValues.setProperty( "gui", "true" );
     }
