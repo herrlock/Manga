@@ -155,7 +155,7 @@ task packDependencies {
 	}
 	java.util.jar.Pack200.Packer packer = java.util.jar.Pack200.newPacker();
 	// pack with low compression rate, when is is requested or a name-prefix is present; the latter always indicates a development-version
-	boolean lowEffortPacking = project.hasProperty('lowEffortPacking') || project.hasProperty('eclipseNamePrefix')
+	boolean lowEffortPacking = project.hasProperty('lep') || project.hasProperty('lowEffortPacking') || project.hasProperty('eclipseNamePrefix')
 	packer.properties().putAll([
 		(packer.EFFORT) : lowEffortPacking ? '0' : '9',
 		(packer.SEGMENT_LIMIT) : '-1',
