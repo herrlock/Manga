@@ -1,0 +1,28 @@
+#!/bin/bash
+#####################################################
+# This script can be placed on the PATH to          #
+#   execute the mangadownloader from the cli easily #
+#####################################################
+
+# immediately exit on error
+set -ex
+
+# the folder containing the application
+folder=
+# the name of the script to launch
+script="MangaLauncher.sh"
+
+# check if folder exists
+if [[ -d "$folder" ]]; then
+	# cd into the folder
+	cd $folder
+	# check if the script exists and is executable
+	if [[ -x "$script" ]]; then
+		# launch script
+		"$script" "$@"
+	else
+		echo "\"$folder/$script\" is not executable"
+	fi
+else
+	echo "Cannot find folder \"$folder\""
+fi
