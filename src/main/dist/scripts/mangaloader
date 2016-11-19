@@ -5,7 +5,7 @@
 #####################################################
 
 # immediately exit on error
-set -ex
+set -e
 
 # the folder containing the application
 folder=
