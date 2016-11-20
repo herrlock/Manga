@@ -29,14 +29,14 @@ public class CliOptions implements CliOptionsMXBean {
     }
 
     private String findMainOption( final CommandLine commandline ) {
-        String mainOption = "";
+        String option = "";
         for ( String string : this.mainOptions ) {
             if ( commandline.hasOption( string ) ) {
-                mainOption = string;
+                option = string;
                 break;
             }
         }
-        return mainOption;
+        return option;
     }
 
     private String[] findSubOptions( final CommandLine commandline ) {
