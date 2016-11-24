@@ -32,7 +32,7 @@ public final class JettyServer {
     }
 
     public JettyServer( final int port ) {
-        Log.setLog( new Log4j2Bridge( JettyServer.class.getName() ) );
+        Log.setLog( new Log4j2Bridge( JettyServer.class ) );
         this.server = new Server( port );
         this.server.setHandler( createHandlers() );
     }
@@ -68,11 +68,9 @@ public final class JettyServer {
             sysinIsOpen = false;
         }
         while ( active ) {
-            logger.debug( "Server active" );
             boolean serverStopped = this.server.isStopping() || this.server.isStopped();
-            logger.debug( "serverStopped: {}", serverStopped );
             boolean quitBySysin = sysinIsOpen && getStopFromSysin();
-            logger.debug( "quitBySysin: {}", quitBySysin );
+            logger.debug( "Server active; serverStopped: {}; quitBySysin: {}", serverStopped, quitBySysin );
             if ( serverStopped || quitBySysin ) {
                 active = false;
             } else {
@@ -87,7 +85,6 @@ public final class JettyServer {
     }
 
     private boolean getStopFromSysin() {
-        logger.traceEntry();
         boolean quitBySysin = false;
         try {
             if ( System.in.available() > 0 ) {
