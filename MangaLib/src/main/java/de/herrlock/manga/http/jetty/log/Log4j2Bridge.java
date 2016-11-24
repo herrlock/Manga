@@ -13,6 +13,10 @@ public class Log4j2Bridge extends AbstractLogger {
     private final org.apache.logging.log4j.Logger logger;
     private final String name;
 
+    public Log4j2Bridge( final Class<?> clazz ) {
+        this( clazz.getName() );
+    }
+
     public Log4j2Bridge( final String name ) {
         this.logger = LogManager.getLogger( name );
         this.name = name;
