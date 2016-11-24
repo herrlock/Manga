@@ -13,13 +13,6 @@
 			</Policies>
 			<DefaultRolloverStrategy max="10" />
 		</RollingRandomAccessFile>
-		<RollingRandomAccessFile name="TomcatLogger" fileName="log/tomcat.log" filePattern="log/archive/tomcat-%i.log.gz">
-			<PatternLayout pattern="${patternDateLayout}" />
-			<Policies>
-				<SizeBasedTriggeringPolicy size="1 MB" />
-			</Policies>
-			<DefaultRolloverStrategy max="10" />
-		</RollingRandomAccessFile>
 		<RollingRandomAccessFile name="ApacheLogger" fileName="log/apache.log" filePattern="log/archive/apache-%i.log.gz">
 			<PatternLayout pattern="${patternDateLayout}" />
 			<Policies>
@@ -39,19 +32,9 @@
 			<AppenderRef ref="ApacheLogger" />
 		</Logger>
 		
-		<Logger name="org.apache.catalina" level="INFO" additivity="false">
-			<AppenderRef ref="TomcatLogger" />
+		<Logger name="org.eclipse.jetty" level="DEBUG">
+			<AppenderRef ref="FileTrace" />
 		</Logger>
-		<Logger name="org.apache.coyote" level="INFO" additivity="false">
-			<AppenderRef ref="TomcatLogger" />
-		</Logger>
-		<Logger name="org.apache.naming" level="INFO" additivity="false">
-			<AppenderRef ref="TomcatLogger" />
-		</Logger>
-		<Logger name="org.apache.tomcat" level="INFO" additivity="false">
-			<AppenderRef ref="TomcatLogger" />
-		</Logger>
-		
 		<Logger name="org.apache" level="DEBUG" additivity="false">
 			<AppenderRef ref="FileTrace" />
 		</Logger>
