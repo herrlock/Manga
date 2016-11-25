@@ -21,7 +21,7 @@ import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.HosterImpl;
 import de.herrlock.manga.host.annotations.ChapterListDetails;
 import de.herrlock.manga.host.annotations.Details;
-import de.herrlock.manga.index.HosterListEntry;
+import de.herrlock.manga.index.entity.HosterListEntry;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import de.herrlock.manga.util.configuration.IndexerConfiguration;

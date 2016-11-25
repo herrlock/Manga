@@ -35,6 +35,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.io.ByteStreams;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
+import de.herrlock.manga.index.entity.Index;
 import de.herrlock.manga.util.configuration.IndexerConfiguration;
 
 public final class IndexerMain {

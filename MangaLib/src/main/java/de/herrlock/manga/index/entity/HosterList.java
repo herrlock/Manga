@@ -1,4 +1,4 @@
-package de.herrlock.manga.index;
+package de.herrlock.manga.index.entity;
 
 import java.text.MessageFormat;
 import java.util.Collection;

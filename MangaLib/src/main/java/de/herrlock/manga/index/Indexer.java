@@ -14,6 +14,9 @@ import com.google.common.collect.ImmutableSet;
 
 import de.herrlock.manga.host.Hoster;
 import de.herrlock.manga.host.Hosters;
+import de.herrlock.manga.index.entity.HosterList;
+import de.herrlock.manga.index.entity.HosterListEntry;
+import de.herrlock.manga.index.entity.Index;
 import de.herrlock.manga.util.configuration.IndexerConfiguration;
 
 /**

@@ -11,7 +11,7 @@ import java.util.Locale;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.annotations.Details;
 import de.herrlock.manga.host.exceptions.HosterInstantiationException;
-import de.herrlock.manga.index.HosterListEntry;
+import de.herrlock.manga.index.entity.HosterListEntry;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import de.herrlock.manga.util.configuration.IndexerConfiguration;
 
