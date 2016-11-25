@@ -2,15 +2,14 @@ package de.herrlock.manga;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.jar.Attributes;
+import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 import org.apache.commons.cli.CommandLine;
@@ -171,14 +170,11 @@ public final class Main {
     private static void printVersion() {
         logger.traceEntry();
 
-        URL[] urls = {
-            Main.class.getProtectionDomain().getCodeSource().getLocation()
-        };
-        Manifest m = new Manifest();
-        try ( URLClassLoader urlClassLoader = new URLClassLoader( urls ) ) {
-            try ( InputStream in = urlClassLoader.getResourceAsStream( "META-INF/MANIFEST.MF" ) ) {
-                m.read( in );
-            }
+        final Manifest m;
+        final URL mangaLauncherJarUrl = Main.class.getProtectionDomain().getCodeSource().getLocation();
+        logger.debug( "Reading Manifest from jar at {}", mangaLauncherJarUrl );
+        try ( JarInputStream j = new JarInputStream( mangaLauncherJarUrl.openStream() ) ) {
+            m = j.getManifest();
         } catch ( IOException ex ) {
             throw new MDRuntimeException( ex );
         }
@@ -189,7 +185,9 @@ public final class Main {
         printwriter.println();
 
         Attributes infoAttributes = m.getAttributes( "Info" );
+        logger.debug( "infoAttributes: {}", infoAttributes );
         Attributes gitAttributes = m.getAttributes( "Git" );
+        logger.debug( "gitAttributes: {}", gitAttributes );
         if ( infoAttributes == null || gitAttributes == null ) {
             printwriter.println( "Cannot read all data, probably a development-version launched from an IDE." );
         } else {
@@ -198,8 +196,8 @@ public final class Main {
             printwriter.println();
             printwriter.println( "Details: " );
             printwriter.println( "  Built at: " + infoAttributes.getValue( "Built-At" ) );
-            printwriter.println( "  Commit: " + ( gitAttributes.getValue( "Commit" ) + ":" + gitAttributes.getValue( "Branch" )
-                + " (" + gitAttributes.getValue( "Date" ) + ")" ) );
+            printwriter.println( "  Commit: " + gitAttributes.getValue( "Commit" ) + ":" + gitAttributes.getValue( "Branch" )
+                + " (" + gitAttributes.getValue( "Date" ) + ")" );
         }
 
         logger.info( stringWriter );
