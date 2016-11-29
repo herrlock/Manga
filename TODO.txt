@@ -1,11 +1,14 @@
 
 1.5:
-- use java.util.concurrent.* package for more complex execution with progress-callbacks
 - add java-beans for easier tracking of running downloads
-- create DialogDownloader
-- make fx-gui usable
+- create DialogDownloader (swing/fx/?)
+
+1.6:
+- fx-gui
+- swing-gui
 
 1.x:
+- use java.util.concurrent.* package for more complex execution with progress-callbacks
 - improve average filesize
 - make jd-export faster
 
