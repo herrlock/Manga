@@ -3,15 +3,17 @@ var md = {
 	rben : {},
 	downloads : [],
 	cnt : 0,
-	worker : new Worker("res/worker.js"),
+	worker : new Worker("res/js/worker.js"),
 	showOnly : function(c, duration) {
 		console.info("showOnly", c, duration);
 		if (c === "dl") {
+            // TODO: update selectors
 			$("#eingabe > label").slideUp(duration, () => $("#eingabe > label." + c).slideDown(duration));
 		}
 	},
 	showSelected : function(duration) {
 		console.info("showSelected", duration);
+            // TODO: update selectors
 		md.showOnly($("#selector > option:selected")[0].value, duration);
 	},
 	updateAll : function() {
@@ -171,7 +173,7 @@ $(function() {
 	console.warn("uai", updateAllInterval);
 	$("#selector").change(md.showSelected);
 	$("#submit").click(function() {
-		var queryArr = $("#eingabe > ul > li > input")
+		var queryArr = $("#eingabe > div.form-group > input")
 			.filter((i,elem) => $(elem).is(":visible"))
 			.map((i,elem) => encodeURIComponent(elem.dataset.key) + "=" + encodeURIComponent(elem.value))
 			.toArray();
