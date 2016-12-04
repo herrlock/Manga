@@ -71,6 +71,12 @@ public final class MyOptions {
         .argName( "proxy" ) //
         .desc( "The Proxy to use (protocol://[user[:password]@]url:port) (mode: console)" ) //
         .build();
+    private final Option timeoutOption = Option.builder( "t" ) //
+        .longOpt( "timeout" ) //
+        .hasArg() //
+        .argName( "timeout" ) //
+        .desc( "The timeout for HTTP-requests in seconds (mode: console)" ) //
+        .build();
     private final Option interactiveOption = Option.builder( "i" ) //
         .longOpt( "interactive" ) //
         .desc( "Interactive mode: request confirmation etc. from STDIN (mode: console)" ) //
@@ -133,6 +139,7 @@ public final class MyOptions {
             .addOption( this.urlOption ) //
             .addOption( this.patternOption ) //
             .addOption( this.proxyOption ) //
+            .addOption( this.timeoutOption ) //
             .addOption( this.interactiveOption ) //
             .addOption( this.showHosterOption ) //
             .addOption( this.createListOption ) //

@@ -141,7 +141,7 @@ public class TestConfiguration {
 
     @Test
     public void testCreateTimeout_valid() {
-        this.p.put( Configuration.TIMEOUT, "5000" );
+        this.p.put( Configuration.TIMEOUT, "5" );
         int timeout = Configuration._createTimeout( this.p );
         assertEquals( 5000, timeout );
     }

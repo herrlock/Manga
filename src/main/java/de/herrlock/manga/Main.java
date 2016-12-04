@@ -220,6 +220,7 @@ public final class Main {
                 .setProperty( Configuration.URL, commandline.getOptionValue( "url" ) ) //
                 .setProperty( Configuration.PROXY, commandline.getOptionValue( "proxy" ) ) //
                 .setProperty( Configuration.PATTERN, commandline.getOptionValue( "pattern" ) ) //
+                .setProperty( Configuration.TIMEOUT, commandline.getOptionValue( "timeout" ) ) //
                 .setProperty( Configuration.HEADLESS, String.valueOf( commandline.hasOption( 'i' ) ) ) //
                 .build();
             if ( commandline.hasOption( "list" ) ) {
