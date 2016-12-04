@@ -1,15 +1,14 @@
 package de.herrlock.manga.index;
 
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -48,54 +47,60 @@ public final class IndexerMain {
 
             // write data.js
             logger.debug( "Writing index-data" );
-            try ( OutputStream out = Files.newOutputStream( indexDir.resolve( "data.js" ) ) ) {
-                exportDataJs( out, conf );
-            }
+            final Path dataJs = indexDir.resolve( "data.js" );
+            exportDataJs( dataJs, conf );
 
             // write index.html
             logger.debug( "Copying index-html" );
-            try ( OutputStream out = Files.newOutputStream( indexDir.resolve( "index.html" ) ) ) {
-                try ( InputStream in = Indexer.class.getResourceAsStream( "index.html" ) ) {
-                    ByteStreams.copy( in, out );
-                }
-            }
+            final Path indexHtml = indexDir.resolve( "index.html" );
+            copyIndexHtml( indexHtml );
 
             // unzip DataTables
             logger.debug( "Unzipping DataTables" );
-            try ( ZipInputStream zin = new ZipInputStream( Indexer.class.getResourceAsStream( "DataTables.zip" ) ) ) {
-                Path datatablesDir = Files.createDirectories( indexDir.resolve( "DataTables" ) );
-                ZipEntry entry;
-                while ( ( entry = zin.getNextEntry() ) != null ) {
-                    String entryName = entry.getName();
-                    Path entryPath = datatablesDir.resolve( entryName );
-                    if ( entry.isDirectory() ) {
-                        Files.createDirectories( entryPath );
-                    } else {
-                        Path parent = entryPath.getParent();
-                        if ( parent == null ) {
-                            throw new IllegalStateException();
-                        }
-                        Files.createDirectories( parent );
-                        InputStream limitedStream = ByteStreams.limit( zin, entry.getSize() );
-                        try ( OutputStream targetStream = Files.newOutputStream( entryPath ) ) {
-                            ByteStreams.copy( limitedStream, targetStream );
-                        }
-                        // limitedStream must not be closed, that would close the ZipInputStream
-                    }
-                }
-            }
+            final Path datatablesDir = Files.createDirectories( indexDir.resolve( "DataTables" ) );
+            unzipDatatablesZip( datatablesDir );
         } catch ( IOException ex ) {
             throw new MDRuntimeException( ex );
         }
     }
 
-    public static void exportDataJs( final OutputStream out, final IndexerConfiguration conf ) throws IOException {
+    public static void exportDataJs( final Path path, final IndexerConfiguration conf ) throws IOException {
         JsonArray jsonArray = Indexer.createJsonIndex( conf );
-        try ( BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( out, StandardCharsets.UTF_8 ) );
+        try ( BufferedWriter writer = Files.newBufferedWriter( path, StandardCharsets.UTF_8 );
             JsonWriter jsonWriter = Json.createWriter( writer ) ) {
             writer.write( "var data = " );
             jsonWriter.writeArray( jsonArray );
             writer.write( ";" );
+        }
+    }
+
+    public static void copyIndexHtml( final Path indexHtml ) throws IOException {
+        try ( InputStream in = Indexer.class.getResourceAsStream( "index.html" ) ) {
+            Files.copy( in, indexHtml, StandardCopyOption.REPLACE_EXISTING );
+        }
+    }
+
+    public static void unzipDatatablesZip( final Path datatablesDir ) throws IOException {
+        try ( ZipInputStream zin = new ZipInputStream( Indexer.class.getResourceAsStream( "DataTables.zip" ) ) ) {
+            ZipEntry entry;
+            while ( ( entry = zin.getNextEntry() ) != null ) {
+                String entryName = entry.getName();
+                Path entryPath = datatablesDir.resolve( entryName );
+                if ( entry.isDirectory() ) {
+                    Files.createDirectories( entryPath );
+                } else {
+                    Path parent = entryPath.getParent();
+                    if ( parent == null ) {
+                        throw new IllegalStateException();
+                    }
+                    Files.createDirectories( parent );
+                    InputStream limitedStream = ByteStreams.limit( zin, entry.getSize() );
+                    try ( OutputStream targetStream = Files.newOutputStream( entryPath ) ) {
+                        ByteStreams.copy( limitedStream, targetStream );
+                    }
+                    // limitedStream must not be closed, that would close the ZipInputStream
+                }
+            }
         }
     }
 
@@ -115,19 +120,6 @@ public final class IndexerMain {
         } catch ( IOException | JAXBException ex ) {
             throw new MDRuntimeException( ex );
         }
-    }
-
-    public static byte[] marshallIndex( final IndexerConfiguration conf ) {
-        Index index = Indexer.createIndex( conf );
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try {
-            Marshaller marshaller = createMarshaller();
-            marshaller.marshal( index, out );
-        } catch ( JAXBException e ) {
-            throw new MDRuntimeException( e );
-        }
-        return out.toByteArray();
     }
 
     private static Marshaller createMarshaller() throws JAXBException {
