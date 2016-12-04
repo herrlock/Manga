@@ -49,6 +49,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  */
 public final class Utils {
     private static final Logger logger = LogManager.getLogger();
+    // private static final Logger debugLogger = LogManager.getLogger( "com.example.java.debug.Utils" );
 
     private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20,
         new ThreadFactoryBuilder().setNameFormat( "Droggelb%dcher" ).setDaemon( true ).build() );
