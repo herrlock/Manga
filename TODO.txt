@@ -2,6 +2,8 @@
 1.5:
 - add java-beans for easier tracking of running downloads
 - create DialogDownloader (swing/fx/?)
+- queue downloads => no parallel dls
+- json-configuration for console
 
 1.6:
 - fx-gui
