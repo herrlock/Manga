@@ -6,24 +6,24 @@ var md = {
 	showOnly : function(c, duration) {
 		console.info("showOnly", c, duration);
 		if (c === "dl") {
-            // TODO: update selectors
-			$("#eingabe > label").slideUp(duration, () => $("#eingabe > label." + c).slideDown(duration));
+			$("#eingabe > div.valueholder").slideUp(duration, () => $("#eingabe > div.valueholder." + c).slideDown(duration));
 		}
 	},
 	showSelected : function(duration) {
 		console.info("showSelected", duration);
-            // TODO: update selectors
-		md.showOnly($("#selector > option:selected")[0].value, duration);
+		md.showOnly($("#type > option:selected")[0].value, duration);
 	},
 	updateAll : function() {
+		console.info("updateAll");
 		$.getJSON("j/download/progress", md.updateProgressBars);
 	},
 	updateProgressBars : function(response) {
-		console.groupCollapsed("updateProgressBars - " + new Date().toLocaleTimeString());
-		console.dir(response);
+		console.groupCollapsed(">> updateProgressBars - " + new Date().toLocaleTimeString());
+		console.log(response);
 		md.downloads = response.filter(x => x.progress < x.maxProgress);
 		md.updateAllProgressBars();
 		md.checkAllProgressBars();
+		console.debug(">> updateProgressBars - " + new Date().toLocaleTimeString());
 		console.groupEnd();
 	},
 	updateAllProgressBars : function() {
@@ -32,20 +32,28 @@ var md = {
 		console.groupEnd();
 	},
 	updateProgressBar : function(obj) {
-		console.info("updateProgressBar", obj);
-		var $fs = $("#pb_" + obj.uuid);
+		console.log("--");
+		console.group("updateProgressBar");
+		console.log(obj.toSource());
+		var $fs = $("#progress_" + obj.uuid);
+		console.log("$fs", $fs);
 		if($fs.length === 0) {
 			md.createEntry(obj);
 		} else {
-			$fs.find("> legend").text(obj.url);
-			var $progress = $fs.find("> progress");
-			$progress.attr({
-				value : obj.progress,
-				max : obj.maxProgress,
-				title : obj.progress + " / " + obj.maxProgress
-			});
-			$fs.find("> img").hide(() => $progress.show());
+			$fs.find("> h5").text(obj.url);
+			var pct = md.round(100 * obj.progress / obj.maxProgress, 2);
+			var $progressBar = $fs.find("div.progress-bar")
+				.css("width", pct + "%")
+				.text(pct + "%")
+				.attr({
+					"title" : obj.progress + " / " + obj.maxProgress,
+					"data-current" : obj.progress,
+					"data-max" : obj.maxProgress,
+					"data-pct" : pct
+				});
 		}
+		console.groupEnd();
+		console.log("--");
 	},
 	createTempEntry : function() {
 		console.info("createTempEntry");
@@ -61,58 +69,67 @@ var md = {
 	},
 	createEntry : function(obj) {
 		console.info("createEntry", obj);
-		var $legend = $("<legend>" + md.encodeHTML(obj.url) + "</legend>");
-		var $loading = $("<img src='img/loading.gif' />");
-		var $progress = $("<progress value='" + obj.progress + "' max='" + obj.maxProgress + "'/>");
-		var $fieldset = $("<fieldset style='display: none;'></fieldset>");
+		var $progressWrapper = $("<div class='progress-bar-wrapper' style='display: none;'></div>");
+		var $url = $("<h5></h5>").attr("title", obj.url).text(obj.url);
+		var $progress = $("<div class='progress'></div>");
+		var pct = md.round(100 * obj.progress / obj.maxProgress, 2);
+		console.log("pct", pct);
+		var $progressBar = $("<div class='progress-bar progress-bar-striped active'></div>")
+			.text(pct + "%")
+			.css("width", pct + "%")
+			.attr({
+				"data-current" : obj.progress,
+				"data-max" : obj.maxProgress,
+				"data-pct" : pct
+			});
 		if(obj.temp === true) {
-			$progress.hide();
-			$fieldset.attr("data-temp", obj.uuid);
+			$progressWrapper.attr("data-temp", obj.uuid);
 		} else {
-			$loading.hide();
-			$fieldset.attr("id", "pb_" + obj.uuid);
+			$progressWrapper.attr("id", "progress_" + obj.uuid);
 		}
-		$fieldset.append([$legend, $loading, $progress]);
-		$fieldset.insertBefore($("#bars > .dummy"));
-		$fieldset.slideDown();
+		$progressWrapper.append($url, $progress.append($progressBar)).insertBefore($("#bars .dummy"));
+		$progressWrapper.slideDown();
 	},
-	updateEntry : function(uuid, tempId) {
-		console.info("updateEntry", uuid, tempId);
-		var fieldset = $("fieldset[data-temp=" + tempId + "]");
-		if(fieldset.length > 0) {
-			fieldset.attr({
+	updateTempEntry : function(uuid, tempId) {
+		console.info("updateTempEntry", uuid, tempId);
+		var div = $("div[data-temp=" + tempId + "]");
+		if(div.length > 0) {
+			div.attr({
 				"data-temp": "",
-				"id" : "pb_" + uuid
+				"id" : "progress_" + uuid
 			});
 		}
 	},
 	removeEntry : function(jqXHR, tempId) {
 		console.warn("removeEntry", jqXHR, tempId);
-		var fieldset = $("fieldset[data-temp=" + tempId + "]");
-		fieldset.slideUp(1000, () => fieldset.remove());
+		var tempDiv = $("div[data-temp=" + tempId + "]");
+		tempDiv.slideUp(1000, () => tempDiv.remove());
 	},
 	checkAllProgressBars : function() {
 		console.groupCollapsed("checkAllProgressBars");
-		$("#bars > fieldset").toArray().forEach(md.checkProgressBar);
+		$("#bars div.progress-bar-wrapper").toArray().forEach(md.checkProgressBar);
 		console.groupEnd();
 	},
-	checkProgressBar : function(fieldset) {
-		console.info("checkProgressBar", fieldset);
-		console.log("id: ", fieldset.id);
-		var progressBar = md.downloads.find(obj => "pb_" + obj.uuid === fieldset.id);
+	checkProgressBar : function(wrapper) {
+		console.log("--");
+		console.groupCollapsed("checkProgressBar");
+		console.log("id: ", wrapper.id, wrapper);
+		var progressBar = md.downloads.find(obj => "progress_" + obj.uuid === wrapper.id);
 		console.log("progressBar", progressBar);
-		var tempData = fieldset.dataset.temp;
+		var tempData = wrapper.dataset.temp;
 		console.log("tempData", tempData);
-		if(!progressBar && !tempData && !fieldset.classList.contains("dummy")) {
-			$(fieldset).slideUp(function() {
-				var url = fieldset.querySelector("legend").textContent;
-				$(fieldset).remove();
-				console.log("removed orphaned bar");
+		if(!progressBar && !tempData) {
+			$(wrapper).slideUp(function() {
+				var url = wrapper.querySelector("h5").textContent;
+				$(wrapper).remove();
+				console.log("removed orphaned bar", url);
 				md.showNotification("MangaDownloader", {
 					body: "Finished " + url
 				});
 			});
 		}
+		console.groupEnd();
+		console.log("--");
 	},
 	showNotification : function(title, options) {
 		if (Notification.permission === "granted") {
@@ -134,6 +151,13 @@ var md = {
 			'>': '&gt;'
 		};
 		return (string || "").replace(/[&<>]/g, tag => tagsToReplace[tag] || tag);
+	},
+	/** taken from https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Math/round#PHP_%C3%A4hnliche_Rundungsmethode */
+	round : function(number, precision) {
+	    var factor = Math.pow(10, precision);
+	    var tempNumber = +number * factor;
+	    var roundedTempNumber = Math.round(tempNumber);
+	    return roundedTempNumber / factor;
 	}
 };
 
@@ -160,7 +184,7 @@ $(function() {
 					console.warn("No own text for key", key);
 					$(element).text(enText);
 				} else {
-					console.error("No texts for key", key);
+					console.error("No texts for key", key, element);
 				}
 			}
 		});
@@ -168,11 +192,21 @@ $(function() {
 });
 
 $(function() {
-	md.showSelected(0);
+	// regularly update the progress-bars
 	var updateAllInterval = window.setInterval(md.updateAll, 5000);
 	console.warn("uai", updateAllInterval);
-	$("#selector").change(md.showSelected);
-	$("#submit").click(function() {
+	const $type = $("#type"),
+		$url = $("#url"),
+		$submit = $("#submit"),
+		$stopServer = $("#stopServer");
+	// listener for the dropdownbox
+	$type.change(() => md.showSelected());
+	// en- or disable the download-button
+	$url.change(e => $submit.prop("disabled", e.target.value === ""));
+	// trigger listener with current value
+	$url.change();
+	// action for download-button
+	$submit.click(function() {
 		var queryArr = $("#eingabe > div.form-group > input")
 			.filter((i,elem) => $(elem).is(":visible"))
 			.map((i,elem) => encodeURIComponent(elem.dataset.key) + "=" + encodeURIComponent(elem.value))
@@ -180,16 +214,20 @@ $(function() {
 		var query = "?" + queryArr.join("&");
 		var url = "j/download/start" + query;
 		var temp = md.createTempEntry();
-		$.get(url).done(response => md.updateEntry(response, temp)).fail(jqXHR => md.removeEntry(jqXHR, temp));
+		$.get(url).done(response => md.updateTempEntry(response, temp)).fail(jqXHR => md.removeEntry(jqXHR, temp));
 	});
-	$("#stopServer").click(function() {
-		$.post("/shutdown?token=avadakedavra", function() {
-			$.when($("#bars").slideUp(), $("#content").fadeOut()).then(() => $("#closeNotice").show());
-			window.clearInterval(updateAllInterval);
-			console.warn("+","----------------","+");
-			console.warn("|"," stopped server ","|");
-			console.warn("+","----------------","+");
-		});
-	});
+	// move elements when server was stopped
+	var stopServer = function() {
+		$.when($("#bars").slideUp(), $("#content").fadeOut()).then(() => $("#closeNotice").show());
+		window.clearInterval(updateAllInterval);
+		console.warn("+","----------------","+");
+		console.warn("|"," stopped server ","|");
+		console.warn("+","----------------","+");
+	}
+	// action for stop-server-button
+	$stopServer.click(() => $.post("/shutdown?token=avadakedavra", stopServer));
+	// show the correct fields
+	md.showSelected(0);
+	// initially setting the progress-bars
 	md.updateAll();
 });

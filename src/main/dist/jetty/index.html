@@ -25,7 +25,7 @@
 <div class="container">
 
 	<div class="row">
-	
+
 		<!-- progress bars -->
 		<div id="bars" class="col-md-3">
 			<div class="panel panel-default">
@@ -33,9 +33,7 @@
 					<h3 class="panel-title" data-i18n="progress"></h3>
 				</div>
 				<div class="panel-body">
-					<fieldset class="dummy" style="visibility: hidden">
-						<progress></progress>
-					</fieldset>
+					<div class="dummy" style="display: none"></div>
 				</div>
 			</div>
 		</div>
@@ -49,21 +47,21 @@
 				<div class="panel-body">
 					<form id="eingabe">
 						<div class="form-group">
-							<label for="selector" data-i18n="lbl.type"></label>
-							<select class="form-control" id="selector">
+							<label for="type" data-i18n="lbl.type"></label>
+							<select class="form-control" id="type">
 								<option value="dl">Download</option>
 							</select>
 						</div>
-						<div class="form-group">
-							<label for="url" class="dl" data-i18n="lbl.url"></label>
+						<div class="form-group valueholder dl">
+							<label for="url" data-i18n="lbl.url"></label>
 							<input type="url" class="form-control" data-key="url" id="url" placeholder="http://example.com/manga" />
 						</div>
-						<div class="form-group">
-							<label for="proxy" class="dl" data-i18n="lbl.proxy"></label>
+						<div class="form-group valueholder dl">
+							<label for="proxy" data-i18n="lbl.proxy"></label>
 							<input type="url" class="form-control" data-key="proxy" id="proxy" placeholder="http://example.com:8000" />
 						</div>
-						<div class="form-group">
-							<label for="pattern" class="dl" data-i18n="lbl.pattern"></label>
+						<div class="form-group valueholder dl">
+							<label for="pattern" data-i18n="lbl.pattern"></label>
 							<input type="text" class="form-control" data-key="pattern" id="pattern" placeholder="2;4;6-8" />
 						</div>
 						<div id="buttons">
@@ -75,16 +73,14 @@
 				</div>
 			</div>
 		</div>
-	
+
 	</div>
 
 	<!-- notice shown after stopping the server-->
 	<div id="closeNotice" style="display: none;">
 		<br />
-		<div class="panel">
-			<div class="panel-body">
-				<span data-i18n="closeNotice"></span>
-			</div>
+		<div class="alert alert-info">
+			<span data-i18n="closeNotice"></span>
 		</div>
 	</div>
 
