@@ -29,7 +29,7 @@ public class ReturnImageHandler extends AbstractHandler {
         Image image = Image.getRandom();
 
         JsonObject object = Json.createObjectBuilder() //
-            .add( "path", image.getPath() ) //
+            .add( "path", image.getFilename() ) //
             .add( "colour", getHtmlColour( image.getColor() ) ) //
             .build();
         Json.createWriter( response.getOutputStream() ).writeObject( object );
@@ -121,8 +121,8 @@ public class ReturnImageHandler extends AbstractHandler {
          * 
          * @return a path that should lead to the actual image.
          */
-        public String getPath() {
-            return "/res/bg/" + this.filename;
+        public String getFilename() {
+            return this.filename;
         }
 
         public Color getColor() {

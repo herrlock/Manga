@@ -3,7 +3,7 @@ var md = {
 	rben : {},
 	downloads : [],
 	cnt : 0,
-	worker : new Worker("res/js/worker.js"),
+	worker : new Worker("js/worker.js"),
 	showOnly : function(c, duration) {
 		console.info("showOnly", c, duration);
 		if (c === "dl") {
@@ -63,7 +63,7 @@ var md = {
 	createEntry : function(obj) {
 		console.info("createEntry", obj);
 		var $legend = $("<legend>" + md.encodeHTML(obj.url) + "</legend>");
-		var $loading = $("<img src='res/loading.gif' />");
+		var $loading = $("<img src='img/loading.gif' />");
 		var $progress = $("<progress value='" + obj.progress + "' max='" + obj.maxProgress + "'/>");
 		var $fieldset = $("<fieldset style='display: none;'></fieldset>");
 		if(obj.temp === true) {
@@ -139,11 +139,11 @@ var md = {
 
 $(function() {
 	var rb = $.Deferred(), rben = $.Deferred();
-	$.getJSON("res/l10n/" + navigator.language.substring(0,2) + ".json")
+	$.getJSON("l10n/" + navigator.language.substring(0,2) + ".json")
 		.done(response => md.rb = response)
 		.fail(console.warn)
 		.always(() => rb.resolve());
-	$.getJSON("res/l10n/en.json")
+	$.getJSON("l10n/en.json")
 		.done(response => md.rben = response)
 		.fail(console.warn)
 		.always(() => rben.resolve());

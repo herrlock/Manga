@@ -4,21 +4,21 @@
 	<title>MangaLoader WebUI</title>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<script src="res/jquery-2.2.3.min.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script>
 	<style>
-		@import "bootstrap/css/bootstrap.min.css";
-		@import "res/css/style.css";
+		@import "css/bootstrap.min.css";
+		@import "css/style.css";
 	</style>
 	<script>
 		$.getJSON("j/background", function(response) {
 			console.log("response", response);
 			$("html").css({
-				"background-image": "url(" + response.path + ")",
+				"background-image": "url(bg/" + response.path + ")",
 				"background-color": response.color
 			});
 		});
 	</script>
-	<script src="res/script.js"></script>
+	<script src="js/script.js"></script>
 </head>
 <body>
 
