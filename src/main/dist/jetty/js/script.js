@@ -3,7 +3,6 @@ var md = {
 	rben : {},
 	downloads : [],
 	cnt : 0,
-	worker : new Worker("js/worker.js"),
 	showOnly : function(c, duration) {
 		console.info("showOnly", c, duration);
 		if (c === "dl") {
@@ -117,9 +116,10 @@ var md = {
 	},
 	showNotification : function(title, options) {
 		if (Notification.permission === "granted") {
-			// show notification
-			md.worker.postMessage([title, options]);
-		} else if (Notification.permission !== 'denied') {
+			// show notification if expressly granted
+			new Notification(title, options);
+		} else if (Notification.permission !== "denied") {
+			// ask for permission if not expressly denied (to not annoy the user)
 			Notification.requestPermission(function (permission) {
 				if (permission === "granted") {
 					md.showNotification(title, options);
