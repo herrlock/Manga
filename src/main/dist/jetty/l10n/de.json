@@ -13,23 +13,19 @@
 		"clear" : "Felder leeren",
 		"stop" : "Server stoppen"
 	},
-	"closeNotice" : "Server gestoppt, bitte diese Tab schließen.",
+	"closeNotice" : "Server gestoppt, bitte diesen Tab schließen.",
 	"ref" : {
 		"firefox" : {
 			"pre" : "Getestet mit\u00a0",
-			"post" : ""
-		},
-		"ajaxload" : {
-			"pre" : "Loading-indicator von\u00a0",
-			"post" : ""
+			"post" : " "
 		},
 		"bootstrap" : {
 			"pre" : "Design mit\u00a0",
-			"post" : ""
+			"post" : " "
 		},
 		"konachan" : {
 			"pre" : "Bilder von\u00a0",
-			"post" : ""
+			"post" : " "
 		}
 	}
 }

@@ -17,19 +17,15 @@
 	"ref" : {
 		"firefox" : {
 			"pre" : "Tested with\u00a0",
-			"post" : ""
-		},
-		"ajaxload" : {
-			"pre" : "Loading indicator from\u00a0",
-			"post" : ""
+			"post" : " "
 		},
 		"bootstrap" : {
 			"pre" : "Design with\u00a0",
-			"post" : ""
+			"post" : " "
 		},
 		"konachan" : {
 			"pre" : "Images from\u00a0",
-			"post" : ""
+			"post" : " "
 		}
 	}
 }
