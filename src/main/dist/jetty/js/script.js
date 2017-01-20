@@ -40,7 +40,7 @@ var md = {
 		if($fs.length === 0) {
 			md.createEntry(obj);
 		} else {
-			$fs.find("> h5").text(obj.url);
+			$fs.find("> small").text(obj.url);
 			var pct = md.round(100 * obj.progress / obj.maxProgress, 2);
 			var $progressBar = $fs.find("div.progress-bar")
 				.css("width", pct + "%")
@@ -70,7 +70,7 @@ var md = {
 	createEntry : function(obj) {
 		console.info("createEntry", obj);
 		var $progressWrapper = $("<div class='progress-bar-wrapper' style='display: none;'></div>");
-		var $url = $("<h5></h5>").attr("title", obj.url).text(obj.url);
+		var $url = $("<small style='color: gray'></small>").attr("title", obj.url).text(obj.url);
 		var $progress = $("<div class='progress'></div>");
 		var pct = md.round(100 * obj.progress / obj.maxProgress, 2);
 		console.log("pct", pct);
@@ -120,7 +120,7 @@ var md = {
 		console.log("tempData", tempData);
 		if(!progressBar && !tempData) {
 			$(wrapper).slideUp(function() {
-				var url = wrapper.querySelector("h5").textContent;
+				var url = wrapper.querySelector("small").textContent;
 				$(wrapper).remove();
 				console.log("removed orphaned bar", url);
 				md.showNotification("MangaDownloader", {
