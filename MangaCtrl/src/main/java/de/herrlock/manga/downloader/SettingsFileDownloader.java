@@ -33,7 +33,7 @@ public final class SettingsFileDownloader extends MDownloader {
         // properties loaded successful
         DownloadConfiguration conf = DownloadConfiguration.create( p );
         SettingsFileDownloader dlImpl = new SettingsFileDownloader( conf );
-        dlImpl.run();
+        DownloadProcessor.getInstance().addDownload( dlImpl );
     }
 
     public SettingsFileDownloader( final DownloadConfiguration conf ) {

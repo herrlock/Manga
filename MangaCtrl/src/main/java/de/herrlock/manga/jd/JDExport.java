@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.io.ByteStreams;
 
+import de.herrlock.manga.downloader.DownloadProcessor;
 import de.herrlock.manga.downloader.MDownloader;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.exceptions.InitializeException;
@@ -55,7 +56,8 @@ public final class JDExport extends MDownloader {
             throw new InitializeException( "\"" + Configuration.JDFW + "\" must be set" );
         }
         JDConfiguration conf = JDConfiguration.create( p );
-        new JDExport( conf ).run();
+        MDownloader dlImpl = new JDExport( conf );
+        DownloadProcessor.getInstance().addDownload( dlImpl );
     }
 
     public JDExport( final JDConfiguration conf ) {

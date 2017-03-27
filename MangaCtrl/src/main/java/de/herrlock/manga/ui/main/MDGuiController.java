@@ -11,7 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import de.herrlock.javafx.handler.Exec;
 import de.herrlock.javafx.handler.ExecHandlerTask;
-import de.herrlock.manga.downloader.MDownloader;
+import de.herrlock.manga.downloader.DownloadProcessor;
+import de.herrlock.manga.downloader.impl.PlainDownloader;
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.host.Hoster;
 import de.herrlock.manga.host.Hosters;
@@ -51,12 +52,7 @@ public final class MDGuiController implements Initializable {
             public void execute() {
                 Properties p = getProperties();
                 DownloadConfiguration conf = DownloadConfiguration.create( p );
-                new MDownloader( conf ) {
-                    @Override
-                    protected void run() {
-                        downloadAll();
-                    }
-                }.run();
+                DownloadProcessor.getInstance().addDownload( new PlainDownloader( conf ) );
             }
         } );
     }
