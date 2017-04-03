@@ -18,7 +18,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  * 
  * @author HerrLock
  */
-public final class PlainDownloader extends MDownloader {
+public final class SettingsFileDownloader extends MDownloader {
     private static final Logger logger = LogManager.getLogger();
 
     public static void execute() {
@@ -32,11 +32,11 @@ public final class PlainDownloader extends MDownloader {
         }
         // properties loaded successful
         DownloadConfiguration conf = DownloadConfiguration.create( p );
-        PlainDownloader dlImpl = new PlainDownloader( conf );
-        dlImpl.run();
+        SettingsFileDownloader dlImpl = new SettingsFileDownloader( conf );
+        DownloadProcessor.getInstance().addDownload( dlImpl );
     }
 
-    public PlainDownloader( final DownloadConfiguration conf ) {
+    public SettingsFileDownloader( final DownloadConfiguration conf ) {
         super( conf );
     }
 

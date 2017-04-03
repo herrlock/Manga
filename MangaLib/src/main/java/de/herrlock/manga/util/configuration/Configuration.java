@@ -205,7 +205,8 @@ public abstract class Configuration {
             return TIMEOUT_DEFAULT;
         }
         logger.debug( "Timeout: {}", timeoutString );
-        return Integer.parseInt( timeoutString );
+        // timeout in seconds
+        return Integer.parseInt( timeoutString ) * 1000;
         // TODO: maybe catch NumberFormatException?
     }
 

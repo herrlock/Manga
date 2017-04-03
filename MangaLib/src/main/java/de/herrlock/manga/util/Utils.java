@@ -49,6 +49,7 @@ import de.herrlock.manga.util.configuration.DownloadConfiguration;
  */
 public final class Utils {
     private static final Logger logger = LogManager.getLogger();
+    // private static final Logger debugLogger = LogManager.getLogger( "com.example.java.debug.Utils" );
 
     private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20,
         new ThreadFactoryBuilder().setNameFormat( "Droggelb%dcher" ).setDaemon( true ).build() );
@@ -300,10 +301,12 @@ public final class Utils {
         public PropertiesBuilder setProperty( final String key, final String value ) {
             assureOpen();
             if ( key != null ) {
-                if ( value != null ) {
+                if ( value == null ) {
+                    if ( this._properties.containsKey( key ) ) {
+                        this._properties.remove( key );
+                    }
+                } else {
                     this._properties.setProperty( key, value );
-                } else if ( this._properties.containsKey( key ) ) {
-                    this._properties.remove( key );
                 }
             }
             return this;

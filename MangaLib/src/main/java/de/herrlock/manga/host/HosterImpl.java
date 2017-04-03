@@ -1,8 +1,8 @@
 package de.herrlock.manga.host;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import de.herrlock.manga.host.annotations.Details;
 import de.herrlock.manga.index.entity.HosterListEntry;
@@ -16,7 +16,10 @@ public abstract class HosterImpl {
     public abstract ChapterList getChapterList( DownloadConfiguration conf ) throws IOException;
 
     public Collection<HosterListEntry> getAvailabile( @SuppressWarnings( "unused" ) final IndexerConfiguration conf ) {
-        return Collections.emptyList();
+        HosterListEntry hosterListEntry = new HosterListEntry();
+        hosterListEntry.setName( "&lt;no&nbsp;entries&gt;" );
+        hosterListEntry.setUrl( getDetails().baseUrl() );
+        return Arrays.asList( hosterListEntry );
     }
 
     public Details getDetails() {

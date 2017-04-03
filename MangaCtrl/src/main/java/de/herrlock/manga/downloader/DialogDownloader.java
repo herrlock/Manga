@@ -35,7 +35,8 @@ public final class DialogDownloader extends MDownloader {
         }
         // properties loaded successful
         DownloadConfiguration conf = DownloadConfiguration.create( p );
-        new DialogDownloader( conf ).run();
+        MDownloader dlImpl = new DialogDownloader( conf );
+        DownloadProcessor.getInstance().addDownload( dlImpl );
     }
 
     public DialogDownloader( final DownloadConfiguration conf ) {

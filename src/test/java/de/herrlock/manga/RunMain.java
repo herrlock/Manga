@@ -1,7 +1,7 @@
 package de.herrlock.manga;
 
 /**
- * A class to start Main.main without having to alter the IDE's run-configuration<br/>
+ * A class to start Launcher.main without having to alter the IDE's run-configuration<br/>
  * Please do not commit changes to this file
  * 
  * @author HerrLock

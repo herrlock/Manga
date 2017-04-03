@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 
 import de.herrlock.javafx.handler.Exec;
 import de.herrlock.manga.downloader.DialogDownloader;
-import de.herrlock.manga.downloader.PlainDownloader;
+import de.herrlock.manga.downloader.SettingsFileDownloader;
 import de.herrlock.manga.exceptions.MDException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.html.ViewPageMain;
@@ -19,10 +19,10 @@ public enum Execs implements Exec {
             DialogDownloader.execute();
         }
     },
-    PLAIN_DOWNLOADER() {
+    SETTINGS_FILE_DOWNLOADER() {
         @Override
         public void execute() {
-            PlainDownloader.execute();
+            SettingsFileDownloader.execute();
         }
     },
     START_SERVER() {
