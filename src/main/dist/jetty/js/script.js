@@ -34,11 +34,12 @@ var md = {
 	updateProgressBar : function(obj) {
 		console.log("--");
 		console.group("updateProgressBar");
-		console.log(obj.toSource());
+		console.log("obj", obj.toSource());
 		var $fs = $("#progress_" + obj.uuid);
 		console.log("$fs", $fs);
 		if($fs.length === 0) {
-			md.createEntry(obj);
+			var temp = md.createTempEntry(obj);
+			md.enableTempEntry(obj.uuid, temp);
 		} else {
 			$fs.find("> small").text(obj.url);
 			var pct = md.round(100 * obj.progress / obj.maxProgress, 2);
@@ -55,26 +56,18 @@ var md = {
 		console.groupEnd();
 		console.log("--");
 	},
-	createTempEntry : function() {
-		console.info("createTempEntry");
-		var temp = ++md.cnt;
-		md.createEntry({
-			uuid : temp,
-			url : $("#url").val(),
-			progress : 0,
-			maxProgress : 100,
-			temp : true
-		});
-		return temp;
-	},
-	createEntry : function(obj) {
-		console.info("createEntry", obj);
-		var $progressWrapper = $("<div class='progress-bar-wrapper' style='display: none;'></div>");
-		var $url = $("<small style='color: gray'></small>").attr("title", obj.url).text(obj.url);
-		var $progress = $("<div class='progress'></div>");
+	createTempEntry : function(obj) {
+		console.log("createTempEntry", obj);
+		if(!obj) {
+			obj = {
+				uuid : undefined,
+				url : $("#url").val(),
+				progress : 0,
+				maxProgress : 100
+			};
+		}
 		var pct = md.round(100 * obj.progress / obj.maxProgress, 2);
-		console.log("pct", pct);
-		var $progressBar = $("<div class='progress-bar progress-bar-striped active'></div>")
+		var $progressBar = $("<div class='progress-bar progress-bar-striped'></div>")
 			.text(pct + "%")
 			.css("width", pct + "%")
 			.attr({
@@ -82,34 +75,43 @@ var md = {
 				"data-max" : obj.maxProgress,
 				"data-pct" : pct
 			});
-		if(obj.temp === true) {
-			$progressWrapper.attr("data-temp", obj.uuid);
-		} else {
-			$progressWrapper.attr("id", "progress_" + obj.uuid);
-		}
-		$progressWrapper.append($url, $progress.append($progressBar)).insertBefore($("#bars .dummy"));
-		$progressWrapper.slideDown();
+		var $tempProgressBar = $("<div class='progress-bar progress-bar-striped progress-bar-info' data-temp='temp-bar' style='width: 100%;'></div>");
+		var temp = ++md.cnt;
+		var $url = $("<small style='color: gray'></small>").attr("title", obj.url).text(obj.url);
+		var $progress = $("<div class='progress'></div>");
+		var $progressWrapper = $("<div class='progress-bar-wrapper' style='display: none;'></div>")
+			.attr("id", "progress_" + (obj.uuid || temp))
+			.attr("data-temp", temp)
+			.append($url, $progress.append($progressBar, $tempProgressBar))
+			.insertBefore($("#bars .dummy"))
+			.slideDown();
+		return temp;
 	},
-	updateTempEntry : function(uuid, tempId) {
-		console.info("updateTempEntry", uuid, tempId);
-		var div = $("div[data-temp=" + tempId + "]");
-		if(div.length > 0) {
-			div.attr({
-				"data-temp": "",
+	/** enables the progress-bar with the given tempId and sets its id to the given uuid */
+	enableTempEntry : function(uuid, tempId) {
+		console.info("enableTempEntry", uuid, tempId);
+		var $progressWrapper = $("div[data-temp=" + tempId + "]");
+		if($progressWrapper.length > 0) {
+			$progressWrapper.attr({
+				"data-temp" : null,
 				"id" : "progress_" + uuid
 			});
+			$progressWrapper.find("> div.progress > div[data-temp=temp-bar]").remove();
 		}
 	},
-	removeEntry : function(jqXHR, tempId) {
-		console.warn("removeEntry", jqXHR, tempId);
+	/** removes the temporary progress-bar with the given tempId */
+	removeTempEntry : function(jqXHR, tempId) {
+		console.warn("removeTempEntry", tempId);
 		var tempDiv = $("div[data-temp=" + tempId + "]");
 		tempDiv.slideUp(1000, () => tempDiv.remove());
 	},
+	/** call md.checkProgressBar for all progress-bar-wrappers */
 	checkAllProgressBars : function() {
 		console.groupCollapsed("checkAllProgressBars");
 		$("#bars div.progress-bar-wrapper").toArray().forEach(md.checkProgressBar);
 		console.groupEnd();
 	},
+	/** delete the given progress-bar if it has no associated download and is no temp bar */
 	checkProgressBar : function(wrapper) {
 		console.log("--");
 		console.groupCollapsed("checkProgressBar");
@@ -214,7 +216,7 @@ $(function() {
 		var query = "?" + queryArr.join("&");
 		var url = "j/download/start" + query;
 		var temp = md.createTempEntry();
-		$.get(url).done(response => md.updateTempEntry(response, temp)).fail(jqXHR => md.removeEntry(jqXHR, temp));
+		$.get(url).done(response => md.enableTempEntry(response, temp)).fail(jqXHR => md.removeTempEntry(jqXHR, temp));
 	});
 	// move elements when server was stopped
 	var stopServer = function() {
