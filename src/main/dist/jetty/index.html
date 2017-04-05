@@ -3,89 +3,113 @@
 <head>
 	<title>MangaLoader WebUI</title>
 	<meta charset="UTF-8" />
-	<script src="res/jquery-2.2.3.min.js"></script>
-	<link rel="stylesheet" href="res/style.css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="shortcut icon" href="favicon.ico" />
+	<script src="js/jquery-3.2.0.min.js"></script>
+	<style>
+		@import "css/bootstrap.min.css";
+		@import "css/style.css";
+	</style>
 	<script>
 		$.getJSON("j/background", function(response) {
-			console.log("response", response);
+			console.log("background", response);
 			$("html").css({
-				"background-image": "url(" + response.path + ")",
+				"background-image": "url(bg/" + response.path + ")",
 				"background-color": response.color
 			});
 		});
 	</script>
-	<script src="res/script.js"></script>
+	<script src="js/script.js"></script>
 </head>
 <body>
-<main>
-<article>
 
-	<section id="bars">
+<div class="container">
+
+	<div class="row">
+
 		<!-- progress bars -->
-		<h2 data-i18n="progress"></h2>
-		<fieldset class="dummy">
-			<progress></progress>
-		</fieldset>
-	</section>
-	
-	<section id="content">
-		<header id="auswahl">
-			<select id="selector">
-				<option value="dl">Download</option>
-			</select>
-		</header>
-		<section>
-			<form id="eingabe">
-				<ul>
-					<li>
-						<label for="url" class="dl" data-i18n="lbl.url"></label>
-						<input type="url" data-key="url" id="url" placeholder="http://example.com/manga" />
-					</li>
-					<li>
-						<label for="proxy" class="dl" data-i18n="lbl.proxy"></label>
-						<input type="url" data-key="proxy" id="proxy" placeholder="http://example.com:8000" />
-					</li>
-					<li>
-						<label for="pattern" class="dl" data-i18n="lbl.pattern"></label>
-						<input type="text" data-key="pattern" id="pattern" placeholder="2;4;6-8" />
-					</li>
-					<li>
-						<div id="buttons">
-							<button type="button" id="submit" data-i18n="btn.start"></button>
-							<button type="reset" data-i18n="btn.clear"></button>
-							<button type="button" id="stopServer" data-i18n="btn.stop"></button>
+		<div id="bars" class="col-md-3">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title" data-i18n="progress"></h3>
+				</div>
+				<div class="panel-body">
+					<div class="dummy" style="display: none"></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Form -->
+		<div id="content" class="col-md-9">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title" data-i18n="formheader"></h3>
+				</div>
+				<div class="panel-body">
+					<form id="eingabe">
+						<div class="form-group">
+							<label for="type" data-i18n="lbl.type"></label>
+							<select class="form-control" id="type">
+								<option value="dl">Download</option>
+							</select>
 						</div>
-					</li>
-				</ul>
-			</form>
-		</section>
-	</section>
-	
-	<section id="closeNotice" data-i18n="closeNotice" style="display: none;">
-		<!-- notice shown after stopping the server -->
-	</section>
-	
-	<aside>
-		<!-- image-preload -->
-		<img src="res/loading.gif" style="display: none;" />
-	</aside>
-	
-	<footer id="reflinks">
-		<!-- links -->
-		<span class="reflink">
-			<span data-i18n="ref.firefox"></span><a href="https://mozilla.org/firefox" target="_blank">Mozilla Firefox</a>
-		</span>
-		&nbsp;|&nbsp;
-		<span class="reflink">
-			<span data-i18n="ref.ajaxload"></span><a href="http://ajaxload.info/" target="_blank">ajaxload.info</a>
-		</span>
-		&nbsp;|&nbsp;
-		<span class="reflink">
-			<span data-i18n="ref.konachan"></span><a href="http://konachan.net" target="_blank">konachan.net</a>
-		</span>
-	</footer>
-	
-</article>
-</main>
+						<div class="form-group valueholder dl">
+							<label for="url" data-i18n="lbl.url"></label>
+							<input type="url" class="form-control" data-key="url" id="url" placeholder="http://example.com/manga" />
+						</div>
+						<div class="form-group valueholder dl">
+							<label for="proxy" data-i18n="lbl.proxy"></label>
+							<input type="url" class="form-control" data-key="proxy" id="proxy" placeholder="http://example.com:8000" />
+						</div>
+						<div class="form-group valueholder dl">
+							<label for="pattern" data-i18n="lbl.pattern"></label>
+							<input type="text" class="form-control" data-key="pattern" id="pattern" placeholder="2;4;6-8" />
+						</div>
+						<div id="buttons">
+							<button class="btn btn-primary" type="button" id="submit" data-i18n="btn.start"></button>
+							<button class="btn btn-default" type="reset" data-i18n="btn.clear"></button>
+							<button class="btn btn-default" type="button" id="stopServer" data-i18n="btn.stop"></button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- notice shown after stopping the server-->
+	<div id="closeNotice" style="display: none;">
+		<br />
+		<div class="alert alert-info">
+			<span data-i18n="closeNotice"></span>
+		</div>
+	</div>
+
+</div>
+
+<p>
+	<br /> <!-- free space for the footer -->
+</p>
+<div id="reflinks">
+	<!-- links -->
+	<span class="reflink text-muted">
+		<span data-i18n="ref.firefox.pre"></span>
+		<a href="https://mozilla.org/firefox" target="_blank">Mozilla Firefox</a>
+		<span data-i18n="ref.firefox.post"></span>
+	</span>
+	&nbsp;|&nbsp;
+	<span class="reflink text-muted">
+		<span data-i18n="ref.bootstrap.pre"></span>
+		<a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+		<span data-i18n="ref.bootstrap.post"></span>
+	</span>
+	&nbsp;|&nbsp;
+	<span class="reflink text-muted">
+		<span data-i18n="ref.konachan.pre"></span>
+		<a href="http://konachan.net" target="_blank">konachan.net</a>
+		<span data-i18n="ref.konachan.post"></span>
+	</span>
+</div>
+
 </body>
 </html>

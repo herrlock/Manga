@@ -1,0 +1,30 @@
+/* background-image*/
+html {
+	background-color: #ccc;
+	background-repeat: no-repeat;
+	background-position: top center;
+	background-size: cover;
+	height: 100%;
+}
+
+body {
+	background-color: transparent;
+}
+
+/* transparency for form */
+#bars > .panel,
+#content > .panel {
+	opacity : 0.8;
+}
+
+/* design for links at the bottom */
+#reflinks {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	background-color: rgba(222, 222, 222, 0.8);
+	border-radius: .5em 0 0 0;
+	padding: .5em;
+	font-size: small;
+	text-align: end;
+}

@@ -1,0 +1,31 @@
+{
+	"helloWorld": "Hallo Welt!",
+	"formheader" : "Parameter",
+	"progress" : "Fortschritt",
+	"lbl" : {
+		"type" : "Typ",
+		"url" : "URL",
+		"proxy" : "Proxy-URL",
+		"pattern" : "Kapitel"
+	},
+	"btn" : {
+		"start" : "Starte Download",
+		"clear" : "Felder leeren",
+		"stop" : "Server stoppen"
+	},
+	"closeNotice" : "Server gestoppt, bitte diesen Tab schließen.",
+	"ref" : {
+		"firefox" : {
+			"pre" : "Getestet mit\u00a0",
+			"post" : " "
+		},
+		"bootstrap" : {
+			"pre" : "Design mit\u00a0",
+			"post" : " "
+		},
+		"konachan" : {
+			"pre" : "Bilder von\u00a0",
+			"post" : " "
+		}
+	}
+}

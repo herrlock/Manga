@@ -1,9 +1,15 @@
 package de.herrlock.manga.http.jetty;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -12,6 +18,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.server.handler.ShutdownHandler;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.security.Constraint;
 
 import de.herrlock.manga.exceptions.MDException;
 import de.herrlock.manga.http.jetty.handlers.MangaBaseHandler;
@@ -117,7 +124,25 @@ public final class JettyServer {
     }
 
     private Handler createShutdownHandler() {
-        return new ShutdownHandler( SUPER_SECRET_MAGIC_TOKEN_FOR_SHUTDOWN, false, true );
+
+        String pwConfig = new File( "conf/jetty-users.dsc" ).getAbsolutePath();
+        HashLoginService loginService = new HashLoginService( "MangaDownloader-Realm", pwConfig );
+        this.server.addBean( loginService, true );
+
+        ConstraintSecurityHandler secHandler = new ConstraintSecurityHandler();
+        secHandler.setAuthenticator( new BasicAuthenticator() );
+
+        ConstraintMapping cm = new ConstraintMapping();
+        final Constraint userConstraint = new Constraint( Constraint.__BASIC_AUTH, "**" );
+        userConstraint.setAuthenticate( true );
+        cm.setConstraint( userConstraint );
+        cm.setPathSpec( "/shutdown/*" );
+
+        secHandler.setConstraintMappings( Arrays.asList( cm ) );
+        secHandler.setHandler( new ShutdownHandler( SUPER_SECRET_MAGIC_TOKEN_FOR_SHUTDOWN, false, true ) );
+        secHandler.setLoginService( loginService );
+
+        return secHandler;
     }
 
     private Handler createResourceHandler() {
