@@ -225,7 +225,7 @@ $(function() {
 		console.warn("+","----------------","+");
 		console.warn("|"," stopped server ","|");
 		console.warn("+","----------------","+");
-	}
+	};
 	// action for stop-server-button
 	$stopServer.click(() => $.post("/shutdown?token=avadakedavra", stopServer));
 	// show the correct fields
