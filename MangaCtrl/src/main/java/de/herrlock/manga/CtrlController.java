@@ -50,7 +50,7 @@ public final class CtrlController {
     }
 
     public void startPDownload() {
-        handleBtnClick( Execs.PLAIN_DOWNLOADER );
+        handleBtnClick( Execs.SETTINGS_FILE_DOWNLOADER );
     }
 
     public void startServer() {

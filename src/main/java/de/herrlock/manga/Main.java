@@ -25,6 +25,7 @@ import de.herrlock.log4j2.util.Log4jConfiguration;
 import de.herrlock.manga.cli.CliOptions;
 import de.herrlock.manga.cli.MyOptions;
 import de.herrlock.manga.downloader.ConsoleDownloader;
+import de.herrlock.manga.downloader.DownloadProcessor;
 import de.herrlock.manga.exceptions.MDException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.PrintAllHoster;
@@ -233,7 +234,7 @@ public final class Main {
                 DownloadConfiguration conf = DownloadConfiguration.create( properties );
                 logger.info( conf );
                 ConsoleDownloader downloader = new ConsoleDownloader( conf, conf.isHeadless() );
-                downloader.run();
+                DownloadProcessor.getInstance().addDownload( downloader );
             }
         }
     }

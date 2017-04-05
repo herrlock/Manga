@@ -301,10 +301,12 @@ public final class Utils {
         public PropertiesBuilder setProperty( final String key, final String value ) {
             assureOpen();
             if ( key != null ) {
-                if ( value != null ) {
+                if ( value == null ) {
+                    if ( this._properties.containsKey( key ) ) {
+                        this._properties.remove( key );
+                    }
+                } else {
                     this._properties.setProperty( key, value );
-                } else if ( this._properties.containsKey( key ) ) {
-                    this._properties.remove( key );
                 }
             }
             return this;
