@@ -56,10 +56,8 @@ final class DownloadHandlerContext {
 
     public UUID put( final MDObject mdObject ) {
         UUID randomUUID;
-        synchronized ( this.downloaders ) {
-            do {
                 randomUUID = UUID.randomUUID();
-            } while ( this.downloaders.containsKey( randomUUID ) );
+        synchronized ( this.downloaders ) {
             this.downloaders.put( randomUUID, mdObject );
         }
         return randomUUID;
