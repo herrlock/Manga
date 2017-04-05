@@ -3,15 +3,16 @@
 <head>
 	<title>MangaLoader WebUI</title>
 	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<script src="js/jquery-3.1.1.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="shortcut icon" href="favicon.ico" />
+	<script src="js/jquery-3.2.0.min.js"></script>
 	<style>
 		@import "css/bootstrap.min.css";
 		@import "css/style.css";
 	</style>
 	<script>
 		$.getJSON("j/background", function(response) {
-			console.log("response", response);
+			console.log("background", response);
 			$("html").css({
 				"background-image": "url(bg/" + response.path + ")",
 				"background-color": response.color
