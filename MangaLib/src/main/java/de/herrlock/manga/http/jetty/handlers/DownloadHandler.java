@@ -100,10 +100,9 @@ final class StartDownloadHandler extends AbstractHandler {
         final DownloadConfiguration conf = DownloadConfiguration.create( p );
 
         final MDownloader newDownloader = new PlainDownloader( conf );
-        UUID randomUUID = this.dlContext.put( new MDObject( url, newDownloader ) );
-
         DownloadProcessor.getInstance().addDownload( newDownloader );
 
+        UUID randomUUID = this.dlContext.put( new MDObject( url, newDownloader ) );
         response.getWriter().write( randomUUID.toString() );
         response.setContentType( MediaType.PLAIN_TEXT_UTF_8.toString() );
         response.setStatus( HttpServletResponse.SC_OK );
