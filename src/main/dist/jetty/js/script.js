@@ -3,10 +3,12 @@ var md = {
 	rben : {},
 	downloads : [],
 	cnt : 0,
-	showOnly : function(c, duration) {
-		console.info("showOnly", c, duration);
-		if (c === "dl") {
-			$("#eingabe > div.valueholder").slideUp(duration, () => $("#eingabe > div.valueholder." + c).slideDown(duration));
+	showOnly : function(clazz, duration) {
+		console.info("showOnly", clazz, duration);
+		if (/dl/.test(clazz)) {
+			$("#eingabe > div.valueholder").slideUp(duration, function() {
+				$(this).hasClass(clazz) && $(this).slideDown(duration);
+			});
 		}
 	},
 	showSelected : function(duration) {
