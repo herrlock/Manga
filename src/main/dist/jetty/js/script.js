@@ -211,9 +211,9 @@ $(function() {
 	$url.change();
 	// action for download-button
 	$submit.click(function() {
-		var queryArr = $("#eingabe > div.form-group > input")
-			.filter((i,elem) => $(elem).is(":visible"))
-			.map((i,elem) => encodeURIComponent(elem.dataset.key) + "=" + encodeURIComponent(elem.value))
+		var queryArr = $("#eingabe > div.form-group > .form-control")
+			.filter((i,e) => $(e).is(":visible"))
+			.map((i,e) => encodeURIComponent(e.dataset.key) + "=" + encodeURIComponent(e.value))
 			.toArray();
 		var query = "?" + queryArr.join("&");
 		var url = "j/download/start" + query;
