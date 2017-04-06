@@ -151,6 +151,8 @@ public final class JettyServer {
         resourceHandler.setResourceBase( "jetty" );
         // enable caching via etags
         resourceHandler.setEtags( true );
+        // prevent locked files
+        resourceHandler.setMinMemoryMappedContentLength( -1 );
         return resourceHandler;
     }
 

@@ -55,8 +55,7 @@ final class DownloadHandlerContext {
     private final Map<UUID, MDObject> downloaders = new HashMap<>();
 
     public UUID put( final MDObject mdObject ) {
-        UUID randomUUID;
-                randomUUID = UUID.randomUUID();
+        UUID randomUUID = UUID.randomUUID();
         synchronized ( this.downloaders ) {
             this.downloaders.put( randomUUID, mdObject );
         }
@@ -85,26 +84,31 @@ final class StartDownloadHandler extends AbstractHandler {
     public void handle( final String target, final Request baseRequest, final HttpServletRequest request,
         final HttpServletResponse response ) throws IOException, ServletException {
         logger.traceEntry();
+        String type = baseRequest.getParameter( "type" );
         String url = baseRequest.getParameter( "url" );
         String proxy = baseRequest.getParameter( "proxy" );
         String pattern = baseRequest.getParameter( "pattern" );
 
-        Properties p = Utils.newPropertiesBuilder() //
-            .setProperty( Configuration.HEADLESS, "true" ) //
-            .setProperty( Configuration.URL, url ) //
-            .setProperty( Configuration.PROXY, proxy ) //
-            .setProperty( Configuration.PATTERN, pattern ) //
-            .build();
-        final DownloadConfiguration conf = DownloadConfiguration.create( p );
+        if ( "dl".equals( type ) ) {
+            Properties p = Utils.newPropertiesBuilder() //
+                .setProperty( Configuration.HEADLESS, "true" ) //
+                .setProperty( Configuration.URL, url ) //
+                .setProperty( Configuration.PROXY, proxy ) //
+                .setProperty( Configuration.PATTERN, pattern ) //
+                .build();
+            final DownloadConfiguration conf = DownloadConfiguration.create( p );
 
-        final MDownloader newDownloader = new PlainDownloader( conf );
-        DownloadProcessor.getInstance().addDownload( newDownloader );
+            final MDownloader newDownloader = new PlainDownloader( conf );
+            DownloadProcessor.getInstance().addDownload( newDownloader );
 
-        UUID randomUUID = this.dlContext.put( new MDObject( url, newDownloader ) );
-        response.getWriter().write( randomUUID.toString() );
-        response.setContentType( MediaType.PLAIN_TEXT_UTF_8.toString() );
-        response.setStatus( HttpServletResponse.SC_OK );
-        baseRequest.setHandled( true );
+            // XProgressable newDownloader = new XProgressable( 4 );
+
+            UUID randomUUID = this.dlContext.put( new MDObject( url, newDownloader ) );
+            response.getWriter().write( randomUUID.toString() );
+            response.setContentType( MediaType.PLAIN_TEXT_UTF_8.toString() );
+            response.setStatus( HttpServletResponse.SC_OK );
+            baseRequest.setHandled( true );
+        }
     }
 
 }

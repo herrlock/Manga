@@ -3,10 +3,12 @@ var md = {
 	rben : {},
 	downloads : [],
 	cnt : 0,
-	showOnly : function(c, duration) {
-		console.info("showOnly", c, duration);
-		if (c === "dl") {
-			$("#eingabe > div.valueholder").slideUp(duration, () => $("#eingabe > div.valueholder." + c).slideDown(duration));
+	showOnly : function(clazz, duration) {
+		console.info("showOnly", clazz, duration);
+		if (/dl/.test(clazz)) {
+			$("#eingabe > div.valueholder").slideUp(duration, function() {
+				$(this).hasClass(clazz) && $(this).slideDown(duration);
+			});
 		}
 	},
 	showSelected : function(duration) {
@@ -209,9 +211,9 @@ $(function() {
 	$url.change();
 	// action for download-button
 	$submit.click(function() {
-		var queryArr = $("#eingabe > div.form-group > input")
-			.filter((i,elem) => $(elem).is(":visible"))
-			.map((i,elem) => encodeURIComponent(elem.dataset.key) + "=" + encodeURIComponent(elem.value))
+		var queryArr = $("#eingabe > div.form-group > .form-control")
+			.filter((i,e) => $(e).is(":visible"))
+			.map((i,e) => encodeURIComponent(e.dataset.key) + "=" + encodeURIComponent(e.value))
 			.toArray();
 		var query = "?" + queryArr.join("&");
 		var url = "j/download/start" + query;
