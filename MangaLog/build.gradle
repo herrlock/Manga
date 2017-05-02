@@ -3,6 +3,6 @@ logger.info ' >> MangaLog'
 description = 'A project to avoid redundancies at the logger-configuration.'
 
 dependencies {
-	compile 'org.apache.logging.log4j:log4j-api:2.7'
-	compile 'org.apache.logging.log4j:log4j-core:2.7'
+	compile 'org.apache.logging.log4j:log4j-api:2.8.2'
+	compile 'org.apache.logging.log4j:log4j-core:2.8.2'
 }
