@@ -13,7 +13,7 @@ dependencies {
 	
 	// embed jetty
 	compile 'org.eclipse.jetty:jetty-server:9.2.21.v20170120'
-	compile 'org.eclipse.jetty:jetty-servlet:9.2.21.v20170120'
+	compile 'org.eclipse.jetty:jetty-security:9.2.21.v20170120'
 	
 	// javafx, needs to be added for java 7 only
 	if(JavaVersion.current() == JavaVersion.VERSION_1_7) {
