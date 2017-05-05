@@ -151,7 +151,7 @@ public final class ViewPage {
         head.appendElement( "script" ).text( mangaObject );
 
         String[] js = {
-            "jquery-2.2.3.min.js", "main.js"
+            "jquery-3.2.1.min.js", "jquery-migrate-3.0.0.js", "main.js"
         };
         for ( String src : js ) {
             head.appendElement( "script" ).attr( "src", src );
