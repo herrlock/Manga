@@ -151,15 +151,40 @@ public abstract class ChapterList implements Iterable<Chapter> {
      *             in case an IOException occurs
      */
     protected Document getDocument( final URL url ) throws IOException {
-        return Utils.getDataAndExecuteResponseHandler( url, this.conf, TO_DOCUMENT_HANDLER );
+        return Utils.getDataAndExecuteResponseHandler( url, this.conf, new ToDocumentHandler( url ) );
     }
 
     /**
      * converts an {@link HttpResponse} to a Jsoup-{@link Document}
      */
-    public static final ResponseHandler<Document> TO_DOCUMENT_HANDLER = new ResponseHandler<Document>() {
+    public final class ToDocumentHandler implements ResponseHandler<Document> {
+
+        private final URL url;
+
+        public ToDocumentHandler( final URL url ) {
+            this.url = url;
+        }
+
         @Override
         public Document handleResponse( final HttpResponse response ) throws ClientProtocolException, IOException {
+            int statusCode = response.getStatusLine().getStatusCode();
+            switch ( statusCode ) {
+                case 200:
+                    return parseDocument( response );
+                case 503:
+                    EntityUtils.consume( response.getEntity() );
+                    try {
+                        Thread.sleep( 1000 );
+                    } catch ( InterruptedException ex ) {
+                        throw new IOException( ex );
+                    }
+                    return Utils.getDataAndExecuteResponseHandler( this.url, ChapterList.this.conf, this );
+                default:
+                    throw new IOException( "Received non-expected StatusCode: " + statusCode );
+            }
+        }
+
+        private Document parseDocument( final HttpResponse response ) throws IOException {
             HttpEntity entity = response.getEntity();
             try {
                 return Jsoup.parse( EntityUtils.toString( entity, StandardCharsets.UTF_8 ) );
@@ -167,7 +192,7 @@ public abstract class ChapterList implements Iterable<Chapter> {
                 EntityUtils.consume( entity );
             }
         }
-    };
+    }
 
     @Override
     public Iterator<Chapter> iterator() {
