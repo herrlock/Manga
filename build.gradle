@@ -20,7 +20,7 @@ allprojects {
 	apply plugin: 'eclipse'
 	
 	group 'de.herrlock.manga'
-	version '1.4.0-BETA'
+	version '1.4.1-BETA-SNAPSHOT'
 	
 	apply plugin: 'java'
 	apply plugin: 'findbugs'
