@@ -1,7 +1,5 @@
 package de.herrlock.manga.util;
 
-import static de.herrlock.manga.util.Constants.TO_DOCUMENT_HANDLER;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -24,6 +22,7 @@ import javax.management.ObjectName;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -31,6 +30,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
@@ -130,7 +130,40 @@ public final class Utils {
 
     public static Document getDocument( final URL url, final DownloadConfiguration conf )
         throws ClientProtocolException, IOException {
-        return getDataAndExecuteResponseHandler( url, conf, TO_DOCUMENT_HANDLER );
+        return getDataAndExecuteResponseHandler( url, conf, new ToDocumentHandler( url, conf ) );
+    }
+
+    /**
+     * converts an {@link HttpResponse} to a Jsoup-{@link Document}
+     */
+    public static final class ToDocumentHandler implements ResponseHandler<Document> {
+
+        private final URL url;
+        private final DownloadConfiguration conf;
+
+        public ToDocumentHandler( final URL url, final DownloadConfiguration conf ) {
+            this.url = url;
+            this.conf = conf;
+        }
+
+        @Override
+        public Document handleResponse( final HttpResponse response ) throws ClientProtocolException, IOException {
+            int statusCode = response.getStatusLine().getStatusCode();
+            switch ( statusCode ) {
+                case 200:
+                    return Constants.TO_DOCUMENT_HANDLER.handleResponse( response );
+                case 503:
+                    EntityUtils.consume( response.getEntity() );
+                    try {
+                        Thread.sleep( 1000 );
+                    } catch ( InterruptedException ex ) {
+                        throw new IOException( ex );
+                    }
+                    return Utils.getDataAndExecuteResponseHandler( this.url, this.conf, this );
+                default:
+                    throw new IOException( "Received non-expected StatusCode: " + statusCode );
+            }
+        }
     }
 
     /**
