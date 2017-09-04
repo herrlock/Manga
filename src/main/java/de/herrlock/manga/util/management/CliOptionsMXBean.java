@@ -7,5 +7,6 @@ public interface CliOptionsMXBean {
 
     String getMainOption();
     String[] getSubOptions();
+    String[] getLogOptions();
 
 }

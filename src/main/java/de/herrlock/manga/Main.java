@@ -13,7 +13,6 @@ import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -21,9 +20,15 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.base.MoreObjects;
+
 import de.herrlock.log4j2.util.Log4jConfiguration;
 import de.herrlock.manga.cli.CliOptions;
-import de.herrlock.manga.cli.MyOptions;
+import de.herrlock.manga.cli.OptionParser;
+import de.herrlock.manga.cli.OptionParser.CommandLineContainer;
+import de.herrlock.manga.cli.options.LogOptions;
+import de.herrlock.manga.cli.options.MainOptions;
+import de.herrlock.manga.cli.options.SubOptions;
 import de.herrlock.manga.downloader.ConsoleDownloader;
 import de.herrlock.manga.downloader.DownloadProcessor;
 import de.herrlock.manga.exceptions.MDException;
@@ -57,21 +62,21 @@ public final class Main {
      */
     public static void execute( final String... args ) {
         try {
-            final CommandLine commandline = getCommandlineFromArgs( args );
-            logger.debug( Arrays.toString( commandline.getOptions() ) );
+            final CommandLineContainer cmdContainer = OptionParser.parseOptions( args );
+            logger.debug( Arrays.toString( cmdContainer.getMainCmd().getOptions() ) );
 
             // search for javafx and try to hack it into the system-classloader
             runFxClasspathHack();
             // optional alter loglevel-configuration
-            checkLoggerConfiguration( commandline );
+            checkLoggerConfiguration( cmdContainer.getLogCmd() );
             // register MBean
-            registerCliMBean( commandline );
+            registerCliMBean( cmdContainer );
 
             // start running
-            handleCommandline( commandline );
+            handleCommandline( cmdContainer );
         } catch ( ParseException ex ) {
             logger.error( ex.getMessage(), ex );
-            printHelp();
+            printHelp( null );
         }
     }
 
@@ -86,14 +91,6 @@ public final class Main {
         }
     }
 
-    private static CommandLine getCommandlineFromArgs( final String... args ) throws ParseException {
-        logger.traceEntry( "args: {}", Arrays.toString( args ) );
-        MyOptions myOptions = new MyOptions();
-        Options options = myOptions.getOptions();
-        Properties defaultValues = myOptions.getDefaultValues();
-        return new DefaultParser().parse( options, args, defaultValues );
-    }
-
     private static void checkLoggerConfiguration( final CommandLine commandline ) {
         logger.traceEntry( "Commandline: {}", commandline );
         if ( commandline.hasOption( "log" ) ) {
@@ -106,22 +103,25 @@ public final class Main {
         }
     }
 
-    private static void registerCliMBean( final CommandLine commandline ) {
-        CliOptions cliOptions = new CliOptions( commandline );
+    private static void registerCliMBean( final CommandLineContainer cmdContainer ) {
+        CliOptions cliOptions = new CliOptions( cmdContainer );
         Utils.registerMBean( cliOptions, "de.herrlock.manga:type=commandline" );
     }
 
-    private static void handleCommandline( final CommandLine commandline ) {
-        logger.traceEntry( "Commandline: {}", commandline );
+    private static void handleCommandline( final CommandLineContainer cmdContainer ) {
+        CommandLine commandline = cmdContainer.getMainCmd();
+        CommandLine subCommandline = cmdContainer.getSubCmd();
+        logger.traceEntry( "Commandline: {}", Arrays.toString( commandline.getOptions() ) );
+        logger.traceEntry( "SubCommandline: {}", Arrays.toString( commandline.getOptions() ) );
         if ( commandline.hasOption( "help" ) ) {
             logger.debug( "Commandline has \"help\", show help" );
-            printHelp();
+            printHelp( commandline.getOptionValue( "help" ) );
         } else if ( commandline.hasOption( "version" ) ) {
             logger.debug( "Commandline has \"version\", show version" );
             printVersion();
         } else if ( commandline.hasOption( "console" ) ) {
             logger.debug( "Commandline has \"console\", start CLI-Downloader" );
-            startCliDownloader( commandline );
+            startCliDownloader( subCommandline );
         } else if ( commandline.hasOption( "dialog" ) ) {
             logger.debug( "Commandline has \"dialog\", start Dialog-Downloader" );
             startDialogDownloader();
@@ -130,40 +130,56 @@ public final class Main {
             startGuiDownloader();
         } else if ( commandline.hasOption( "viewpage" ) ) {
             logger.debug( "Commandline has \"viewpage\", start creating html-resources" );
-            startViewpageCreator( commandline );
+            startViewpageCreator( subCommandline );
         } else if ( commandline.hasOption( "server" ) ) {
             logger.debug( "Commandline has \"server\", start Server" );
-            startServer( commandline );
+            startServer( subCommandline );
         } else {
             logger.debug( "else, don't know what to do" );
         }
     }
 
-    private static void printHelp() {
-        logger.traceEntry();
+    private static void printHelp( final String helpContext ) {
+        logger.entry( helpContext );
 
         final HelpFormatter helpFormatter = new HelpFormatter();
         final StringWriter stringWriter = new StringWriter();
         final PrintWriter printwriter = new PrintWriter( stringWriter );
-        final Options options = new MyOptions().getOptions();
+        final Options mainOptions = new MainOptions().getOptions();
+        final Options subOptions = SubOptions.getSubOptions( helpContext ).getOptions();
+        final Options logOptions = new LogOptions().getOptions();
 
         printwriter.println();
 
-        final String cmdLineSyntax = "java -jar MangaLauncher.jar";
-        final String header = "The following commands are supported. "
-            + "A '>' indicates that the option defines a mode that is started. " + "Only one of these options should be given.";
-        final String footer = "Please consult readme.html for further information.";
         final int width = 100;
-        int leftPad = HelpFormatter.DEFAULT_LEFT_PAD;
-        int descPad = HelpFormatter.DEFAULT_DESC_PAD;
+        final int leftPad = HelpFormatter.DEFAULT_LEFT_PAD;
+        final int descPad = HelpFormatter.DEFAULT_DESC_PAD;
 
-        helpFormatter.printUsage( printwriter, width, cmdLineSyntax, options );
+        // print basic-syntax
+        helpFormatter.printUsage( printwriter, width, "java -jar MangaLauncher.jar", mainOptions );
         printwriter.println();
-        helpFormatter.printWrapped( printwriter, width, header );
+        // print header
+        helpFormatter.printWrapped( printwriter, width, "The following commands are supported. " );
         printwriter.println();
-        helpFormatter.printOptions( printwriter, width, options, leftPad, descPad );
+        // print main-options
+        helpFormatter.printWrapped( printwriter, width, "Main-options:" );
+        helpFormatter.printOptions( printwriter, width, mainOptions, leftPad, descPad );
         printwriter.println();
-        helpFormatter.printWrapped( printwriter, width, footer );
+        // print sub-options
+        if ( subOptions.getOptions().isEmpty() ) {
+            final String helpInfo = "To receive information about a specific command enter --help <command>";
+            helpFormatter.printWrapped( printwriter, width, helpInfo );
+        } else {
+            helpFormatter.printWrapped( printwriter, width, "Options in context \"" + helpContext + "\": " );
+            helpFormatter.printOptions( printwriter, width, subOptions, leftPad, descPad );
+        }
+        printwriter.println();
+        // print logging-options
+        helpFormatter.printWrapped( printwriter, width, "Logging-options:" );
+        helpFormatter.printOptions( printwriter, width, logOptions, leftPad, descPad );
+        printwriter.println();
+        // print footer
+        helpFormatter.printWrapped( printwriter, width, "Please consult readme.html for further information." );
 
         logger.info( stringWriter );
     }
@@ -171,11 +187,12 @@ public final class Main {
     private static void printVersion() {
         logger.traceEntry();
 
-        final Manifest m;
+        final Manifest manifest;
         final URL mangaLauncherJarUrl = Main.class.getProtectionDomain().getCodeSource().getLocation();
         logger.debug( "Reading Manifest from jar at {}", mangaLauncherJarUrl );
         try ( JarInputStream j = new JarInputStream( mangaLauncherJarUrl.openStream() ) ) {
-            m = j.getManifest();
+            Manifest m = j.getManifest();
+            manifest = MoreObjects.firstNonNull( m, new Manifest() );
         } catch ( IOException ex ) {
             throw new MDRuntimeException( ex );
         }
@@ -185,9 +202,9 @@ public final class Main {
 
         printwriter.println();
 
-        Attributes infoAttributes = m.getAttributes( "Info" );
+        Attributes infoAttributes = manifest.getAttributes( "Info" );
         logger.debug( "infoAttributes: {}", infoAttributes );
-        Attributes gitAttributes = m.getAttributes( "Git" );
+        Attributes gitAttributes = manifest.getAttributes( "Git" );
         logger.debug( "gitAttributes: {}", gitAttributes );
         if ( infoAttributes == null || gitAttributes == null ) {
             printwriter.println( "Cannot read all data, probably a development-version launched from an IDE." );
