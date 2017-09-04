@@ -3,12 +3,12 @@ plugins {
 }
 ext {
 	jfxLocation = project.hasProperty('jfx_doc_location') ? 
-	    'file:/' + project.getProperty('jfx_doc_location') :
-	    'http://docs.oracle.com/javafx/2/api/'
-    if(!project.hasProperty('jfx_doc_location')) {
-    	logger.info('JavaFX-Documentation is set to http://docs.oracle.com/.' + 
-    		' If you want to specify a different location add \'jfx_doc_location\' to your gradle.properties')
-    }
+		'file:/' + project.getProperty('jfx_doc_location') :
+		'http://docs.oracle.com/javafx/2/api/'
+	if(!project.hasProperty('jfx_doc_location')) {
+		logger.info('JavaFX-Documentation is set to http://docs.oracle.com/.' + 
+			' If you want to specify a different location add \'jfx_doc_location\' to your gradle.properties')
+	}
 }
 
 apply plugin: 'distribution'
@@ -175,9 +175,9 @@ task packDependencies {
 				new java.util.jar.JarInputStream( new FileInputStream(jar) ).withStream { jarIn ->
 					new java.util.zip.GZIPOutputStream( newFile.newOutputStream() ).withStream { gzOut ->
 						logger.info "Packing to ${newFile}"
-				        packer.pack( jarIn, gzOut );
-				    }
-			    }
+						packer.pack( jarIn, gzOut );
+					}
+				}
 			}
 		}
 	}

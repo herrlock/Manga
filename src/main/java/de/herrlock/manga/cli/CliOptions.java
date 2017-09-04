@@ -8,8 +8,10 @@ import java.util.Set;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 
+import de.herrlock.manga.cli.OptionParser.CommandLineContainer;
 import de.herrlock.manga.util.management.CliOptionsMXBean;
 
 /**
@@ -19,24 +21,20 @@ public class CliOptions implements CliOptionsMXBean {
 
     private final String mainOption;
     private final String[] subOptions;
+    private final String[] logOptions;
 
     private final Set<String> mainOptions = ImmutableSet.of( "help", "version", "console", "dialog", "gui", "viewpage",
         "server" );
 
-    public CliOptions( final CommandLine commandline ) {
-        this.mainOption = findMainOption( commandline );
-        this.subOptions = findSubOptions( commandline );
+    public CliOptions( final CommandLineContainer cmdContainer ) {
+        this.mainOption = findMainOption( cmdContainer.getMainCmd() );
+
+        this.subOptions = findSubOptions( cmdContainer.getSubCmd() );
+        this.logOptions = findSubOptions( cmdContainer.getLogCmd() );
     }
 
     private String findMainOption( final CommandLine commandline ) {
-        String option = "";
-        for ( String string : this.mainOptions ) {
-            if ( commandline.hasOption( string ) ) {
-                option = string;
-                break;
-            }
-        }
-        return option;
+        return FluentIterable.from( this.mainOptions ).firstMatch( new OptionParser.InCommandline( commandline ) ).orNull();
     }
 
     private String[] findSubOptions( final CommandLine commandline ) {
@@ -44,7 +42,7 @@ public class CliOptions implements CliOptionsMXBean {
         Queue<String> optionQueue = new ArrayDeque<>( options.length );
         for ( Option option : options ) {
             if ( !this.mainOptions.contains( option.getLongOpt() ) ) {
-                String optionWithValue = option.getLongOpt() + ( option.hasArg() ? " " + option.getValue() : "" );
+                String optionWithValue = option.getLongOpt() + ( option.hasArg() ? "=" + option.getValue() : "" );
                 optionQueue.add( optionWithValue );
             }
         }
@@ -59,6 +57,11 @@ public class CliOptions implements CliOptionsMXBean {
     @Override
     public String[] getSubOptions() {
         return Arrays.copyOf( this.subOptions, this.subOptions.length );
+    }
+
+    @Override
+    public String[] getLogOptions() {
+        return Arrays.copyOf( this.logOptions, this.logOptions.length );
     }
 
 }
