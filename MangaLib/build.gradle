@@ -15,10 +15,16 @@ dependencies {
 	compile 'org.eclipse.jetty:jetty-server:9.2.21.v20170120'
 	compile 'org.eclipse.jetty:jetty-security:9.2.21.v20170120'
 	
-	// javafx, needs to be added for java 7 only
-	if(JavaVersion.current() == JavaVersion.VERSION_1_7) {
-		compile files(System.properties.'java.home' + '/lib/jfxrt.jar')
+	// compressing and archiving files
+	compile 'org.apache.commons:commons-compress:1.14'
+	
+	// javafx
+	file(System.properties.'java.home').eachFileRecurse(groovy.io.FileType.FILES) {
+		if('jfxrt.jar'.equals(it.name)) {
+			compile files(it)
+		}
 	}
+	
 	compile files(new File(rootProject.projectDir, 'lib/jmetro.jar'))
 }
 

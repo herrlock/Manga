@@ -34,7 +34,6 @@ import de.herrlock.manga.downloader.DownloadProcessor;
 import de.herrlock.manga.exceptions.MDException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.PrintAllHoster;
-import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.http.ServerMain;
 import de.herrlock.manga.index.IndexerMain;
 import de.herrlock.manga.util.ClassPathHack;
@@ -42,6 +41,7 @@ import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.Configuration;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import de.herrlock.manga.util.configuration.IndexerConfiguration;
+import de.herrlock.manga.viewpage.ViewGeneratorMain;
 import javafx.application.Application;
 
 /**
@@ -270,7 +270,14 @@ public final class Main {
                 File file = ( File ) commandline.getParsedOptionValue( "folder" );
                 if ( file.exists() ) {
                     if ( file.isDirectory() ) {
-                        ViewPageMain.execute( file );
+                        if ( commandline.hasOption( "archive" ) ) {
+                            String format = commandline.getOptionValue( "archive" );
+                            ViewGeneratorMain.executeViewArchive( file, format );
+                        } else if ( commandline.hasOption( "html" ) ) {
+                            ViewGeneratorMain.executeViewHtml( file );
+                        } else {
+                            throw new IllegalArgumentException( "Should not get here" );
+                        }
                     } else {
                         logger.error( "The folder \"{}\" must be a folder", file.getAbsolutePath() );
                     }
@@ -281,7 +288,14 @@ public final class Main {
                 logger.error( ex );
             }
         } else {
-            ViewPageMain.execute();
+            if ( commandline.hasOption( "archive" ) ) {
+                String format = commandline.getOptionValue( "archive" );
+                ViewGeneratorMain.executeViewArchive( format );
+            } else if ( commandline.hasOption( "html" ) ) {
+                ViewGeneratorMain.executeViewHtml();
+            } else {
+                throw new IllegalArgumentException( "Should not get here" );
+            }
         }
     }
 

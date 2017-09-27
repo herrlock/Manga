@@ -1,7 +1,7 @@
 package de.herrlock.manga.ui.main;
 
 import static de.herrlock.manga.util.Execs.DO_NOTHING;
-import static de.herrlock.manga.util.Execs.VIEW_PAGE_MAIN;
+import static de.herrlock.manga.util.Execs.VIEW_HTML_MAIN;
 
 import java.net.URL;
 import java.util.Properties;
@@ -58,7 +58,7 @@ public final class MDGuiController implements Initializable {
     }
 
     public void createHtml() {
-        handleBtnClick( VIEW_PAGE_MAIN );
+        handleBtnClick( VIEW_HTML_MAIN );
     }
 
     public void exitGui() {

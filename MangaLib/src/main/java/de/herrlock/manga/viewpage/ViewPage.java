@@ -1,4 +1,4 @@
-package de.herrlock.manga.html;
+package de.herrlock.manga.viewpage;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,8 +30,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import de.herrlock.manga.exceptions.MDRuntimeException;
 
 /**
@@ -61,22 +59,6 @@ public final class ViewPage {
         } catch ( IOException ex ) {
             throw new MDRuntimeException( ex );
         }
-    }
-
-    @VisibleForTesting
-    static String formatManganame( final String foldername ) {
-        String mangarawname;
-        if ( foldername.matches( ".+_\\d+" ) ) {
-            int lastUnderscore = foldername.lastIndexOf( '_' );
-            if ( lastUnderscore > -1 ) {
-                mangarawname = foldername.substring( 0, lastUnderscore );
-            } else {
-                mangarawname = foldername;
-            }
-        } else {
-            mangarawname = foldername;
-        }
-        return mangarawname.replace( '_', ' ' ).trim();
     }
 
     /**
@@ -110,7 +92,7 @@ public final class ViewPage {
 
     private String mangaName() {
         String foldername = this.folder.getName();
-        return formatManganame( foldername );
+        return ViewPageConstants.formatManganame( foldername );
     }
 
     void saveAt( final Path indexhtml ) throws IOException {
@@ -141,7 +123,7 @@ public final class ViewPage {
         this.filesToCopy.add( "style.css" );
 
         List<File> files = getChapters();
-        File maxFile = Collections.max( files, ViewPageConstants.numericFilenameComparator );
+        File maxFile = Collections.max( files, ViewPageConstants.NUMERIC_FILENAME_COMPARATOR );
         int max = Integer.parseInt( maxFile.getName() );
 
         String mangaObject = MessageFormat.format(
@@ -189,7 +171,7 @@ public final class ViewPage {
         Map<Integer, List<String>> blocks = new HashMap<>();
         {
             // init map
-            List<File> files = getSortedChapters( Collections.reverseOrder( ViewPageConstants.numericFilenameComparator ) );
+            List<File> files = getSortedChapters( Collections.reverseOrder( ViewPageConstants.NUMERIC_FILENAME_COMPARATOR ) );
             for ( File f : files ) {
                 String filename = f.getName();
                 int blockNr = ( ( int ) Double.parseDouble( filename ) - 1 ) / 10;
@@ -201,7 +183,7 @@ public final class ViewPage {
             logger.debug( "Number of blocks: {}", blocks.size() );
         }
         List<Entry<Integer, List<String>>> list = new ArrayList<>( blocks.entrySet() );
-        Collections.sort( list, Collections.reverseOrder( ViewPageConstants.integerEntryComparator ) );
+        Collections.sort( list, Collections.reverseOrder( ViewPageConstants.INTEGER_ENTRY_COMPARATOR ) );
 
         Element lDiv = new Element( Tag.valueOf( "div" ), "" ).attr( "id", "leftdiv" );
         List<String> firstBlock = list.get( 0 ).getValue();
@@ -303,7 +285,7 @@ public final class ViewPage {
     }
 
     private List<File> getChapters() {
-        File[] listFiles = this.folder.listFiles( ViewPageConstants.isDirectoryFilter );
+        File[] listFiles = this.folder.listFiles( new ViewPageConstants.FileIsDirectoryFilter() );
         if ( listFiles != null ) {
             return Arrays.asList( listFiles );
         }

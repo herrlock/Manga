@@ -62,7 +62,7 @@ public final class CtrlController {
     }
 
     public void createHtml() {
-        handleBtnClick( Execs.VIEW_PAGE_MAIN );
+        handleBtnClick( Execs.VIEW_HTML_MAIN );
     }
 
     public void handleBtnClick( final Exec exec ) {
