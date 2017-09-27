@@ -3,6 +3,7 @@ package de.herrlock.manga.cli.options;
 import java.io.File;
 
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 
 /**
@@ -18,6 +19,21 @@ public final class ViewpageOptions extends SubOptions {
         .type( File.class ) //
         .desc( "The folder to create the files in" ) //
         .build();
+    private final Option htmlOption = Option.builder() //
+        .longOpt( "html" ) //
+        .desc( "Whether to create html-resources" ) //
+        .build();
+    private final Option archiveOption = Option.builder() //
+        .longOpt( "archive" ) //
+        .hasArg() //
+        .argName( "format" ) //
+        .desc( "The archive-format to put the pages into [CBZ, CBT]" ) //
+        .build();
+
+    private final OptionGroup typeGroup = new OptionGroup() //
+        .addOption( this.htmlOption ) //
+        .addOption( this.archiveOption ) //
+    ;
 
     private final Options options;
 
@@ -25,7 +41,10 @@ public final class ViewpageOptions extends SubOptions {
      * Create new Options
      */
     public ViewpageOptions() {
-        this.options = new Options().addOption( this.folderOption );
+        this.options = new Options() //
+            .addOption( this.folderOption ) //
+            .addOptionGroup( this.typeGroup ) //
+        ;
     }
 
     /**

@@ -22,7 +22,7 @@ dependencies {
 	file(System.properties.'java.home').eachFileRecurse(groovy.io.FileType.FILES) {
 		if('jfxrt.jar'.equals(it.name)) {
 			compile files(it)
-	}
+		}
 	}
 	
 	compile files(new File(rootProject.projectDir, 'lib/jmetro.jar'))

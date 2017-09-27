@@ -270,7 +270,14 @@ public final class Main {
                 File file = ( File ) commandline.getParsedOptionValue( "folder" );
                 if ( file.exists() ) {
                     if ( file.isDirectory() ) {
-                        ViewGeneratorMain.executeViewHtml( file );
+                        if ( commandline.hasOption( "archive" ) ) {
+                            String format = commandline.getOptionValue( "archive" );
+                            ViewGeneratorMain.executeViewArchive( file, format );
+                        } else if ( commandline.hasOption( "html" ) ) {
+                            ViewGeneratorMain.executeViewHtml( file );
+                        } else {
+                            throw new IllegalArgumentException( "Should not get here" );
+                        }
                     } else {
                         logger.error( "The folder \"{}\" must be a folder", file.getAbsolutePath() );
                     }
@@ -281,7 +288,14 @@ public final class Main {
                 logger.error( ex );
             }
         } else {
-            ViewGeneratorMain.executeViewHtml();
+            if ( commandline.hasOption( "archive" ) ) {
+                String format = commandline.getOptionValue( "archive" );
+                ViewGeneratorMain.executeViewArchive( format );
+            } else if ( commandline.hasOption( "html" ) ) {
+                ViewGeneratorMain.executeViewHtml();
+            } else {
+                throw new IllegalArgumentException( "Should not get here" );
+            }
         }
     }
 

@@ -10,7 +10,7 @@ public final class TestViewpageOptions {
     public void testOptionCount() {
         ViewpageOptions mainOptions = new ViewpageOptions();
         Options options = mainOptions.getOptions();
-        Assert.assertEquals( 1, options.getOptions().size() );
+        Assert.assertEquals( 3, options.getOptions().size() );
     }
 
     @Test
