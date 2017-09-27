@@ -1,4 +1,4 @@
-package de.herrlock.manga.html;
+package de.herrlock.manga.viewpage;
 
 import java.io.File;
 import java.io.IOException;

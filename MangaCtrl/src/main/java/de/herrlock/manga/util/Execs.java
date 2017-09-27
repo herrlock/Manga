@@ -8,9 +8,9 @@ import de.herrlock.manga.downloader.DialogDownloader;
 import de.herrlock.manga.downloader.SettingsFileDownloader;
 import de.herrlock.manga.exceptions.MDException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
-import de.herrlock.manga.html.ViewPageMain;
 import de.herrlock.manga.http.ServerMain;
 import de.herrlock.manga.jd.JDExport;
+import de.herrlock.manga.viewpage.ViewGeneratorMain;
 
 public enum Execs implements Exec {
     DIALOG_DOWNLOADER() {
@@ -41,10 +41,10 @@ public enum Execs implements Exec {
             JDExport.executeGetFileProperties();
         }
     },
-    VIEW_PAGE_MAIN() {
+    VIEW_HTML_MAIN() {
         @Override
         public void execute() {
-            ViewPageMain.execute();
+            ViewGeneratorMain.executeViewHtml();
         }
     },
     DO_NOTHING() {
