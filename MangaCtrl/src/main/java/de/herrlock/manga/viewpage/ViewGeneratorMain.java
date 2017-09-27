@@ -46,6 +46,29 @@ public final class ViewGeneratorMain {
         ViewPage.execute( folder );
     }
 
+    /**
+     * @param format
+     *            The format of the archive to create
+     */
+    public static void executeViewArchive( final String format ) {
+        File folder = getFolder();
+        if ( folder == null ) {
+            JOptionPane.showMessageDialog( null, "Folder does not exists." );
+        } else {
+            executeViewArchive( folder, format );
+        }
+    }
+
+    /**
+     * @param folder
+     *            The mangafolder to create a viewer for (has the format {@code <manganame>_<timestamp>})
+     * @param format
+     *            The format of the archive to create
+     */
+    public static void executeViewArchive( final File folder, final String format ) {
+        ViewArchive.execute( folder, format );
+    }
+
     private ViewGeneratorMain() {
         // nothing to do
     }

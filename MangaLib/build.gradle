@@ -15,6 +15,9 @@ dependencies {
 	compile 'org.eclipse.jetty:jetty-server:9.2.21.v20170120'
 	compile 'org.eclipse.jetty:jetty-security:9.2.21.v20170120'
 	
+	// compressing and archiving files
+	compile 'org.apache.commons:commons-compress:1.14'
+	
 	// javafx
 	file(System.properties.'java.home').eachFileRecurse(groovy.io.FileType.FILES) {
 		if('jfxrt.jar'.equals(it.name)) {
