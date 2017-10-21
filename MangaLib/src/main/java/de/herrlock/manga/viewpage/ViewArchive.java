@@ -35,10 +35,15 @@ public final class ViewArchive {
     private final boolean clean;
 
     /**
-     * Creates the new ViewPage-instance and prints the html to the destination
+     * Creates the new ViewArchive-instance and writes the comicbook-archive for the given folder
      * 
      * @param folder
-     *            the folder to save the created files into
+     *            the folder to read the chapters from
+     * @param format
+     *            the format of the archive to create, see {@link Format}
+     * @param clean
+     *            remove the downloaded images after archiving them
+     * 
      */
     public static void execute( final File folder, final String format, final boolean clean ) {
         logger.entry( folder, format, clean );
@@ -47,10 +52,14 @@ public final class ViewArchive {
     }
 
     /**
-     * Create a new ViewPage in the given {@linkplain File folder}
+     * Create a new ViewArchive for the given {@linkplain File folder}
      * 
      * @param folder
-     *            the folder where to create the ViewPages
+     *            the folder containing the downloaded chapters
+     * @param format
+     *            the format of the archive to create, see {@link Format}
+     * @param clean
+     *            remove the downloaded images after archiving them
      */
     private ViewArchive( final File folder, final String format, final boolean clean ) {
         logger.entry( folder, format, clean );
