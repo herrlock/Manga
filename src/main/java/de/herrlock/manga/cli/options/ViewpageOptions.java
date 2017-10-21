@@ -29,6 +29,10 @@ public final class ViewpageOptions extends SubOptions {
         .argName( "format" ) //
         .desc( "The archive-format to put the pages into [CBZ, CBT]" ) //
         .build();
+    private final Option cleanOption = Option.builder() //
+        .longOpt( "clean" ) //
+        .desc( "Whether to remove the downloaded chapters after archiving them" ) //
+        .build();
 
     private final OptionGroup typeGroup = new OptionGroup() //
         .addOption( this.htmlOption ) //
@@ -42,8 +46,9 @@ public final class ViewpageOptions extends SubOptions {
      */
     public ViewpageOptions() {
         this.options = new Options() //
-            .addOption( this.folderOption ) //
             .addOptionGroup( this.typeGroup ) //
+            .addOption( this.folderOption ) //
+            .addOption( this.cleanOption ) //
         ;
     }
 

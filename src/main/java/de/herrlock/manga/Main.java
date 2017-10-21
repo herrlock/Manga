@@ -269,7 +269,8 @@ public final class Main {
             File file = ( File ) commandline.getParsedOptionValue( "folder" );
             if ( commandline.hasOption( "archive" ) ) {
                 String format = commandline.getOptionValue( "archive" );
-                ViewGeneratorMain.executeViewArchive( file, format );
+                boolean clean = commandline.hasOption( "clean" );
+                ViewGeneratorMain.executeViewArchive( file, format, clean );
             } else if ( commandline.hasOption( "html" ) ) {
                 ViewGeneratorMain.executeViewHtml( file );
             } else {

@@ -63,11 +63,13 @@ public final class ViewGeneratorMain {
      *            The mangafolder to create a viewer for (has the format {@code <manganame>_<timestamp>})
      * @param format
      *            The format of the archive to create
+     * @param clean
+     *            Whether to remove the images after archiving them
      */
-    public static void executeViewArchive( final File folder, final String format ) {
+    public static void executeViewArchive( final File folder, final String format, final boolean clean ) {
         try {
             File folderToUse = folder == null ? queryFolder() : folder;
-            ViewArchive.execute( folderToUse, format );
+            ViewArchive.execute( folderToUse, format, clean );
         } catch ( IOException ex ) {
             logger.error( ex );
         }

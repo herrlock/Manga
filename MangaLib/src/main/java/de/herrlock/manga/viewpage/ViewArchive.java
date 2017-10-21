@@ -5,9 +5,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -28,6 +32,7 @@ public final class ViewArchive {
     private final Path targetFolder;
     private final File folder;
     private final Format format;
+    private final boolean clean;
 
     /**
      * Creates the new ViewPage-instance and prints the html to the destination
@@ -35,9 +40,9 @@ public final class ViewArchive {
      * @param folder
      *            the folder to save the created files into
      */
-    public static void execute( final File folder, final String format ) {
-        logger.entry( folder, format );
-        ViewArchive viewPage = new ViewArchive( folder, format );
+    public static void execute( final File folder, final String format, final boolean clean ) {
+        logger.entry( folder, format, clean );
+        ViewArchive viewPage = new ViewArchive( folder, format, clean );
         viewPage.write();
     }
 
@@ -47,8 +52,8 @@ public final class ViewArchive {
      * @param folder
      *            the folder where to create the ViewPages
      */
-    private ViewArchive( final File folder, final String format ) {
-        logger.entry( folder, format );
+    private ViewArchive( final File folder, final String format, final boolean clean ) {
+        logger.entry( folder, format, clean );
         this.folder = folder;
         try {
             this.targetFolder = Files.createDirectories( Paths.get( "comicbookarchives", mangaName() ) );
@@ -56,11 +61,13 @@ public final class ViewArchive {
             throw new MDRuntimeException( ex );
         }
         this.format = Format.valueOf( format.toUpperCase( Locale.GERMAN ) );
+        this.clean = clean;
     }
 
     private String mangaName() {
         String foldername = this.folder.getName();
-        return ViewPageConstants.formatManganame( foldername );
+        String formattedManganame = ViewPageConstants.formatManganame( foldername );
+        return formattedManganame.replace( ' ', '-' );
     }
 
     private String decimalTransform( final String base, final int length ) {
@@ -104,7 +111,13 @@ public final class ViewArchive {
                 try ( ZipOutputStream archiveZip = new ZipOutputStream( Files.newOutputStream( zipArchive ) ) ) {
                     writeZipEntry( archiveZip, path );
                 }
+                if ( this.clean ) {
+                    Files.walkFileTree( path, DELETE_VISITOR );
+                }
             }
+        }
+        if ( this.clean ) {
+            Files.walkFileTree( folderPath, DELETE_VISITOR );
         }
     }
 
@@ -133,7 +146,13 @@ public final class ViewArchive {
                 try ( TarArchiveOutputStream archiveZip = new TarArchiveOutputStream( Files.newOutputStream( tarArchive ) ) ) {
                     writeTarEntry( archiveZip, path );
                 }
+                if ( this.clean ) {
+                    Files.walkFileTree( path, DELETE_VISITOR );
+                }
             }
+        }
+        if ( this.clean ) {
+            Files.walkFileTree( folderPath, DELETE_VISITOR );
         }
     }
 
@@ -155,5 +174,24 @@ public final class ViewArchive {
     public enum Format {
         CBZ, CBT;
     }
+
+    private static final FileVisitor<? super Path> DELETE_VISITOR = new SimpleFileVisitor<Path>() {
+
+        @Override
+        public FileVisitResult visitFile( final Path file, final BasicFileAttributes attrs ) throws IOException {
+            Files.delete( file );
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult postVisitDirectory( final Path dir, final IOException exc ) throws IOException {
+            if ( exc != null ) {
+                throw exc;
+            }
+            Files.delete( dir );
+            return FileVisitResult.CONTINUE;
+        }
+
+    };
 
 }
