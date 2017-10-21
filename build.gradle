@@ -42,7 +42,6 @@ allprojects {
 	dependencies {
 		// compile-annotations
 		compileOnly 'com.google.code.findbugs:annotations:3.0.1'
-		compileOnly 'com.google.auto.service:auto-service:1.0-rc3'
 		
 		// logging
 		if(!'MangaLog'.equals(project.name)) {
