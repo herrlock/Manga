@@ -12,6 +12,9 @@ import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
@@ -71,6 +74,8 @@ public final class Main {
             checkLoggerConfiguration( cmdContainer.getLogCmd() );
             // register MBean
             registerCliMBean( cmdContainer );
+            // set Swing-LookAndFeel
+            initLookAndFeel();
 
             // start running
             handleCommandline( cmdContainer );
@@ -106,6 +111,16 @@ public final class Main {
     private static void registerCliMBean( final CommandLineContainer cmdContainer ) {
         CliOptions cliOptions = new CliOptions( cmdContainer );
         Utils.registerMBean( cliOptions, "de.herrlock.manga:type=commandline" );
+    }
+
+    private static void initLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+        } catch ( ClassNotFoundException | InstantiationException | IllegalAccessException
+            | UnsupportedLookAndFeelException ex ) {
+            // ignore this error and go on with the default lookandfeel
+            logger.warn( ex );
+        }
     }
 
     private static void handleCommandline( final CommandLineContainer cmdContainer ) {
