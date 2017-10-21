@@ -265,37 +265,18 @@ public final class Main {
     private static void startViewpageCreator( final CommandLine commandline ) {
         logger.traceEntry( "Commandline: {}", commandline );
         logger.info( "Starting ViewpageCreator:" );
-        if ( commandline.hasOption( "folder" ) ) {
-            try {
-                File file = ( File ) commandline.getParsedOptionValue( "folder" );
-                if ( file.exists() ) {
-                    if ( file.isDirectory() ) {
-                        if ( commandline.hasOption( "archive" ) ) {
-                            String format = commandline.getOptionValue( "archive" );
-                            ViewGeneratorMain.executeViewArchive( file, format );
-                        } else if ( commandline.hasOption( "html" ) ) {
-                            ViewGeneratorMain.executeViewHtml( file );
-                        } else {
-                            throw new IllegalArgumentException( "Should not get here" );
-                        }
-                    } else {
-                        logger.error( "The folder \"{}\" must be a folder", file.getAbsolutePath() );
-                    }
-                } else {
-                    logger.error( "The folder \"{}\" does not exist", file.getAbsolutePath() );
-                }
-            } catch ( ParseException ex ) {
-                logger.error( ex );
-            }
-        } else {
+        try {
+            File file = ( File ) commandline.getParsedOptionValue( "folder" );
             if ( commandline.hasOption( "archive" ) ) {
                 String format = commandline.getOptionValue( "archive" );
-                ViewGeneratorMain.executeViewArchive( format );
+                ViewGeneratorMain.executeViewArchive( file, format );
             } else if ( commandline.hasOption( "html" ) ) {
-                ViewGeneratorMain.executeViewHtml();
+                ViewGeneratorMain.executeViewHtml( file );
             } else {
                 throw new IllegalArgumentException( "Should not get here" );
             }
+        } catch ( ParseException ex ) {
+            logger.error( ex );
         }
     }
 
