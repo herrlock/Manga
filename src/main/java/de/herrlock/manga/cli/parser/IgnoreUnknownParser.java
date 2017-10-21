@@ -22,14 +22,18 @@ public class IgnoreUnknownParser extends DefaultParser {
         List<String> argumentList = new ArrayList<>( Arrays.asList( arguments ) );
         CommandLine parse = null;
         while ( parse == null && !argumentList.isEmpty() ) {
+            /* parse == null and argumentList not empty */
             try {
-                parse = super.parse( options, argumentList.toArray( new String[argumentList.size()] ), properties, false );
+                String[] argumentListArray = argumentList.toArray( new String[argumentList.size()] );
+                parse = super.parse( options, argumentListArray, properties, false );
             } catch ( UnrecognizedOptionException ex ) {
                 argumentList.remove( ex.getOption() );
             }
         }
+        /* parse != null or argumentList is empty */
         if ( parse == null ) {
-            parse = new CommandLine.Builder().build();
+            /* argumentList is empty */
+            parse = super.parse( options, new String[0], properties, false );
         }
         return parse;
     }
