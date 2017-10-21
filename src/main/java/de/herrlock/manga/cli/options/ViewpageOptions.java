@@ -21,13 +21,13 @@ public final class ViewpageOptions extends SubOptions {
         .build();
     private final Option htmlOption = Option.builder() //
         .longOpt( "html" ) //
-        .desc( "Whether to create html-resources" ) //
+        .desc( "Create html-resources" ) //
         .build();
     private final Option archiveOption = Option.builder() //
         .longOpt( "archive" ) //
         .hasArg() //
         .argName( "format" ) //
-        .desc( "The archive-format to put the pages into [CBZ, CBT]" ) //
+        .desc( "Create a comicbook-archive in the given format [CBZ, CBT]" ) //
         .build();
     private final Option cleanOption = Option.builder() //
         .longOpt( "clean" ) //
@@ -45,6 +45,7 @@ public final class ViewpageOptions extends SubOptions {
      * Create new Options
      */
     public ViewpageOptions() {
+        this.typeGroup.setRequired( true );
         this.options = new Options() //
             .addOptionGroup( this.typeGroup ) //
             .addOption( this.folderOption ) //
