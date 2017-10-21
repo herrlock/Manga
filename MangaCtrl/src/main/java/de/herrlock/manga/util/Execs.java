@@ -44,7 +44,7 @@ public enum Execs implements Exec {
     VIEW_HTML_MAIN() {
         @Override
         public void execute() {
-            ViewGeneratorMain.executeViewHtml();
+            ViewGeneratorMain.executeViewHtml( null );
         }
     },
     DO_NOTHING() {

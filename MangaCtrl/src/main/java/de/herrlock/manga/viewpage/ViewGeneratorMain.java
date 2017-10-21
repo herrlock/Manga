@@ -1,8 +1,10 @@
 package de.herrlock.manga.viewpage;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
-import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,31 +13,36 @@ import org.apache.logging.log4j.Logger;
  * @author HerrLock
  */
 public final class ViewGeneratorMain {
-    @SuppressWarnings( "unused" )
     private static final Logger logger = LogManager.getLogger();
 
-    private static File getFolder() {
-        return getFolder( JOptionPane.showInputDialog( "Input the folder where the chapters are." ) );
-    }
+    private static File getFolder() throws IOException {
+        // TODO
+        JFileChooser fc = new JFileChooser( "." );
+        fc.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY );
+        int returnVal = fc.showOpenDialog( null );
+        logger.info( "returnVal: {}", returnVal );
+        logger.info( "selected: {}", fc.getSelectedFile() );
 
-    private static File getFolder( final String filename ) {
-        if ( filename == null ) {
-            return null;
-        }
-        File file = new File( filename );
-        if ( file.exists() ) {
-            return file;
-        }
-        return null;
-    }
-
-    public static void executeViewHtml() {
-        File folder = getFolder();
-        if ( folder == null ) {
-            JOptionPane.showMessageDialog( null, "Folder does not exists." );
+        if ( returnVal == JFileChooser.APPROVE_OPTION ) {
+            return fc.getSelectedFile();
+        } else if ( returnVal == JFileChooser.CANCEL_OPTION ) {
+            throw new IOException( "Aborted" );
+        } else if ( returnVal == JFileChooser.ERROR_OPTION ) {
+            throw new IOException( "Error" );
         } else {
-            executeViewHtml( folder );
+            throw new IllegalArgumentException();
         }
+    }
+
+    private static File queryFolder() throws IOException {
+        File file = getFolder();
+        if ( !file.exists() ) {
+            throw new FileNotFoundException( "The folder \"" + file.getAbsolutePath() + "\" does not exist" );
+        }
+        if ( !file.isDirectory() ) {
+            throw new IOException( "\"" + file.getAbsolutePath() + "\" must be a folder" );
+        }
+        return file;
     }
 
     /**
@@ -43,19 +50,11 @@ public final class ViewGeneratorMain {
      *            the mangafolder to create a viewer for (has the format {@code <manganame>_<timestamp>})
      */
     public static void executeViewHtml( final File folder ) {
-        ViewPage.execute( folder );
-    }
-
-    /**
-     * @param format
-     *            The format of the archive to create
-     */
-    public static void executeViewArchive( final String format ) {
-        File folder = getFolder();
-        if ( folder == null ) {
-            JOptionPane.showMessageDialog( null, "Folder does not exists." );
-        } else {
-            executeViewArchive( folder, format );
+        try {
+            File folderToUse = folder == null ? queryFolder() : folder;
+            ViewPage.execute( folderToUse );
+        } catch ( IOException ex ) {
+            logger.error( ex );
         }
     }
 
@@ -64,9 +63,16 @@ public final class ViewGeneratorMain {
      *            The mangafolder to create a viewer for (has the format {@code <manganame>_<timestamp>})
      * @param format
      *            The format of the archive to create
+     * @param clean
+     *            Whether to remove the images after archiving them
      */
-    public static void executeViewArchive( final File folder, final String format ) {
-        ViewArchive.execute( folder, format );
+    public static void executeViewArchive( final File folder, final String format, final boolean clean ) {
+        try {
+            File folderToUse = folder == null ? queryFolder() : folder;
+            ViewArchive.execute( folderToUse, format, clean );
+        } catch ( IOException ex ) {
+            logger.error( ex );
+        }
     }
 
     private ViewGeneratorMain() {

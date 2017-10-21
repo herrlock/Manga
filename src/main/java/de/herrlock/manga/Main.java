@@ -12,6 +12,9 @@ import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
@@ -71,6 +74,8 @@ public final class Main {
             checkLoggerConfiguration( cmdContainer.getLogCmd() );
             // register MBean
             registerCliMBean( cmdContainer );
+            // set Swing-LookAndFeel
+            initLookAndFeel();
 
             // start running
             handleCommandline( cmdContainer );
@@ -106,6 +111,16 @@ public final class Main {
     private static void registerCliMBean( final CommandLineContainer cmdContainer ) {
         CliOptions cliOptions = new CliOptions( cmdContainer );
         Utils.registerMBean( cliOptions, "de.herrlock.manga:type=commandline" );
+    }
+
+    private static void initLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+        } catch ( ClassNotFoundException | InstantiationException | IllegalAccessException
+            | UnsupportedLookAndFeelException ex ) {
+            // ignore this error and go on with the default lookandfeel
+            logger.warn( ex );
+        }
     }
 
     private static void handleCommandline( final CommandLineContainer cmdContainer ) {
@@ -265,37 +280,19 @@ public final class Main {
     private static void startViewpageCreator( final CommandLine commandline ) {
         logger.traceEntry( "Commandline: {}", commandline );
         logger.info( "Starting ViewpageCreator:" );
-        if ( commandline.hasOption( "folder" ) ) {
-            try {
-                File file = ( File ) commandline.getParsedOptionValue( "folder" );
-                if ( file.exists() ) {
-                    if ( file.isDirectory() ) {
-                        if ( commandline.hasOption( "archive" ) ) {
-                            String format = commandline.getOptionValue( "archive" );
-                            ViewGeneratorMain.executeViewArchive( file, format );
-                        } else if ( commandline.hasOption( "html" ) ) {
-                            ViewGeneratorMain.executeViewHtml( file );
-                        } else {
-                            throw new IllegalArgumentException( "Should not get here" );
-                        }
-                    } else {
-                        logger.error( "The folder \"{}\" must be a folder", file.getAbsolutePath() );
-                    }
-                } else {
-                    logger.error( "The folder \"{}\" does not exist", file.getAbsolutePath() );
-                }
-            } catch ( ParseException ex ) {
-                logger.error( ex );
-            }
-        } else {
+        try {
+            File file = ( File ) commandline.getParsedOptionValue( "folder" );
             if ( commandline.hasOption( "archive" ) ) {
                 String format = commandline.getOptionValue( "archive" );
-                ViewGeneratorMain.executeViewArchive( format );
+                boolean clean = commandline.hasOption( "clean" );
+                ViewGeneratorMain.executeViewArchive( file, format, clean );
             } else if ( commandline.hasOption( "html" ) ) {
-                ViewGeneratorMain.executeViewHtml();
+                ViewGeneratorMain.executeViewHtml( file );
             } else {
                 throw new IllegalArgumentException( "Should not get here" );
             }
+        } catch ( ParseException ex ) {
+            logger.error( ex );
         }
     }
 

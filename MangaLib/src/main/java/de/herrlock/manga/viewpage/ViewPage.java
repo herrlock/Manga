@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -126,9 +125,9 @@ public final class ViewPage {
         File maxFile = Collections.max( files, ViewPageConstants.NUMERIC_FILENAME_COMPARATOR );
         int max = Integer.parseInt( maxFile.getName() );
 
-        String mangaObject = MessageFormat.format(
-            "var manga = '{' title: \"{0}\", chapter: +\"{1}\", max_pages: +\"{2}\", chapterblock: +\"{3}\" '}';", mangaName(),
-            max, this.maxImgs, ( max - 1 ) / 10 );
+        String mangaObject = String.format(
+            "var manga = { title: \"%s\", chapter: +\"%s\", max_pages: +\"%s\", chapterblock: +\"%s\" };", mangaName(), max,
+            this.maxImgs, ( max - 1 ) / 10 );
         logger.info( "mangaObject: {}", mangaObject );
         head.appendElement( "script" ).text( mangaObject );
 
