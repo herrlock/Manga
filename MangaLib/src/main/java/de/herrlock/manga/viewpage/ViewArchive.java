@@ -125,21 +125,26 @@ public final class ViewArchive {
     }
 
     private void writeCBZ() throws IOException {
+        logger.traceEntry();
         Path folderPath = this.folder.toPath();
         try ( DirectoryStream<Path> directoryStream = Files.newDirectoryStream( folderPath,
             new ViewPageConstants.PathIsDirectoryFilter() ) ) {
             for ( Path path : directoryStream ) {
+                logger.debug( "Archiving {}", path );
                 String chapterName = decimalTransform( String.valueOf( path.getFileName() ), 4 );
                 Path zipArchive = this.targetFolder.resolve( mangaName() + '-' + chapterName + ".cbz" );
+                logger.debug( "Write to: {}", zipArchive );
                 try ( ZipOutputStream archiveZip = new ZipOutputStream( Files.newOutputStream( zipArchive ) ) ) {
                     writeZipEntry( archiveZip, path );
                 }
                 if ( this.clean ) {
+                    logger.debug( "Cleaning {}", path );
                     Files.walkFileTree( path, DELETE_VISITOR );
                 }
             }
         }
         if ( this.clean ) {
+            logger.debug( "Cleaning {}", folderPath );
             Files.walkFileTree( folderPath, DELETE_VISITOR );
         }
     }
@@ -160,21 +165,26 @@ public final class ViewArchive {
     }
 
     private void writeCBT() throws IOException {
+        logger.traceEntry();
         Path folderPath = this.folder.toPath();
         try ( DirectoryStream<Path> directoryStream = Files.newDirectoryStream( folderPath,
             new ViewPageConstants.PathIsDirectoryFilter() ) ) {
             for ( Path path : directoryStream ) {
+                logger.debug( "Archiving {}", path );
                 String chapterName = decimalTransform( String.valueOf( path.getFileName() ), 4 );
                 Path tarArchive = this.targetFolder.resolve( mangaName() + '-' + chapterName + ".cbt" );
+                logger.debug( "Write to: {}", tarArchive );
                 try ( TarArchiveOutputStream archiveZip = new TarArchiveOutputStream( Files.newOutputStream( tarArchive ) ) ) {
                     writeTarEntry( archiveZip, path );
                 }
                 if ( this.clean ) {
+                    logger.debug( "Cleaning {}", path );
                     Files.walkFileTree( path, DELETE_VISITOR );
                 }
             }
         }
         if ( this.clean ) {
+            logger.debug( "Cleaning {}", folderPath );
             Files.walkFileTree( folderPath, DELETE_VISITOR );
         }
     }
