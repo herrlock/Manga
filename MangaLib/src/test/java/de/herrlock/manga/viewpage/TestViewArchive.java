@@ -20,7 +20,7 @@ public class TestViewArchive {
     @Test
     public void testFormatArchiveFilename1() {
         String filename = ViewArchive.toArchiveEntryFilename( null );
-        Assert.assertEquals( "null", filename );
+        Assert.assertEquals( "", filename );
     }
 
     @Test
