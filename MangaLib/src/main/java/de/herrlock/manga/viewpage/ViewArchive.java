@@ -21,6 +21,8 @@ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import de.herrlock.manga.exceptions.MDRuntimeException;
 
 /**
@@ -88,7 +90,19 @@ public final class ViewArchive {
         return padWith0( beforeCommaString, length ) + afterCommaString.substring( 1 );
     }
 
-    private String padWith0( final String base, final int length ) {
+    @VisibleForTesting
+    static String toArchiveEntryFilename( final String filename ) {
+        if ( filename == null ) {
+            return "";
+        }
+        if ( filename.matches( "\\d+\\.jpg" ) ) {
+            return padWith0( filename, 7 );
+        }
+        return filename;
+    }
+
+    @VisibleForTesting
+    static String padWith0( final String base, final int length ) {
         StringBuilder sb = new StringBuilder( base );
         while ( sb.length() < length ) {
             sb.insert( 0, '0' );
@@ -133,7 +147,7 @@ public final class ViewArchive {
     private void writeZipEntry( final ZipOutputStream archiveZip, final Path current ) throws IOException {
         try ( DirectoryStream<Path> dirStream = Files.newDirectoryStream( current ) ) {
             for ( Path image : dirStream ) {
-                String imageName = String.valueOf( image.getFileName() );
+                String imageName = toArchiveEntryFilename( String.valueOf( image.getFileName() ) );
                 try {
                     ZipEntry imageEntry = new ZipEntry( imageName );
                     archiveZip.putNextEntry( imageEntry );
@@ -168,7 +182,7 @@ public final class ViewArchive {
     private void writeTarEntry( final TarArchiveOutputStream cbtStream, final Path current ) throws IOException {
         try ( DirectoryStream<Path> dirStream = Files.newDirectoryStream( current ) ) {
             for ( Path image : dirStream ) {
-                String imageName = String.valueOf( image.getFileName() );
+                String imageName = toArchiveEntryFilename( String.valueOf( image.getFileName() ) );
                 try {
                     TarArchiveEntry tarEntry = new TarArchiveEntry( image.toFile(), imageName );
                     cbtStream.putArchiveEntry( tarEntry );
