@@ -20,20 +20,32 @@ ext {
 
 apply plugin: 'distribution'
 
-description = 'The root-project. Contains the subprojects and a Launcher'
+description = 'The root-project. Contains the subprojects'
 
 // general setup
 allprojects {
-	apply plugin: 'eclipse'
-	
+
 	group 'de.herrlock.manga'
 	version '1.5.0-BETA-SNAPSHOT'
+
+	apply plugin: 'eclipse'
+
+	eclipse {
+		project {
+			if(rootProject.hasProperty('eclipseNamePrefix')) {
+				name = rootProject.eclipseNamePrefix + '-' + project.name
+			}
+		}
+	}
+}
+
+subprojects {
 	
 	apply plugin: 'java'
+	apply plugin: 'java-library'
 	apply plugin: 'findbugs'
 	apply plugin: 'pmd'
 	apply plugin: 'jacoco'
-	apply plugin: 'maven-publish'
 	apply plugin: 'project-report'
 	apply plugin: 'build-dashboard'
 	
@@ -43,17 +55,13 @@ allprojects {
 		// compile-annotations
 		compileOnly 'com.google.code.findbugs:annotations:3.0.1'
 		
-		// logging
-		if(!'MangaLog'.equals(project.name)) {
-			compile project(':MangaLog')
-		}
-		
 		// for testing
-		testCompile 'junit:junit:4.12'
+		testImplementation 'junit:junit:4.12'
 	}
 	
 	tasks.withType(JavaCompile) {
 		options.encoding = 'UTF-8'
+		// options.javaHome = 
 	}
 	
 	jar.manifest {
@@ -85,9 +93,6 @@ allprojects {
 	
 	eclipse {
 		project {
-			if(rootProject.hasProperty('eclipseNamePrefix')) {
-				name = rootProject.eclipseNamePrefix + '-' + project.name
-			}
 			buildCommand 'edu.umd.cs.findbugs.plugin.eclipse.findbugsBuilder'
 		}
 		classpath {
@@ -120,45 +125,25 @@ allprojects {
 	}
 	assemble.dependsOn javadocJar
 	
-	publishing {
-		publications {
-			mavenJava(MavenPublication) {
-				from components.java
-				artifact sourceJar
-				artifact javadocJar
-			}
-		}
-	}
-	
 	repositories {
 		mavenCentral()
 	}
 }
 
-task dist(dependsOn: [distZip, distTar], group: 'Distribution', description: 'Run distZip and distTar') {
+// evaluate subprojects
+project.evaluationDependsOnChildren()
+
+// configure root-project
+
+task dist(dependsOn: [assembleDist], group: 'Distribution', description: 'Run distZip and distTar') {
 	// does nothing itself
 }
 
-// project-configuration
-dependencies {
-	compile project(':MangaLib')
-	compile project(':MangaCtrl')
-	
-	compile 'commons-cli:commons-cli:1.4'
-}
-
-jar {
-	manifest {
-		attributes 'Main-Class' : 'de.herrlock.manga.Launcher',
-			'Class-Path' : project.configurations.runtime
-				.plus(file('MangaExt.jar'))
-				.collect{ file -> "lib/${file.name}" }
-				.sort{ it.toLowerCase() }
-				.join(' ')
-	}
-}
-
 task packDependencies {
+	subprojects.each {
+		dependsOn it.jar
+	}
+
 	File targetFolder = new File(rootProject.buildDir, 'tmp/packJars/')
 	doLast {
 		targetFolder.mkdirs()
@@ -177,7 +162,7 @@ task packDependencies {
 	if(project.hasProperty('stripLNT')) {
 		packer.properties().put(packer.CODE_ATTRIBUTE_PFX + 'LineNumberTable', packer.STRIP)
 	}
-	configurations.runtime.each { jar ->
+	project(':MangaLauncher').configurations.runtimeClasspath.each { jar ->
 		if(!'jfxrt.jar'.equals(jar.getName())) {
 			inputs.file jar
 			File newFile = new File(targetFolder, jar.getName() + '.pack.gz')
@@ -197,10 +182,9 @@ task packDependencies {
 distributions {
 	main {
 		baseName = project.name
-		version = project.version
 		contents {
 			from 'LICENSE'
-			from (jar.outputs) {
+			from (project(':MangaLauncher').tasks.jar) {
 				rename '.+', 'MangaLauncher.jar'
 			}
 			into ('licenses') {

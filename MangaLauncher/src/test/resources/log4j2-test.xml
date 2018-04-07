@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" packages="de.herrlock.log4j2.filter">
+	<Properties>
+		<Property name="_tim">%d{HH:mm:ss.SSS}</Property>
+		<Property name="_lev">%-5level</Property>
+		<Property name="_log">%logger{1.}.%M</Property>
+		<Property name="patternLayout">${_tim} [%t] ${_lev} ${_log} - %m%n</Property>
+		<Property name="consoleLayout">${_lev} ${_log} - %m%n</Property>
+		<Property name="debugConsoleLayout"> >>> ${_log} - %m%n</Property>
+	</Properties>
+	<Appenders>
+		<Console name="ConsoleLogger" target="SYSTEM_OUT">
+			<PatternLayout pattern="${consoleLayout}" />
+		</Console>
+		<Console name="DebugConsoleLogger" target="SYSTEM_OUT">
+			<PatternLayout pattern="${debugConsoleLayout}" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="org.apache.http" level="INFO" additivity="false">
+			<AppenderRef ref="ConsoleLogger" />
+		</Logger>
+		<Logger name="com.example.java.debug" level="INFO" additivity="false">
+			<AppenderRef ref="DebugConsoleLogger" />
+		</Logger>
+		<!-- <Root level="DEBUG"> -->
+		<Root level="ALL">
+			<AppenderRef ref="ConsoleLogger">
+				<LevelFilter level="ALL" />
+			</AppenderRef>
+		</Root>
+	</Loggers>
+
+</Configuration>

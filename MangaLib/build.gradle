@@ -4,19 +4,22 @@ description = 'The central library for this application containing all general i
 
 dependencies {
 	// utilities
-	compile 'com.google.guava:guava:20.0'
-	compile 'org.glassfish:javax.json:1.0.4'
+	api 'com.google.guava:guava:20.0'
+	api 'org.glassfish:javax.json:1.0.4'
+	
+	// logging
+	api 'org.apache.logging.log4j:log4j-api:2.8.2'
 	
 	// IO
-	compile 'org.jsoup:jsoup:1.10.2'
-	compile 'org.apache.httpcomponents:httpclient:4.5.3'
+	implementation 'org.jsoup:jsoup:1.10.2'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.3'
 	
 	// embed jetty
-	compile 'org.eclipse.jetty:jetty-server:9.2.21.v20170120'
-	compile 'org.eclipse.jetty:jetty-security:9.2.21.v20170120'
+	implementation 'org.eclipse.jetty:jetty-server:9.2.21.v20170120'
+	implementation 'org.eclipse.jetty:jetty-security:9.2.21.v20170120'
 	
 	// compressing and archiving files
-	compile 'org.apache.commons:commons-compress:1.14'
+	implementation 'org.apache.commons:commons-compress:1.14'
 	
 	// ServiceLoader-annotations
 	compileOnly 'com.google.auto.service:auto-service:1.0-rc3'
@@ -24,7 +27,7 @@ dependencies {
 }
 
 pmdMain.ignoreFailures = true
-pmdMain << {
+pmdMain.doLast {
 	assertPmdErrors pmdMain, [
 		[clazz:'de.herrlock.manga.http.jetty.JettyServer', method: 'start', rule:'AvoidCatchingGenericException'],
 		[clazz:'de.herrlock.manga.http.jetty.JettyServer', method: 'stop', rule:'AvoidCatchingGenericException'],
