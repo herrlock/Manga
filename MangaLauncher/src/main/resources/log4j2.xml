@@ -44,7 +44,7 @@
 		
 		<Root level="INFO">
 			<AppenderRef ref="ConsoleLogger">
-				<LevelFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+				<LevelFilter level="INFO" />
 			</AppenderRef>
 		</Root>
 	</Loggers>

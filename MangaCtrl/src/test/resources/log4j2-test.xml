@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO"
-	packages="de.herrlock.manga.ui.log,de.herrlock.log4j2.filter">
+<Configuration status="INFO" packages="de.herrlock.log4j2.filter">
 	<Properties>
 		<Property name="_tim">%d{HH:mm:ss.SSS}</Property>
 		<Property name="_lev">%-5level</Property>
@@ -27,7 +26,7 @@
 		<!-- <Root level="DEBUG"> -->
 		<Root level="ALL">
 			<AppenderRef ref="ConsoleLogger">
-				<LevelFilter level="ALL" onMatch="ACCEPT" onMismatch="DENY" />
+				<LevelFilter level="ALL" />
 			</AppenderRef>
 		</Root>
 	</Loggers>

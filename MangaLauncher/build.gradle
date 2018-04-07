@@ -1,0 +1,23 @@
+logger.info ' >> MangaLauncher'
+
+description = 'A project that contains the main-classes.'
+
+dependencies {
+	implementation project(':MangaLib')
+	implementation project(':MangaCtrl')
+	
+	implementation 'commons-cli:commons-cli:1.4'
+	
+	implementation 'org.apache.logging.log4j:log4j-core:2.8.2'
+}
+
+jar {
+	manifest {
+		attributes 'Main-Class' : 'de.herrlock.manga.Launcher',
+			'Class-Path' : configurations.runtimeClasspath
+				.plus(file('MangaExt.jar'))
+				.collect{ file -> "lib/${file.name}" }
+				.sort{ it.toLowerCase() }
+				.join(' ')
+	}
+}
