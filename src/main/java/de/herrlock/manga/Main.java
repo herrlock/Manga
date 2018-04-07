@@ -12,9 +12,6 @@ import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
@@ -39,13 +36,11 @@ import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.http.ServerMain;
 import de.herrlock.manga.index.IndexerMain;
-import de.herrlock.manga.util.ClassPathHack;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.Configuration;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import de.herrlock.manga.util.configuration.IndexerConfiguration;
 import de.herrlock.manga.viewpage.ViewGeneratorMain;
-import javafx.application.Application;
 
 /**
  * Entrance class for the jar.
@@ -54,8 +49,6 @@ import javafx.application.Application;
  */
 public final class Main {
     private static final Logger logger = LogManager.getLogger();
-
-    public static final String FX_AVAILABILE = "de.herrlock.manga.fxAvailabile";
 
     /**
      * Entry point for the application.
@@ -68,31 +61,16 @@ public final class Main {
             final CommandLineContainer cmdContainer = OptionParser.parseOptions( args );
             logger.debug( Arrays.toString( cmdContainer.getMainCmd().getOptions() ) );
 
-            // search for javafx and try to hack it into the system-classloader
-            runFxClasspathHack();
             // optional alter loglevel-configuration
             checkLoggerConfiguration( cmdContainer.getLogCmd() );
             // register MBean
             registerCliMBean( cmdContainer );
-            // set Swing-LookAndFeel
-            initLookAndFeel();
 
             // start running
             handleCommandline( cmdContainer );
         } catch ( ParseException ex ) {
             logger.error( ex.getMessage(), ex );
             printHelp( null );
-        }
-    }
-
-    private static void runFxClasspathHack() {
-        logger.traceEntry();
-        try {
-            ClassPathHack.makeSureJfxrtLoaded();
-            System.setProperty( FX_AVAILABILE, "true" );
-        } catch ( ClassNotFoundException ex ) {
-            logger.error( "Could not find jfxrt.jar on the classpath. "
-                + "This does not have to be fatal as it may be that JavaFX is not needed" );
         }
     }
 
@@ -113,16 +91,6 @@ public final class Main {
         Utils.registerMBean( cliOptions, "de.herrlock.manga:type=commandline" );
     }
 
-    private static void initLookAndFeel() {
-        try {
-            UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
-        } catch ( ClassNotFoundException | InstantiationException | IllegalAccessException
-            | UnsupportedLookAndFeelException ex ) {
-            // ignore this error and go on with the default lookandfeel
-            logger.warn( ex );
-        }
-    }
-
     private static void handleCommandline( final CommandLineContainer cmdContainer ) {
         CommandLine commandline = cmdContainer.getMainCmd();
         CommandLine subCommandline = cmdContainer.getSubCmd();
@@ -140,9 +108,6 @@ public final class Main {
         } else if ( commandline.hasOption( "dialog" ) ) {
             logger.debug( "Commandline has \"dialog\", start Dialog-Downloader" );
             startDialogDownloader();
-        } else if ( commandline.hasOption( "gui" ) ) {
-            logger.debug( "Commandline has \"gui\", launch GUI" );
-            startGuiDownloader();
         } else if ( commandline.hasOption( "viewpage" ) ) {
             logger.debug( "Commandline has \"viewpage\", start creating html-resources" );
             startViewpageCreator( subCommandline );
@@ -269,12 +234,6 @@ public final class Main {
                 DownloadProcessor.getInstance().addDownload( downloader );
             }
         }
-    }
-
-    private static void startGuiDownloader() {
-        logger.traceEntry();
-        logger.info( "Starting GUI:" );
-        Application.launch( Ctrl.class );
     }
 
     private static void startViewpageCreator( final CommandLine commandline ) {

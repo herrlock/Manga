@@ -21,10 +21,6 @@ public final class MainOptions {
         .longOpt( "dialog" ) //
         .desc( "start the dialog-downloader" ) //
         .build();
-    private final Option guiTypeOption = Option.builder() //
-        .longOpt( "gui" ) //
-        .desc( "start the gui-downloader" ) //
-        .build();
     private final Option viewpageTypeOption = Option.builder() //
         .longOpt( "viewpage" ) //
         .desc( "create files to view the downloaded manga" ) //
@@ -48,7 +44,6 @@ public final class MainOptions {
     private final OptionGroup typeOptionGroup = new OptionGroup() //
         .addOption( this.consoleTypeOption ) //
         .addOption( this.dialogTypeOption ) //
-        .addOption( this.guiTypeOption ) //
         .addOption( this.viewpageTypeOption ) //
         .addOption( this.serverTypeOption ) //
         .addOption( this.helpOption ) //
@@ -65,7 +60,7 @@ public final class MainOptions {
     public MainOptions() {
         this.typeOptionGroup.setRequired( true );
         this.options = new Options().addOptionGroup( this.typeOptionGroup );
-        this.defaultValues.setProperty( "gui", "true" );
+        this.defaultValues.setProperty( "help", "true" );
     }
 
     /**

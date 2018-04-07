@@ -46,7 +46,7 @@ public final class OptionParser {
     }
 
     private static CommandLine getSubOptions( final CommandLine mainOptions, final String... args ) throws ParseException {
-        String givenMode = FluentIterable.of( "console", "dialog", "gui", "viewpage", "server", "help", "version" )
+        String givenMode = FluentIterable.of( "console", "viewpage", "server", "help", "version" )
             .firstMatch( new InCommandline( mainOptions ) ).orNull();
         Options options = SubOptions.getSubOptions( givenMode ).getOptions();
         return new IgnoreUnknownParser().parse( options, Arrays.copyOf( args, args.length ), false );

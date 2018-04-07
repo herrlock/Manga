@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Constants;
-import de.herrlock.manga.util.CtrlUtils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -46,7 +45,6 @@ public final class SettingsFileDownloader extends MDownloader {
         try {
             downloadAll();
         } catch ( Exception ex ) {
-            CtrlUtils.showErrorDialog( ex );
             throw ex;
         }
     }
