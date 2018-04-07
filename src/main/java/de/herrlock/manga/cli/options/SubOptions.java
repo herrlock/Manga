@@ -20,10 +20,6 @@ public abstract class SubOptions {
             return new EmptyOptions();
         } else if ( "console".equalsIgnoreCase( name ) ) {
             return new ConsoleOptions();
-        } else if ( "dialog".equalsIgnoreCase( name ) ) {
-            return new EmptyOptions();
-        } else if ( "gui".equalsIgnoreCase( name ) ) {
-            return new EmptyOptions();
         } else if ( "viewpage".equalsIgnoreCase( name ) ) {
             return new ViewpageOptions();
         } else if ( "server".equalsIgnoreCase( name ) ) {
