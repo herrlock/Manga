@@ -19,7 +19,7 @@ if [[ -d "$folder" ]]; then
 	# check if the script exists and is executable
 	if [[ -x "$script" ]]; then
 		# launch script
-		"$script" "$@"
+		./"$script" "$@"
 	else
 		echo "\"$folder/$script\" is not executable"
 	fi
