@@ -11,18 +11,22 @@ import org.apache.commons.cli.Options;
  */
 public final class LogOptions {
 
+    public static final String LOG_OPTION = "log";
+    public static final String QUIET_OPTION = "quiet";
+    public static final String VERBOSE_OPTION = "verbose";
+
     private final Option logLevelOption = Option.builder( "l" ) //
-        .longOpt( "log" ) //
+        .longOpt( LOG_OPTION ) //
         .hasArg() //
         .argName( "level" ) //
         .desc( "Loglevel to use. Allowed values: OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL" ) //
         .build();
     private final Option quietOption = Option.builder( "q" ) //
-        .longOpt( "quiet" ) //
+        .longOpt( QUIET_OPTION ) //
         .desc( "Set the log-level to WARN" ) //
         .build();
     private final Option verboseOption = Option.builder( "v" ) //
-        .longOpt( "verbose" ) //
+        .longOpt( VERBOSE_OPTION ) //
         .desc( "Set the log-level to DEBUG" ) //
         .build();
 

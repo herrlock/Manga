@@ -13,28 +13,34 @@ import org.apache.commons.cli.Options;
  */
 public final class ViewpageOptions extends SubOptions {
 
+    public static final String FOLDER_OPTION = "folder";
+    public static final String HTML_OPTION = "html";
+    public static final String ARCHIVE_OPTION = "archive";
+    public static final String CLEAN_OPTION = "clean";
+    public static final String CLEAR_OPTION = "clear";
+
     private final Option folderOption = Option.builder() //
-        .longOpt( "folder" ) //
+        .longOpt( FOLDER_OPTION ) //
         .hasArg() //
         .type( File.class ) //
         .desc( "The folder to create the files in" ) //
         .build();
     private final Option htmlOption = Option.builder() //
-        .longOpt( "html" ) //
+        .longOpt( HTML_OPTION ) //
         .desc( "Create html-resources" ) //
         .build();
     private final Option archiveOption = Option.builder() //
-        .longOpt( "archive" ) //
+        .longOpt( ARCHIVE_OPTION ) //
         .hasArg() //
         .argName( "format" ) //
         .desc( "Create a comicbook-archive in the given format [CBZ, CBT]" ) //
         .build();
     private final Option cleanOption = Option.builder( "c" ) //
-        .longOpt( "clean" ) //
+        .longOpt( CLEAN_OPTION ) //
         .desc( "Whether to remove the downloaded chapters after archiving them" ) //
         .build();
     private final Option clearOption = Option.builder() //
-        .longOpt( "clear" ) //
+        .longOpt( CLEAR_OPTION ) //
         .desc( "Same as \"clean\"" ) //
         .build();
 

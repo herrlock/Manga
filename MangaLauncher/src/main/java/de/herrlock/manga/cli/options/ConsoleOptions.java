@@ -10,39 +10,54 @@ import org.apache.commons.cli.Options;
  */
 public final class ConsoleOptions extends SubOptions {
 
+    public static final String URL_OPTION = "url";
+    public static final String PATTERN_OPTION = "pattern";
+    public static final String PROXY_OPTION = "proxy";
+    public static final String TIMEOUT_OPTION = "timeout";
+    public static final String INTERACTIVE_OPTION = "interactive";
+    public static final String HOSTER_OPTION = "hoster";
+    public static final String LIST_OPTION = "list";
+    public static final String JSON_OPTION = "json";
+
     private final Option urlOption = Option.builder( "u" ) //
-        .longOpt( "url" ) //
+        .longOpt( URL_OPTION ) //
         .hasArg() //
         .argName( "url" ) //
         .desc( "The URL to download from" ) //
         .build();
     private final Option patternOption = Option.builder( "p" ) //
-        .longOpt( "pattern" ) //
+        .longOpt( PATTERN_OPTION ) //
         .hasArg() //
         .argName( "pattern" ) //
         .desc( "The pattern to use" ) //
         .build();
+    private final Option proxyOption = Option.builder( "x" ) //
+        .longOpt( PROXY_OPTION ) //
+        .hasArg() //
+        .argName( "proxy" ) //
+        .desc( "The Proxy to use (protocol://[user[:password]@]url:port)" ) //
+        .build();
     private final Option timeoutOption = Option.builder( "t" ) //
-        .longOpt( "timeout" ) //
+        .longOpt( TIMEOUT_OPTION ) //
         .hasArg() //
         .argName( "timeout" ) //
         .desc( "The timeout for HTTP-requests in seconds" ) //
         .build();
     private final Option interactiveOption = Option.builder( "i" ) //
-        .longOpt( "interactive" ) //
+        .longOpt( INTERACTIVE_OPTION ) //
         .desc( "Interactive mode: request confirmation etc. from STDIN" ) //
         .build();
 
     private final Option showHosterOption = Option.builder() //
-        .longOpt( "hoster" ) //
+        .longOpt( HOSTER_OPTION ) //
         .desc( "List all availabile Hoster" ) //
         .build();
     private final Option createListOption = Option.builder() //
-        .longOpt( "list" ) //
+        .longOpt( LIST_OPTION ) //
         .desc( "Create a list of all availabile mangas" ) //
         .build();
     private final Option fromJsonOption = Option.builder() //
-        .longOpt( "json" ) //
+        .longOpt( JSON_OPTION ) //
         .hasArg() //
         .optionalArg( true ) //
         .argName( "json-file" ) //

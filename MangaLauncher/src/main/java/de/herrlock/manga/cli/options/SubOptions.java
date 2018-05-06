@@ -1,5 +1,11 @@
 package de.herrlock.manga.cli.options;
 
+import static de.herrlock.manga.cli.options.MainOptions.CONSOLE_OPTION;
+import static de.herrlock.manga.cli.options.MainOptions.HELP_OPTION;
+import static de.herrlock.manga.cli.options.MainOptions.SERVER_OPTION;
+import static de.herrlock.manga.cli.options.MainOptions.VERSION_OPTION;
+import static de.herrlock.manga.cli.options.MainOptions.VIEWPAGE_OPTION;
+
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
@@ -18,15 +24,15 @@ public abstract class SubOptions {
     public static SubOptions getSubOptions( final String name ) {
         if ( name == null ) {
             return new EmptyOptions();
-        } else if ( "console".equalsIgnoreCase( name ) ) {
+        } else if ( CONSOLE_OPTION.equalsIgnoreCase( name ) ) {
             return new ConsoleOptions();
-        } else if ( "viewpage".equalsIgnoreCase( name ) ) {
+        } else if ( VIEWPAGE_OPTION.equalsIgnoreCase( name ) ) {
             return new ViewpageOptions();
-        } else if ( "server".equalsIgnoreCase( name ) ) {
+        } else if ( SERVER_OPTION.equalsIgnoreCase( name ) ) {
             return new ServerOptions();
-        } else if ( "help".equalsIgnoreCase( name ) ) {
+        } else if ( HELP_OPTION.equalsIgnoreCase( name ) ) {
             return new EmptyOptions();
-        } else if ( "version".equalsIgnoreCase( name ) ) {
+        } else if ( VERSION_OPTION.equalsIgnoreCase( name ) ) {
             return new EmptyOptions();
         } else {
             return new EmptyOptions();

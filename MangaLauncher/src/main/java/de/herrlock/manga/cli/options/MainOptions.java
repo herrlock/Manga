@@ -13,31 +13,38 @@ import org.apache.commons.cli.Options;
  */
 public final class MainOptions {
 
+    public static final String CONSOLE_OPTION = "console";
+    public static final String DIALOG_OPTION = "dialog";
+    public static final String VIEWPAGE_OPTION = "viewpage";
+    public static final String SERVER_OPTION = "server";
+    public static final String HELP_OPTION = "help";
+    public static final String VERSION_OPTION = "version";
+
     private final Option consoleTypeOption = Option.builder() //
-        .longOpt( "console" ) //
+        .longOpt( CONSOLE_OPTION ) //
         .desc( "start the console-downloader" ) //
         .build();
     private final Option dialogTypeOption = Option.builder() //
-        .longOpt( "dialog" ) //
+        .longOpt( DIALOG_OPTION ) //
         .desc( "start the dialog-downloader" ) //
         .build();
     private final Option viewpageTypeOption = Option.builder() //
-        .longOpt( "viewpage" ) //
+        .longOpt( VIEWPAGE_OPTION ) //
         .desc( "create files to view the downloaded manga" ) //
         .build();
     private final Option serverTypeOption = Option.builder() //
-        .longOpt( "server" ) //
+        .longOpt( SERVER_OPTION ) //
         .desc( "start the server to listen to http-requests" ) //
         .build();
     private final Option helpOption = Option.builder( "h" ) //
-        .longOpt( "help" ) //
+        .longOpt( HELP_OPTION ) //
         .hasArg( true ) //
         .optionalArg( true ) //
         .argName( "context" ) //
         .desc( "show the help and exit" ) //
         .build();
     private final Option versionOption = Option.builder() //
-        .longOpt( "version" ) //
+        .longOpt( VERSION_OPTION ) //
         .desc( "show the version and exit" ) //
         .build();
 

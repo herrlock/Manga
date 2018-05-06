@@ -1,5 +1,11 @@
 package de.herrlock.manga.cli;
 
+import static de.herrlock.manga.cli.options.MainOptions.CONSOLE_OPTION;
+import static de.herrlock.manga.cli.options.MainOptions.HELP_OPTION;
+import static de.herrlock.manga.cli.options.MainOptions.SERVER_OPTION;
+import static de.herrlock.manga.cli.options.MainOptions.VERSION_OPTION;
+import static de.herrlock.manga.cli.options.MainOptions.VIEWPAGE_OPTION;
+
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -46,7 +52,7 @@ public final class OptionParser {
     }
 
     private static CommandLine getSubOptions( final CommandLine mainOptions, final String... args ) throws ParseException {
-        String givenMode = FluentIterable.of( "console", "viewpage", "server", "help", "version" )
+        String givenMode = FluentIterable.of( CONSOLE_OPTION, VIEWPAGE_OPTION, SERVER_OPTION, HELP_OPTION, VERSION_OPTION )
             .firstMatch( new InCommandline( mainOptions ) ).orNull();
         Options options = SubOptions.getSubOptions( givenMode ).getOptions();
         return new IgnoreUnknownParser().parse( options, Arrays.copyOf( args, args.length ), false );

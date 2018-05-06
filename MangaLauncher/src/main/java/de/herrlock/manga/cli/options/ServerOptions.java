@@ -10,8 +10,10 @@ import org.apache.commons.cli.Options;
  */
 public final class ServerOptions extends SubOptions {
 
+    public static final String BROWSER_OPTION = "browser";
+
     private final Option launchBrowserOption = Option.builder() //
-        .longOpt( "browser" ) //
+        .longOpt( BROWSER_OPTION ) //
         .desc( "Start the browser after starting the server" ) //
         .build();
 
