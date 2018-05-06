@@ -28,7 +28,7 @@ import de.herrlock.manga.util.configuration.IndexerConfiguration;
 
 @AutoService( HosterImpl.class )
 @Details( name = "Mangafox", baseUrl = "http://www.mangafox.me/" )
-public final class MangaFox extends HosterImpl {
+public class MangaFox extends HosterImpl {
     private static final Logger logger = LogManager.getLogger();
 
     @Override
