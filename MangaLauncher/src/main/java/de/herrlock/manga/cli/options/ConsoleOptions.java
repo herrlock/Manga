@@ -41,6 +41,13 @@ public final class ConsoleOptions extends SubOptions {
         .longOpt( "list" ) //
         .desc( "Create a list of all availabile mangas" ) //
         .build();
+    private final Option fromJsonOption = Option.builder() //
+        .longOpt( "json" ) //
+        .hasArg() //
+        .optionalArg( true ) //
+        .argName( "json-file" ) //
+        .desc( "Start downloads from Json-File" ) //
+        .build();
 
     private final Options options;
 
@@ -55,6 +62,7 @@ public final class ConsoleOptions extends SubOptions {
             .addOption( this.interactiveOption ) //
             .addOption( this.showHosterOption ) //
             .addOption( this.createListOption ) //
+            .addOption( this.fromJsonOption ) //
         ;
     }
 

@@ -2,6 +2,7 @@ package de.herrlock.manga;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
@@ -29,6 +30,11 @@ import de.herrlock.manga.cli.OptionParser.CommandLineContainer;
 import de.herrlock.manga.cli.options.LogOptions;
 import de.herrlock.manga.cli.options.MainOptions;
 import de.herrlock.manga.cli.options.SubOptions;
+import de.herrlock.manga.config.ConfigUtils;
+import de.herrlock.manga.config.json.Global;
+import de.herrlock.manga.config.json.JsonConfiguration;
+import de.herrlock.manga.config.json.JsonUtils;
+import de.herrlock.manga.config.json.SingleDownload;
 import de.herrlock.manga.downloader.ConsoleDownloader;
 import de.herrlock.manga.downloader.DownloadProcessor;
 import de.herrlock.manga.exceptions.MDException;
@@ -214,6 +220,9 @@ public final class Main {
         if ( commandline.hasOption( "hoster" ) ) {
             logger.info( "Printing all Hoster:" );
             PrintAllHoster.printHoster( System.out );
+        } else if ( commandline.hasOption( "json" ) ) {
+            logger.info( "Loading configuration from json" );
+            processJsonConfiguration( commandline );
         } else {
             Properties properties = Utils.newPropertiesBuilder() //
                 .setProperty( Configuration.URL, commandline.getOptionValue( "url" ) ) //
@@ -237,6 +246,44 @@ public final class Main {
                     JettyClient.stopHttpClient();
                     throw ex;
                 }
+                DownloadProcessor.getInstance().addDownload( downloader );
+            }
+        }
+    }
+
+    private static void processJsonConfiguration( final CommandLine commandline ) {
+        // TODO:
+        String jsonPath = commandline.getOptionValue( "json" );
+        JsonConfiguration jsonConfiguration;
+        try ( InputStream jsonStream = ConfigUtils.getStreamFor( jsonPath ) ) {
+            jsonConfiguration = JsonUtils.readJson( jsonStream );
+        } catch ( IOException ex ) {
+            throw new MDRuntimeException( ex );
+        }
+        if ( jsonConfiguration.getDownloads() != null && !jsonConfiguration.getDownloads().isEmpty() ) {
+            Global global = jsonConfiguration.getGlobal();
+            String proxy = null;
+            Boolean interactive = null;
+            Integer timeout = null;
+            if ( global != null ) {
+                proxy = global.getProxy();
+                interactive = global.getInteractive();
+                timeout = global.getTimeout();
+            }
+            for ( SingleDownload single : jsonConfiguration.getDownloads() ) {
+                String url = single.getUrl();
+                String pattern = single.getPattern();
+                Properties properties = Utils.newPropertiesBuilder() //
+                    .setProperty( Configuration.URL, url ) //
+                    .setProperty( Configuration.PROXY, proxy ) //
+                    .setProperty( Configuration.PATTERN, pattern ) //
+                    .setProperty( Configuration.TIMEOUT, timeout == null ? null : String.valueOf( timeout ) ) //
+                    .setProperty( Configuration.HEADLESS, String.valueOf( interactive == null ? Boolean.FALSE : interactive ) ) //
+                    .build();
+                logger.info( "Starting Commandline-Downloader:" );
+                DownloadConfiguration conf = DownloadConfiguration.create( properties );
+                logger.info( conf );
+                ConsoleDownloader downloader = new ConsoleDownloader( conf, conf.isHeadless() );
                 DownloadProcessor.getInstance().addDownload( downloader );
             }
         }

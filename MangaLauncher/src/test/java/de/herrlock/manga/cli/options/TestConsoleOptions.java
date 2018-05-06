@@ -10,7 +10,7 @@ public final class TestConsoleOptions {
     public void testOptionCount() {
         ConsoleOptions mainOptions = new ConsoleOptions();
         Options options = mainOptions.getOptions();
-        Assert.assertEquals( 6, options.getOptions().size() );
+        Assert.assertEquals( 7, options.getOptions().size() );
     }
 
     @Test
