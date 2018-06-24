@@ -18,6 +18,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.server.handler.ShutdownHandler;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Constraint;
 
 import de.herrlock.manga.exceptions.MDException;
@@ -148,7 +149,7 @@ public final class JettyServer {
     private Handler createResourceHandler() {
         ResourceHandler resourceHandler = new ResourceHandler();
         // load from the jetty-folder
-        resourceHandler.setResourceBase( "jetty" );
+        resourceHandler.setBaseResource( Resource.newClassPathResource( "/jetty" ) );
         // enable caching via etags
         resourceHandler.setEtags( true );
         // prevent locked files
