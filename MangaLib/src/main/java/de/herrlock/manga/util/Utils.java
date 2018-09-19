@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
@@ -51,10 +54,27 @@ public final class Utils {
     private static final Logger logger = LogManager.getLogger();
     // private static final Logger debugLogger = LogManager.getLogger( "com.example.java.debug.Utils" );
 
-    private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool( 20,
-        new ThreadFactoryBuilder().setNameFormat( "Droggelb%dcher" ).setDaemon( true ).build() );
+    private static final ExecutorService THREAD_POOL;
     private static final HttpClient CLIENT = HttpClients.createDefault();
     private static final Joiner COMMA_JOINER = Joiner.on( "," );
+
+    static {
+        int count;
+        Path confFile = Paths.get( "conf", "settings.conf" );
+        if ( Files.exists( confFile ) ) {
+            Properties p = new Properties();
+            try ( InputStream in = Files.newInputStream( confFile ) ) {
+                p.load( in );
+            } catch ( IOException ex ) {
+                throw new RuntimeException( ex );
+            }
+            count = Integer.parseInt( p.getProperty( "thread.count", "20" ) );
+        } else {
+            count = 20;
+        }
+        THREAD_POOL = Executors.newFixedThreadPool( count,
+            new ThreadFactoryBuilder().setNameFormat( "Droggelb%dcher" ).setDaemon( true ).build() );
+    }
 
     /**
      * Creates new {@link HttpGet} to the given {@link URL} and with the given {@link DownloadConfiguration}
