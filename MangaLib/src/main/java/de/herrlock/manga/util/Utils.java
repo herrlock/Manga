@@ -57,23 +57,26 @@ public final class Utils {
     private static final ExecutorService THREAD_POOL;
     private static final HttpClient CLIENT = HttpClients.createDefault();
     private static final Joiner COMMA_JOINER = Joiner.on( "," );
+    private static final String USER_AGENT;
 
     static {
-        int count;
+        final Properties p = new Properties();
+
         Path confFile = Paths.get( "conf", "settings.conf" );
         if ( Files.exists( confFile ) ) {
-            Properties p = new Properties();
             try ( InputStream in = Files.newInputStream( confFile ) ) {
                 p.load( in );
             } catch ( IOException ex ) {
                 throw new RuntimeException( ex );
             }
-            count = Integer.parseInt( p.getProperty( "thread.count", "20" ) );
-        } else {
-            count = 20;
         }
+
+        int count = Integer.parseInt( p.getProperty( "thread.count", "20" ) );
         THREAD_POOL = Executors.newFixedThreadPool( count,
             new ThreadFactoryBuilder().setNameFormat( "Droggelb%dcher" ).setDaemon( true ).build() );
+
+        USER_AGENT = p.getProperty( "http.useragent",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0" );
     }
 
     /**
@@ -96,6 +99,7 @@ public final class Utils {
             .setProxy( proxyHost ) //
             .build();
         get.setConfig( config );
+        get.setHeader( HttpHeaders.USER_AGENT, USER_AGENT );
         String creds = proxy.getCreds();
         if ( creds != null ) {
             get.setHeader( HttpHeaders.PROXY_AUTHORIZATION, "Basic " + creds );
