@@ -18,11 +18,10 @@ public class JDConfiguration extends DownloadConfiguration {
     public static JDConfiguration create( final Properties p ) {
         boolean headless = _getIsHeadless( p );
         URL url = _createUrl( p );
-        ProxyStorage proxy = _createProxy( p );
         ChapterPattern pattern = _createPattern( p );
         int timeout = _createTimeout( p );
         File folderwatch = _createFolderwatch( p );
-        return new JDConfiguration( headless, url, proxy, pattern, timeout, folderwatch );
+        return new JDConfiguration( headless, url, pattern, timeout, folderwatch );
     }
 
     /**
@@ -32,9 +31,6 @@ public class JDConfiguration extends DownloadConfiguration {
      *            if the downloader runs in cli-mode (true) or with a type of gui (false)
      * @param url
      *            an {@link URL} to the manga's base-page.
-     * @param proxy
-     *            a {@link ProxyStorage} containing proxy-address and -credentials of the used proxy. Or {@code null} to use no
-     *            proxy.
      * @param pattern
      *            the {@link ChapterPattern} to use. Or null to use the default {@link ChapterPattern} to download all.
      * @param timeout
@@ -42,9 +38,9 @@ public class JDConfiguration extends DownloadConfiguration {
      * @param folderwatch
      *            the {@link File} pointing to the folderwatch-folder from the local JDownloader-installation
      */
-    public JDConfiguration( final boolean headless, final URL url, final ProxyStorage proxy, final ChapterPattern pattern,
-        final int timeout, final File folderwatch ) {
-        super( headless, url, proxy, pattern, timeout );
+    public JDConfiguration( final boolean headless, final URL url, final ChapterPattern pattern, final int timeout,
+        final File folderwatch ) {
+        super( headless, url, pattern, timeout );
         this.folderwatch = Objects.requireNonNull( folderwatch, "The folderwatch-folder must not be null" );
     }
 

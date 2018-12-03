@@ -1,6 +1,8 @@
 package de.herrlock.manga.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -16,7 +18,6 @@ import java.util.concurrent.Future;
 
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
-import org.junit.Assert;
 import org.junit.Test;
 
 import de.herrlock.manga.DummyServer;
@@ -35,7 +36,7 @@ public class TestUtils {
         DownloadConfiguration conf = DownloadConfiguration.create( p );
         Request request = Utils.createHttpGet( url, conf );
         URI uri = request.getURI();
-        Assert.assertEquals( "http://localhost:1337/", uri.toString() );
+        assertEquals( "http://localhost:1337/", uri.toString() );
     }
 
     @Test
@@ -68,8 +69,8 @@ public class TestUtils {
         BoolRunnable runnable2 = new BoolRunnable();
         Collection<? extends Thread> threads = Arrays.asList( new Thread( runnable1 ), new Thread( runnable2 ) );
         Utils.startAndWaitForThreads( threads );
-        Assert.assertTrue( runnable1.ran );
-        Assert.assertTrue( runnable2.ran );
+        assertTrue( runnable1.ran );
+        assertTrue( runnable2.ran );
     }
 
     @SuppressWarnings( "deprecation" )
@@ -79,7 +80,7 @@ public class TestUtils {
         Thread interruptThread = new Thread( new InterruptingRunnable( Thread.currentThread() ) );
         Collection<? extends Thread> threads = Arrays.asList( runningThread, interruptThread );
         Utils.startAndWaitForThreads( threads );
-        Assert.fail( "should not get here" );
+        fail( "should not get here" );
     }
 
     @Test
@@ -89,7 +90,7 @@ public class TestUtils {
         Collection<? extends Callable<Boolean>> callables = Arrays.asList( callable1, callable2 );
         List<Future<Boolean>> futures = Utils.callCallables( callables );
         for ( Future<Boolean> future : futures ) {
-            Assert.assertEquals( Boolean.TRUE, future.get() );
+            assertTrue( future.get() );
         }
     }
 
@@ -99,7 +100,7 @@ public class TestUtils {
         Callable<Void> interruptCallable = new InterruptingRunnable( Thread.currentThread() );
         Collection<? extends Callable<Void>> callables = Arrays.asList( runningCallable, interruptCallable );
         Utils.callCallables( callables );
-        Assert.fail( "should not get here" );
+        fail( "should not get here" );
     }
 
     private static final class BoolRunnable implements Runnable {

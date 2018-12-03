@@ -86,14 +86,12 @@ final class StartDownloadHandler extends AbstractHandler {
         logger.traceEntry();
         String type = baseRequest.getParameter( "type" );
         String url = baseRequest.getParameter( "url" );
-        String proxy = baseRequest.getParameter( "proxy" );
         String pattern = baseRequest.getParameter( "pattern" );
 
         if ( "dl".equals( type ) ) {
             Properties p = Utils.newPropertiesBuilder() //
                 .setProperty( Configuration.HEADLESS, "true" ) //
                 .setProperty( Configuration.URL, url ) //
-                .setProperty( Configuration.PROXY, proxy ) //
                 .setProperty( Configuration.PATTERN, pattern ) //
                 .build();
             final DownloadConfiguration conf = DownloadConfiguration.create( p );

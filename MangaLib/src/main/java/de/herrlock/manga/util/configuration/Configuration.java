@@ -113,64 +113,6 @@ public abstract class Configuration {
     }
 
     /**
-     * Creates a {@link ProxyStorage} that serves as proxy
-     * 
-     * @param p
-     *            the {@link Properties} where to search for proxy-settings
-     * @return a {@link ProxyStorage} containing the proxy-settings. Does not return null, instead the {@link ProxyStorage}
-     *         contains {@code null}-values
-     * @throws InitializeException
-     *             in case the given url is malformed or cannot be resolved
-     */
-    protected static ProxyStorage _createProxy( final Properties p ) throws InitializeException {
-        logger.traceEntry();
-        // get proxy
-        try {
-            String proxyString = p.getProperty( PROXY );
-            if ( proxyString != null && !"".equals( proxyString ) ) {
-                return createProxyStorage( proxyString );
-            }
-        } catch ( final MalformedURLException ex ) {
-            logger.error( "", ex );
-            throw new InitializeException( "proxy-url is malformed or not recognized.", ex );
-        }
-        logger.debug( "No Proxy" );
-        return new ProxyStorage();
-    }
-
-    protected static ProxyStorage createProxyStorage( final String urlString ) throws MalformedURLException {
-        if ( urlString == null ) {
-            return new ProxyStorage();
-        }
-        final URL url;
-        if ( urlString.startsWith( "http://" ) || urlString.startsWith( "https://" ) ) {
-            url = new URL( urlString );
-        } else {
-            url = new URL( "http://" + urlString );
-        }
-        String proxyHost = url.getHost();
-        int proxyPort = url.getPort();
-        String scheme = url.getProtocol();
-        logger.debug( "Proxy-URL: {}:{}", proxyHost, proxyPort );
-        Origin origin = new Origin( scheme, proxyHost, proxyPort );
-
-        ProxyStorage proxyStorage;
-        String userInfo = url.getUserInfo();
-        if ( userInfo == null ) {
-            logger.debug( "No proxy-authentification" );
-            proxyStorage = new ProxyStorage( origin );
-        } else {
-            String[] userInfoSplit = userInfo.split( ":" );
-            String proxyUser = userInfoSplit[0];
-            String proxyPassword = userInfoSplit[1];
-            logger.debug( "Proxy-User: {}", proxyUser );
-            proxyStorage = new ProxyStorage( origin, proxyUser, proxyPassword );
-        }
-
-        return proxyStorage;
-    }
-
-    /**
      * Creates a {@link ChapterPattern} to choose specific Chapters to download
      * 
      * @param p

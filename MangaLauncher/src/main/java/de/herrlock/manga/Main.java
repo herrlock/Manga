@@ -216,7 +216,6 @@ public final class Main {
         } else {
             Properties properties = Utils.newPropertiesBuilder() //
                 .setProperty( Configuration.URL, commandline.getOptionValue( "url" ) ) //
-                .setProperty( Configuration.PROXY, commandline.getOptionValue( "proxy" ) ) //
                 .setProperty( Configuration.PATTERN, commandline.getOptionValue( "pattern" ) ) //
                 .setProperty( Configuration.TIMEOUT, commandline.getOptionValue( "timeout" ) ) //
                 .setProperty( Configuration.HEADLESS, String.valueOf( commandline.hasOption( 'i' ) ) ) //

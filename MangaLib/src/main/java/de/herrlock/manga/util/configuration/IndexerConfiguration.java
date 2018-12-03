@@ -20,9 +20,8 @@ public class IndexerConfiguration extends DownloadConfiguration {
      */
     public static IndexerConfiguration create( final Properties p ) {
         URL url = _createUrlNotRequired( p );
-        ProxyStorage proxy = _createProxy( p );
         int timeout = _createTimeout( p );
-        return new IndexerConfiguration( url, proxy, timeout );
+        return new IndexerConfiguration( url, timeout );
     }
 
     /**
@@ -30,17 +29,15 @@ public class IndexerConfiguration extends DownloadConfiguration {
      * 
      * @param url
      *            an {@link URL} to the manga's base-page.
-     * @param proxy
-     *            a ProxyStorage containing address and auth of the used proxy. Must no be null.
      * @param timeout
      *            the timeout for the http-requests. The dafult-value is used if negative.
      */
-    public IndexerConfiguration( final URL url, final ProxyStorage proxy, final int timeout ) {
-        super( true, false, url, proxy, null, timeout );
+    public IndexerConfiguration( final URL url, final int timeout ) {
+        super( true, false, url, null, timeout );
     }
 
     @Override
     public String toString() {
-        return MessageFormat.format( "URL: {0}, Proxy: {1}, Timeout: {2}", getUrl(), getProxy(), getTimeout() );
+        return MessageFormat.format( "URL: {0}, Timeout: {1}", getUrl(), getTimeout() );
     }
 }

@@ -22,12 +22,6 @@ public final class ConsoleOptions extends SubOptions {
         .argName( "pattern" ) //
         .desc( "The pattern to use" ) //
         .build();
-    private final Option proxyOption = Option.builder( "x" ) //
-        .longOpt( "proxy" ) //
-        .hasArg() //
-        .argName( "proxy" ) //
-        .desc( "The Proxy to use (protocol://[user[:password]@]url:port)" ) //
-        .build();
     private final Option timeoutOption = Option.builder( "t" ) //
         .longOpt( "timeout" ) //
         .hasArg() //
@@ -57,7 +51,6 @@ public final class ConsoleOptions extends SubOptions {
         this.options = new Options() //
             .addOption( this.urlOption ) //
             .addOption( this.patternOption ) //
-            .addOption( this.proxyOption ) //
             .addOption( this.timeoutOption ) //
             .addOption( this.interactiveOption ) //
             .addOption( this.showHosterOption ) //

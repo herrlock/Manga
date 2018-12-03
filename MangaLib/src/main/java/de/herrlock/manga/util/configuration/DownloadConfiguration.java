@@ -14,7 +14,6 @@ import de.herrlock.manga.util.ChapterPattern;
  */
 public class DownloadConfiguration extends Configuration {
     private final URL url;
-    private final ProxyStorage proxy;
     private final ChapterPattern pattern;
     private final int timeout;
 
@@ -28,10 +27,9 @@ public class DownloadConfiguration extends Configuration {
     public static DownloadConfiguration create( final Properties p ) {
         boolean isHeadless = _getIsHeadless( p );
         URL url = _createUrl( p );
-        ProxyStorage proxy = _createProxy( p );
         ChapterPattern pattern = _createPattern( p );
         int timeout = _createTimeout( p );
-        return new DownloadConfiguration( isHeadless, url, proxy, pattern, timeout );
+        return new DownloadConfiguration( isHeadless, url, pattern, timeout );
     }
 
     /**
@@ -41,16 +39,13 @@ public class DownloadConfiguration extends Configuration {
      *            if the downloader runs in cli-mode (true) or with a type of gui (false)
      * @param url
      *            an {@link URL} to the manga's base-page.
-     * @param proxy
-     *            a ProxyStorage containing address and auth of the used proxy. Must no be null.
      * @param pattern
      *            the {@link ChapterPattern} to use. Or null to use the default {@link ChapterPattern} to download all.
      * @param timeout
      *            the timeout for the http-requests. The dafult-value is used if negative.
      */
-    public DownloadConfiguration( final boolean isHeadless, final URL url, final ProxyStorage proxy, final ChapterPattern pattern,
-        final int timeout ) {
-        this( isHeadless, true, url, proxy, pattern, timeout );
+    public DownloadConfiguration( final boolean isHeadless, final URL url, final ChapterPattern pattern, final int timeout ) {
+        this( isHeadless, true, url, pattern, timeout );
     }
 
     /**
@@ -63,18 +58,15 @@ public class DownloadConfiguration extends Configuration {
      *            {@code null}.
      * @param url
      *            an {@link URL} to the manga's base-page.
-     * @param proxy
-     *            a ProxyStorage containing address and auth of the used proxy. Must no be null.
      * @param pattern
      *            the {@link ChapterPattern} to use. Or null to use the default {@link ChapterPattern} to download all.
      * @param timeout
      *            the timeout for the http-requests. The dafult-value is used if negative.
      */
-    protected DownloadConfiguration( final boolean isHeadless, final boolean requireURL, final URL url, final ProxyStorage proxy,
+    protected DownloadConfiguration( final boolean isHeadless, final boolean requireURL, final URL url,
         final ChapterPattern pattern, final int timeout ) {
         super( isHeadless );
         this.url = requireURL ? Objects.requireNonNull( url, "A URL is required." ) : url;
-        this.proxy = proxy == null ? new ProxyStorage() : proxy;
         this.pattern = pattern == null ? new ChapterPattern( "" ) : pattern;
         this.timeout = timeout >= 0 ? timeout : TIMEOUT_DEFAULT;
     }
@@ -86,15 +78,6 @@ public class DownloadConfiguration extends Configuration {
      */
     public final URL getUrl() {
         return this.url;
-    }
-
-    /**
-     * Getter for the Proxy
-     * 
-     * @return a {@link ProxyStorage} containing the proxy-address and -credentials from this {@link DownloadConfiguration}
-     */
-    public final ProxyStorage getProxy() {
-        return this.proxy;
     }
 
     /**
@@ -117,7 +100,6 @@ public class DownloadConfiguration extends Configuration {
 
     @Override
     public String toString() {
-        return MessageFormat.format( "URL: {0}, Pattern: {1}, Proxy: {2}, Timeout: {3}", this.url, this.pattern, this.proxy,
-            this.timeout );
+        return MessageFormat.format( "URL: {0}, Pattern: {1}, Timeout: {2}", this.url, this.pattern, this.timeout );
     }
 }
