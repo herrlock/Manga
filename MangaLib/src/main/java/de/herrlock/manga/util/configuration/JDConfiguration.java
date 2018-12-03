@@ -5,8 +5,6 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.Properties;
 
-import org.apache.http.HttpHost;
-
 import de.herrlock.manga.util.ChapterPattern;
 
 /**
@@ -35,7 +33,8 @@ public class JDConfiguration extends DownloadConfiguration {
      * @param url
      *            an {@link URL} to the manga's base-page.
      * @param proxy
-     *            a {@link HttpHost} containing schema, host-name and port of the used proxy. Or {@code null} to use no proxy.
+     *            a {@link ProxyStorage} containing proxy-address and -credentials of the used proxy. Or {@code null} to use no
+     *            proxy.
      * @param pattern
      *            the {@link ChapterPattern} to use. Or null to use the default {@link ChapterPattern} to download all.
      * @param timeout

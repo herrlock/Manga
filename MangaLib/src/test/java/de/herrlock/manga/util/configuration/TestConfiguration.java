@@ -7,10 +7,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.Properties;
 
-import org.apache.http.HttpHost;
+import org.eclipse.jetty.client.Origin;
+import org.eclipse.jetty.client.Origin.Address;
 import org.junit.Test;
 
 import de.herrlock.manga.exceptions.InitializeException;
@@ -65,37 +65,40 @@ public class TestConfiguration {
     public void testCreateProxy_validHttp() {
         this.p.put( Configuration.PROXY, "http://localhost:1337" );
         ProxyStorage proxyStorage = Configuration._createProxy( this.p );
-        HttpHost proxy = proxyStorage.getHttpHost();
-        assertEquals( "http", proxy.getSchemeName() );
-        assertEquals( "localhost", proxy.getHostName() );
-        assertEquals( 1337, proxy.getPort() );
+        Origin proxy = proxyStorage.getOrigin();
+        Address address = proxy.getAddress();
+        assertEquals( "http", proxy.getScheme() );
+        assertEquals( "localhost", address.getHost() );
+        assertEquals( 1337, address.getPort() );
     }
 
     @Test
     public void testCreateProxy_validHttps() {
         this.p.put( Configuration.PROXY, "https://localhost:1337" );
         ProxyStorage proxyStorage = Configuration._createProxy( this.p );
-        HttpHost proxy = proxyStorage.getHttpHost();
-        assertEquals( "https", proxy.getSchemeName() );
-        assertEquals( "localhost", proxy.getHostName() );
-        assertEquals( 1337, proxy.getPort() );
+        Origin proxy = proxyStorage.getOrigin();
+        Address address = proxy.getAddress();
+        assertEquals( "https", proxy.getScheme() );
+        assertEquals( "localhost", address.getHost() );
+        assertEquals( 1337, address.getPort() );
     }
 
     @Test
     public void testCreateProxy_validNoSchema() {
         this.p.put( Configuration.PROXY, "localhost:1337" );
         ProxyStorage proxyStorage = Configuration._createProxy( this.p );
-        HttpHost proxy = proxyStorage.getHttpHost();
-        assertEquals( "http", proxy.getSchemeName() );
-        assertEquals( "localhost", proxy.getHostName() );
-        assertEquals( 1337, proxy.getPort() );
+        Origin proxy = proxyStorage.getOrigin();
+        Address address = proxy.getAddress();
+        assertEquals( "http", proxy.getScheme() );
+        assertEquals( "localhost", address.getHost() );
+        assertEquals( 1337, address.getPort() );
     }
 
     @Test
     public void testCreateProxy_missing1() {
         ProxyStorage proxy = Configuration._createProxy( this.p );
         assertNotNull( proxy );
-        assertNull( proxy.getHttpHost() );
+        assertNull( proxy.getOrigin() );
         assertNull( proxy.getCreds() );
     }
 
@@ -104,20 +107,15 @@ public class TestConfiguration {
         this.p.put( Configuration.PROXY, "" );
         ProxyStorage proxy = Configuration._createProxy( this.p );
         assertNotNull( proxy );
-        assertNull( proxy.getHttpHost() );
+        assertNull( proxy.getOrigin() );
         assertNull( proxy.getCreds() );
     }
 
-    @Test( expected = InitializeException.class )
+    @Test
     public void testCreateProxy_unknownHost() {
-        try {
-            this.p.put( Configuration.PROXY, "http://thisUrlShouldNotExist.herrlock.de" );
-            Configuration._createProxy( this.p );
-        } catch ( InitializeException ex ) {
-            assertEquals( "proxy-url is malformed or not recognized.", ex.getMessage() );
-            assertEquals( UnknownHostException.class, ex.getCause().getClass() );
-            throw ex;
-        }
+        this.p.put( Configuration.PROXY, "http://thisUrlShouldNotExist.herrlock.de" );
+        ProxyStorage proxyStorage = Configuration._createProxy( this.p );
+        assertEquals( "thisUrlShouldNotExist.herrlock.de", proxyStorage.getOrigin().getAddress().getHost() );
     }
 
     @Test( expected = InitializeException.class )

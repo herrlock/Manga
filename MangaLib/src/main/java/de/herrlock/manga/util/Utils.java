@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.management.ManagementFactory;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,9 +14,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
@@ -23,26 +28,24 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.HttpProxy;
+import org.eclipse.jetty.client.ProxyConfiguration.Proxy;
+import org.eclipse.jetty.client.api.Authentication;
+import org.eclipse.jetty.client.api.ContentResponse;
+import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.util.BasicAuthentication;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.jsoup.nodes.Document;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import de.herrlock.manga.exceptions.MDRuntimeException;
-import de.herrlock.manga.util.configuration.Configuration.ProxyStorage;
+import de.herrlock.manga.exceptions.ResponseHandlerException;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -54,9 +57,9 @@ public final class Utils {
     private static final Logger logger = LogManager.getLogger();
     // private static final Logger debugLogger = LogManager.getLogger( "com.example.java.debug.Utils" );
 
-    private static final ExecutorService THREAD_POOL;
-    private static final HttpClient CLIENT = HttpClients.createDefault();
     private static final Joiner COMMA_JOINER = Joiner.on( "," );
+    private static final ExecutorService THREAD_POOL;
+    private static final HttpClient CLIENT;
     private static final String USER_AGENT;
 
     static {
@@ -71,65 +74,65 @@ public final class Utils {
             }
         }
 
-        int count = Integer.parseInt( p.getProperty( "thread.count", "20" ) );
+        int count = Integer.parseInt( p.getProperty( "thread.count", "10" ) );
         THREAD_POOL = Executors.newFixedThreadPool( count,
-            new ThreadFactoryBuilder().setNameFormat( "Droggelb%dcher" ).setDaemon( true ).build() );
+            new ThreadFactoryBuilder().setNameFormat( "Droggelb%03dcher" ).setDaemon( true ).build() );
 
-        USER_AGENT = p.getProperty( "http.useragent",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0" );
-    }
+        USER_AGENT = p.getProperty( "http.useragent" );
 
-    /**
-     * Creates new {@link HttpGet} to the given {@link URL} and with the given {@link DownloadConfiguration}
-     * 
-     * @param url
-     *            the {@link URL} to connect to
-     * @param conf
-     *            a {@link DownloadConfiguration} containing the parameters to use
-     * @return a new {@link HttpGet}
-     */
-    public static HttpGet createHttpGet( final URL url, final DownloadConfiguration conf ) {
-        HttpGet get = new HttpGet( url.toExternalForm() );
-        int timeout = conf.getTimeout();
-        ProxyStorage proxy = conf.getProxy();
-        HttpHost proxyHost = proxy.getHttpHost();
-        RequestConfig config = RequestConfig.custom() //
-            .setConnectTimeout( timeout ) //
-            .setSocketTimeout( timeout ) //
-            .setProxy( proxyHost ) //
-            .build();
-        get.setConfig( config );
-        get.setHeader( HttpHeaders.USER_AGENT, USER_AGENT );
-        String creds = proxy.getCreds();
-        if ( creds != null ) {
-            get.setHeader( HttpHeaders.PROXY_AUTHORIZATION, "Basic " + creds );
+        boolean trustAll = Boolean.parseBoolean( p.getProperty( "https.trustAll", "false" ) );
+        SslContextFactory sslCF = new SslContextFactory( trustAll );
+        CLIENT = new HttpClient( sslCF );
+
+        String proxyHost = p.getProperty( "http.proxy.host" );
+        String proxyPort = p.getProperty( "http.proxy.port", "-1" );
+        if ( proxyHost != null && !"-1".equals( proxyPort ) ) {
+            int proxyPortInt = Integer.parseInt( proxyPort );
+            Proxy proxy = new HttpProxy( proxyHost, proxyPortInt );
+            CLIENT.getProxyConfiguration().getProxies().add( proxy );
+
+            String proxyUser = p.getProperty( "http.proxy.user" );
+            String proxyPassword = p.getProperty( "http.proxy.password" );
+            String proxyRealm = p.getProperty( "http.proxy.realm" );
+            if ( proxyUser != null && proxyPassword != null && proxyRealm != null ) {
+                URI proxyURI = URI.create( proxyHost + ":" + proxyPort );
+                Authentication proxyAuthentication = new BasicAuthentication( proxyURI, proxyRealm, proxyUser, proxyPassword );
+                CLIENT.getAuthenticationStore().addAuthentication( proxyAuthentication );
+            }
         }
-        return get;
+
+        try {
+            CLIENT.start();
+        } catch ( Exception e ) {
+            throw new RuntimeException( e );
+        }
     }
 
     /**
-     * Executes the given {@link HttpGet} with a {@link CloseableHttpClient}
+     * Creates new {@link Request} to the given {@link URL} and with the given {@link DownloadConfiguration}
      * 
-     * @param <T>
-     *            the result-type of the ResponseHandler
-     * @param httpGet
-     *            the {@link HttpGet} to execute
-     * @param handler
-     *            the {@link ResponseHandler} to process the result with
-     * @return the result of the {@link ResponseHandler}
-     * @throws IOException
-     *             thrown by {@link CloseableHttpClient#execute(org.apache.http.client.methods.HttpUriRequest)}
-     * @throws ClientProtocolException
-     *             thrown by {@link CloseableHttpClient#execute(org.apache.http.client.methods.HttpUriRequest)}
+     * @param url
+     *            the {@link URL} to connect to
+     * @param conf
+     *            a {@link DownloadConfiguration} containing the parameters to use
+     * @return a new {@link Request}
      */
-    public static <T> T executeHttpGet( final HttpGet httpGet, final ResponseHandler<T> handler )
-        throws IOException, ClientProtocolException {
-        return CLIENT.execute( httpGet, handler );
+    public static Request createHttpGet( final URL url, final DownloadConfiguration conf ) {
+        URI uri;
+        try {
+            uri = url.toURI();
+        } catch ( URISyntaxException ex ) {
+            throw new RuntimeException( ex );
+        }
+        Request request = CLIENT.newRequest( uri ) //
+            .timeout( conf.getTimeout(), TimeUnit.SECONDS ) //
+            .agent( USER_AGENT );
+
+        return request;
     }
 
     /**
-     * Creates a {@link HttpGet} with {@link #createHttpGet(URL, DownloadConfiguration)} and executes it with
-     * {@link #executeHttpGet(HttpGet, ResponseHandler)}
+     * Creates a {@link Request} with {@link #createHttpGet(URL, DownloadConfiguration)} and executes it.
      * 
      * @param <T>
      *            the result-type of the ResponseHandler
@@ -139,28 +142,30 @@ public final class Utils {
      *            a {@link DownloadConfiguration} containing the parameters to use
      * @param handler
      *            the {@link ResponseHandler} to process the result with
-     * @return the result of the {@link ResponseHandler}
+     * @return the result of the handler
      * @throws IOException
-     *             thrown by {@link CloseableHttpClient#execute(org.apache.http.client.methods.HttpUriRequest)}
-     * @throws ClientProtocolException
-     *             thrown by {@link CloseableHttpClient#execute(org.apache.http.client.methods.HttpUriRequest)}
+     *             thrown when {@link Request#send()} throws an Exception
      */
     public static <T> T getDataAndExecuteResponseHandler( final URL url, final DownloadConfiguration conf,
-        final ResponseHandler<T> handler ) throws IOException, ClientProtocolException {
+        final ResponseHandler<T> handler ) throws IOException {
         logger.debug( "url: {}", url );
-        final HttpGet httpGet = createHttpGet( url, conf );
-        return executeHttpGet( httpGet, handler );
+        final Request request = createHttpGet( url, conf );
+        try {
+            ContentResponse response = request.send();
+            return handler.apply( response );
+        } catch ( InterruptedException | TimeoutException | ExecutionException ex ) {
+            throw new IOException( ex );
+        }
     }
 
-    public static Document getDocument( final URL url, final DownloadConfiguration conf )
-        throws ClientProtocolException, IOException {
+    public static Document getDocument( final URL url, final DownloadConfiguration conf ) throws IOException {
         return getDataAndExecuteResponseHandler( url, conf, new ToDocumentHandler( url, conf ) );
     }
 
     /**
-     * converts an {@link HttpResponse} to a Jsoup-{@link Document}
+     * converts an {@link ContentResponse} to a Jsoup-{@link Document}
      */
-    public static final class ToDocumentHandler implements ResponseHandler<Document> {
+    public static final class ToDocumentHandler extends ResponseHandler<Document> {
 
         private final URL url;
         private final DownloadConfiguration conf;
@@ -171,21 +176,27 @@ public final class Utils {
         }
 
         @Override
-        public Document handleResponse( final HttpResponse response ) throws ClientProtocolException, IOException {
-            int statusCode = response.getStatusLine().getStatusCode();
+        public Document handle( final ContentResponse response ) {
+            if ( response == null ) {
+                throw new IllegalArgumentException( "ContentResponse is null" );
+            }
+            int statusCode = response.getStatus();
             switch ( statusCode ) {
                 case 200:
-                    return Constants.TO_DOCUMENT_HANDLER.handleResponse( response );
+                    return Constants.TO_DOCUMENT_HANDLER.apply( response );
                 case 503:
-                    EntityUtils.consume( response.getEntity() );
                     try {
                         Thread.sleep( 1000 );
                     } catch ( InterruptedException ex ) {
-                        throw new IOException( ex );
+                        throw new ResponseHandlerException( ex );
                     }
-                    return Utils.getDataAndExecuteResponseHandler( this.url, this.conf, this );
+                    try {
+                        return Utils.getDataAndExecuteResponseHandler( this.url, this.conf, this );
+                    } catch ( IOException ex ) {
+                        throw new ResponseHandlerException( ex );
+                    }
                 default:
-                    throw new IOException( "Received non-expected StatusCode: " + statusCode );
+                    throw new ResponseHandlerException( "Received non-expected StatusCode: " + statusCode );
             }
         }
     }
@@ -237,6 +248,8 @@ public final class Utils {
      * 
      * @param callable
      *            the Callable to run
+     * @param <T>
+     *            result-type of the passed Callable
      * @return the Future that results from this Callable
      * @see ExecutorService#submit(Callable)
      */
@@ -335,6 +348,20 @@ public final class Utils {
 
     private Utils() {
         // not called
+    }
+
+    public static abstract class ResponseHandler<T> implements Function<ContentResponse, T> {
+
+        protected abstract T handle( ContentResponse input ) throws IOException;
+
+        @Override
+        public final T apply( final ContentResponse input ) throws ResponseHandlerException {
+            try {
+                return handle( input );
+            } catch ( IOException ex ) {
+                throw new ResponseHandlerException( ex );
+            }
+        }
     }
 
     public static class PropertiesBuilder {

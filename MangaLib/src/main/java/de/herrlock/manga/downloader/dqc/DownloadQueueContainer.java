@@ -1,12 +1,10 @@
 package de.herrlock.manga.downloader.dqc;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.List;
@@ -14,22 +12,18 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.impl.client.AbstractResponseHandler;
-import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.client.HttpResponseException;
+import org.eclipse.jetty.client.api.ContentResponse;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.io.ByteStreams;
 
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.util.Utils;
+import de.herrlock.manga.util.Utils.ResponseHandler;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import de.herrlock.manga.util.management.DownloadQueueContainerMXBean;
 
@@ -127,7 +121,7 @@ public final class DownloadQueueContainer implements DownloadQueueContainerMXBea
         return this.clc.getImageLink( pageUrl );
     }
 
-    void executeDownload( final URL url, final ResponseHandler<?> handler ) throws ClientProtocolException, IOException {
+    void executeDownload( final URL url, final ResponseHandler<?> handler ) throws IOException {
         Utils.getDataAndExecuteResponseHandler( url, this.conf, handler );
     }
 
@@ -136,7 +130,7 @@ public final class DownloadQueueContainer implements DownloadQueueContainerMXBea
      * 
      * @author HerrLock
      */
-    private final class DownloadThread extends AbstractResponseHandler<Void> implements Callable<Void> {
+    private final class DownloadThread extends ResponseHandler<Void> implements Callable<Void> {
         private final Page page;
 
         public DownloadThread( final Page page ) {
@@ -145,13 +139,11 @@ public final class DownloadQueueContainer implements DownloadQueueContainerMXBea
         }
 
         @Override
-        public Void handleEntity( final HttpEntity entity ) throws IOException {
-            try ( InputStream in = entity.getContent() ) {
-                try ( OutputStream out = new FileOutputStream( this.page.getTargetFile() ) ) {
-                    ByteStreams.copy( in, out );
-                }
-            } finally {
-                EntityUtils.consume( entity );
+        public Void handle( final ContentResponse response ) {
+            try {
+                Files.write( this.page.getTargetFile().toPath(), response.getContent() );
+            } catch ( IOException e ) {
+                throw new RuntimeException( e );
             }
             return null;
         }
@@ -171,7 +163,7 @@ public final class DownloadQueueContainer implements DownloadQueueContainerMXBea
                 // timeout, try again
                 add( this.page );
             } catch ( final HttpResponseException ex ) {
-                if ( ex.getStatusCode() == 503 ) {
+                if ( ex.getResponse().getStatus() == 503 ) {
                     // http-statuscode 503
                     logger.info( "HTTP-Status 503 ({}), trying again", pageUrl );
                     add( this.page );

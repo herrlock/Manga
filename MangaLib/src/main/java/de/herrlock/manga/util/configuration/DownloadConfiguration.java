@@ -5,8 +5,6 @@ import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Properties;
 
-import org.apache.http.HttpHost;
-
 import de.herrlock.manga.util.ChapterPattern;
 
 /**
@@ -93,14 +91,14 @@ public class DownloadConfiguration extends Configuration {
     /**
      * Getter for the Proxy
      * 
-     * @return a {@link HttpHost} containing the proxy-address from this {@link DownloadConfiguration}
+     * @return a {@link ProxyStorage} containing the proxy-address and -credentials from this {@link DownloadConfiguration}
      */
     public final ProxyStorage getProxy() {
         return this.proxy;
     }
 
     /**
-     * Getter for the use pattern
+     * Getter for the used pattern
      * 
      * @return the {@link ChapterPattern} from this {@link DownloadConfiguration}
      */

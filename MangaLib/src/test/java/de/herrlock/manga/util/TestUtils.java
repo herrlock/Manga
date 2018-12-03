@@ -1,5 +1,7 @@
 package de.herrlock.manga.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -12,22 +14,14 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.bootstrap.HttpServer;
-import org.apache.http.impl.bootstrap.ServerBootstrap;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.protocol.HttpRequestHandler;
-import org.apache.http.util.EntityUtils;
+import org.eclipse.jetty.client.api.ContentResponse;
+import org.eclipse.jetty.client.api.Request;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.herrlock.manga.DummyServer;
 import de.herrlock.manga.exceptions.MDRuntimeException;
+import de.herrlock.manga.util.Utils.ResponseHandler;
 import de.herrlock.manga.util.configuration.Configuration;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
@@ -39,26 +33,32 @@ public class TestUtils {
         Properties p = new Properties();
         p.setProperty( Configuration.URL, url.toExternalForm() );
         DownloadConfiguration conf = DownloadConfiguration.create( p );
-        HttpGet httpGet = Utils.createHttpGet( url, conf );
-        URI uri = httpGet.getURI();
+        Request request = Utils.createHttpGet( url, conf );
+        URI uri = request.getURI();
         Assert.assertEquals( "http://localhost:1337/", uri.toString() );
     }
 
     @Test
-    public void testExecuteHttpGet() throws ClientProtocolException, IOException {
-        final String MAGIC_SUPER_SECRET_STRING = "somethingRandom";
-        HttpRequestHandler requestHandler = new SetStringHttpRequestHandler( MAGIC_SUPER_SECRET_STRING );
-        HttpServer server = ServerBootstrap.bootstrap().setListenerPort( 1337 ).registerHandler( "/", requestHandler ).create();
+    public void testExecuteHttpGet() throws Exception {
+        DummyServer server = new DummyServer( 1337 );
 
         URL url = new URL( "http", "localhost", 1337, "/" );
         Properties p = new Properties();
         p.setProperty( Configuration.URL, url.toExternalForm() );
         DownloadConfiguration conf = DownloadConfiguration.create( p );
-        ResponseHandler<Boolean> responseHandler = new ResponseEqualsStringResponseHandler( MAGIC_SUPER_SECRET_STRING );
+        ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+            @Override
+            protected String handle( final ContentResponse input ) throws IOException {
+                return input.getContentAsString();
+            }
+        };
 
         server.start();
-        Utils.getDataAndExecuteResponseHandler( url, conf, responseHandler );
+        String response = Utils.getDataAndExecuteResponseHandler( url, conf, responseHandler );
         server.stop();
+
+        assertEquals( 1, server.timesHandlerCalled() );
+        assertEquals( "OK\r\n", response );
     }
 
     @SuppressWarnings( "deprecation" )
@@ -100,34 +100,6 @@ public class TestUtils {
         Collection<? extends Callable<Void>> callables = Arrays.asList( runningCallable, interruptCallable );
         Utils.callCallables( callables );
         Assert.fail( "should not get here" );
-    }
-
-    private static final class SetStringHttpRequestHandler implements HttpRequestHandler {
-        private final String stringtoSet;
-
-        public SetStringHttpRequestHandler( final String stringToSet ) {
-            this.stringtoSet = stringToSet;
-        }
-
-        @Override
-        public void handle( final HttpRequest request, final HttpResponse response, final HttpContext context )
-            throws HttpException, IOException {
-            response.setEntity( new StringEntity( this.stringtoSet ) );
-        }
-    }
-
-    static final class ResponseEqualsStringResponseHandler implements ResponseHandler<Boolean> {
-        private final String stringToTest;
-
-        public ResponseEqualsStringResponseHandler( final String stringToTest ) {
-            this.stringToTest = stringToTest;
-        }
-
-        @Override
-        public Boolean handleResponse( final HttpResponse response ) throws ClientProtocolException, IOException {
-            String readString = EntityUtils.toString( response.getEntity() );
-            return this.stringToTest.equals( readString );
-        }
     }
 
     private static final class BoolRunnable implements Runnable {

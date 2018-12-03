@@ -12,7 +12,7 @@ dependencies {
 	
 	// IO
 	implementation 'org.jsoup:jsoup:1.10.2'
-	implementation 'org.apache.httpcomponents:httpclient:4.5.3'
+	implementation 'org.eclipse.jetty:jetty-client:9.2.25.v20180606'
 	
 	// embed jetty
 	implementation 'org.eclipse.jetty:jetty-server:9.2.25.v20180606'
@@ -31,6 +31,16 @@ pmdMain.doLast {
 	assertPmdErrors pmdMain, [
 		[clazz:'de.herrlock.manga.http.jetty.JettyServer', method: 'start', rule:'AvoidCatchingGenericException'],
 		[clazz:'de.herrlock.manga.http.jetty.JettyServer', method: 'stop', rule:'AvoidCatchingGenericException'],
-		[clazz:'de.herrlock.manga.jd.Crawljob', method: 'export', rule:'InsufficientStringBufferDeclaration']
+		[clazz:'de.herrlock.manga.jd.Crawljob', method: 'export', rule:'InsufficientStringBufferDeclaration'],
+		[clazz:'de.herrlock.manga.util.', method: '', rule:'GodClass'],
+		[clazz:'de.herrlock.manga.util.Utils', method: '', rule:'AvoidCatchingGenericException']
+	]
+}
+pmdTest.ignoreFailures = true
+pmdTest.doLast {
+	assertPmdErrors pmdTest, [
+		[clazz:'de.herrlock.manga.DummyServer', method: 'start', rule:'SignatureDeclareThrowsException'],
+		[clazz:'de.herrlock.manga.DummyServer', method: 'stop', rule:'SignatureDeclareThrowsException'],
+		[clazz:'de.herrlock.manga.util.TestUtils', method: 'testExecuteHttpGet', rule:'SignatureDeclareThrowsException']
 	]
 }

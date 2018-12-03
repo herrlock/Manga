@@ -1,19 +1,16 @@
 package de.herrlock.manga.util.configuration;
 
 import java.io.File;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Properties;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.client.Origin;
+import org.eclipse.jetty.util.B64Code;
 
 import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.util.ChapterPattern;
@@ -133,7 +130,7 @@ public abstract class Configuration {
             if ( proxyString != null && !"".equals( proxyString ) ) {
                 return createProxyStorage( proxyString );
             }
-        } catch ( final MalformedURLException | UnknownHostException ex ) {
+        } catch ( final MalformedURLException ex ) {
             logger.error( "", ex );
             throw new InitializeException( "proxy-url is malformed or not recognized.", ex );
         }
@@ -141,8 +138,7 @@ public abstract class Configuration {
         return new ProxyStorage();
     }
 
-    protected static ProxyStorage createProxyStorage( final String urlString )
-        throws MalformedURLException, UnknownHostException {
+    protected static ProxyStorage createProxyStorage( final String urlString ) throws MalformedURLException {
         if ( urlString == null ) {
             return new ProxyStorage();
         }
@@ -155,21 +151,20 @@ public abstract class Configuration {
         String proxyHost = url.getHost();
         int proxyPort = url.getPort();
         String scheme = url.getProtocol();
-        InetAddress address = InetAddress.getByName( proxyHost );
         logger.debug( "Proxy-URL: {}:{}", proxyHost, proxyPort );
-        HttpHost httpHost = new HttpHost( address, proxyPort, scheme );
+        Origin origin = new Origin( scheme, proxyHost, proxyPort );
 
         ProxyStorage proxyStorage;
         String userInfo = url.getUserInfo();
         if ( userInfo == null ) {
             logger.debug( "No proxy-authentification" );
-            proxyStorage = new ProxyStorage( httpHost );
+            proxyStorage = new ProxyStorage( origin );
         } else {
             String[] userInfoSplit = userInfo.split( ":" );
             String proxyUser = userInfoSplit[0];
             String proxyPassword = userInfoSplit[1];
             logger.debug( "Proxy-User: {}", proxyUser );
-            proxyStorage = new ProxyStorage( httpHost, proxyUser, proxyPassword );
+            proxyStorage = new ProxyStorage( origin, proxyUser, proxyPassword );
         }
 
         return proxyStorage;
@@ -266,7 +261,7 @@ public abstract class Configuration {
      * @author HerrLock
      */
     public static class ProxyStorage {
-        private final HttpHost httpHost;
+        private final Origin origin;
         private final String b64creds;
 
         public ProxyStorage() {
@@ -274,51 +269,51 @@ public abstract class Configuration {
         }
 
         /**
-         * Creates a ProxyStorage with a proxy but no credentials. This constructor is to be used, when no authentication is
-         * needed.
+         * Creates a ProxyStorage with a proxy but no credentials. This constructor should be used, when no authentication is
+         * required.
          * 
-         * @param httpHost
+         * @param origin
          *            the proxy to authenticate at
          */
-        public ProxyStorage( final HttpHost httpHost ) {
-            this( httpHost, null );
+        public ProxyStorage( final Origin origin ) {
+            this( origin, null );
         }
 
         /**
          * Creates a new ProxyStorage with the given proxy-url, username and password.
          * 
-         * @param httpHost
+         * @param origin
          *            the proxy to authenticate at
          * @param user
          *            the username to authenticate with
          * @param password
          *            the password to authenticate with
          */
-        public ProxyStorage( final HttpHost httpHost, final String user, final String password ) {
-            this( httpHost, Base64.encodeBase64String( ( Objects.requireNonNull( user, "user must not be null" ) + ":"
-                + Objects.requireNonNull( password, "password must not be null" ) ).getBytes( StandardCharsets.UTF_8 ) ) );
+        public ProxyStorage( final Origin origin, final String user, final String password ) {
+            this( origin, B64Code.encode( ( Objects.requireNonNull( user, "user must not be null" ) + ":"
+                + Objects.requireNonNull( password, "password must not be null" ) ) ) );
         }
 
         /**
          * Creates a new ProxyStorage with the given proxy-url, and Base64-credentials.
          * 
-         * @param httpHost
+         * @param origin
          *            the proxy to authenticate at
          * @param b64creds
          *            the Base64-encoded credentials to authenticate with
          */
-        public ProxyStorage( final HttpHost httpHost, final String b64creds ) {
-            this.httpHost = httpHost;
+        public ProxyStorage( final Origin origin, final String b64creds ) {
+            this.origin = origin;
             this.b64creds = b64creds;
         }
 
         /**
          * Getter for the proxy-host. {@code null} if no proxy exist.
          * 
-         * @return a HttpHost containins the address to the proxy
+         * @return an Origin containins the address to the proxy
          */
-        public HttpHost getHttpHost() {
-            return this.httpHost;
+        public Origin getOrigin() {
+            return this.origin;
         }
 
         /**
@@ -332,7 +327,7 @@ public abstract class Configuration {
 
         @Override
         public String toString() {
-            return MessageFormat.format( "ProxyStorage( host: {0}, auth: {1} )", this.httpHost, this.b64creds != null );
+            return MessageFormat.format( "ProxyStorage( host: {0}, auth: {1} )", this.origin, this.b64creds != null );
         }
     }
 }

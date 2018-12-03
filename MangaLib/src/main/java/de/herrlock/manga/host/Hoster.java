@@ -32,6 +32,8 @@ public final class Hoster implements Comparable<Hoster> {
      * 
      * @param hosterImpl
      *            An implementation of {@link HosterImpl}.
+     * @throws HosterInstantiationException
+     *             {@code null} value for the passed parameter or the implementation-class is not annotated with {@link Details}
      */
     public Hoster( final HosterImpl hosterImpl ) throws HosterInstantiationException {
         this.hosterImpl = requireNonNull( hosterImpl, "HosterImpl is null" );
