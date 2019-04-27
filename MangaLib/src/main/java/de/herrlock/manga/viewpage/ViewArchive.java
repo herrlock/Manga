@@ -48,7 +48,7 @@ public final class ViewArchive {
      * 
      */
     public static void execute( final File folder, final String format, final boolean clean ) {
-        logger.entry( folder, format, clean );
+        logger.traceEntry( "{}, {}, {}", folder, format, clean );
         ViewArchive viewPage = new ViewArchive( folder, format, clean );
         viewPage.write();
     }
@@ -64,7 +64,7 @@ public final class ViewArchive {
      *            remove the downloaded images after archiving them
      */
     private ViewArchive( final File folder, final String format, final boolean clean ) {
-        logger.entry( folder, format, clean );
+        logger.traceEntry( "{}, {}, {}", folder, format, clean );
         this.folder = folder;
         try {
             this.targetFolder = Files.createDirectories( Paths.get( "comicbookarchives", mangaName() ) );

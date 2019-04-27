@@ -7,6 +7,8 @@ package de.herrlock.manga.exceptions;
  */
 public class MDRuntimeException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * A new MDRuntimeException without detailed message or cause
      * 

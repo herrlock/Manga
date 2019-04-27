@@ -24,7 +24,7 @@ public class MangaBaseHandler extends HandlerList {
     @Override
     public void handle( final String target, final Request baseRequest, final HttpServletRequest request,
         final HttpServletResponse response ) throws IOException, ServletException {
-        logger.entry( target );
+        logger.traceEntry( "{}", target );
 
         if ( target != null && target.startsWith( PREFIX_PATH ) ) {
             String subPath = target.substring( PREFIX_PATH.length() );

@@ -7,6 +7,8 @@ import de.herrlock.manga.exceptions.MDException;
  */
 public class NoHosterFoundException extends MDException {
 
+    private static final long serialVersionUID = 1L;
+
     @Deprecated
     public NoHosterFoundException() {
         super();

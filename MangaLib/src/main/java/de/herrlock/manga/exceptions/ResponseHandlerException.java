@@ -6,6 +6,8 @@ package de.herrlock.manga.exceptions;
  */
 public class ResponseHandlerException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     public ResponseHandlerException( final String message ) {
         super( message );
     }

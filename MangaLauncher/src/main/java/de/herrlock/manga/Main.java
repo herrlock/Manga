@@ -120,7 +120,7 @@ public final class Main {
     }
 
     private static void printHelp( final String helpContext ) {
-        logger.entry( helpContext );
+        logger.traceEntry( "{}", helpContext );
 
         final HelpFormatter helpFormatter = new HelpFormatter();
         final StringWriter stringWriter = new StringWriter();

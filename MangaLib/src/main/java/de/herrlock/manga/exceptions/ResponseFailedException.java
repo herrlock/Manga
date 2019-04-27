@@ -6,6 +6,8 @@ package de.herrlock.manga.exceptions;
  */
 public class ResponseFailedException extends ResponseHandlerException {
 
+    private static final long serialVersionUID = 1L;
+
     public ResponseFailedException( final String message ) {
         super( message );
     }

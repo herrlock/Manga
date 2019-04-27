@@ -7,6 +7,8 @@ package de.herrlock.manga.exceptions;
  */
 public class MDException extends Exception {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * A new MDException without detailed message or cause
      * 

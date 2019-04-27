@@ -81,7 +81,7 @@ public final class Utils {
         USER_AGENT = p.getProperty( "http.useragent" );
 
         boolean trustAll = Boolean.parseBoolean( p.getProperty( "https.trustAll", "false" ) );
-        SslContextFactory sslCF = new SslContextFactory( trustAll );
+        SslContextFactory sslCF = new SslContextFactory.Client( trustAll );
         CLIENT = new HttpClient( sslCF );
 
         String proxyHost = p.getProperty( "http.proxy.host" );

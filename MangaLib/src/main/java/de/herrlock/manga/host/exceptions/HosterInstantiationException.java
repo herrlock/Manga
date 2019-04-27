@@ -9,6 +9,8 @@ import de.herrlock.manga.exceptions.MDException;
  */
 public final class HosterInstantiationException extends MDException {
 
+    private static final long serialVersionUID = 1L;
+
     @Deprecated
     public HosterInstantiationException() {
         super();

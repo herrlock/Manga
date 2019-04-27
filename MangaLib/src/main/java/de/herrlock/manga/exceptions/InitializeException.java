@@ -7,6 +7,8 @@ package de.herrlock.manga.exceptions;
  */
 public final class InitializeException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * A new InitializeException without detailed message or cause
      * 
