@@ -1,22 +1,6 @@
 plugins {
 	id 'org.ajoberstar.grgit' version '1.5.0'
 }
-ext {
-	jfxJavadoc = project.hasProperty('jfx_doc_location') ? 
-		'file:/' + project.getProperty('jfx_doc_location') :
-		'http://docs.oracle.com/javafx/2/api/'
-	if(!project.hasProperty('jfx_doc_location')) {
-		logger.info('JavaFX-Documentation is set to http://docs.oracle.com/.' + 
-			' If you want to specify a different location add \'jfx_doc_location\' to your gradle.properties')
-	}
-	jfxSource = project.hasProperty('jfx_src_location') ? 
-		project.getProperty('jfx_src_location') :
-		''
-	if(!project.hasProperty('jfx_src_location')) {
-		logger.info('JavaFX-Sources are not set.' + 
-			' If you want to add it add \'jfx_src_location\' to your gradle.properties')
-	}
-}
 
 apply plugin: 'distribution'
 
@@ -94,22 +78,6 @@ subprojects {
 	eclipse {
 		project {
 			buildCommand 'edu.umd.cs.findbugs.plugin.eclipse.findbugsBuilder'
-		}
-		classpath {
-			file.withXml {
-				def jfxrt = it.asNode().children().find{ entry ->
-					return entry['@path'].contains('jfxrt') 
-				}
-				if(jfxrt != null) {
-					if(jfxSource != '') {
-						jfxrt.'@sourcepath' = jfxSource
-					}
-					Node attributes = new Node(jfxrt, 'attributes')
-					Node attribute = new Node(attributes, 'attribute')
-					attribute.'@name' = 'javadoc_location'
-					attribute.'@value' = jfxJavadoc
-				}
-			}
 		}
 	}
 	
