@@ -4,26 +4,26 @@ description = 'The central library for this application containing all general i
 
 dependencies {
 	// utilities
-	api 'com.google.guava:guava:20.0'
-	api 'org.glassfish:javax.json:1.0.4'
+	api 'com.google.guava:guava:27.1-jre'
+	api 'org.glassfish:javax.json:1.1.4'
 	
 	// logging
-	api 'org.apache.logging.log4j:log4j-api:2.8.2'
+	api 'org.apache.logging.log4j:log4j-api:2.11.2'
 	
 	// IO
-	implementation 'org.jsoup:jsoup:1.10.2'
-	implementation 'org.eclipse.jetty:jetty-client:9.2.25.v20180606'
+	implementation 'org.jsoup:jsoup:1.11.3'
+	implementation 'org.eclipse.jetty:jetty-client:9.4.17.v20190418'
 	
 	// embed jetty
-	implementation 'org.eclipse.jetty:jetty-server:9.2.25.v20180606'
-	implementation 'org.eclipse.jetty:jetty-security:9.2.25.v20180606'
+	implementation 'org.eclipse.jetty:jetty-server:9.4.17.v20190418'
+	implementation 'org.eclipse.jetty:jetty-security:9.4.17.v20190418'
 	
 	// compressing and archiving files
-	implementation 'org.apache.commons:commons-compress:1.14'
+	implementation 'org.apache.commons:commons-compress:1.18'
 	
 	// ServiceLoader-annotations
-	compileOnly 'com.google.auto.service:auto-service:1.0-rc3'
-	annotationProcessor 'com.google.auto.service:auto-service:1.0-rc3'
+	compileOnly 'com.google.auto.service:auto-service:1.0-rc5'
+	annotationProcessor 'com.google.auto.service:auto-service:1.0-rc5'
 	
 }
 
