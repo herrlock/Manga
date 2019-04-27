@@ -45,12 +45,15 @@ subprojects {
 	
 	tasks.withType(JavaCompile) {
 		options.encoding = 'UTF-8'
+		if(project.hasProperty('jre7bootstrap')) {
+			options.bootstrapClasspath = files("$jre7bootstrap/rt.jar")
+		}
 		// options.javaHome = 
 	}
 	
 	jar.manifest {
 		attributes 'Built-At' : new Date(),
-			'Built-With' : GradleVersion.current(),
+			'Built-With' : org.gradle.util.GradleVersion.current(),
 			'Created-By' : "${System.properties.'java.runtime.version'} (${System.properties.'java.vm.vendor'})",
 			'Version' : project.version,
 			'Info'

@@ -11,6 +11,10 @@ dependencies {
 	implementation 'org.apache.logging.log4j:log4j-core:2.8.2'
 }
 
+tasks.withType(JavaCompile) {
+	options.compilerArgs << '-proc:none'
+}
+
 jar {
 	manifest {
 		attributes 'Main-Class' : 'de.herrlock.manga.Launcher',
