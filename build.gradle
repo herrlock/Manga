@@ -90,11 +90,13 @@ subprojects {
 	}
 	assemble.dependsOn sourceJar
 	
+	/*
 	task javadocJar(type: Jar, dependsOn: javadoc) {
 		from tasks.javadoc.outputs
 		classifier 'javadoc'
 	}
 	assemble.dependsOn javadocJar
+	*/
 	
 	repositories {
 		mavenCentral()
