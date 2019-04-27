@@ -178,10 +178,6 @@ public class GetListHandler extends AbstractHandler {
     public static final class DownloadList {
         private final List<Entry> downloads = new ArrayList<>();
 
-        public DownloadList() {
-            // not used
-        }
-
         public void addDownload( final Entry entry ) {
             this.downloads.add( entry );
         }

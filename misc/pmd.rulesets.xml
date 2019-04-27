@@ -1,61 +1,138 @@
 <?xml version="1.0"?>
-<ruleset name="Custom ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ruleset
+	name="Custom ruleset"
+	xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 	<description>PMD-configuration for the MangaDownloader</description>
 
-	<!-- important, these rules do not "break" anything, I just like it more with them -->
-	<rule ref="rulesets/java/basic.xml">
-		<priority>1</priority>
-	</rule>
-	<rule ref="rulesets/java/braces.xml">
-		<priority>1</priority>
-	</rule>
-	<rule ref="rulesets/java/design.xml">
-		<priority>1</priority>
-	</rule>
-	<rule ref="rulesets/java/empty.xml">
-		<priority>1</priority>
-	</rule>
-	<rule ref="rulesets/java/sunsecure.xml">
-		<priority>1</priority>
-	</rule>
-	<rule ref="rulesets/java/typeresolution.xml">
-		<priority>1</priority>
-	</rule>
-	<rule ref="rulesets/java/unnecessary.xml">
-		<priority>1</priority>
-	</rule>
-	<rule ref="rulesets/java/unusedcode.xml">
-		<priority>1</priority>
+
+	<rule ref="category/java/bestpractices.xml">
+		<!-- <exclude name="GuardLogStatement" /> -->
+		<!-- <exclude name="JUnitTestContainsTooManyAsserts" /> -->
+		<!-- <exclude name="JUnitTestsShouldIncludeAssert" /> -->
+
+		<!-- <exclude name="JUnitAssertionsShouldIncludeMessage" /> -->
 	</rule>
 
-	<!-- not so important -->
-	<rule ref="rulesets/java/finalizers.xml">
-		<priority>4</priority>
-	</rule>
-	<rule ref="rulesets/java/imports.xml">
-		<priority>5</priority>
-	</rule>
-	<rule ref="rulesets/java/junit.xml">
-		<priority>3</priority>
-		<exclude name="JUnitTestContainsTooManyAsserts" />
-	</rule>
-	<rule ref="rulesets/java/logging-java.xml">
-		<priority>4</priority>
-	</rule>
-	<rule ref="rulesets/java/optimizations.xml">
-		<priority>4</priority>
-		<exclude name="AvoidInstantiatingObjectsInLoops" />
+	<rule ref="category/java/codestyle.xml">
+		<exclude name="AvoidFinalLocalVariable" />
+		<exclude name="CallSuperInConstructor" />
+		<exclude name="ClassNamingConventions" />
+		<exclude name="CommentDefaultAccessModifier" />
+		<exclude name="DefaultPackage" />
+		<!-- <exclude name="LinguisticNaming" /> -->
 		<exclude name="LocalVariableCouldBeFinal" />
+		<exclude name="LongVariable" />
+		<exclude name="OnlyOneReturn" />
+		<exclude name="ShortClassName" />
+		<exclude name="ShortVariable" />
+		<!-- <exclude name="TooManyStaticImports" /> -->
+
+		<exclude name="AtLeastOneConstructor" />
+		<exclude name="FieldNamingConventions" />
+		<exclude name="MethodNamingConventions" />
+		<!-- <exclude name="MethodArgumentCouldBeFinal" /> -->
+	</rule>
+
+	<rule ref="category/java/design.xml">
+		<exclude name="CyclomaticComplexity" />
+		<exclude name="DataClass" />
+		<exclude name="ExcessiveImports" />
+		<exclude name="LawOfDemeter" />
+		<exclude name="LoosePackageCoupling" />
+		<!-- <exclude name="UseObjectForClearerAPI" /> -->
+
+		<!-- <exclude name="AvoidCatchingGenericException" /> -->
+		<!-- <exclude name="ImmutableField" /> -->
+		<exclude name="TooManyMethods" />
+	</rule>
+
+	<!-- <rule ref="category/java/documentation.xml"> -->
+	<!-- <exclude name="" /> -->
+	<!-- </rule> -->
+
+	<rule ref="category/java/errorprone.xml">
+		<exclude name="AvoidDuplicateLiterals" />
+		<exclude name="BeanMembersShouldSerialize" />
+		<exclude name="DataflowAnomalyAnalysis" />
+	</rule>
+	<rule ref="category/java/errorprone.xml/AssignmentInOperand">
+		<properties>
+			<property
+				name="allowWhile"
+				value="true" />
+		</properties>
+	</rule>
+
+
+	<rule ref="category/java/multithreading.xml">
+		<exclude name="DoNotUseThreads" />
+	</rule>
+
+	<rule ref="category/java/performance.xml">
+		<exclude name="AvoidInstantiatingObjectsInLoops" />
 		<exclude name="SimplifyStartsWith" />
 	</rule>
-	<rule ref="rulesets/java/strictexception.xml">
-		<priority>4</priority>
+
+	<rule ref="category/java/security.xml">
+		<!-- <exclude name="" /> -->
 	</rule>
-	<rule ref="rulesets/java/strings.xml">
-		<priority>4</priority>
-		<exclude name="AvoidDuplicateLiterals" />
-	</rule>
+
+
+	<!-- important, these rules do not "break" anything, I just like it more with them -->
+	<!-- <rule ref="rulesets/java/basic.xml"> -->
+	<!-- <priority>1</priority> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/braces.xml"> -->
+	<!-- <priority>1</priority> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/design.xml"> -->
+	<!-- <priority>1</priority> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/empty.xml"> -->
+	<!-- <priority>1</priority> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/sunsecure.xml"> -->
+	<!-- <priority>1</priority> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/typeresolution.xml"> -->
+	<!-- <priority>1</priority> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/unnecessary.xml"> -->
+	<!-- <priority>1</priority> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/unusedcode.xml"> -->
+	<!-- <priority>1</priority> -->
+	<!-- </rule> -->
+
+	<!-- not so important -->
+	<!-- <rule ref="rulesets/java/finalizers.xml"> -->
+	<!-- <priority>4</priority> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/imports.xml"> -->
+	<!-- <priority>5</priority> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/junit.xml"> -->
+	<!-- <priority>3</priority> -->
+	<!-- <exclude name="JUnitTestContainsTooManyAsserts" /> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/logging-java.xml"> -->
+	<!-- <priority>4</priority> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/optimizations.xml"> -->
+	<!-- <priority>4</priority> -->
+	<!-- <exclude name="AvoidInstantiatingObjectsInLoops" /> -->
+	<!-- <exclude name="LocalVariableCouldBeFinal" /> -->
+	<!-- <exclude name="SimplifyStartsWith" /> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/strictexception.xml"> -->
+	<!-- <priority>4</priority> -->
+	<!-- </rule> -->
+	<!-- <rule ref="rulesets/java/strings.xml"> -->
+	<!-- <priority>4</priority> -->
+	<!-- <exclude name="AvoidDuplicateLiterals" /> -->
+	<!-- </rule> -->
 
 	<!-- configure with the right parameters, exclude unnecessary tests -->
 	<!-- <rule ref="rulesets/java/naming.xml"> -->

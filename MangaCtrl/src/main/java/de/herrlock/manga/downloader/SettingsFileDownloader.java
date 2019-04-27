@@ -1,8 +1,9 @@
 package de.herrlock.manga.downloader;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
@@ -24,7 +25,7 @@ public final class SettingsFileDownloader extends MDownloader {
         logger.traceEntry();
         Properties p = new Properties();
         // load properties
-        try ( InputStream fIn = new FileInputStream( Constants.SETTINGS_FILE ) ) {
+        try ( InputStream fIn = Files.newInputStream( Paths.get( Constants.SETTINGS_FILE ) ) ) {
             p.load( fIn );
         } catch ( IOException ex ) {
             throw new MDRuntimeException( ex );

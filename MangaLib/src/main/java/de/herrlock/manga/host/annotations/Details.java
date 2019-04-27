@@ -12,7 +12,7 @@ import de.herrlock.manga.host.Hoster;
  * 
  * @author HerrLock
  */
-@Target( value = ElementType.TYPE )
+@Target( ElementType.TYPE )
 @Retention( RetentionPolicy.RUNTIME )
 public @interface Details {
     /**

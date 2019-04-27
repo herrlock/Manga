@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * @author HerrLock
  */
-@Target( value = ElementType.TYPE )
+@Target( ElementType.TYPE )
 @Retention( RetentionPolicy.RUNTIME )
 public @interface ChapterListDetails {
     /**

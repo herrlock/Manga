@@ -24,7 +24,7 @@ public class IgnoreUnknownParser extends DefaultParser {
         while ( parse == null && !argumentList.isEmpty() ) {
             /* parse == null and argumentList not empty */
             try {
-                String[] argumentListArray = argumentList.toArray( new String[argumentList.size()] );
+                String[] argumentListArray = argumentList.toArray( new String[0] );
                 parse = super.parse( options, argumentListArray, properties, false );
             } catch ( UnrecognizedOptionException ex ) {
                 argumentList.remove( ex.getOption() );

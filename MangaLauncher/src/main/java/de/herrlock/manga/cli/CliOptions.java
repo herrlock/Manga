@@ -46,7 +46,7 @@ public class CliOptions implements CliOptionsMXBean {
                 optionQueue.add( optionWithValue );
             }
         }
-        return optionQueue.toArray( new String[optionQueue.size()] );
+        return optionQueue.toArray( new String[0] );
     }
 
     @Override

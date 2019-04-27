@@ -40,7 +40,9 @@ public class ReturnImageHandler extends AbstractHandler {
     }
 
     private static String getHtmlColour( final Color color ) {
-        int red = color.getRed(), green = color.getGreen(), blue = color.getBlue();
+        int red = color.getRed();
+        int green = color.getGreen();
+        int blue = color.getBlue();
         return String.format( "#%02x%02x%02x", red, green, blue );
     }
 
@@ -49,7 +51,7 @@ public class ReturnImageHandler extends AbstractHandler {
      * 
      * @author HerrLock
      */
-    public static enum Image {
+    public enum Image {
         /**
          * a robot (the castle in the sky)
          */
