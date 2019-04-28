@@ -125,7 +125,7 @@ public final class Utils {
             throw new RuntimeException( ex );
         }
         Request request = CLIENT.newRequest( uri ) //
-            .timeout( conf.getTimeout(), TimeUnit.SECONDS ) //
+            .timeout( conf.getTimeout(), TimeUnit.MILLISECONDS ) //
             .agent( USER_AGENT );
 
         return request;
