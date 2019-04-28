@@ -9,6 +9,7 @@ dependencies {
 	
 	// logging
 	api 'org.apache.logging.log4j:log4j-api:2.11.2'
+	runtimeOnly 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
 	
 	// IO
 	implementation 'org.jsoup:jsoup:1.11.3'

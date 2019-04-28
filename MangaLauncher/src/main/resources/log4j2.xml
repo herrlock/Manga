@@ -13,7 +13,7 @@
 			</Policies>
 			<DefaultRolloverStrategy max="10" />
 		</RollingRandomAccessFile>
-		<RollingRandomAccessFile name="ApacheLogger" fileName="log/apache.log" filePattern="log/archive/apache-%i.log.gz">
+		<RollingRandomAccessFile name="JettyLogger" fileName="log/jetty.log" filePattern="log/archive/jetty-%i.log.gz">
 			<PatternLayout pattern="${patternDateLayout}" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="1 MB" />
@@ -25,18 +25,8 @@
 		</Console>
 	</Appenders>
 	<Loggers>
-		<Logger name="org.apache.http" level="DEBUG" additivity="false">
-			<AppenderRef ref="ApacheLogger" />
-		</Logger>
-		<Logger name="org.apache.http.wire" level="INFO" additivity="false">
-			<AppenderRef ref="ApacheLogger" />
-		</Logger>
-		
 		<Logger name="org.eclipse.jetty" level="DEBUG">
-			<AppenderRef ref="FileTrace" />
-		</Logger>
-		<Logger name="org.apache" level="DEBUG" additivity="false">
-			<AppenderRef ref="FileTrace" />
+			<AppenderRef ref="JettyLogger" />
 		</Logger>
 		<Logger name="de.herrlock" level="TRACE">
 			<AppenderRef ref="FileTrace" />
