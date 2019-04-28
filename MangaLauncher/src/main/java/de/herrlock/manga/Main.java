@@ -229,7 +229,13 @@ public final class Main {
                 logger.info( "Starting Commandline-Downloader:" );
                 DownloadConfiguration conf = DownloadConfiguration.create( properties );
                 logger.info( conf );
-                ConsoleDownloader downloader = new ConsoleDownloader( conf, conf.isHeadless() );
+                ConsoleDownloader downloader;
+                try {
+                    downloader = new ConsoleDownloader( conf, conf.isHeadless() );
+                } catch ( MDRuntimeException ex) {
+                    Utils.stopHttpClient();
+                    throw ex;
+                }
                 DownloadProcessor.getInstance().addDownload( downloader );
             }
         }

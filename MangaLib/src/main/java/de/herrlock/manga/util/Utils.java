@@ -100,11 +100,35 @@ public final class Utils {
                 CLIENT.getAuthenticationStore().addAuthentication( proxyAuthentication );
             }
         }
+    }
 
-        try {
-            CLIENT.start();
-        } catch ( Exception e ) {
-            throw new RuntimeException( e );
+    /**
+     * Starts the HttpClient
+     * 
+     * @see #stopHttpClient()
+     */
+    public static void startHttpClient() {
+        synchronized (CLIENT) {
+            try {
+                CLIENT.start();
+            } catch ( Exception e ) {
+                throw new RuntimeException( e );
+            }
+        }
+    }
+
+    /**
+     * Stops the HttpClient
+     * 
+     * @see #startHttpClient()
+     */
+    public static void stopHttpClient() {
+        synchronized (CLIENT) {
+            try {
+                CLIENT.stop();
+            } catch ( Exception e ) {
+                throw new RuntimeException( e );
+            }
         }
     }
 
@@ -124,6 +148,7 @@ public final class Utils {
         } catch ( URISyntaxException ex ) {
             throw new RuntimeException( ex );
         }
+        startHttpClient();
         Request request = CLIENT.newRequest( uri ) //
             .timeout( conf.getTimeout(), TimeUnit.MILLISECONDS ) //
             .agent( USER_AGENT );
