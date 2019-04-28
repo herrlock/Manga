@@ -1,4 +1,4 @@
-package de.herrlock.manga.http.jetty.handlers;
+package de.herrlock.manga.http.server.handlers;
 
 import java.awt.Color;
 import java.io.IOException;

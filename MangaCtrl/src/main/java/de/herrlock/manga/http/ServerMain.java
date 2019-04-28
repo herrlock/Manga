@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.herrlock.manga.exceptions.MDException;
-import de.herrlock.manga.http.jetty.JettyServer;
+import de.herrlock.manga.http.server.JettyServer;
 
 /**
  * @author HerrLock

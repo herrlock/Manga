@@ -1,4 +1,4 @@
-package de.herrlock.manga.http.jetty.log;
+package de.herrlock.manga.http.server.log;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

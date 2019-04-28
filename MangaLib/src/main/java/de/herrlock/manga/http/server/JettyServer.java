@@ -1,4 +1,4 @@
-package de.herrlock.manga.http.jetty;
+package de.herrlock.manga.http.server;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,8 +22,8 @@ import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Constraint;
 
 import de.herrlock.manga.exceptions.MDException;
-import de.herrlock.manga.http.jetty.handlers.MangaBaseHandler;
-import de.herrlock.manga.http.jetty.log.Log4j2Bridge;
+import de.herrlock.manga.http.server.handlers.MangaBaseHandler;
+import de.herrlock.manga.http.server.log.Log4j2Bridge;
 
 public final class JettyServer {
     private static final Logger logger = LogManager.getLogger();
