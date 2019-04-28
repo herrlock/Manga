@@ -17,7 +17,7 @@ import de.herrlock.manga.exceptions.InitializeException;
 import de.herrlock.manga.host.annotations.ChapterListDetails;
 import de.herrlock.manga.host.annotations.Details;
 import de.herrlock.manga.host.exceptions.NoHosterFoundException;
-import de.herrlock.manga.util.Utils;
+import de.herrlock.manga.http.client.JettyClient;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 
 /**
@@ -148,7 +148,7 @@ public abstract class ChapterList implements Iterable<Chapter> {
      *             in case an IOException occurs
      */
     protected Document getDocument( final URL url ) throws IOException {
-        return Utils.getDocument( url, this.conf );
+        return JettyClient.getDocument( url, this.conf );
     }
 
     @Override

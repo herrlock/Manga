@@ -21,8 +21,8 @@ import de.herrlock.manga.host.ChapterList;
 import de.herrlock.manga.host.HosterImpl;
 import de.herrlock.manga.host.annotations.ChapterListDetails;
 import de.herrlock.manga.host.annotations.Details;
+import de.herrlock.manga.http.client.JettyClient;
 import de.herrlock.manga.index.entity.HosterListEntry;
-import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import de.herrlock.manga.util.configuration.IndexerConfiguration;
 
@@ -43,7 +43,7 @@ public class MangaFox extends HosterImpl {
         try {
             baseUrl = new URL( getDetails().baseUrl() );
             URL listUrl = new URL( baseUrl, "/manga/" );
-            doc = Utils.getDocument( listUrl, conf );
+            doc = JettyClient.getDocument( listUrl, conf );
         } catch ( IOException ex ) {
             throw new MDRuntimeException( ex );
         }

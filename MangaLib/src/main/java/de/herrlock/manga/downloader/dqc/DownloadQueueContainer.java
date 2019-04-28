@@ -22,8 +22,9 @@ import com.google.common.collect.ImmutableList;
 import de.herrlock.manga.downloader.clc.ChapterListContainer;
 import de.herrlock.manga.downloader.pmc.EntryList;
 import de.herrlock.manga.exceptions.MDRuntimeException;
+import de.herrlock.manga.http.client.JettyClient;
+import de.herrlock.manga.http.client.ResponseHandler;
 import de.herrlock.manga.util.Utils;
-import de.herrlock.manga.util.Utils.ResponseHandler;
 import de.herrlock.manga.util.configuration.DownloadConfiguration;
 import de.herrlock.manga.util.management.DownloadQueueContainerMXBean;
 
@@ -122,7 +123,7 @@ public final class DownloadQueueContainer implements DownloadQueueContainerMXBea
     }
 
     void executeDownload( final URL url, final ResponseHandler<?> handler ) throws IOException {
-        Utils.getDataAndExecuteResponseHandler( url, this.conf, handler );
+        JettyClient.getDataAndExecuteResponseHandler( url, this.conf, handler );
     }
 
     /**

@@ -2,13 +2,6 @@ package de.herrlock.manga.util;
 
 import java.util.Comparator;
 
-import org.eclipse.jetty.client.HttpResponse;
-import org.eclipse.jetty.client.api.ContentResponse;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import com.google.common.base.Function;
-
 /**
  * A central class for miscellanous constant values
  * 
@@ -27,24 +20,7 @@ public final class Constants {
     /**
      * a {@link Comparator} to compare Strings based on their numeric value
      */
-    public static final Comparator<String> STRING_NUMBER_COMPARATOR = new Comparator<String>() {
-        @Override
-        public int compare( final String s1, final String s2 ) {
-            final double d1 = Double.parseDouble( s1 );
-            final double d2 = Double.parseDouble( s2 );
-            return Double.compare( d1, d2 );
-        }
-    };
-
-    /**
-     * converts an {@link HttpResponse} to a Jsoup-{@link Document}
-     */
-    public static final Function<ContentResponse, Document> TO_DOCUMENT_HANDLER = new Function<ContentResponse, Document>() {
-        @Override
-        public Document apply( final ContentResponse response ) {
-            return response == null ? null : Jsoup.parse( response.getContentAsString() );
-        }
-    };
+    public static final Comparator<String> STRING_NUMBER_COMPARATOR = Comparator.comparingDouble( Double::parseDouble );
 
     /**
      * the average filesize in kB.<br>

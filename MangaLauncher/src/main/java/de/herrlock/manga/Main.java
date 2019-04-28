@@ -35,6 +35,7 @@ import de.herrlock.manga.exceptions.MDException;
 import de.herrlock.manga.exceptions.MDRuntimeException;
 import de.herrlock.manga.host.PrintAllHoster;
 import de.herrlock.manga.http.ServerMain;
+import de.herrlock.manga.http.client.JettyClient;
 import de.herrlock.manga.index.IndexerMain;
 import de.herrlock.manga.util.Utils;
 import de.herrlock.manga.util.configuration.Configuration;
@@ -232,8 +233,8 @@ public final class Main {
                 ConsoleDownloader downloader;
                 try {
                     downloader = new ConsoleDownloader( conf, conf.isHeadless() );
-                } catch ( MDRuntimeException ex) {
-                    Utils.stopHttpClient();
+                } catch ( MDRuntimeException ex ) {
+                    JettyClient.stopHttpClient();
                     throw ex;
                 }
                 DownloadProcessor.getInstance().addDownload( downloader );

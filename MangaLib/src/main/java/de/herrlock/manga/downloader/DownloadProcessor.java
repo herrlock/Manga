@@ -3,7 +3,7 @@ package de.herrlock.manga.downloader;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import de.herrlock.manga.util.Utils;
+import de.herrlock.manga.http.client.JettyClient;
 
 /**
  * @author HerrLock
@@ -39,9 +39,9 @@ public class DownloadProcessor {
         @Override
         public void run() {
             try {
-                Utils.startHttpClient();
+                JettyClient.startHttpClient();
                 process();
-                Utils.stopHttpClient();
+                JettyClient.stopHttpClient();
             } catch ( InterruptedException ex ) {
                 // logger.error("DownloadExecutor interrupted", ex);
             }
