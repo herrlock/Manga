@@ -31,7 +31,7 @@ public final class ToDocumentOrRetryHandler extends ResponseHandler<Document> {
         int statusCode = response.getStatus();
         switch ( statusCode ) {
             case 200:
-                return response == null ? null : Jsoup.parse( response.getContentAsString() );
+                return Jsoup.parse( response.getContentAsString() );
             case 503:
                 try {
                     Thread.sleep( 1000 );
